@@ -23,6 +23,3 @@ gulp.task('test', function (done) {
 //require('../libs-manage/gulp_libs')(gulp);
 
 
-//  "karma-jasmine": "~0.3.6",
-//  "karma-mocha-reporter": "~1.1.1",
-//"karma-webpack": "^1.7.0"

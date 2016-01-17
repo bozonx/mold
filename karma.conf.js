@@ -1,24 +1,24 @@
 /*jshint node: true*/
 var path = require('path');
 var _ = require('lodash');
-//var webpackConfig = require('./webpack.config.js');
-//var RewirePlugin = require("rewire-webpack");
+var webpackConfig = require('./webpack.config.js');
+var RewirePlugin = require("rewire-webpack");
 
-//wpConf = _.assign(_.cloneDeep(webpackConfig), {
-//    // clear entry. It's not need there.
-//    entry: {},
-//
-//    cache: false,
-//
-//    // karma watches the test entry points
-//    // (you don't need to specify the entry option)
-//    // webpack watches dependencies
-//
-//    // webpack configuration
-//    devtool: 'inline-source-map',
-//});
-//wpConf.plugins = [].concat(webpackConfig.plugins);
-//wpConf.plugins.push(new RewirePlugin());
+wpConf = _.assign(_.cloneDeep(webpackConfig), {
+    // clear entry. It's not need there.
+    entry: {},
+
+    cache: false,
+
+    // karma watches the test entry points
+    // (you don't need to specify the entry option)
+    // webpack watches dependencies
+
+    // webpack configuration
+    devtool: 'inline-source-map',
+});
+wpConf.plugins = [].concat(webpackConfig.plugins);
+wpConf.plugins.push(new RewirePlugin());
 
 
 // Karma configuration
@@ -51,20 +51,21 @@ module.exports = function (config) {
         files: [
             //'node_modules/babel-core/browser-polyfill.js',
             //'test/test_main.coffee',
-            'test/test_main.js',
-            //'test/**_spec.coffee',
+            //'test/test_main.js',
+            'test/**_spec.coffee',
         ],
         // list of files to exclude
         exclude: [],
 
-        //preprocessors: {
-        //    'test/entry.js': ['webpack', 'sourcemap'],
-        //    '**/*_spec.coffee': ['webpack', 'sourcemap'],
-        //},
-        //webpack: wpConf,
-        //webpackMiddleware: {
-        //    noInfo: true
-        //},
+        preprocessors: {
+            //'test/entry.js': ['webpack', 'sourcemap'],
+            //'**/*_spec.coffee': ['webpack', 'sourcemap'],
+            'test/test_main.coffee': ['webpack', 'sourcemap'],
+        },
+        webpack: wpConf,
+        webpackMiddleware: {
+            noInfo: true
+        },
 
 
         phantomjsLauncher: {

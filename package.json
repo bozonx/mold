@@ -12,8 +12,13 @@
     "node": ">=4.2.4"
   },
   "dependencies": {
+    "babel-core": "^6.4.0",
+    "babel-loader": "^6.2.1",
+    "coffee-loader": "^0.7.2",
+    "coffee-script": "^1.10.0",
     "gulp": "^3.9.0",
-    "lodash": "~3.10.1"
+    "lodash": "~3.10.1",
+    "webpack": "^1.12.11"
   },
   "devDependencies": {
     "chai": "^3.4.1",
@@ -23,7 +28,9 @@
     "karma-mocha-reporter": "^1.1.5",
     "karma-phantomjs-launcher": "^0.2.3",
     "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^1.7.0",
     "mocha": "^2.3.4",
-    "phantomjs": "^1.9.19"
+    "phantomjs": "^1.9.19",
+    "rewire-webpack": "^1.0.1"
   }
 }
