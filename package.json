@@ -1,8 +1,8 @@
 {
-  "name": "libs-manage",
+  "name": "mold",
   "version": "0.0.0",
-  "description": "Manage you own libs for you project.",
-  "repository": "git@bitbucket.org:ipkozyrin/libs_manage.git",
+  "description": "Data structure for ui.",
+  "repository": "git@bitbucket.org:ipkozyrin/mold.git",
   "license": "MIT",
   "author": {
     "name": "Ivan Kozyrin",
@@ -12,10 +12,8 @@
     "node": ">=4.2.4"
   },
   "dependencies": {
-    "chalk": "^1.1.1",
     "gulp": "~3.9.0",
     "lodash": "~3.10.1",
-    "shelljs": "^0.5.3"
   },
   "devDependencies": {}
 }
