@@ -52,7 +52,9 @@ module.exports = function (config) {
             //'node_modules/babel-core/browser-polyfill.js',
             //'test/test_main.coffee',
             //'test/test_main.js',
-            'test/**_spec.coffee',
+            //'test/**_spec.coffee',
+            //'dist/app_entry_build.js',
+            'test/test_main.coffee',
         ],
         // list of files to exclude
         exclude: [],
@@ -66,11 +68,20 @@ module.exports = function (config) {
         webpackMiddleware: {
             noInfo: true
         },
-
-
         phantomjsLauncher: {
           // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
           exitOnResourceError: true
         },
+
+        plugins: [
+          //require("karma-webpack"),
+          'karma-webpack',
+          'karma-mocha-reporter',
+          'karma-mocha',
+          'karma-chai',
+          'karma-phantomjs-launcher',
+          'karma-sourcemap-loader',
+        ],
+
     });
 };

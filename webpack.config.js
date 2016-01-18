@@ -77,9 +77,9 @@ module.exports = {
   //  }
   //},
 
-  //plugins: [
-  //  new webpack.ProvidePlugin({
-  //    //$:      'jquery/dist/jquery',
-  //  }),
-  //]
+  plugins: [
+    //new webpack.ProvidePlugin({
+    //  //$:      'jquery/dist/jquery',
+    //}),
+  ]
 };

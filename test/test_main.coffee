@@ -1,4 +1,6 @@
+ee = require('../lib/index.js')
+
 describe 'first', ->
   it 'eee', ->
-    assert.equal(1, 1)
+    assert.equal(ee.testFunc(), 111)
     #//expect(1).to.equal('bar');
