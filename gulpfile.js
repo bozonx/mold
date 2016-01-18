@@ -6,7 +6,7 @@ var Server = require('karma').Server;
  */
 gulp.task('test', function (done) {
   new Server({
-    configFile: __dirname + '/karma.conf.js',
+    configFile: __dirname + '/karma.conf.coffee',
     autoWatch: false,
     singleRun: true
   }, done).start();
