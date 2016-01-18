@@ -1,4 +1,4 @@
-ee = require('../lib/index.js')
+ee = require('index.js')
 
 describe 'first', ->
   it 'eee', ->

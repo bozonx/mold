@@ -4,5 +4,5 @@
 
     nvm install
     nvm use
-    npm i -g
+    npm i
     bower i

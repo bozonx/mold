@@ -64,7 +64,7 @@ module.exports = {
     ],
   },
 
-  //resolve: {
+  resolve: {
   //  root: [
   //    //path.join(__dirname, "bower_components"),
   //    'bower_components',
@@ -75,7 +75,7 @@ module.exports = {
   //  alias: {
   //    lodash: 'lodash/lodash.min.js'
   //  }
-  //},
+  },
 
   plugins: [
     //new webpack.ProvidePlugin({

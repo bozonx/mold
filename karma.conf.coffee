@@ -1,24 +1,22 @@
 # jshint node: true
 path = require('path')
 _ = require('lodash')
-webpackConfig = require('./webpack.config.js')
+appWebpackConfig = require('./webpack.config.js')
 RewirePlugin = require("rewire-webpack")
 
-wpConf = _.assign _.cloneDeep(webpackConfig),
-  # clear entry. It's not need there.
-  entry: {},
-
+wpConf = {
   cache: false,
-
-  # karma watches the test entry points
-  # (you don't need to specify the entry option)
-  # webpack watches dependencies
-
-  # webpack configuration
   devtool: 'inline-source-map',
-
-
-wpConf.plugins = [].concat(webpackConfig.plugins)
+  resolve: {
+    root: [
+      'lib',
+    ],
+  }
+}
+# take loaders conf from app wp config
+wpConf.module = appWebpackConfig.module
+# take plugins from app wp config
+wpConf.plugins = [].concat(appWebpackConfig.plugins)
 wpConf.plugins.push(new RewirePlugin())
 
 
@@ -43,8 +41,7 @@ module.exports = (config) ->
 
     # list of files / patterns to load in the browser
     files: [
-      # TODO: add it
-      #'node_modules/babel-core/browser-polyfill.js',
+      'node_modules/babel-polyfill/browser.js',
       'test/test_main.coffee',
       'test/**_spec.coffee',
     ],
@@ -55,7 +52,6 @@ module.exports = (config) ->
       'test/test_main.coffee': ['webpack', 'sourcemap'],
       'test/**_spec.coffee': ['webpack', 'sourcemap'],
     },
-    # TODO: do another config
     webpack: wpConf,
     webpackMiddleware: {
       noInfo: true
@@ -64,14 +60,3 @@ module.exports = (config) ->
       # Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
       exitOnResourceError: true
     },
-
-    #plugins: [
-    #  'karma-webpack',
-    #  'karma-mocha-reporter',
-    #  'karma-mocha',
-    #  'karma-chai',
-    #  'karma-phantomjs-launcher',
-    #  'karma-sourcemap-loader',
-    #],
-
-
