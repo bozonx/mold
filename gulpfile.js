@@ -11,15 +11,3 @@ gulp.task('test', function (done) {
     singleRun: true
   }, done).start();
 });
-
-
-
-//
-//require('shared-lib/build/gulp_base')(gulp);
-//require('shared-lib/build/gulp_test')(gulp);
-//require('shared-lib/build/gulp_dev')(gulp);
-//require('shared-lib/build/gulp_ionic')(gulp);
-////require('libs-manage/gulp_libs')(gulp);
-//require('../libs-manage/gulp_libs')(gulp);
-
-
