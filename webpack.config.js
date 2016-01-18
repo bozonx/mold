@@ -50,10 +50,7 @@ module.exports = {
   module: {
     loaders: [
       {
-        // get only .js files, not manifest.js
-        test: function (val) {
-          return val.match(val.match(/app\/.+\.js$/) && !val.match(/component\.js$/));
-        },
+        test: /\.js/,
         loader: 'babel'
       },
       // Coffee uses for tests
@@ -61,6 +58,13 @@ module.exports = {
         test: /\.coffee$/,
         loader: "coffee-loader?sourceMap"
       },
+
+      // transpile and instrument only testing sources with isparta
+      //{
+      //  test: /\.js$/,
+      //  include: path.resolve('lib/'),
+      //  loader: 'isparta'
+      //}
     ],
   },
 

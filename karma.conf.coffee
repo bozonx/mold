@@ -1,4 +1,7 @@
 # jshint node: true
+
+# see config options in http://karma-runner.github.io/0.13/config/configuration-file.html
+
 path = require('path')
 _ = require('lodash')
 appWebpackConfig = require('./webpack.config.js')
@@ -11,7 +14,20 @@ wpConf = {
     root: [
       'lib',
     ],
-  }
+  },
+#  # *optional* babel options: isparta will use it as well as babel-loader
+#  babel: {
+#    presets: ['es2015', 'stage-0', 'react']
+#  },
+#  # *optional* isparta options: istanbul behind isparta will use it
+#  isparta: {
+#    embedSource: true,
+#    noAutoWrap: true,
+#    # these babel options will be passed only to isparta and not to babel-loader
+#    babel: {
+#      presets: ['es2015', 'stage-0', 'react']
+#    }
+#  },
 }
 # take loaders conf from app wp config
 wpConf.module = appWebpackConfig.module
@@ -28,6 +44,7 @@ module.exports = (config) ->
     frameworks: ['mocha', 'chai'],
     browsers: ['PhantomJS'],
     reporters: ['mocha'],
+    #reporters: ['mocha', 'coverage'],
     port: 9876,
     colors: true,
     # level of logging
@@ -41,7 +58,7 @@ module.exports = (config) ->
 
     # list of files / patterns to load in the browser
     files: [
-      'node_modules/babel-polyfill/browser.js',
+      'node_modules/babel-polyfill/dist/polyfill.js',
       'test/test_main.coffee',
       'test/**_spec.coffee',
     ],
@@ -51,6 +68,7 @@ module.exports = (config) ->
     preprocessors: {
       'test/test_main.coffee': ['webpack', 'sourcemap'],
       'test/**_spec.coffee': ['webpack', 'sourcemap'],
+      #'lib/**.js': ['webpack', 'coverage'],
     },
     webpack: wpConf,
     webpackMiddleware: {
@@ -60,3 +78,9 @@ module.exports = (config) ->
       # Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
       exitOnResourceError: true
     },
+
+#    coverageReporter: {
+#      type : 'text',
+#      #type : 'html',
+#      #dir : 'coverage/'
+#    },
