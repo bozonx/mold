@@ -19,7 +19,6 @@ wpConf = {
       lodash: 'lodash/dist/lodash.min.js'
     },
   },
-
 }
 # take loaders conf from app wp config
 wpConf.module = appWebpackConfig.module

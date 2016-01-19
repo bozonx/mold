@@ -1,36 +1,10 @@
 var path = require('path');
 var cwd = process.cwd();
-var webpack = require('webpack');
+//var webpack = require('webpack');
 
 
 // see http://webpack.github.io/docs/configuration.html
 module.exports = {
-  devServer: {
-    ////////// webpack-dev-server options
-    // see http://webpack.github.io/docs/webpack-dev-server.html#api
-
-    // path to public dir with index.html
-    contentBase: 'www',
-    publicPath: 'www',
-
-    // Enable special support for Hot Module Replacement
-    // Page is no longer updated, but a 'webpackHotUpdate' message is send to the content
-    // Use 'webpack/hot/dev-server' as additional module in your entry point
-    // Note: this does _not_ add the `HotModuleReplacementPlugin` like the CLI option does.
-    //hot: true,
-    // Set this as true if you want to access dev server from arbitrary url.
-    // This is handy if you are using a html5 router.
-    //historyApiFallback: false,
-
-    //// webpack-dev-middleware options
-    //lazy: true,
-    //filename: './test/app/dist/red-data.js',
-    //watchOptions: {
-    //    aggregateTimeout: 300,
-    //    poll: 1000
-    //},
-    stats: { colors: true },
-  },
   entry: {
     app_entry: [ './lib/index.js' ],
   },
@@ -38,8 +12,6 @@ module.exports = {
     path: path.join(cwd, './dist'),
     filename: "[name]_build.js",
     chunkFilename: "[id]_build.js",
-    //publicPath: 'public',
-    //// see http://webpack.github.io/docs/library-and-externals.html
   },
   externals: {
     // require('jquery') is external and available
@@ -48,14 +20,14 @@ module.exports = {
     //'_': '_',
   },
   module: {
-    preLoaders: [
-
-    ],
     loaders: [
       {
-        test: /\.js/,
-        //test: /lib\/.+\.js/,
-        loader: 'babel'
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        loader: 'babel',
+        query: {
+          presets: ['es2015']
+        }
       },
       // Coffee uses for tests
       {
@@ -63,22 +35,16 @@ module.exports = {
         loader: "coffee-loader?sourceMap"
       },
     ],
-    postLoaders: [
-
-    ],
   },
 
   resolve: {
-  //  root: [
-  //    //path.join(__dirname, "bower_components"),
-  //    'bower_components',
-  //    // TODO: переделать
-  //    //'../',
-  //    //path.join(__dirname, "bower_components/composite-fw"),
-  //  ],
-  //  alias: {
-  //    lodash: 'lodash/lodash.min.js'
-  //  }
+    root: [
+      path.resolve('./bower_components'),
+      //path.resolve('./lib'),
+    ],
+    alias: {
+      lodash: 'lodash/dist/lodash.min.js'
+    },
   },
 
   plugins: [
