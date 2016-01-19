@@ -26,3 +26,23 @@ The `path` parameter, see in [https://lodash.com/docs#set](https://lodash.com/do
 
     mold.schema(path, schema);
 
+
+### Get compound data (composition)
+
+    mold.composition(path);
+    
+It return javascript plain object of array of composed data.
+Use it for bind in templates
+
+
+### Get object-wrapper
+
+    TODO: 
+    
+
+### Set/change value
+
+    mold.set(path, newValue);
+
+It validate value and set it to stored data.
+
