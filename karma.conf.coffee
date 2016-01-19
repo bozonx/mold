@@ -11,9 +11,10 @@ wpConf = {
   cache: false,
   devtool: 'inline-source-map',
   resolve: {
-#    root: [
-#      #'lib',
-#    ],
+    root: [
+      #'lib',
+      'bower_components',
+    ],
   },
 
 }
@@ -46,19 +47,15 @@ module.exports = (config) ->
     # list of files / patterns to load in the browser
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
-      #'test/test_main.coffee',
-      #'test/**_spec.coffee',
-      'test/**_spec.js',
-      #'lib/**.js',
+      'test/test_main.coffee',
+      'test/**_spec.coffee',
     ],
     # list of files to exclude
     exclude: [],
 
     preprocessors: {
-      #'test/test_main.coffee': ['webpack', 'sourcemap'],
-      #'test/**_spec.coffee': ['webpack', 'sourcemap'],
-      'test/**_spec.js': ['webpack', 'sourcemap'],
-      #'lib/**.js': ['webpack', 'sourcemap'],
+      'test/test_main.coffee': ['webpack', 'sourcemap'],
+      'test/**_spec.coffee': ['webpack', 'sourcemap'],
     },
     webpack: wpConf,
     webpackMiddleware: {
