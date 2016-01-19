@@ -48,23 +48,23 @@ module.exports = {
     //'_': '_',
   },
   module: {
+    preLoaders: [
+
+    ],
     loaders: [
       {
         test: /\.js/,
+        //test: /lib\/.+\.js/,
         loader: 'babel'
       },
       // Coffee uses for tests
       {
-        test: /\.coffee$/,
+        test: /test\/.+\.coffee$/,
         loader: "coffee-loader?sourceMap"
       },
+    ],
+    postLoaders: [
 
-      // transpile and instrument only testing sources with isparta
-      //{
-      //  test: /\.js$/,
-      //  include: path.resolve('lib/'),
-      //  loader: 'isparta'
-      //}
     ],
   },
 

@@ -11,30 +11,17 @@ wpConf = {
   cache: false,
   devtool: 'inline-source-map',
   resolve: {
-    root: [
-      'lib',
-    ],
+#    root: [
+#      #'lib',
+#    ],
   },
-#  # *optional* babel options: isparta will use it as well as babel-loader
-#  babel: {
-#    presets: ['es2015', 'stage-0', 'react']
-#  },
-#  # *optional* isparta options: istanbul behind isparta will use it
-#  isparta: {
-#    embedSource: true,
-#    noAutoWrap: true,
-#    # these babel options will be passed only to isparta and not to babel-loader
-#    babel: {
-#      presets: ['es2015', 'stage-0', 'react']
-#    }
-#  },
+
 }
 # take loaders conf from app wp config
 wpConf.module = appWebpackConfig.module
 # take plugins from app wp config
 wpConf.plugins = [].concat(appWebpackConfig.plugins)
 wpConf.plugins.push(new RewirePlugin())
-
 
 # Karma configuration
 module.exports = (config) ->
@@ -59,16 +46,19 @@ module.exports = (config) ->
     # list of files / patterns to load in the browser
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
-      'test/test_main.coffee',
-      'test/**_spec.coffee',
+      #'test/test_main.coffee',
+      #'test/**_spec.coffee',
+      'test/**_spec.js',
+      #'lib/**.js',
     ],
     # list of files to exclude
     exclude: [],
 
     preprocessors: {
-      'test/test_main.coffee': ['webpack', 'sourcemap'],
-      'test/**_spec.coffee': ['webpack', 'sourcemap'],
-      #'lib/**.js': ['webpack', 'coverage'],
+      #'test/test_main.coffee': ['webpack', 'sourcemap'],
+      #'test/**_spec.coffee': ['webpack', 'sourcemap'],
+      'test/**_spec.js': ['webpack', 'sourcemap'],
+      #'lib/**.js': ['webpack', 'sourcemap'],
     },
     webpack: wpConf,
     webpackMiddleware: {
@@ -78,9 +68,3 @@ module.exports = (config) ->
       # Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
       exitOnResourceError: true
     },
-
-#    coverageReporter: {
-#      type : 'text',
-#      #type : 'html',
-#      #dir : 'coverage/'
-#    },
