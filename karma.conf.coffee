@@ -12,9 +12,12 @@ wpConf = {
   devtool: 'inline-source-map',
   resolve: {
     root: [
-      #'lib',
-      'bower_components',
+      path.resolve('./bower_components'),
+      path.resolve('./lib'),
     ],
+    alias: {
+      lodash: 'lodash/dist/lodash.min.js'
+    },
   },
 
 }

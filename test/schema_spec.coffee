@@ -1,4 +1,4 @@
-mold = require('../lib/index.js')
+mold = require('index.js')
 
 describe 'schema', ->
   it 'set param', ->
