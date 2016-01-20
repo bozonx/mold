@@ -4,12 +4,12 @@ mold = require('index.js')
 
 describe 'struct', ->
   it 'struct full test', ->
-    node = mold.struct({
+    node = mold.struct {
       stringParam: mold.string('str value')
-      secondLevelStruct: mold.struct({
+      secondLevelStruct: mold.struct {
         numberParam: mold.number(7)
-      })
-    })
+      }
+    }
     assert.deepEqual(node, {
       type: 'struct',
       children: {
