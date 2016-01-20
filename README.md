@@ -46,3 +46,6 @@ Use it for bind in templates
 
 It validate value and set it to stored data.
 
+
+
+TODO: расписать значения по умолчанию для каждого типа

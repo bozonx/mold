@@ -3,13 +3,17 @@
 # see config options in http://karma-runner.github.io/0.13/config/configuration-file.html
 
 path = require('path')
-_ = require('lodash')
+#_ = require('lodash')
 appWebpackConfig = require('./webpack.config.js')
 RewirePlugin = require("rewire-webpack")
 
 wpConf = {
   cache: false,
-  devtool: 'inline-source-map',
+  devtool: 'inline-source-map'
+  #devtool: 'cheap-module-source-map',
+  #devtool: 'cheap-module-eval-source-map',
+  #devtool: '@inline-source-map',
+  #devtool: '#cheap-module-inline-source-map',
   resolve: {
     root: [
       path.resolve('./bower_components'),
@@ -50,14 +54,13 @@ module.exports = (config) ->
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
       'test/test_main.coffee',
-      'test/**_spec.coffee',
+      'test/**/?*_spec.coffee',
     ],
     # list of files to exclude
     exclude: [],
 
     preprocessors: {
-      'test/test_main.coffee': ['webpack', 'sourcemap'],
-      'test/**_spec.coffee': ['webpack', 'sourcemap'],
+      'test/**/?*.coffee': ['webpack', 'sourcemap'],
     },
     webpack: wpConf,
     webpackMiddleware: {

@@ -32,7 +32,9 @@ module.exports = {
       // Coffee uses for tests
       {
         test: /test\/.+\.coffee$/,
-        loader: "coffee-loader?sourceMap"
+        loaders: ['coffee', 'source-map'],
+        //loader: "coffee-loader?sourceMap"
+        //loaders: ["coffee-loader?sourceMap", 'source-map-loader'],
       },
     ],
   },
