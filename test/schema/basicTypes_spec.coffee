@@ -1,9 +1,9 @@
 basicTypes = require('schema/basicTypes.js')
 
 # TODO: test validate of value or param
-# TODO: 'bool with wrong first argument'
-# TODO: 'bool with wrong second argument'
-# TODO: 'bool with wrong first and second argument'
+# TODO: 'boolean with wrong first argument'
+# TODO: 'boolean with wrong second argument'
+# TODO: 'boolean with wrong first and second argument'
 
 
 testType = (type, predefinedValue) ->
@@ -39,6 +39,6 @@ testType = (type, predefinedValue) ->
 
 
 describe 'basicTypes', ->
-  testType('bool', true)
-  testType('int', 5)
+  testType('boolean', true)
+  testType('number', 5)
   testType('string', 'str')

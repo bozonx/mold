@@ -18,18 +18,18 @@ describe 'schema', ->
 describe 'struct and basic values', ->
   beforeEach ->
     this.schema = mold.struct 'first', {
-      intValue: mold.int(5),
-      boolValueTrue: mold.bool(true),
-      boolValueFalse: mold.bool(false),
+      numberValue: mold.number(5),
+      booleanValueTrue: mold.boolean(true),
+      booleanValueFalse: mold.boolean(false),
       stringValue: mold.string('string value'),
       innerStruct: mold.struct {
-        innerStructInt: mold.int(7)
+        innerStructNumber: mold.number(7)
       }
     }
 
-#  it 'first.intValue', ->
-#    assert.deepEqual(mold.schema('first.intValue'), {
-#      type: 'int',
+#  it 'first.numberValue', ->
+#    assert.deepEqual(mold.schema('first.numberValue'), {
+#      type: 'number',
 #      # preset value
 #      value: 5
 #    })
