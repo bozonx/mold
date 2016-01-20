@@ -1,4 +1,5 @@
-basicTypes = require('schema/basicTypes.js')
+#basicTypes = require('schema/basicTypes.js')
+mold = require('index.js')
 
 # TODO: test validate of value or param
 # TODO: 'boolean with wrong first argument'
@@ -8,21 +9,21 @@ basicTypes = require('schema/basicTypes.js')
 
 testType = (type, predefinedValue) ->
   it "#{type} without arguments", ->
-    node = basicTypes[type]()
+    node = mold[type]()
     assert.deepEqual(node, {
       type: type,
       value: null,
     })
 
   it "#{type} with only predefined value argument", ->
-    node = basicTypes[type](predefinedValue)
+    node = mold[type](predefinedValue)
     assert.deepEqual(node, {
       type: type,
       value: predefinedValue,
     })
 
   it "#{type} with only params argument", ->
-    node = basicTypes[type]({default: true})
+    node = mold[type]({default: true})
     assert.deepEqual(node, {
       type: type,
       value: null,
@@ -30,7 +31,7 @@ testType = (type, predefinedValue) ->
     })
 
   it "#{type} with predefined value and params arguments", ->
-    node = basicTypes[type](predefinedValue, {default: true})
+    node = mold[type](predefinedValue, {default: true})
     assert.deepEqual(node, {
       type: type,
       value: predefinedValue,
