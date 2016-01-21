@@ -3,17 +3,24 @@ mold = require('index.js')
 # TODO: test composition after set schema
 
 describe 'schema', ->
-#  it 'set/get simple schema', ->
-#    # TODO: по идее нельзя записывать произвольные данные в схему, можно только mold.struct и тд
-#    # TODO: данные схемы можно получить только по узлам mold.struct и тд а не любое значение
-#    sch = {param1: 'value1'};
-#    mold.schema('parent.child', sch);
-#    assert.equal(mold.schema('parent.child'), sch)
-#    assert.isUndefined(mold.schema('parent.notExists'))
+  it 'another require of mold must return same value of first require', ->
+    mold.schema('param1', mold.number(5));
+    anotherMold = require('index.js')
+    assert.deepEqual(anotherMold.getSchema('param1'), {type: 'number', value: 5})
 
-#  it 'another require of mold must return same value of first require', ->
-#    mm = require('index.js')
-#    assert.equal(mm.schema().parent.child.param1, 'value1')
+  # TODO: test schema validation
+
+  it 'get/set full schema', ->
+    mold.$$reset()
+    mold.schema('/', mold.number(5));
+    assert.deepEqual(mold.getSchema(), {type: 'number', value: 5})
+
+  it 'get/set schema by path', ->
+    mold.schema('testParam', mold.number(5));
+    assert.deepEqual(mold.getSchema('testParam'), {type: 'number', value: 5})
+
+  it 'get not existent param', ->
+    assert.isUndefined(mold.getSchema('notExistent'))
 
 describe 'full struct and basic values', ->
   beforeEach ->
@@ -29,7 +36,7 @@ describe 'full struct and basic values', ->
 
   it 'root/first', ->
     mold.schema('first', this.schema)
-    assert.deepEqual mold.schema('first'), {
+    assert.deepEqual mold.getSchema('first'), {
       type: 'struct'
       children: {
         numberValue: {type: 'number', value: 5}
@@ -50,4 +57,4 @@ describe 'full struct and basic values', ->
 
   it 'first.numberValue', ->
     mold.schema('first', this.schema)
-    assert.deepEqual(mold.schema('first.numberValue'), {type: 'number', value: 5})
+    assert.deepEqual(mold.getSchema('first.numberValue'), {type: 'number', value: 5})

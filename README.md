@@ -19,12 +19,25 @@ The `path` parameter, see in [https://lodash.com/docs#set](https://lodash.com/do
 
 ### Get schema
 
-    mold.schema(path);
+get full schema
+
+    mold.schema();
+    
+get schema by path
+
+    mold.schema('path.to');
 
 
 ### Set schema
 
-    mold.schema(path, schema);
+Set full schema
+
+    mold.schema('/', mold.struct({...}));
+
+
+Set schema by path
+
+    mold.schema('path.to', mold.struct({...}));
 
 
 ### Get compound data (composition)
