@@ -17,15 +17,16 @@ To get mold, add this to you code:
 The `path` parameter, see in [https://lodash.com/docs#set](https://lodash.com/docs#set)
 
 
+## Schema
 ### Get schema
 
 get full schema
 
-    mold.schema();
+    mold.getSchema();
     
 get schema by path
 
-    mold.schema('path.to');
+    mold.getSchema('path.to');
 
 
 ### Set schema
@@ -40,12 +41,49 @@ Set schema by path
     mold.schema('path.to', mold.struct({...}));
 
 
+### Data types
+#### mold.boolean
+
+    mold.boolean(true, {params})   // set predefined value
+    mold.boolean() // use default value
+
+Parameters:
+
+* default - default value. By default = null
+
+#### mold.number
+
+    mold.number(5, {params})    // set predefined value
+    mold.number() // use default value
+
+Parameters:
+
+* default - default value. By default = 0
+
+#### mold.string
+
+    mold.string('my string', {params})    // set predefined value
+    mold.string() // use default value
+
+Parameters:
+
+* default - default value. By default = ''
+
+#### mold.struct
+Immutable structure. You can't add or remove nodes in runtime. Nodes values are only mold types.
+
+    mold.struct({
+      children1: mold.number(5)
+    })
+
+
+
 ### Get compound data (composition)
 
     mold.composition(path);
     
-It return javascript plain object of array of composed data.
-Use it for bind in templates
+It return javascript plain object or array of composed data.
+Use it for bindings in templates.
 
 
 ### Get object-wrapper
@@ -60,5 +98,3 @@ Use it for bind in templates
 It validate value and set it to stored data.
 
 
-
-TODO: расписать значения по умолчанию для каждого типа
