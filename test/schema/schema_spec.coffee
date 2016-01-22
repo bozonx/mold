@@ -1,4 +1,5 @@
 mold = require('index.js')
+schema = require('schema/schema.js')
 rewire = require('rewire')
 
 # TODO: test composition after set schema
@@ -33,6 +34,14 @@ describe 'schema', ->
     mock.getSchema(null)
     assert(spy.called)
 
+  it 'getSchema must return clone', ->
+    mold.schema('unchangedParam', mold.number(7));
+    clonedAll = mold.getSchema()
+    clonedPart = mold.getSchema('unchangedParam')
+
+    schema._schema.unchangedParam.value = 8
+    assert.equal(clonedAll.unchangedParam.value, 7)
+    assert.equal(clonedPart.value, 7)
 
 describe 'full struct and basic values', ->
   beforeEach ->
