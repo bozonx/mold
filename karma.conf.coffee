@@ -36,7 +36,7 @@ module.exports = (config) ->
   config.set
     # base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'chai', 'sinon'],
     browsers: ['PhantomJS'],
     reporters: ['mocha'],
     #reporters: ['mocha', 'coverage'],
