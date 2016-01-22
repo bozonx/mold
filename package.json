@@ -36,6 +36,7 @@
     "karma-webpack": "^1.7.0",
     "mocha": "^2.3.4",
     "phantomjs": "^1.9.19",
+    "rewire": "^2.5.1",
     "rewire-webpack": "^1.0.1",
     "sinon": "^1.17.2"
   }

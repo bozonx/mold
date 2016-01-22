@@ -3,9 +3,9 @@
 # see config options in http://karma-runner.github.io/0.13/config/configuration-file.html
 
 path = require('path')
+RewirePlugin = require("rewire-webpack");
 #_ = require('lodash')
 appWebpackConfig = require('./webpack.config.js')
-RewirePlugin = require("rewire-webpack")
 
 wpConf = {
   cache: false,

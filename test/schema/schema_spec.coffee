@@ -1,6 +1,5 @@
 mold = require('index.js')
-logger = require('log.js')
-
+rewire = require('rewire')
 
 # TODO: test composition after set schema
 
@@ -26,28 +25,13 @@ describe 'schema', ->
 
   it 'getSchema - wrong argument', ->
     spy = sinon.spy()
-    spy()
+    mock = rewire('schema/schema.js');
+    mock.__set__('log', {
+      error: spy
+    });
+
+    mock.getSchema(null)
     assert(spy.called)
-
-
-    myAPI = { method: -> }
-    mock = sinon.mock(myAPI)
-    mock.expects('method').once().returns(42)
-    assert.equal(myAPI.method(), 42)
-    mock.verify()
-
-
-#    moldMock = sinon.mock(logger)
-#    mock.expects('error').once().returns(42)
-#    mold.getSchema(null)
-#    assert(mold.$log.error.should.have.been.called)
-
-    #console.log(111111, mold.$log.error)
-
-    mold.getSchema(null)
-
-    # TODO: должен был вызваться mold.$log.error
-    #assert.isUndefined(mold.getSchema(null))
 
 
 describe 'full struct and basic values', ->
