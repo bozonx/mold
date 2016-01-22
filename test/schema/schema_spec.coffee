@@ -21,10 +21,11 @@ describe 'schema', ->
     mold.schema('testParam', mold.number(5));
     assert.deepEqual(mold.getSchema('testParam'), {type: 'number', value: 5})
 
-  it 'getSchema - get not existent param', ->
+describe 'getSchema', ->
+  it 'get not existent param', ->
     assert.isUndefined(mold.getSchema('notExistent'))
 
-  it 'getSchema - wrong argument', ->
+  it 'wrong argument', ->
     spy = sinon.spy()
     mock = rewire('schema/schema.js');
     mock.__set__('log', {
@@ -42,6 +43,19 @@ describe 'schema', ->
     schema._schema.unchangedParam.value = 8
     assert.equal(clonedAll.unchangedParam.value, 7)
     assert.equal(clonedPart.value, 7)
+
+
+describe 'setSchema', ->
+  it 'error if parent path not exist', ->
+    spy = sinon.spy()
+    mock = rewire('schema/schema.js');
+    mock.__set__('log', {
+      error: spy
+    });
+
+    mock.setSchema('ppp.ppp.ppp.ppp', mold.number(5));
+    assert(spy.called)
+
 
 describe 'full struct and basic values', ->
   beforeEach ->
