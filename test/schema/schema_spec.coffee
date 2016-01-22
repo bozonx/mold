@@ -1,5 +1,6 @@
 mold = require('index.js')
 
+
 # TODO: test composition after set schema
 
 describe 'schema', ->
@@ -58,3 +59,5 @@ describe 'full struct and basic values', ->
   it 'first.numberValue', ->
     mold.schema('first', this.schema)
     assert.deepEqual(mold.getSchema('first.numberValue'), {type: 'number', value: 5})
+
+

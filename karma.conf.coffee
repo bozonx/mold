@@ -20,7 +20,8 @@ wpConf = {
       path.resolve('./lib'),
     ],
     alias: {
-      lodash: 'lodash/dist/lodash.min.js'
+      lodash: 'lodash/dist/lodash.min.js',
+      immutable: 'immutable/dist/immutable.min.js',
     },
   },
 }
