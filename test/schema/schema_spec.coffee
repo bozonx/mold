@@ -14,15 +14,15 @@ describe 'schema', ->
 
   describe 'get/set schema', ->
     it 'another require of mold must return same value of first require', ->
-      mold.schema('param1', mold.number(5));
+      mold.schema('testParam1', mold.number(5));
       anotherMold = require('index.js')
-      assert.deepEqual(anotherMold.getSchema('param1'), {type: 'number', value: 5})
+      assert.deepEqual(anotherMold.getSchema('testParam1'), {type: 'number', value: 5})
 
     # TODO: test schema validation
 
     it 'get/set full schema', ->
       mold.$$reset()
-      mold.schema('/', mold.number(5));
+      mold.schema(mold.number(5));
       assert.deepEqual(mold.getSchema(), {type: 'number', value: 5})
 
     it 'get/set schema by path', ->
