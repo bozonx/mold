@@ -98,3 +98,13 @@ Use it for bindings in templates.
 It validate value and set it to stored data.
 
 
+## Work with instances
+
+* To get instance, run `mold.get('path.to')`
+* You can get instance for not existence schema and set schema later `myInstance.setSchema(mold.number(5))`
+* Instance have some same methods with mold base object, like: getSchema, schema, composition, get and set
+* You can get instance from you instance `myInstance.get('path.to.leaf')`
+* Also you can use other methods, such as:
+    * getRoot - get root of instance
+
+
