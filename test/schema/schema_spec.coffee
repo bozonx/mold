@@ -31,7 +31,8 @@ describe 'schema', ->
 
   describe 'getSchema', ->
     it 'get not existent param', ->
-      assert.isUndefined(mold.getSchema('notExistent'))
+      mustBeUndefined = schema.getSchema('notExistent')
+      assert.isUndefined(mustBeUndefined)
 
     it 'wrong argument', ->
       this.schemaLogMock.error = sinon.spy()
