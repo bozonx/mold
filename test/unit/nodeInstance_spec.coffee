@@ -1,5 +1,66 @@
-mold = require('index.js')
 rewire = require('rewire')
+
+describe 'nodeInstance', ->
+  beforeEach ->
+    this.reset = () ->
+      this.fakeVars = {
+        log: {
+          error: sinon.spy()
+        },
+        schema: {},
+        composition: {}
+      }
+      this.mock = window.getMock(rewire('nodeInstance.js'), this.fakeVars).getInstance()
+
+  describe 'getSchema', ->
+    beforeEach ->
+      this.reset()
+      this.fakeVars.schema.getSchema = sinon.spy()
+
+    it 'instance path is root | path=existent >> return schema of given path', ->
+
+
+
+    it 'instance path is "deeperPath" | path=existent >> return schema of given path', ->
+
+
+    it 'path=""|undefined >> return self schema', ->
+      this.mock.getSchema()
+      #assert.ok(this.fakeVars.schema.getSchema.calledWith(''))
+      #assert.notOk(this.fakeVars.log.error.called)
+
+    it 'path=nonexistent >> error, return undefined', ->
+      this.mock.getSchema('nonexistent');
+      assert(this.fakeVars.log.error.called)
+
+
+
+    # TODO: правильно ли скомбинировался fullPath - который подставился в schema.getSchema
+
+
+
+#  getSchema (path) {
+#    let fullPath = this._combinePath(path);
+#    if (!this._checkSchema(fullPath)) return;
+#    return schema.getSchema(fullPath);
+#  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+############################################################
+
+mold = require('index.js')
 
 describe 'nodeInstance', ->
   describe 'run from mold', ->

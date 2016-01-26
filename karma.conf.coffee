@@ -54,14 +54,14 @@ module.exports = (config) ->
     # list of files / patterns to load in the browser
     files: [
       'node_modules/babel-polyfill/dist/polyfill.js',
-      'test/test_main.coffee',
-      'test/**/?*_spec.coffee',
+      'test/**/?*.coffee',
     ],
     # list of files to exclude
     exclude: [],
 
     preprocessors: {
       'test/**/?*.coffee': ['webpack', 'sourcemap'],
+      'test/*.coffee': ['webpack', 'sourcemap'],
     },
     webpack: wpConf,
     webpackMiddleware: {
