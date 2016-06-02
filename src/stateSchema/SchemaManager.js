@@ -59,10 +59,10 @@ export default class SchemaManager {
   }
 
   initHandlers() {
+    // TODO: может для драйверов сделать отдельный список???
     eachHandler('', this._schema, (path, value) => {
       // init handler
       value.handler.onInitializeHandler(path, value.schema, this);
-      this._state.initDefaultValues(value.handler, path, value.schema)
     });
   }
 }

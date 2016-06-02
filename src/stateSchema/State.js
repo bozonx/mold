@@ -2,9 +2,11 @@
 import _ from 'lodash';
 
 import { eachOwnParam } from './helpers';
+import Composition from './Composition';
 
 export default class State {
   constructor() {
+    this._composition = new Composition();
   }
 
   init(schemaManager) {
@@ -19,8 +21,20 @@ export default class State {
    * @param path
    */
   getValue(path) {
-    var handler = this._schemaManager.getHandler(path);
-    return handler.getValue(path);
+    if (this._composition.has(path)) {
+      // if composition has a value - return it
+      return this._composition.get(path);
+    }
+    else {
+      this._composition.set(path, null);
+      return null;
+
+      // if doesn't have - check it for schema and return null and send request for driver
+
+      // if it doesn't exist in schema - rise error
+      // var handler = this._schemaManager.getHandler(path);
+      // return handler.getValue(path);
+    }
   }
 
   /**
@@ -29,8 +43,8 @@ export default class State {
    * @returns {boolean}
    */
   hasValue(path) {
-    var handler = this._schemaManager.getHandler(path);
-    return handler.hasValue(path);
+    // var handler = this._schemaManager.getHandler(path);
+    // return handler.hasValue(path);
   }
 
   /**
@@ -40,8 +54,9 @@ export default class State {
    * @returns {object} promise
    */
   setValue(path, value) {
-    var handler = this._schemaManager.getHandler(path);
-    return handler.setValue(path, value);
+    // TODO: validate value - должен соответствовать схеме
+    // var handler = this._schemaManager.getHandler(path);
+    // return handler.setValue(path, value);
   }
 
   /**
@@ -62,15 +77,29 @@ export default class State {
    * @param {object} schema
    * @private
    */
-  initDefaultValues(handler, root, schema) {
+  // initDefaultValues(handler, root, schema) {
+  //   // only our params, omit other handlers
+  //   eachOwnParam(root, schema, (path, value) => {
+  //     if (value.type == 'list') {
+  //       handler.initDefaultValue(path, []);
+  //     }
+  //     else if (!_.isUndefined(value.default)) {
+  //       handler.initDefaultValue(path, value.default);
+  //     }
+  //   });
+  // }
+
+  resetToDefault(path) {
+    console.log(path)
+
     // only our params, omit other handlers
-    eachOwnParam(root, schema, (path, value) => {
-      if (value.type == 'list') {
-        handler.initDefaultValue(path, []);
-      }
-      else if (!_.isUndefined(value.default)) {
-        handler.initDefaultValue(path, value.default);
-      }
-    });
+    // eachOwnParam(root, schema, (path, value) => {
+    //   if (value.type == 'list') {
+    //     handler.initDefaultValue(path, []);
+    //   }
+    //   else if (!_.isUndefined(value.default)) {
+    //     handler.initDefaultValue(path, value.default);
+    //   }
+    // });
   }
 }

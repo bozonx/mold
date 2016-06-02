@@ -4,6 +4,7 @@ export default class ItemInstance {
     this._state = state;
     this.mold = {};
 
+    // TODO: разве так надо делать mold???
     this.mold = this._state.getValue(root);
   }
 
@@ -33,6 +34,21 @@ export default class ItemInstance {
    */
   has(path) {
     return this._state.hasValue(this._fullPath(path));
+  }
+
+  /**
+   * Reset all children to default
+   */
+  resetAllToDefault() {
+    this._state.resetToDefault(this._root);
+  }
+
+  /**
+   * Reset param to default
+   * @param {string} path - relative to instance root
+   */
+  resetToDefault(path) {
+    this._state.resetToDefault(this._fullPath(path));
   }
 
   _fullPath(relativePath) {
