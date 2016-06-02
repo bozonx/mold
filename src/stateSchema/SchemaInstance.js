@@ -1,5 +1,8 @@
 import SchemaManager from './SchemaManager';
 import State from './State';
+import ItemInstance from './ItemInstance';
+import ListInstance from './ListInstance';
+
 
 export default class SchemaInstance {
   constructor(schema) {
@@ -11,6 +14,8 @@ export default class SchemaInstance {
     // initialize all handlers, setup default values
     this.schemaManager.initHandlers();
   }
+  
+  
 
   /**
    * get current runtime value
@@ -38,5 +43,14 @@ export default class SchemaInstance {
    */
   set(path, value) {
     return this._state.setValue(path, value);
+  }
+
+  /**
+   * Get list or item instance on path
+   * @param {string} path
+   */
+  instance(path) {
+    // TODO: выбрать list или item
+    return new ItemInstance(path, this._state);
   }
 }
