@@ -18,15 +18,30 @@ export default class SchemaManager {
   }
 
   /**
-   * get schema path
-   * @param path
+   * get schema part by path
+   * @param {string} path - absolute path
+   * @returns {object}
    */
   get(path) {
     // TODO: do it immutable
-    // TODO: do it
+    // TODO: may be rise an error???
+    return _.get(this._schema, path);
   }
 
-  getSchema() {
+  /**
+   * Has a param on path
+   * @param {string} path - absolute path
+   * @returns {boolean}
+   */
+  has(path) {
+    return _.has(this._schema, path);
+  }
+
+  /**
+   * Get full schema
+   * @returns {object}
+   */
+  getFullSchema() {
     // TODO: do it immutable
     return this._schema;
   }
@@ -37,6 +52,10 @@ export default class SchemaManager {
    * @returns {object | undefined} return handler or undefined
    */
   getHandler(path) {
+
+    // TODO: !!!! похоже уже не нужно
+
+
     var handler = null;
 
     // TODO: сделать по другому - восстановить полный путь с innerSchema, потом заменить их на handler, и потом брать последний handler
@@ -63,6 +82,7 @@ export default class SchemaManager {
   }
 
   initHandlers() {
+    // TODO: переделать
     // TODO: может для драйверов сделать отдельный список???
     eachHandler('', this._schema, (path, value) => {
       // init handler

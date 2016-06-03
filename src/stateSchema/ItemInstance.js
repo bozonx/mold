@@ -3,14 +3,8 @@ export default class ItemInstance {
     this._root = root;
     this._state = state;
     this._schemaManager = schemaManager;
-
-    // TODO: it must be a link to the composition - получить свой композишн из стейта
-    this.mold = {};
-
-    // TODO: разве так надо делать mold???
-    //this.mold = this._state.getValue(root);
-
-    this._initComposition();
+    // mold is just a link to the composition
+    this.mold = this._initComposition();
   }
 
   /**
@@ -59,6 +53,9 @@ export default class ItemInstance {
   }
 
   _initComposition() {
+    // TODO: it must be a link to the composition - получить свой композишн из стейта
+    // TODO: Do it recursively
+    // TODO: return lint to self composition
     this._composition.set(path, null);
   }
 }
