@@ -1,4 +1,4 @@
-import SchemaInstance from './SchemaInstance';
+import MainInstance from './MainInstance';
 
 
 // TODO: composition
@@ -19,7 +19,7 @@ import SchemaInstance from './SchemaInstance';
 
 
 export function initSchema(schema) {
-  return new SchemaInstance(schema);
+  return new MainInstance(schema);
 }
 
 
