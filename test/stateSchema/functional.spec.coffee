@@ -16,11 +16,11 @@ testSchema = () ->
 describe 'functional', ->
   beforeEach () ->
     this.state = stateSchema.initSchema( testSchema() )
-    this.inMemory = this.state.instance('inMemory')
+    this.inMemory = this.state.instance('memoryBranch.inMemory')
 
   it 'Get initial value, it must returns undefined', () ->
     assert.isNull(this.inMemory.get('stringParam'))
-    assert.isUndefined(this.inMemory.mold.stringParam)
+    assert.isNull(this.inMemory.mold.stringParam)
 
   it 'Set and get value', () ->
     this.inMemory.set('stringParam', 'new value')
@@ -30,4 +30,4 @@ describe 'functional', ->
   it 'Has value. before and after setting a value', () ->
     assert.isTrue(this.inMemory.has('stringParam'))
     this.inMemory.set('stringParam', 'new value')
-    assert.isTrue(this.inMemory.get('stringParam'))
+    assert.isTrue(this.inMemory.has('stringParam'))

@@ -40,23 +40,52 @@ export default class State {
   }
 
   /**
+   * Get value without any checks
+   * @param path
+   */
+  getDirectly(path) {
+    return this._composition.get(path);
+  }
+
+  /**
    * Set new value to state
    * @param {string} path - absolute path
    * @param {*} value
    * @returns {object} promise
    */
   setValue(path, value) {
+    // TODO: rise an event
+
+    this.setSilent(path, value);
+  }
+
+  /**
+   * Set new value to state silently
+   * @param {string} path - absolute path
+   * @param {*} value
+   * @returns {object} promise
+   */
+  setSilent(path, value) {
     // TODO: maybe return promise always???
 
     if (this._schemaManager.has(path)) {
       if (this.validateValue(path, value)) {
-        this._composition.set(path, value);
+        return this.setDirectly(path, value);
       }
-      throw new Error(`Not valid value ${value} of param ${path}! See validation rules in your schema.`);
+      throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);
     }
 
     // It's a bad request for non existent param
-    throw new Error(`Can't set a value, a param ${path} doesn't exists in schema!`);
+    throw new Error(`Can't set a value, a param "${path}" doesn't exists in schema!`);
+  }
+
+  /**
+   * Set value without any checks
+   * @param path
+   * @param value
+     */
+  setDirectly(path, value) {
+    this._composition.set(path, value);
   }
 
   /**
