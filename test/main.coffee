@@ -1,4 +1,5 @@
 # main file for tests
+require('source-map-support').install
 
 path = require('path');
 #require('app-module-path').addPath(path.resolve(path.join(__dirname, '../')));
