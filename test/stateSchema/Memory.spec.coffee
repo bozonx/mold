@@ -1,5 +1,5 @@
-stateSchema = require('../../src/stateSchema')
-Memory = require('../../src/stateSchema/handlers/Memory').default
+stateSchema = require('stateSchema')
+Memory = require('stateSchema/handlers/Memory').default
 
 schema = (memory) ->
   inMemory: memory

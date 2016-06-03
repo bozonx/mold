@@ -89,17 +89,39 @@ export default class State {
   //   });
   // }
 
+  /**
+   * 
+   * @param {string} path - full path
+   */
   resetToDefault(path) {
-    console.log(path)
 
-    // only our params, omit other handlers
-    // eachOwnParam(root, schema, (path, value) => {
-    //   if (value.type == 'list') {
-    //     handler.initDefaultValue(path, []);
-    //   }
-    //   else if (!_.isUndefined(value.default)) {
-    //     handler.initDefaultValue(path, value.default);
-    //   }
-    // });
+    var setToItem = (itemSchema) => {
+      if (!_.isUndefined(itemSchema.default)) {
+        // set a value
+        this._composition.set(path, itemSchema.default);
+      }
+      else {
+        // set null
+        this._composition.set(path, null);
+      }
+    };
+
+    var itemSchema = this._schemaManager.get(path);
+    console.log(1111111, itemSchema)
+    if (itemSchema.type) {
+      // for item
+      setToItem(itemSchema);
+    }
+    else {
+      // for container, set on each child
+      _.each(itemSchema, (value) => {
+        setToItem(itemSchema);
+      });
+    }
+
+
+    // TODO: в composition устанавливаем значение
+
+
   }
 }

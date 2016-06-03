@@ -17,10 +17,14 @@ export default class SchemaManager {
     // TODO: нужно из default сделать type во всех элементах при валидации
   }
 
-  // getSchemaPart(path) {
-  //   // TODO: do it immutable
-  //   // TODO: do it
-  // }
+  /**
+   * get schema path
+   * @param path
+   */
+  get(path) {
+    // TODO: do it immutable
+    // TODO: do it
+  }
 
   getSchema() {
     // TODO: do it immutable

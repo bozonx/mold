@@ -1,7 +1,7 @@
-SchemaManager = require('../../src/stateSchema/SchemaManager').default
-State = require('../../src/stateSchema/State').default
+SchemaManager = require('stateSchema/SchemaManager').default
+State = require('stateSchema/State').default
 
-Memory = require('../../src/stateSchema/handlers/Memory').default
+Memory = require('stateSchema/handlers/Memory').default
 
 memory = new Memory({});
 schema =
