@@ -1,5 +1,8 @@
-import MainInstance from './MainInstance';
+//import 'source-map-support/register';
+//require('source-map-support').install();
 
+
+import MainInstance from './MainInstance';
 
 // TODO: composition
 
