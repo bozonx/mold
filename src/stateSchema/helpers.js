@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+// TODO: уже не нужно
+
 /**
  * Recursively run cb.
  * If cb returns true - go deeper

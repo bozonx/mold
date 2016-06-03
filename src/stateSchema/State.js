@@ -99,26 +99,6 @@ export default class State {
     return true;
   }
 
-
-  /**
-   * Set default values to state of handler
-   * @param {object} handler
-   * @param {string} root
-   * @param {object} schema
-   * @private
-   */
-  // initDefaultValues(handler, root, schema) {
-  //   // only our params, omit other handlers
-  //   eachOwnParam(root, schema, (path, value) => {
-  //     if (value.type == 'list') {
-  //       handler.initDefaultValue(path, []);
-  //     }
-  //     else if (!_.isUndefined(value.default)) {
-  //       handler.initDefaultValue(path, value.default);
-  //     }
-  //   });
-  // }
-
   /**
    * Reset param or children params to defaults
    * @param {string} path - absolute path
