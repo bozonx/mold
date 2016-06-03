@@ -1,7 +1,7 @@
 import SchemaManager from './SchemaManager';
 import State from './State';
 import ItemInstance from './ItemInstance';
-import ListInstance from './ListInstance';
+//import ListInstance from './ListInstance';
 
 
 export default class SchemaInstance {

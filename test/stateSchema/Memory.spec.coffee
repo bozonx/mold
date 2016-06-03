@@ -1,3 +1,4 @@
+###
 stateSchema = require('stateSchema')
 Memory = require('stateSchema/handlers/Memory').default
 
@@ -32,3 +33,4 @@ describe 'stateSchema', ->
 
   it 'hasValue', () ->
     assert.equal(this.state.has('inMemory.stringParam'), true)
+###

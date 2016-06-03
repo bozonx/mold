@@ -1,3 +1,4 @@
+###
 SchemaManager = require('stateSchema/SchemaManager').default
 State = require('stateSchema/State').default
 
@@ -38,3 +39,4 @@ describe 'SchemaManager', ->
 #    schemaManager = new SchemaManager(schema)
 #
 #    assert.equal(schemaManager.getHandler('first.second.third'), anotherMemory)
+###

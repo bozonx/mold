@@ -5,7 +5,7 @@ export default class ItemInstance {
     this.mold = {};
 
     // TODO: разве так надо делать mold???
-    this.mold = this._state.getValue(root);
+    //this.mold = this._state.getValue(root);
   }
 
   /**
