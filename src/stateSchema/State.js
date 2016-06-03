@@ -120,39 +120,33 @@ export default class State {
   // }
 
   /**
-   *
+   * Reset param or children params to defaults
    * @param {string} path - absolute path
    */
   resetToDefault(path) {
-
-    var setToItem = (itemSchema) => {
+    var setToItem = (itemPath, itemSchema) => {
       if (!_.isUndefined(itemSchema.default)) {
         // set a value
-        this._composition.set(path, itemSchema.default);
+        this.setDirectly(itemPath, itemSchema.default);
       }
       else {
         // set null
-        this._composition.set(path, null);
+        this.setDirectly(itemPath, null);
       }
     };
 
     var itemSchema = this._schemaManager.get(path);
-    console.log(1111111, itemSchema)
     if (itemSchema.type) {
       // for item
-      setToItem(itemSchema);
+      setToItem(path, itemSchema);
     }
     else {
       // for container, set on each child
-      _.each(itemSchema, (value) => {
-        setToItem(itemSchema);
+      // TODO: recursively
+      _.each(itemSchema, (value, name) => {
+        if (value.type) setToItem(`${path}.${name}`, value);
       });
     }
-
-
-    // TODO: в composition устанавливаем значение
-
-
   }
 
 }

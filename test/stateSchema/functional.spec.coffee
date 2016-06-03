@@ -8,10 +8,14 @@ testSchema = () ->
         default: false
       stringParam:
         type: 'string'
-        default: 'stringValue'
+        default: 'defaultStringValue'
       numberParam:
         type: 'number'
         default: 5
+      nested:
+        nestedStringParam:
+          type: 'string'
+          default: 'defaultNestedStringValue'
 
 describe 'functional', ->
   beforeEach () ->
@@ -31,3 +35,12 @@ describe 'functional', ->
     assert.isTrue(this.inMemory.has('stringParam'))
     this.inMemory.set('stringParam', 'new value')
     assert.isTrue(this.inMemory.has('stringParam'))
+
+  it 'Reset to defaults one value', ->
+    this.inMemory.resetToDefault('stringParam');
+    assert.equal(this.inMemory.get('stringParam'), 'defaultStringValue')
+
+  it 'Reset to defaults all children', ->
+    this.inMemory.resetToDefault();
+    assert.equal(this.inMemory.get('stringParam'), 'defaultStringValue')
+    #assert.equal(this.inMemory.get('nested.nestedStringParam'), 'defaultNestedStringValue')
