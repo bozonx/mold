@@ -1,8 +1,8 @@
 stateSchema = require('stateSchema')
 
 testSchema = () ->
-  inMemory:
-    params:
+  memoryBranch:
+    inMemory:
       boolParam:
         type: 'boolean'
         default: false
@@ -16,10 +16,18 @@ testSchema = () ->
 describe 'functional', ->
   beforeEach () ->
     this.state = stateSchema.initSchema( testSchema() )
+    this.inMemory = this.state.instance('inMemory')
 
   it 'Get initial value, it must returns undefined', () ->
-    params = this.state.instance('params')
-    assert.isNull(params.get('stringParam'))
-    assert.isUndefined(params.mold.stringParam)
+    assert.isNull(this.inMemory.get('stringParam'))
+    assert.isUndefined(this.inMemory.mold.stringParam)
 
   it 'Set and get value', () ->
+    this.inMemory.set('stringParam', 'new value')
+    assert.equal(this.inMemory.get('stringParam'), 'new value')
+    assert.equal(this.inMemory.mold.stringParam, 'new value')
+
+  it 'Has value. before and after setting a value', () ->
+    assert.isTrue(this.inMemory.has('stringParam'))
+    this.inMemory.set('stringParam', 'new value')
+    assert.isTrue(this.inMemory.get('stringParam'))

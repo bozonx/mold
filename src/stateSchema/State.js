@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { eachOwnParam } from './helpers';
+//import { eachOwnParam } from './helpers';
 import Composition from './Composition';
 
 export default class State {
@@ -18,55 +18,56 @@ export default class State {
    * example:
    *     getValue('settings.showNotifications')
    *     // it returns promise with current value
-   * @param path
+   * @param {string} path - absolute path
+   * @returns {Promise}
    */
   getValue(path) {
+    // TODO: maybe return promise always???
+
     if (this._composition.has(path)) {
       // if composition has a value - return it
       return this._composition.get(path);
     }
-    else {
+    else if (this._schemaManager.has(path)) {
+      // Init a value.
+      // In common use it doesn't happens because composition param initializing on creating new item/list instance
       this._composition.set(path, null);
       return null;
-
-      // if doesn't have - check it for schema and return null and send request for driver
-
-      // if it doesn't exist in schema - rise error
-      // var handler = this._schemaManager.getHandler(path);
-      // return handler.getValue(path);
     }
+
+    // It's a bad request for non existent param
+    throw new Error(`Can't get a value, a param ${path} doesn't exists in schema!`);
   }
 
   /**
-   * Is has a path
-   * @param path
-   * @returns {boolean}
-   */
-  hasValue(path) {
-    // var handler = this._schemaManager.getHandler(path);
-    // return handler.hasValue(path);
-  }
-
-  /**
-   * Set new value
-   * @param path
-   * @param value
+   * Set new value to state
+   * @param {string} path - absolute path
+   * @param {*} value
    * @returns {object} promise
    */
   setValue(path, value) {
-    // TODO: validate value - должен соответствовать схеме
-    // var handler = this._schemaManager.getHandler(path);
-    // return handler.setValue(path, value);
+    // TODO: maybe return promise always???
+
+    if (this._schemaManager.has(path)) {
+      if (this.validateValue(path, value)) {
+        this._composition.set(path, value);
+      }
+      throw new Error(`Not valid value ${value} of param ${path}! See validation rules in your schema.`);
+    }
+
+    // It's a bad request for non existent param
+    throw new Error(`Can't set a value, a param ${path} doesn't exists in schema!`);
   }
 
   /**
    * Validate value using validate settings by path
-   * @param path
-   * @param value
+   * @param {string} path - absolute path
+   * @param {} value
+   * @returns {boolean}
    */
-  validate(path, value) {
+  validateValue(path, value) {
     // TODO: сделать
-
+    return true;
   }
 
 
@@ -90,8 +91,8 @@ export default class State {
   // }
 
   /**
-   * 
-   * @param {string} path - full path
+   *
+   * @param {string} path - absolute path
    */
   resetToDefault(path) {
 
@@ -124,4 +125,5 @@ export default class State {
 
 
   }
+
 }

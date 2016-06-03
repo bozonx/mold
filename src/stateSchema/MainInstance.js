@@ -6,16 +6,14 @@ import ItemInstance from './ItemInstance';
 
 export default class SchemaInstance {
   constructor(schema) {
-    this.schemaManager = new SchemaManager();
+    this._schemaManager = new SchemaManager();
     this._state = new State();
-    this.schemaManager.init(schema, this._state);
-    this._state.init(this.schemaManager);
+    this._schemaManager.init(schema, this._state);
+    this._state.init(this._schemaManager);
 
     // initialize all handlers, setup default values
-    this.schemaManager.initHandlers();
+    this._schemaManager.initHandlers();
   }
-  
-  
 
   /**
    * get current runtime value
@@ -51,6 +49,6 @@ export default class SchemaInstance {
    */
   instance(path) {
     // TODO: выбрать list или item
-    return new ItemInstance(path, this._state);
+    return new ItemInstance(path, this._state, this._schemaManager);
   }
 }
