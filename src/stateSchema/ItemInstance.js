@@ -3,6 +3,11 @@ export default class ItemInstance {
     this._root = root;
     this._state = state;
     this._schemaManager = schemaManager;
+
+    if (!this._schemaManager.has())
+      throw new Error(`Can't create an instatnce of ${this._root}. This path doesn't exists in schema`);
+
+    this.schema = this._schemaManager.get(this._root);
     // mold is just a link to the composition
     this.mold = this._initComposition();
   }
@@ -53,9 +58,22 @@ export default class ItemInstance {
   }
 
   _initComposition() {
-    // TODO: it must be a link to the composition - получить свой композишн из стейта
-    // TODO: Do it recursively
-    // TODO: return lint to self composition
-    this._composition.set(path, null);
+    if (this.schema.type) {
+      // It's a param
+      this._composition.set(this._root, null);
+    }
+    else {
+      // It's a container
+      _.each(this.schema, (param, name) => {
+        if (param.type) {
+          this._composition.set(this._fullPath(name), null);
+        }
+        else {
+          // TODO: do it recursively
+        }
+      });
+    }
+
+    return this._composition.get(this._root);
   }
 }
