@@ -77,27 +77,27 @@ export default class State {
       this._checkAndSetValue(schema, path, value);
     }
     else {
-      // If it's a containter - set value for all children
-      recursiveSchema(path, schema, (childPath, childSchema, childName) => {
-        if (childSchema.type) {
-          // param
-          var valuePath = childPath;
-          if (path !== '') valuePath = childPath.replace(path + '.', '');
+      recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
+    }
+  }
 
-          var childValue = _.get(value, valuePath);
+  _setRecursively(path, value, childPath, childSchema, childName) {
+    if (childSchema.type) {
+      // param
+      var valuePath = childPath;
+      if (path !== '') valuePath = childPath.replace(path + '.', '');
 
-          // If value doesn't exist for this schema brunch - do nothing
-          if (_.isUndefined(childValue)) return false;
+      var childValue = _.get(value, valuePath);
 
-          this._checkAndSetValue(childSchema, childPath, childValue);
-          return false;
-        }
+      // If value doesn't exist for this schema brunch - do nothing
+      if (_.isUndefined(childValue)) return false;
 
-        // If it's a container - go deeper
-        return true;
-      });
+      this._checkAndSetValue(childSchema, childPath, childValue);
+      return false;
     }
 
+    // If it's a container - go deeper
+    return true;
   }
 
   /**

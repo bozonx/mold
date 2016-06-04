@@ -26,7 +26,7 @@ describe 'functional ItemInstance', ->
           nested:
             nestedStringParam1: 'savedNestedString1'
             nestedStringParam2: 'savedNestedString2'
-    this.state.setSilent(values)
+    this.state.initState(values)
 
     assert.equal(this.state.get('memoryBranch.inMemory.stringParam1'), 'savedString1')
     assert.equal(this.state.get('memoryBranch.inMemory.stringParam2'), 'savedString2')

@@ -59,12 +59,12 @@ class MainInstance {
   // }
 
   /**
-   * set runtime value silently. Work mode:
-   *    setSilent(value) - pass value to root
-   *    setSilent(path, value) - pass value to path
+   * Set all initial values. Work mode:
+   *    setSilent(value) - pass values to root
+   *    setSilent(path, value) - pass values to path
    * @returns {object} promise
    */
-  setSilent(param1, param2) {
+  initState(param1, param2) {
     var path = param1;
     var value = param2;
     if (!param2) {
