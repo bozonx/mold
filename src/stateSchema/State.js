@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-//import { eachOwnParam } from './helpers';
+import { recursive } from './helpers';
 import Composition from './Composition';
 
 export default class State {
@@ -66,17 +66,61 @@ export default class State {
    * @returns {object} promise
    */
   setSilent(path, value) {
+    // If it's a bad request for non existent param
+    if (!this._schemaManager.has(path))
+      throw new Error(`Can't set a value, a param "${path}" doesn't exists in schema!`);
+
+    var schema = this._schemaManager.get(path);
+    if (schema.type) {
+      // If it's a param - just set a value
+      this._checkAndSetValue(schema, path, value);
+    }
+    else {
+      // If it's a containter - set value for all children
+      //var valuePath = '';
+      recursive(path, schema, (childPath, childSchema, childName) => {
+        //valuePath += '.' + childName;
+
+        if (childSchema.type) {
+          // param
+          var valuePath = childPath.replace(path + '.', '');
+          var childValue = _.get(value, valuePath);
+          // If value doesn't exist for this schema brunch - do nothing
+          if (_.isUndefined(childValue)) return false;
+
+          this._checkAndSetValue(childSchema, childPath, childValue);
+          return false;
+        }
+
+        // If it's a container - go deeper
+        return true;
+      });
+    }
+
+  }
+
+  /**
+   * Validate and set a value.
+   * @param {object} schema - schema for path
+   * @param {string} path - to a param. (Not to container)
+   * @param {*} value - value to set. (Not undefined and not an object)
+   * @returns {*}
+   * @private
+   */
+  _checkAndSetValue(schema, path, value) {
     // TODO: maybe return promise always???
 
-    if (this._schemaManager.has(path)) {
+    if (schema.type == 'list') {
+      // For lists
+      // TODO: do it
+    }
+    else if (schema.type) {
+      // For values
       if (this.validateValue(path, value)) {
         return this.setDirectly(path, value);
       }
       throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);
     }
-
-    // It's a bad request for non existent param
-    throw new Error(`Can't set a value, a param "${path}" doesn't exists in schema!`);
   }
 
   /**

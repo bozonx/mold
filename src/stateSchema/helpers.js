@@ -1,5 +1,21 @@
 import _ from 'lodash';
 
+export function recursive(root, schema, cb) {
+  _.each(schema, function (value, name) {
+    var newRoot = `${root}.${name}`;
+
+    var isGoDeeper = cb(newRoot, value, name);
+    if (_.isString(isGoDeeper)) {
+      var newerRoot = `${newRoot}.${isGoDeeper}`;
+      eachRecursive(newerRoot, value[isGoDeeper], cb);
+    }
+    else if (isGoDeeper) eachRecursive(newRoot, value, cb);
+  });
+}
+
+
+
+
 // TODO: уже не нужно
 
 /**

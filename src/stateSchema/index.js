@@ -1,6 +1,17 @@
+// TODO: добавить возможность вставлять в стейт полный сохраненный стейт - initialState - для тестов и загрузки с сервера
+// TODO: добавить события
+// TODO: добавить списки
+
+// TODO: синхронные / асинхронные запросы - async await
+// TODO: сделать pounch
+// TODO: сделать localStorage
+
+// TODO: сделать валидацию параметров
+// TODO: сделать валидацию схемы
+// TODO: forceUpdate - обновить данные с сервера - либо использовать silent
+
 //import 'source-map-support/register';
 //require('source-map-support').install();
-
 
 import SchemaManager from './SchemaManager';
 import State from './State';
@@ -48,12 +59,18 @@ class MainInstance {
   // }
 
   /**
-   * set runtime value silently
-   * @param {string} path
-   * @param {*} value
+   * set runtime value silently. Work mode:
+   *    setSilent(value) - pass value to root
+   *    setSilent(path, value) - pass value to path
    * @returns {object} promise
    */
-  setSilent(path, value) {
+  setSilent(param1, param2) {
+    var path = param1;
+    var value = param2;
+    if (!param2) {
+      path = '';
+      value = param1;
+    }
     return this._state.setSilent(path, value);
   }
 
@@ -67,29 +84,6 @@ class MainInstance {
   }
 }
 
-
-// TODO: добавить возможность вставлять в стейт полный сохраненный стейт - initialState - для тестов и загрузки с сервера
-// TODO: добавить события
-// TODO: добавить списки
-
-// TODO: синхронные / асинхронные запросы - async await
-// TODO: сделать pounch
-// TODO: сделать localStorage
-
-// TODO: сделать валидацию параметров
-// TODO: сделать валидацию схемы
-// TODO: forceUpdate - обновить данные с сервера - либо использовать silent
-
-
 export function initSchema(schema) {
   return new MainInstance(schema);
 }
-
-
-
-// export function list(itemSchema) {
-//   return {
-//     type: 'list',
-//     itemSchema: itemSchema,
-//   }
-// }
