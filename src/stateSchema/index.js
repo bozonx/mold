@@ -56,8 +56,15 @@ class MainInstance {
    * @param {string} path
    */
   instance(path) {
-    // TODO: выбрать list или item
-    return new ItemInstance(path, this._state, this._schemaManager);
+    // if (!this._schemaManager.has(this._root))
+    //   throw new Error(`Can't create an instatnce of "${this._root}". This path doesn't exists in schema`);
+
+    var schema = this._schemaManager.get(path);
+    if (schema.type === 'list') {
+      return new ListInstance(path, schema, this._state, this._schemaManager);
+    }
+    
+    return new ItemInstance(path, schema, this._state, this._schemaManager);
   }
 }
 

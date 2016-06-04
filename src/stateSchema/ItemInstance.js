@@ -1,15 +1,12 @@
 import _ from 'lodash';
 
 export default class ItemInstance {
-  constructor(root, state, schemaManager) {
+  constructor(root, schema, state, schemaManager) {
     this._root = root;
     this._state = state;
     this._schemaManager = schemaManager;
+    this.schema = schema;
 
-    if (!this._schemaManager.has(this._root))
-      throw new Error(`Can't create an instatnce of "${this._root}". This path doesn't exists in schema`);
-
-    this.schema = this._schemaManager.get(this._root);
     // mold is just a link to the composition
     this.mold = this._initComposition();
   }

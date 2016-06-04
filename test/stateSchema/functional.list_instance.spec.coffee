@@ -13,9 +13,23 @@ testSchema = () ->
 describe 'Functional. List instance', ->
   beforeEach () ->
     this.state = stateSchema.initSchema( testSchema() )
-    this.inMemory = this.state.instance('memoryBranch.inMemory')
+    this.listParam = this.state.instance('memoryBranch.inMemory.listParam')
 
-  it 'Check instatnce of list', ->
+  it 'Set and get all list', ->
+    list = [
+      {
+        id: 1
+        name: 'name1'
+      },
+      {
+        id: 2
+        name: 'name2'
+      },
+    ]
 
-  it 'Init list and get items', ->
+    this.listParam.setAll(list)
+    assert.deepEqual(this.listParam.getList(), list)
 
+  it 'Add item', ->
+
+# TODO: протестирвать если мы взяли инстанст item (memoryBranch.inMemory) и в нем находится list
