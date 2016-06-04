@@ -149,6 +149,8 @@ export default class State {
    * @param {string} path - absolute path
    */
   resetToDefault(path) {
+    // TODO: переделать на this.setValue
+    
     var setToItem = (itemPath, itemSchema) => {
       if (!_.isUndefined(itemSchema.default)) {
         // set a value

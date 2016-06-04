@@ -1,4 +1,3 @@
-// TODO: добавить возможность вставлять в стейт полный сохраненный стейт - initialState - для тестов и загрузки с сервера
 // TODO: добавить события
 // TODO: добавить списки
 
@@ -10,13 +9,10 @@
 // TODO: сделать валидацию схемы
 // TODO: forceUpdate - обновить данные с сервера - либо использовать silent
 
-//import 'source-map-support/register';
-//require('source-map-support').install();
-
 import SchemaManager from './SchemaManager';
 import State from './State';
 import ItemInstance from './ItemInstance';
-//import ListInstance from './ListInstance';
+import ListInstance from './ListInstance';
 
 
 class MainInstance {
@@ -26,43 +22,24 @@ class MainInstance {
     this._schemaManager.init(schema, this._state);
     this._state.init(this._schemaManager);
 
-    // initialize all handlers, setup default values
+    // initialize all handlers
     //this._schemaManager.initHandlers();
   }
 
   /**
-   * get current runtime value
-   * @param path
-   * @returns {object} promise
+   * Get all current runtime state
+   * @param {string} path - path to a state. To get root, pass ''
+   * @returns {object} state
    */
-  get(path) {
+  getState(path) {
     return this._state.getValue(path);
   }
-
-  /**
-   * Is has a path
-   * @param path
-   * @returns {boolean}
-   */
-  has(path) {
-    return this._state.hasValue(path);
-  }
-  //
-  // /**
-  //  * set runtime value
-  //  * @param {string} path
-  //  * @param {mixed} value
-  //  * @returns {object} promise
-  //  */
-  // set(path, value) {
-  //   return this._state.setValue(path, value);
-  // }
 
   /**
    * Set all initial values. Work mode:
    *    setSilent(value) - pass values to root
    *    setSilent(path, value) - pass values to path
-   * @returns {object} promise
+   * It silently setup a state.
    */
   initState(param1, param2) {
     var path = param1;
@@ -71,11 +48,11 @@ class MainInstance {
       path = '';
       value = param1;
     }
-    return this._state.setSilent(path, value);
+    this._state.setSilent(path, value);
   }
 
   /**
-   * Get list or item instance on path
+   * Get list or item instance on a path
    * @param {string} path
    */
   instance(path) {
