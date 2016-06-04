@@ -13,7 +13,7 @@ testSchema = () ->
         nestedStringParam2:
           type: 'string'
 
-describe 'functional Init and get all values', ->
+describe 'Functional. Init and get all values', ->
   beforeEach () ->
     this.state = stateSchema.initSchema( testSchema() )
 

@@ -17,7 +17,7 @@ testSchema = () ->
           type: 'string'
           default: 'defaultNestedStringValue'
 
-describe 'functional ItemInstatnce', ->
+describe 'Functional. Item instance', ->
   beforeEach () ->
     this.state = stateSchema.initSchema( testSchema() )
     this.inMemory = this.state.instance('memoryBranch.inMemory')
