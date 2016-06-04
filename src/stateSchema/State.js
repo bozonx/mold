@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { recursive } from './helpers';
+import { recursiveSchema } from './helpers';
 import Composition from './Composition';
 
 export default class State {
@@ -60,14 +60,13 @@ export default class State {
   }
 
   /**
-   * Set new value to state silently
+   * Set new value silently to state.
+   * You can set all values to branch if you pass a container.
    * @param {string} path - absolute path
    * @param {*} value
    * @returns {object} promise
    */
   setSilent(path, value) {
-    var schema;
-
     // If it's a bad request for non existent param
     if (!this._schemaManager.has(path))
       throw new Error(`Can't set a value, a param "${path}" doesn't exists in schema!`);
@@ -79,14 +78,14 @@ export default class State {
     }
     else {
       // If it's a containter - set value for all children
-      //var valuePath = '';
-      recursive(path, schema, (childPath, childSchema, childName) => {
-        //valuePath += '.' + childName;
-
+      recursiveSchema(path, schema, (childPath, childSchema, childName) => {
         if (childSchema.type) {
           // param
-          var valuePath = childPath.replace(path + '.', '');
+          var valuePath = childPath;
+          if (path !== '') valuePath = childPath.replace(path + '.', '');
+
           var childValue = _.get(value, valuePath);
+
           // If value doesn't exist for this schema brunch - do nothing
           if (_.isUndefined(childValue)) return false;
 

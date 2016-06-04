@@ -23,12 +23,12 @@ describe 'functional ItemInstance', ->
         inMemory:
           stringParam1: 'savedString1'
           stringParam2: 'savedString2'
-        nested:
-          nestedStringParam1: 'savedNestedString1'
-          nestedStringParam2: 'savedNestedString2'
+          nested:
+            nestedStringParam1: 'savedNestedString1'
+            nestedStringParam2: 'savedNestedString2'
     this.state.setSilent(values)
 
     assert.equal(this.state.get('memoryBranch.inMemory.stringParam1'), 'savedString1')
     assert.equal(this.state.get('memoryBranch.inMemory.stringParam2'), 'savedString2')
     assert.equal(this.state.get('memoryBranch.inMemory.nested.nestedStringParam1'), 'savedNestedString1')
-    assert.equal(this.state.get('memoryBranch.inMemory.nested.nestedStringParam2'), 'nestedStringParam2')
+    assert.equal(this.state.get('memoryBranch.inMemory.nested.nestedStringParam2'), 'savedNestedString2')
