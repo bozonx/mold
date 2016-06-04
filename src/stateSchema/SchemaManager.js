@@ -23,17 +23,23 @@ export default class SchemaManager {
    * @returns {object}
    */
   get(path) {
+    if (path === '') return this.getFullSchema();
+
     // TODO: do it immutable
-    // TODO: may be rise an error???
-    return _.get(this._schema, path);
+    var schema = _.get(this._schema, path);
+    if (_.isUndefined(schema)) throw new Error(`Schema on path "${path}" doesn't exists`);
+
+    return schema;
   }
 
   /**
    * Has a param on path
+   * Path = '' means root.
    * @param {string} path - absolute path
    * @returns {boolean}
    */
   has(path) {
+    if (path === '') return true;
     return _.has(this._schema, path);
   }
 

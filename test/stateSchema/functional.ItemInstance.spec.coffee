@@ -17,7 +17,7 @@ testSchema = () ->
           type: 'string'
           default: 'defaultNestedStringValue'
 
-describe 'functional', ->
+describe 'functional ItemInstatnce', ->
   beforeEach () ->
     this.state = stateSchema.initSchema( testSchema() )
     this.inMemory = this.state.instance('memoryBranch.inMemory')
@@ -43,4 +43,7 @@ describe 'functional', ->
   it 'Reset to defaults all children', ->
     this.inMemory.resetToDefault();
     assert.equal(this.inMemory.get('stringParam'), 'defaultStringValue')
+    
+    # TODO: !!!!!
+    # TODO: Check number and boolean
     #assert.equal(this.inMemory.get('nested.nestedStringParam'), 'defaultNestedStringValue')

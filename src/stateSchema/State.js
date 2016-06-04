@@ -66,6 +66,8 @@ export default class State {
    * @returns {object} promise
    */
   setSilent(path, value) {
+    var schema;
+
     // If it's a bad request for non existent param
     if (!this._schemaManager.has(path))
       throw new Error(`Can't set a value, a param "${path}" doesn't exists in schema!`);

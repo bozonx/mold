@@ -30,23 +30,23 @@ class MainInstance {
     //this._schemaManager.initHandlers();
   }
 
-  // /**
-  //  * get current runtime value
-  //  * @param path
-  //  * @returns {object} promise
-  //  */
-  // get(path) {
-  //   return this._state.getValue(path);
-  // }
-  //
-  // /**
-  //  * Is has a path
-  //  * @param path
-  //  * @returns {boolean}
-  //  */
-  // has(path) {
-  //   return this._state.hasValue(path);
-  // }
+  /**
+   * get current runtime value
+   * @param path
+   * @returns {object} promise
+   */
+  get(path) {
+    return this._state.getValue(path);
+  }
+
+  /**
+   * Is has a path
+   * @param path
+   * @returns {boolean}
+   */
+  has(path) {
+    return this._state.hasValue(path);
+  }
   //
   // /**
   //  * set runtime value
