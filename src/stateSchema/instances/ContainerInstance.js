@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export default class ItemInstance {
+export default class ContainerInstance {
   constructor(root, schema, state, schemaManager) {
     this._root = root;
     this._state = state;
@@ -17,7 +17,7 @@ export default class ItemInstance {
    * @returns {object} promise
    */
   get(path) {
-    return this._state.getValue(this._fullPath(path));
+    //return this._state.getValue(this._fullPath(path));
   }
 
   /**
@@ -27,7 +27,7 @@ export default class ItemInstance {
    * @returns {object} promise
    */
   set(path, value) {
-    return this._state.setValue(this._fullPath(path), value);
+    //return this._state.setValue(this._fullPath(path), value);
   }
 
   /**
@@ -36,7 +36,7 @@ export default class ItemInstance {
    * @returns {boolean}
    */
   has(path) {
-    return this._schemaManager.has(this._fullPath(path));
+    //return this._schemaManager.has(this._fullPath(path));
   }
 
   /**
@@ -44,12 +44,12 @@ export default class ItemInstance {
    * @param {string|undefined} path - relative to instance root. If path doesn't pass, it means use instance root.
    */
   resetToDefault(path) {
-    if (path) {
-      this._state.resetToDefault(this._fullPath(path));
-    }
-    else {
-      this._state.resetToDefault(this._root);
-    }
+    // if (path) {
+    //   this._state.resetToDefault(this._fullPath(path));
+    // }
+    // else {
+    //   this._state.resetToDefault(this._root);
+    // }
   }
 
   _fullPath(relativePath) {
@@ -57,22 +57,22 @@ export default class ItemInstance {
   }
 
   _initComposition() {
-    if (this.schema.type) {
-      // It's a param
-      this._state.setDirectly(this._root, null);
-    }
-    else {
-      // It's a container
-      _.each(this.schema, (param, name) => {
-        if (param.type) {
-          this._state.setDirectly(this._fullPath(name), null);
-        }
-        else {
-          // TODO: do it recursively
-        }
-      });
-    }
-
-    return this._state.getDirectly(this._root);
+    // if (this.schema.type) {
+    //   // It's a param
+    //   this._state.setDirectly(this._root, null);
+    // }
+    // else {
+    //   // It's a container
+    //   _.each(this.schema, (param, name) => {
+    //     if (param.type) {
+    //       this._state.setDirectly(this._fullPath(name), null);
+    //     }
+    //     else {
+    //       // TODO: do it recursively
+    //     }
+    //   });
+    // }
+    //
+    // return this._state.getDirectly(this._root);
   }
 }

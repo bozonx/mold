@@ -1,5 +1,6 @@
 // TODO: добавить события
 // TODO: добавить списки
+// TODO: сделать ParamInstance - это обчный, item это контейнер
 
 // TODO: синхронные / асинхронные запросы - async await
 // TODO: сделать pounch
@@ -11,8 +12,8 @@
 
 import SchemaManager from './SchemaManager';
 import State from './State';
-import ItemInstance from './ItemInstance';
-import ListInstance from './ListInstance';
+import ParamInstance from './instances/ParamInstance';
+import ListInstance from './instances/ListInstance';
 
 
 class MainInstance {
@@ -64,7 +65,7 @@ class MainInstance {
       return new ListInstance(path, schema, this._state, this._schemaManager);
     }
     
-    return new ItemInstance(path, schema, this._state, this._schemaManager);
+    return new ParamInstance(path, schema, this._state, this._schemaManager);
   }
 }
 
