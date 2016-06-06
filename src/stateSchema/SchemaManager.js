@@ -4,6 +4,10 @@
 
 import _ from 'lodash';
 
+import ParamInstance from './instances/ParamInstance';
+import ListInstance from './instances/ListInstance';
+import ContainerInstance from './instances/ContainerInstance';
+
 //import { eachHandler } from './helpers';
 
 
@@ -51,6 +55,28 @@ export default class SchemaManager {
     // TODO: do it immutable
     return this._schema;
   }
+
+
+  /**
+   * Get list or item or container instance by a path
+   * @param {string} path - absolute path
+   * @returns {object} - instance of param or list or container
+   */
+  getInstance(path) {
+    var schema = this.get(path);
+    if (!schema.type) {
+      //return new ContainerInstance(path, schema, this._state, this._schemaManager);
+      return new ParamInstance(path, schema, this._state, this._schemaManager);
+    }
+    else if (schema.type === 'list') {
+      return new ListInstance(path, schema, this._state, this._schemaManager);
+    }
+
+    return new ParamInstance(path, schema, this._state, this._schemaManager);
+  }
+
+
+
 
   // /**
   //  * Find handler for path

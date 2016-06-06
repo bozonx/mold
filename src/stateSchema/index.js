@@ -1,6 +1,7 @@
 // TODO: добавить события
 // TODO: добавить списки
 // TODO: сделать ParamInstance - это обчный, item это контейнер
+// TODO: всегда возвращаем инстансы на get, но у инстанса будет loadPromise - который выполнится когда данные загрузятся
 
 // TODO: синхронные / асинхронные запросы - async await
 // TODO: сделать pounch
@@ -12,9 +13,6 @@
 
 import SchemaManager from './SchemaManager';
 import State from './State';
-import ParamInstance from './instances/ParamInstance';
-import ListInstance from './instances/ListInstance';
-
 
 class MainInstance {
   constructor(schema) {
@@ -53,19 +51,12 @@ class MainInstance {
   }
 
   /**
-   * Get list or item instance on a path
-   * @param {string} path
+   * Get list or item or container instance by a path
+   * @param {string} path - absolute path
+   * @returns {object} - instance of param or list or container
    */
   instance(path) {
-    // if (!this._schemaManager.has(this._root))
-    //   throw new Error(`Can't create an instatnce of "${this._root}". This path doesn't exists in schema`);
-
-    var schema = this._schemaManager.get(path);
-    if (schema.type === 'list') {
-      return new ListInstance(path, schema, this._state, this._schemaManager);
-    }
-    
-    return new ParamInstance(path, schema, this._state, this._schemaManager);
+    return this._schemaManager.getInstance(path);
   }
 }
 

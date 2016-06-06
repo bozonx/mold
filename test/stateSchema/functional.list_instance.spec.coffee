@@ -48,7 +48,15 @@ describe 'Functional. List instance', ->
     newItem = {id: 3, name: 'name3'}
     this.listParam.set(this.list)
     this.listParam.add(newItem)
-    # TODO: сделать много разных манипуляций и получить в конце ожидаемый результат - set, add, delete, change, to default and getItem and get()
-
-
-# TODO: протестирвать если мы взяли инстанст item (memoryBranch.inMemory) и в нем находится list
+    this.listParam.remove({id: 2})
+    # TODO: add change item and to default
+    assert.deepEqual(this.listParam.get(), [
+      {
+        id: 1
+        name: 'name1'
+      }
+      {
+        id: 3
+        name: 'name3'
+      }
+    ])

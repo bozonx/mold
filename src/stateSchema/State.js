@@ -81,51 +81,6 @@ export default class State {
     }
   }
 
-  _setRecursively(path, value, childPath, childSchema, childName) {
-    if (childSchema.type) {
-      // param
-      var valuePath = childPath;
-      if (path !== '') valuePath = childPath.replace(path + '.', '');
-
-      var childValue = _.get(value, valuePath);
-
-      // If value doesn't exist for this schema brunch - do nothing
-      if (_.isUndefined(childValue)) return false;
-
-      this._checkAndSetValue(childSchema, childPath, childValue);
-      return false;
-    }
-
-    // If it's a container - go deeper
-    return true;
-  }
-
-  /**
-   * Validate and set a value.
-   * @param {object} schema - schema for path
-   * @param {string} path - to a param. (Not to container)
-   * @param {*} value - value to set. (Not undefined and not an object)
-   * @returns {*}
-   * @private
-   */
-  _checkAndSetValue(schema, path, value) {
-    // TODO: maybe return promise always???
-
-    if (schema.type == 'list') {
-      // For lists
-      // TODO: do it for parametrized lists
-      // TODO: validate all items in list
-      return this.setDirectly(path, value);
-    }
-    else if (schema.type) {
-      // For values
-      if (this.validateValue(path, value)) {
-        return this.setDirectly(path, value);
-      }
-      throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);
-    }
-  }
-
   /**
    * Set value without any checks
    * @param path
@@ -178,4 +133,48 @@ export default class State {
     }
   }
 
+  _setRecursively(path, value, childPath, childSchema, childName) {
+    if (childSchema.type) {
+      // param
+      var valuePath = childPath;
+      if (path !== '') valuePath = childPath.replace(path + '.', '');
+
+      var childValue = _.get(value, valuePath);
+
+      // If value doesn't exist for this schema brunch - do nothing
+      if (_.isUndefined(childValue)) return false;
+
+      this._checkAndSetValue(childSchema, childPath, childValue);
+      return false;
+    }
+
+    // If it's a container - go deeper
+    return true;
+  }
+
+  /**
+   * Validate and set a value.
+   * @param {object} schema - schema for path
+   * @param {string} path - to a param. (Not to container)
+   * @param {*} value - value to set. (Not undefined and not an object)
+   * @returns {*}
+   * @private
+   */
+  _checkAndSetValue(schema, path, value) {
+    // TODO: maybe return promise always???
+
+    if (schema.type == 'list') {
+      // For lists
+      // TODO: do it for parametrized lists
+      // TODO: validate all items in list
+      return this.setDirectly(path, value);
+    }
+    else if (schema.type) {
+      // For values
+      if (this.validateValue(path, value)) {
+        return this.setDirectly(path, value);
+      }
+      throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);
+    }
+  }
 }
