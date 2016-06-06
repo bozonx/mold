@@ -10,20 +10,21 @@ export default class ListInstance {
     // mold is just a link to the composition
     this.mold = this._initComposition();
   }
-  
-
 
   /**
    * Get full list
    * @param params - for parametrized query
    */
-  getList(params) {
+  get(params) {
     // TODO: do parametrized query
     return this._state.getValue(this._root);
   }
 
-  getItem(param) {
-    // TODO: возвращаем itemInstance и через него мы можем менять его значения 
+  getItem(itemFilterParams) {
+    // TODO: возвращаем itemInstance и через него мы можем менять его значения
+    // TODO: сделать поддержку колбэка для поиска
+    // TODO: use an unmutable?
+    return _.find(this._state.getDirectly(this._root), itemFilterParams);
   }
 
   /**
@@ -31,7 +32,10 @@ export default class ListInstance {
    * @param item
    */
   add(item) {
-    // TODO: !!!
+    var composition = this._state.getDirectly(this._root);
+    // TODO: validate item
+    composition.push(item);
+    return item;
   }
 
   /**
@@ -42,11 +46,16 @@ export default class ListInstance {
     // TODO: !!!
   }
 
+  has() {
+    // TODO: сделать проверку по всему списку
+  }
+
   /**
-   * Set full list
+   * Set full list silently
    */
-  setAll(list) {
-    return this._state.setValue(this._root, list);
+  set(list) {
+    // TODO: нужно ли silent???
+    return this._state.setSilent(this._root, list);
   }
 
   /**
@@ -55,6 +64,8 @@ export default class ListInstance {
   clear() {
     // TODO: !!!
   }
+
+  // TODO: reset to default - должно вызваться сброс по умолчанию у всех элементов списка
 
   _initComposition() {
     return this._state.setDirectly(this._root, []);

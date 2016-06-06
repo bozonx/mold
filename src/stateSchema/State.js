@@ -113,7 +113,9 @@ export default class State {
 
     if (schema.type == 'list') {
       // For lists
-      // TODO: do it
+      // TODO: do it for parametrized lists
+      // TODO: validate all items in list
+      return this.setDirectly(path, value);
     }
     else if (schema.type) {
       // For values
