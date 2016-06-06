@@ -33,14 +33,22 @@ describe 'Functional. List instance', ->
     newItem = {id: 3, name: 'name3'}
     this.listParam.add(newItem)
     assert.equal(this.listParam.getItem({id: 3}), newItem)
-    
-    
-    
+
+  it 'Clear a list', ->
+    this.listParam.set(this.list)
+    this.listParam.clear()
+    assert.equal(this.listParam.get().length, 0)
+
+  it 'remove', ->
+    this.listParam.set(this.list)
+    this.listParam.remove({id: 1})
+    assert.deepEqual(this.listParam.get(), _.reject(this.list, {id:1}))
+
   it 'Many manupulations with list', ->
     newItem = {id: 3, name: 'name3'}
     this.listParam.set(this.list)
     this.listParam.add(newItem)
     # TODO: сделать много разных манипуляций и получить в конце ожидаемый результат - set, add, delete, change, to default and getItem and get()
-    
+
 
 # TODO: протестирвать если мы взяли инстанст item (memoryBranch.inMemory) и в нем находится list

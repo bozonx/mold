@@ -24,6 +24,7 @@ export default class ListInstance {
     // TODO: возвращаем itemInstance и через него мы можем менять его значения
     // TODO: сделать поддержку колбэка для поиска
     // TODO: use an unmutable?
+    // TODO: в первую очередь искать по уникальному ключу
     return _.find(this._state.getDirectly(this._root), itemFilterParams);
   }
 
@@ -43,7 +44,8 @@ export default class ListInstance {
    * @param item
    */
   remove(item) {
-    // TODO: !!!
+    // TODO: наверное лучше искать по уникальному ключу
+    _.remove(this._state.getDirectly(this._root), item)
   }
 
   has() {
@@ -62,7 +64,7 @@ export default class ListInstance {
    * Clear full list
    */
   clear() {
-    // TODO: !!!
+    _.remove(this._state.getDirectly(this._root))
   }
 
   // TODO: reset to default - должно вызваться сброс по умолчанию у всех элементов списка

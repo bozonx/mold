@@ -9,3 +9,5 @@ chai.use(require('sinon-chai'));
 require('mocha-sinon');
 global.assert = chai.assert
 global.expect = chai.expect
+
+global._ = require('lodash');
