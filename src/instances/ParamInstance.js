@@ -12,25 +12,27 @@ export default class ParamInstance {
   }
 
   /**
-   * Get child
-   * @param {string} path - path relative to instance root
+   * Get value.
    * @returns {object} promise
    */
-  get(path) {
-    return this._state.getValue(this._fullPath(path));
+  get() {
+    return this._state.getValue(this._root);
   }
 
   /**
    * Set child value
-   * @param {string} path - path relative to instance root
    * @param {string|number|boolean} value
    * @returns {object} promise
    */
-  set(path, value) {
-    return this._state.setValue(this._fullPath(path), value);
+  set(value) {
+    var promise = this._state.setValue(this._root, value);
+    // update mold;
+    this.mold = this._state.getDirectly(this._root);
+    
+    return promise;
   }
 
-  setSilent(path, value) {
+  setSilent(value) {
     // TODO: silently
   }
 
@@ -38,17 +40,8 @@ export default class ParamInstance {
    * Reset to default
    * @param {string|undefined} path - relative to instance root. If path doesn't pass, it means use instance root.
    */
-  resetToDefault(path) {
-    if (path) {
-      this._state.resetToDefault(this._fullPath(path));
-    }
-    else {
-      this._state.resetToDefault(this._root);
-    }
-  }
-
-  _fullPath(relativePath) {
-    return `${this._root}.${relativePath}`;
+  resetToDefault() {
+    this._state.resetToDefault(this._root);
   }
 
   _initComposition() {

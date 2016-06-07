@@ -18,6 +18,8 @@ export default class State {
    * @returns {*} a value
    */
   getValue(path) {
+    // TODO: always returns a promise!!!
+
     if (this._composition.has(path)) {
       // if composition has a value - return it
       return this._composition.get(path);
@@ -59,7 +61,7 @@ export default class State {
   setValue(path, value) {
     // TODO: rise an event
 
-    this.setSilent(path, value);
+    return this.setSilent(path, value);
   }
 
   /**
@@ -70,8 +72,8 @@ export default class State {
    * @returns {object} promise
    */
   setSilent(path, value) {
-    // TODO: return promise
-    
+    // TODO: always returns a promise!!!
+
     // It rise an error if path doesn't consist with schema
     var schema = this._schemaManager.get(path);
     if (schema.type) {
@@ -126,7 +128,7 @@ export default class State {
     // TODO: сделать
     return true;
   }
-  
+
   _setRecursively(path, value, childPath, childSchema, childName) {
     if (childSchema.type) {
       // param
@@ -165,7 +167,9 @@ export default class State {
       if (this.validateValue(path, value)) {
         this.setDirectly(path, value);
       }
-      throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);
+      else {
+        throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);
+      }
     }
   }
 }

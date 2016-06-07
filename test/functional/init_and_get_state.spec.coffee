@@ -13,7 +13,7 @@ testSchema = () ->
         nestedStringParam2:
           type: 'string'
 
-describe 'Functional. Init and get all values', ->
+describe 'Functional. Init and get all values.', ->
   beforeEach () ->
     this.state = mold.initSchema( testSchema() )
 
@@ -80,3 +80,4 @@ describe 'Functional. Init and get all values', ->
     fullState = this.state.getState('')
 
     assert.deepEqual(fullState, values)
+

@@ -1,44 +1,48 @@
 mold = require('../../src/index')
 
 testSchema = () ->
-  memoryBranch:
-    inMemory:
-      boolParam:
-        type: 'boolean'
-        default: false
-      stringParam:
-        type: 'string'
-        default: 'defaultStringValue'
-      numberParam:
-        type: 'number'
-        default: 5
-      nested:
-        nestedStringParam:
-          type: 'string'
-          default: 'defaultNestedStringValue'
+  inMemory:
+    boolParam:
+      type: 'boolean'
+      default: false
+    stringParam:
+      type: 'string'
+      default: 'defaultStringValue'
+    numberParam:
+      type: 'number'
+      default: 5
 
-describe 'Functional. Param instance', ->
+describe 'Functional. Param instance.', ->
   beforeEach () ->
     this.state = mold.initSchema( testSchema() )
-    this.inMemory = this.state.instance('memoryBranch.inMemory')
+    this.container = this.state.instance('inMemory')
 
-  it 'Get initial value, it must returns undefined', () ->
-    assert.isNull(this.inMemory.get('stringParam'))
-    assert.isNull(this.inMemory.mold.stringParam)
+  # TODO: param.get - must returns a promise
+    
+  it 'Get initial value, it must returns null', () ->
+    assert.isNull(this.container.get('boolParam').mold)
+    assert.isNull(this.container.get('stringParam').mold)
+    assert.isNull(this.container.get('numberParam').mold)
+    # TODO: check get() with promise
 
-  it 'Set and get value', () ->
-    this.inMemory.set('stringParam', 'new value')
-    assert.equal(this.inMemory.get('stringParam'), 'new value')
-    assert.equal(this.inMemory.mold.stringParam, 'new value')
+  it 'Set and get boolean value', () ->
+    param = this.container.get('boolParam')
+    param.set(true);
+    #assert.equal(param.get(), true)
+    assert.equal(param.mold, true)
 
-  it 'Reset to defaults one value', ->
-    this.inMemory.resetToDefault('stringParam');
-    assert.equal(this.inMemory.get('stringParam'), 'defaultStringValue')
+  it 'Set and get string value', () ->
+    param = this.container.get('stringParam')
+    param.set('new value');
+    #assert.equal(param.get(), 'new value')
+    assert.equal(param.mold, 'new value')
 
-  it 'Reset to defaults all children', ->
-    this.inMemory.resetToDefault();
-    assert.equal(this.inMemory.get('stringParam'), 'defaultStringValue')
+  it 'Set and get number value', () ->
+    param = this.container.get('numberParam')
+    param.set(11);
+    #assert.equal(param.get(), 11)
+    assert.equal(param.mold, 11)
 
-    # TODO: !!!!!
-    # TODO: Check number and boolean
-    #assert.equal(this.inMemory.get('nested.nestedStringParam'), 'defaultNestedStringValue')
+#  it 'Reset to defaults one value', ->
+#    this.container.resetToDefault('stringParam');
+#    assert.equal(this.container.get('stringParam'), 'defaultStringValue')

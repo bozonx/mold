@@ -50,3 +50,16 @@ describe 'Functional. Container instance', ->
 #    assert.isTrue(this.inMemory.has('stringParam'))
 
 # TODO: set values for all children
+
+# TODO: set and get child value and init
+#assert.isNull(this.container.mold.stringParam)
+
+#  it 'Set and get value', () ->
+#    this.container.set('stringParam', 'new value')
+#    assert.equal(this.container.get('stringParam'), 'new value')
+#    assert.equal(this.container.mold.stringParam, 'new value')
+
+#  it 'Reset to defaults all children', ->
+#    this.container.resetToDefault();
+#    assert.equal(this.container.get('stringParam'), 'defaultStringValue')
+#assert.equal(this.container.get('nested.nestedStringParam'), 'defaultNestedStringValue')

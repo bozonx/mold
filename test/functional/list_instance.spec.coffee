@@ -10,7 +10,7 @@ testSchema = () ->
           name: {type: 'string'}
         }
 
-describe 'Functional. List instance', ->
+describe 'Functional. List instance.', ->
   beforeEach () ->
     this.state = mold.initSchema( testSchema() )
     this.listParam = this.state.instance('memoryBranch.inMemory.listParam')
