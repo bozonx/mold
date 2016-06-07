@@ -19,7 +19,7 @@ export default class ParamInstance {
     // TODO: immutable
     return this._root;
   }
-  
+
   /**
    * Get value.
    * @returns {object} promise
@@ -37,7 +37,7 @@ export default class ParamInstance {
     var promise = this._state.setValue(this._root, value);
     // update mold;
     this.mold = this._state.getDirectly(this._root);
-    
+
     return promise;
   }
 
@@ -54,7 +54,8 @@ export default class ParamInstance {
   }
 
   _initComposition() {
-    this._state.setDirectly(this._root, null);
+    if (_.isUndefined(this._state.getDirectly(this._root)))
+      this._state.setDirectly(this._root, null);
 
     return this._state.getDirectly(this._root);
   }

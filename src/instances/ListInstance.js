@@ -19,7 +19,7 @@ export default class ListInstance {
     // TODO: immutable
     return this._root;
   }
-  
+
   /**
    * Get full list
    * @param params - for parametrized query
@@ -84,6 +84,9 @@ export default class ListInstance {
   // TODO: reset to default - должно вызваться сброс по умолчанию у всех элементов списка
 
   _initComposition() {
-    return this._state.setDirectly(this._root, []);
+    if (_.isUndefined(this._state.getDirectly(this._root)))
+      this._state.setDirectly(this._root, []);
+
+    return this._state.getDirectly(this._root);
   }
 }

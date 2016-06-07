@@ -10,7 +10,7 @@ export default class ContainerInstance {
     // mold is just a link to the composition
     this.mold = this._initComposition();
   }
-  
+
   /**
    * Get instance root
    * @returns {string}
@@ -37,12 +37,12 @@ export default class ContainerInstance {
    */
   set(path, value) {
     if (path === '') {
+      // TODO: test it
       // Set value for all children
       this._state.setValue(this._root, value);
     }
     else {
       // set value for one param
-      // TODO: check - children by path must be a param, not a container
       this._state.setValue(this._fullPath(path), value);
     }
   }
@@ -80,6 +80,10 @@ export default class ContainerInstance {
   }
 
   _initComposition() {
+    // TODO: только если значение не было проставленно ранее
+    // if (_.isUndefined(this._state.getDirectly(this._root)))
+    //   this._state.setDirectly(this._root, null);
+    
     // It's a container
     _.each(this.schema, (param, name) => {
       if (param.type) {

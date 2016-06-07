@@ -28,47 +28,43 @@ describe 'Functional. Container instance', ->
     this.testSchema = testSchema()
     this.state = mold.initSchema( this.testSchema )
     this.rootInstance = this.state.instance('memoryBranch')
+    this.container = this.rootInstance.get('inMemory')
 
   it 'Get container and get container instance', () ->
-    container = this.rootInstance.get('inMemory')
-    containerDeeper = container.get('nested')
+    containerDeeper = this.container.get('nested')
     # TODO: что должно быть в mold????
     #assert.deepEqual(containerDeeper.mold, this.testSchema.memoryBranch.inMemory.nested)
     assert.equal(containerDeeper.getRoot(), 'memoryBranch.inMemory.nested')
     assert.deepEqual(containerDeeper.schema, this.testSchema.memoryBranch.inMemory.nested)
 
   it 'Get container and get param instance', () ->
-    container = this.rootInstance.get('inMemory')
-    paramInstance = container.get('stringParam')
+    paramInstance = this.container.get('stringParam')
     assert.equal(paramInstance.getRoot(), 'memoryBranch.inMemory.stringParam')
     assert.deepEqual(paramInstance.schema, this.testSchema.memoryBranch.inMemory.stringParam)
 
   it 'Get container and get list instance', () ->
-    container = this.rootInstance.get('inMemory')
-    listInstance = container.get('listParam')
+    listInstance = this.container.get('listParam')
     assert.equal(listInstance.getRoot(), 'memoryBranch.inMemory.listParam')
     assert.deepEqual(listInstance.schema, this.testSchema.memoryBranch.inMemory.listParam)
 
+  it 'Has a subpath', () ->
+    assert.isTrue(this.container.has('nested.nestedStringParam'))
+    assert.isFalse(this.container.has('nested.nestedStringParam111'))
 
+  it 'Set and get child value', () ->
+    this.container.set('stringParam', 'new value')
+    assert.equal(this.container.get('stringParam').get(), 'new value')
+    assert.equal(this.container.get('stringParam').mold, 'new value')
+    assert.equal(this.container.mold.stringParam, 'new value')
 
-#  it 'Has value. before and after setting a value', () ->
-#    assert.isTrue(this.inMemory.has('stringParam'))
-#    this.inMemory.set('stringParam', 'new value')
-#    assert.isTrue(this.inMemory.has('stringParam'))
+# TODO: init children
+
 
 # TODO: set values for all children
 
-# TODO: set and get child value and init
-#assert.isNull(this.container.mold.stringParam)
 
-#  it 'Set and get value', () ->
-#    this.container.set('stringParam', 'new value')
-#    assert.equal(this.container.get('stringParam'), 'new value')
-#    assert.equal(this.container.mold.stringParam, 'new value')
-
+# TODO: reset to defaults
 #  it 'Reset to defaults all children', ->
 #    this.container.resetToDefault();
 #    assert.equal(this.container.get('stringParam'), 'defaultStringValue')
 #assert.equal(this.container.get('nested.nestedStringParam'), 'defaultNestedStringValue')
-
-# TODO: протестирвать если мы взяли инстанст item (memoryBranch.inMemory) и в нем находится list
