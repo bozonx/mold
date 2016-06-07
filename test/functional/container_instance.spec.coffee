@@ -1,6 +1,6 @@
 # TODO: протестирвать если мы взяли инстанст item (memoryBranch.inMemory) и в нем находится list
 
-stateSchema = require('stateSchema')
+mold = require('../../src/index')
 
 testSchema = () ->
   memoryBranch:
@@ -27,7 +27,7 @@ testSchema = () ->
 
 describe 'Functional. Container instance', ->
   beforeEach () ->
-    this.state = stateSchema.initSchema( testSchema() )
+    this.state = mold.initSchema( testSchema() )
     this.rootInstance = this.state.instance('memoryBranch')
 
   it 'Get container and get container instance', () ->

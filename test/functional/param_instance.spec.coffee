@@ -1,4 +1,4 @@
-stateSchema = require('stateSchema')
+mold = require('../../src/index')
 
 testSchema = () ->
   memoryBranch:
@@ -19,7 +19,7 @@ testSchema = () ->
 
 describe 'Functional. Param instance', ->
   beforeEach () ->
-    this.state = stateSchema.initSchema( testSchema() )
+    this.state = mold.initSchema( testSchema() )
     this.inMemory = this.state.instance('memoryBranch.inMemory')
 
   it 'Get initial value, it must returns undefined', () ->

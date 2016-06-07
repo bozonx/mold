@@ -1,4 +1,4 @@
-stateSchema = require('stateSchema')
+mold = require('../../src/index')
 
 testSchema = () ->
   memoryBranch:
@@ -12,7 +12,7 @@ testSchema = () ->
 
 describe 'Functional. List instance', ->
   beforeEach () ->
-    this.state = stateSchema.initSchema( testSchema() )
+    this.state = mold.initSchema( testSchema() )
     this.listParam = this.state.instance('memoryBranch.inMemory.listParam')
     this.list = [
       {

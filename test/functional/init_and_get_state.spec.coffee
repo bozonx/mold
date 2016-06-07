@@ -1,4 +1,4 @@
-stateSchema = require('stateSchema')
+mold = require('../../src/index')
 
 testSchema = () ->
   memoryBranch:
@@ -15,7 +15,7 @@ testSchema = () ->
 
 describe 'Functional. Init and get all values', ->
   beforeEach () ->
-    this.state = stateSchema.initSchema( testSchema() )
+    this.state = mold.initSchema( testSchema() )
 
   it 'Set full pack of values', () ->
     values =
