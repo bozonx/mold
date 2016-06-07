@@ -27,15 +27,27 @@ export default class ListInstance {
   get(params) {
     // TODO: do parametrized query
     // TODO: return instance instead value
+    // TODO: use an unmutable?
     return this._state.getValue(this._root);
   }
 
   getItem(itemFilterParams) {
     // TODO: возвращаем itemInstance и через него мы можем менять его значения
+
     // TODO: сделать поддержку колбэка для поиска
-    // TODO: use an unmutable?
     // TODO: в первую очередь искать по уникальному ключу
-    return _.find(this._state.getDirectly(this._root), itemFilterParams);
+
+    var value = _.find(this._state.getDirectly(this._root), itemFilterParams);
+    if (_.isUndefined(value))
+      throw new Error(`Can't find item by query "${JSON.stringify(itemFilterParams)}" in list "${this._root}"`);
+
+    return value;
+    
+    // TODO: сделать чтобы возвращал instance - контейнер или элемент
+
+    // var itemInstance = this._schemaManager.getInstance(`this._root[${itemFilterParams.id}]`);
+    //
+    // return itemInstance;
   }
 
   /**
@@ -66,8 +78,7 @@ export default class ListInstance {
    * Set full list silently
    */
   set(list) {
-    // TODO: не нужен silent???
-    return this._state.setSilent(this._root, list);
+    return this._state.setValue(this._root, list);
   }
 
   setSilent(list) {

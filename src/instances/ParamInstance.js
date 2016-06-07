@@ -50,6 +50,7 @@ export default class ParamInstance {
    * @param {string|undefined} path - relative to instance root. If path doesn't pass, it means use instance root.
    */
   resetToDefault() {
+    // TODO: test
     this._state.resetToDefault(this._root);
   }
 
