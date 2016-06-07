@@ -2,15 +2,11 @@
 import _ from 'lodash';
 
 import { recursiveSchema } from './helpers';
-import Composition from './Composition';
 
 export default class State {
-  constructor() {
-    this._composition = new Composition();
-  }
-
-  init(schemaManager) {
+  init(schemaManager, composition) {
     this._schemaManager = schemaManager;
+    this._composition = composition;
   }
 
   /**
@@ -19,11 +15,9 @@ export default class State {
    *     getValue('settings.showNotifications')
    *     // it returns promise with current value
    * @param {string} path - absolute path
-   * @returns {Promise}
+   * @returns {*} a value
    */
   getValue(path) {
-    // TODO: maybe return promise always???
-
     if (this._composition.has(path)) {
       // if composition has a value - return it
       return this._composition.get(path);
@@ -48,6 +42,15 @@ export default class State {
   }
 
   /**
+   * Set value without any checks
+   * @param path
+   * @param value
+   */
+  setDirectly(path, value) {
+    this._composition.set(path, value);
+  }
+
+  /**
    * Set new value to state
    * @param {string} path - absolute path
    * @param {*} value
@@ -67,38 +70,18 @@ export default class State {
    * @returns {object} promise
    */
   setSilent(path, value) {
-    // If it's a bad request for non existent param
-    if (!this._schemaManager.has(path))
-      throw new Error(`Can't set a value, a param "${path}" doesn't exists in schema!`);
-
+    // TODO: return promise
+    
+    // It rise an error if path doesn't consist with schema
     var schema = this._schemaManager.get(path);
     if (schema.type) {
-      // If it's a param - just set a value
+      // If it's a param or list - just set a value
       this._checkAndSetValue(schema, path, value);
     }
     else {
+      // It's a container - set values for all children
       recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
     }
-  }
-
-  /**
-   * Set value without any checks
-   * @param path
-   * @param value
-     */
-  setDirectly(path, value) {
-    this._composition.set(path, value);
-  }
-
-  /**
-   * Validate value using validate settings by path
-   * @param {string} path - absolute path
-   * @param {} value
-   * @returns {boolean}
-   */
-  validateValue(path, value) {
-    // TODO: сделать
-    return true;
   }
 
   /**
@@ -107,7 +90,7 @@ export default class State {
    */
   resetToDefault(path) {
     // TODO: переделать на this.setValue
-    
+
     var setToItem = (itemPath, itemSchema) => {
       if (!_.isUndefined(itemSchema.default)) {
         // set a value
@@ -133,6 +116,17 @@ export default class State {
     }
   }
 
+  /**
+   * Validate value using validate settings by path
+   * @param {string} path - absolute path
+   * @param {} value
+   * @returns {boolean}
+   */
+  validateValue(path, value) {
+    // TODO: сделать
+    return true;
+  }
+  
   _setRecursively(path, value, childPath, childSchema, childName) {
     if (childSchema.type) {
       // param
@@ -141,7 +135,7 @@ export default class State {
 
       var childValue = _.get(value, valuePath);
 
-      // If value doesn't exist for this schema brunch - do nothing
+      // If value doesn't exist for this schema branch - do nothing
       if (_.isUndefined(childValue)) return false;
 
       this._checkAndSetValue(childSchema, childPath, childValue);
@@ -153,26 +147,23 @@ export default class State {
   }
 
   /**
-   * Validate and set a value.
+   * Validate and set a value. You must pass list or param, not a container
    * @param {object} schema - schema for path
    * @param {string} path - to a param. (Not to container)
    * @param {*} value - value to set. (Not undefined and not an object)
-   * @returns {*}
    * @private
    */
   _checkAndSetValue(schema, path, value) {
-    // TODO: maybe return promise always???
-
     if (schema.type == 'list') {
       // For lists
       // TODO: do it for parametrized lists
       // TODO: validate all items in list
-      return this.setDirectly(path, value);
+      this.setDirectly(path, value);
     }
     else if (schema.type) {
       // For values
       if (this.validateValue(path, value)) {
-        return this.setDirectly(path, value);
+        this.setDirectly(path, value);
       }
       throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);
     }

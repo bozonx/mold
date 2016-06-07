@@ -30,13 +30,8 @@ export default class ParamInstance {
     return this._state.setValue(this._fullPath(path), value);
   }
 
-  /**
-   * Is param exists on a path
-   * @param {string} path - path relative to instance root
-   * @returns {boolean}
-   */
-  has(path) {
-    return this._schemaManager.has(this._fullPath(path));
+  setSilent(path, value) {
+    // TODO: silently
   }
 
   /**
@@ -57,21 +52,7 @@ export default class ParamInstance {
   }
 
   _initComposition() {
-    if (this.schema.type) {
-      // It's a param
-      this._state.setDirectly(this._root, null);
-    }
-    else {
-      // It's a container
-      _.each(this.schema, (param, name) => {
-        if (param.type) {
-          this._state.setDirectly(this._fullPath(name), null);
-        }
-        else {
-          // TODO: do it recursively
-        }
-      });
-    }
+    this._state.setDirectly(this._root, null);
 
     return this._state.getDirectly(this._root);
   }

@@ -17,6 +17,7 @@ export default class ListInstance {
    */
   get(params) {
     // TODO: do parametrized query
+    // TODO: return instance instead value
     return this._state.getValue(this._root);
   }
 
@@ -56,8 +57,12 @@ export default class ListInstance {
    * Set full list silently
    */
   set(list) {
-    // TODO: нужно ли silent???
+    // TODO: не нужен silent???
     return this._state.setSilent(this._root, list);
+  }
+
+  setSilent(list) {
+    // TODO: установить значения для всех потомков
   }
 
   /**

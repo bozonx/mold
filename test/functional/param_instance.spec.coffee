@@ -31,11 +31,6 @@ describe 'Functional. Param instance', ->
     assert.equal(this.inMemory.get('stringParam'), 'new value')
     assert.equal(this.inMemory.mold.stringParam, 'new value')
 
-#  it 'Has value. before and after setting a value', () ->
-#    assert.isTrue(this.inMemory.has('stringParam'))
-#    this.inMemory.set('stringParam', 'new value')
-#    assert.isTrue(this.inMemory.has('stringParam'))
-
   it 'Reset to defaults one value', ->
     this.inMemory.resetToDefault('stringParam');
     assert.equal(this.inMemory.get('stringParam'), 'defaultStringValue')
