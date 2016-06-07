@@ -1,5 +1,3 @@
-# TODO: протестирвать если мы взяли инстанст item (memoryBranch.inMemory) и в нем находится list
-
 mold = require('../../src/index')
 
 testSchema = () ->
@@ -27,20 +25,29 @@ testSchema = () ->
 
 describe 'Functional. Container instance', ->
   beforeEach () ->
-    this.state = mold.initSchema( testSchema() )
+    this.testSchema = testSchema()
+    this.state = mold.initSchema( this.testSchema )
     this.rootInstance = this.state.instance('memoryBranch')
 
   it 'Get container and get container instance', () ->
     container = this.rootInstance.get('inMemory')
     containerDeeper = container.get('nested')
+    # TODO: что должно быть в mold????
+    #assert.deepEqual(containerDeeper.mold, this.testSchema.memoryBranch.inMemory.nested)
+    assert.equal(containerDeeper.getRoot(), 'memoryBranch.inMemory.nested')
+    assert.deepEqual(containerDeeper.schema, this.testSchema.memoryBranch.inMemory.nested)
 
   it 'Get container and get param instance', () ->
     container = this.rootInstance.get('inMemory')
     paramInstance = container.get('stringParam')
+    assert.equal(paramInstance.getRoot(), 'memoryBranch.inMemory.stringParam')
+    assert.deepEqual(paramInstance.schema, this.testSchema.memoryBranch.inMemory.stringParam)
 
   it 'Get container and get list instance', () ->
     container = this.rootInstance.get('inMemory')
     listInstance = container.get('listParam')
+    assert.equal(listInstance.getRoot(), 'memoryBranch.inMemory.listParam')
+    assert.deepEqual(listInstance.schema, this.testSchema.memoryBranch.inMemory.listParam)
 
 
 
@@ -63,3 +70,5 @@ describe 'Functional. Container instance', ->
 #    this.container.resetToDefault();
 #    assert.equal(this.container.get('stringParam'), 'defaultStringValue')
 #assert.equal(this.container.get('nested.nestedStringParam'), 'defaultNestedStringValue')
+
+# TODO: протестирвать если мы взяли инстанст item (memoryBranch.inMemory) и в нем находится list

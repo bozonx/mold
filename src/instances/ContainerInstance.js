@@ -10,6 +10,15 @@ export default class ContainerInstance {
     // mold is just a link to the composition
     this.mold = this._initComposition();
   }
+  
+  /**
+   * Get instance root
+   * @returns {string}
+   */
+  getRoot() {
+    // TODO: immutable
+    return this._root;
+  }
 
   /**
    * Get child instance
@@ -80,7 +89,7 @@ export default class ContainerInstance {
         // TODO: do it recursively - use setSilent. А может вообще не нужно
       }
     });
-    
+
     return this._state.getDirectly(this._root);
   }
 }

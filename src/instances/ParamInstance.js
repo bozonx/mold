@@ -12,6 +12,15 @@ export default class ParamInstance {
   }
 
   /**
+   * Get instance root
+   * @returns {string}
+   */
+  getRoot() {
+    // TODO: immutable
+    return this._root;
+  }
+  
+  /**
    * Get value.
    * @returns {object} promise
    */

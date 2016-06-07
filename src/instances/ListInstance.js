@@ -12,6 +12,15 @@ export default class ListInstance {
   }
 
   /**
+   * Get instance root
+   * @returns {string}
+   */
+  getRoot() {
+    // TODO: immutable
+    return this._root;
+  }
+  
+  /**
    * Get full list
    * @param params - for parametrized query
    */
