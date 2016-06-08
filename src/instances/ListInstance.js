@@ -15,19 +15,27 @@ export default class ListInstance {
    * @returns {string}
    */
   getRoot() {
-    // TODO: immutable
-    return this._root;
+    return '' + this._root;
   }
 
   /**
-   * Get full list
+   * Get child
+   * @param {string} path - path relative to this instance root
+   * @returns {object} - instance of param or list or container
+   */
+  child(path) {
+    if (!path)
+      throw new Error(`You must pass a path argument.`);
+
+    return this._schemaManager.getInstance(this._fullPath(path));
+  }
+
+  /**
+   * Get filtered list
    * @param params - for parametrized query
    */
-  get(params) {
-    // TODO: do parametrized query
-    // TODO: return instance instead value
-    // TODO: use an unmutable?
-    return this._state.getValue(this._root);
+  filter(params) {
+    // TODO: do it
   }
 
   getItem(itemFilterParams) {
@@ -60,6 +68,7 @@ export default class ListInstance {
     composition.push(item);
     // TODO: return promise
     //return item;
+    this._updateMold();
   }
 
   /**
@@ -71,6 +80,7 @@ export default class ListInstance {
     // TODO: наверное лучше искать по уникальному ключу
     _.remove(this._state.getDirectly(this._root), item)
     // TODO: return promise
+    this._updateMold();
   }
 
   has() {
@@ -82,14 +92,16 @@ export default class ListInstance {
    */
   setSilent(list) {
     // TODO: проверить, что установятся значения для всех потомков
-    return this._state.setValue(this._root, list);
+    this._state.setValue(this._root, list);
+    this._updateMold();
   }
 
   /**
    * Clear full list
    */
   clear() {
-    _.remove(this._state.getDirectly(this._root))
+    _.remove(this._state.getDirectly(this._root));
+    this._updateMold();
   }
 
   /**
@@ -99,6 +111,15 @@ export default class ListInstance {
     // TODO: do it
     //this._state.resetToDefault(this._root);
     // TODO: reset to default - должно вызваться сброс по умолчанию у всех элементов списка
+    this._updateMold();
+  }
+
+  _fullPath(relativePath) {
+    return `${this._root}.${relativePath}`;
+  }
+  
+  _updateMold() {
+    this.mold = this._state.getDirectly(this._root);
   }
   
   _initComposition() {

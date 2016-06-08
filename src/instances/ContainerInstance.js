@@ -15,16 +15,17 @@ export default class ContainerInstance {
    * @returns {string}
    */
   getRoot() {
-    // TODO: immutable
-    return this._root;
+    return '' + this._root;
   }
 
   /**
-   * Get child instance
-   * @param {string} path - path relative to instance root
+   * Get child
+   * @param {string} path - path relative to this instance root
    * @returns {object} - instance of param or list or container
    */
-  get(path) {
+  child(path) {
+    if (!path)
+      throw new Error(`You must pass a path argument.`);
     return this._schemaManager.getInstance(this._fullPath(path));
   }
 
@@ -35,6 +36,7 @@ export default class ContainerInstance {
    * @returns {object} promise
    */
   set(path, value) {
+    // TODO: return promise
     if (path === '') {
       // TODO: test it
       // Set value for all children
@@ -44,6 +46,7 @@ export default class ContainerInstance {
       // set value for one param
       this._state.setValue(this._fullPath(path), value);
     }
+    this._updateMold();
   }
 
   setSilent(path, values) {
@@ -72,10 +75,15 @@ export default class ContainerInstance {
     // else {
     //   this._state.resetToDefault(this._root);
     // }
+    this._updateMold();
   }
 
   _fullPath(relativePath) {
     return `${this._root}.${relativePath}`;
+  }
+
+  _updateMold() {
+    this.mold = this._state.getDirectly(this._root);
   }
 
   _initComposition() {

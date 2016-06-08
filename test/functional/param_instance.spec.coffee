@@ -18,27 +18,27 @@ describe 'Functional. Param instance.', ->
     this.container = this.state.instance('inMemory')
 
   # TODO: param.get - must returns a promise
-    
+
   it 'Get initial value, it must returns null', () ->
-    assert.isNull(this.container.get('boolParam').mold)
-    assert.isNull(this.container.get('stringParam').mold)
-    assert.isNull(this.container.get('numberParam').mold)
+    assert.isNull(this.container.child('boolParam').mold)
+    assert.isNull(this.container.child('stringParam').mold)
+    assert.isNull(this.container.child('numberParam').mold)
     # TODO: check get() with promise
 
   it 'Set and get boolean value', () ->
-    param = this.container.get('boolParam')
+    param = this.container.child('boolParam')
     param.set(true);
     #assert.equal(param.get(), true)
     assert.equal(param.mold, true)
 
   it 'Set and get string value', () ->
-    param = this.container.get('stringParam')
+    param = this.container.child('stringParam')
     param.set('new value');
     #assert.equal(param.get(), 'new value')
     assert.equal(param.mold, 'new value')
 
   it 'Set and get number value', () ->
-    param = this.container.get('numberParam')
+    param = this.container.child('numberParam')
     param.set(11);
     #assert.equal(param.get(), 11)
     assert.equal(param.mold, 11)

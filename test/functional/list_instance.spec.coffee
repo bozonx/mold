@@ -25,9 +25,9 @@ describe 'Functional. List instance.', ->
       },
     ]
 
-  it 'Set and get all list', ->
+  it 'Set full list', ->
     this.listParam.setSilent(this.list)
-    assert.deepEqual(this.listParam.get(), this.list)
+    assert.deepEqual(this.listParam.mold, this.list)
 
   it 'Add item and get item', ->
     newItem = {id: 3, name: 'name3'}
@@ -37,12 +37,16 @@ describe 'Functional. List instance.', ->
   it 'Clear a list', ->
     this.listParam.setSilent(this.list)
     this.listParam.clear()
-    assert.equal(this.listParam.get().length, 0)
+    assert.equal(this.listParam.mold.length, 0)
 
   it 'remove', ->
     this.listParam.setSilent(this.list)
     this.listParam.remove({id: 1})
-    assert.deepEqual(this.listParam.get(), _.reject(this.list, {id:1}))
+    assert.deepEqual(this.listParam.mold, _.reject(this.list, {id:1}))
+
+  it 'Get child', ->
+    # TODO: do it
+
 
   it 'Many manupulations with list', ->
     newItem = {id: 3, name: 'name3'}
@@ -50,7 +54,7 @@ describe 'Functional. List instance.', ->
     this.listParam.add(newItem)
     this.listParam.remove({id: 2})
     # TODO: add change item and to default
-    assert.deepEqual(this.listParam.get(), [
+    assert.deepEqual(this.listParam.mold, [
       {
         id: 1
         name: 'name1'

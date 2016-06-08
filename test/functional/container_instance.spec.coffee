@@ -28,22 +28,22 @@ describe 'Functional. Container instance', ->
     this.testSchema = testSchema()
     this.state = mold.initSchema( this.testSchema )
     this.rootInstance = this.state.instance('memoryBranch')
-    this.container = this.rootInstance.get('inMemory')
+    this.container = this.rootInstance.child('inMemory')
 
   it 'Get container and get container instance', () ->
-    containerDeeper = this.container.get('nested')
+    containerDeeper = this.container.child('nested')
     # TODO: что должно быть в mold????
     #assert.deepEqual(containerDeeper.mold, this.testSchema.memoryBranch.inMemory.nested)
     assert.equal(containerDeeper.getRoot(), 'memoryBranch.inMemory.nested')
     assert.deepEqual(containerDeeper.schema, this.testSchema.memoryBranch.inMemory.nested)
 
   it 'Get container and get param instance', () ->
-    paramInstance = this.container.get('stringParam')
+    paramInstance = this.container.child('stringParam')
     assert.equal(paramInstance.getRoot(), 'memoryBranch.inMemory.stringParam')
     assert.deepEqual(paramInstance.schema, this.testSchema.memoryBranch.inMemory.stringParam)
 
   it 'Get container and get list instance', () ->
-    listInstance = this.container.get('listParam')
+    listInstance = this.container.child('listParam')
     assert.equal(listInstance.getRoot(), 'memoryBranch.inMemory.listParam')
     assert.deepEqual(listInstance.schema, this.testSchema.memoryBranch.inMemory.listParam)
 
@@ -53,8 +53,8 @@ describe 'Functional. Container instance', ->
 
   it 'Set and get child value', () ->
     this.container.set('stringParam', 'new value')
-    assert.equal(this.container.get('stringParam').get(), 'new value')
-    assert.equal(this.container.get('stringParam').mold, 'new value')
+    assert.equal(this.container.child('stringParam').get(), 'new value')
+    assert.equal(this.container.child('stringParam').mold, 'new value')
     assert.equal(this.container.mold.stringParam, 'new value')
 
 # TODO: init children
