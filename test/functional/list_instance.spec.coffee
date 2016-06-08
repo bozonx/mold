@@ -53,11 +53,11 @@ describe 'Functional. List instance.', ->
     this.listParam.setSilent(this.list)
     this.listParam.add(newItem)
     this.listParam.remove({id: 2})
-    # TODO: add change item and to default
+    #this.listParam.getItem(1).child('name').set('new name');
     assert.deepEqual(_.compact(this.listParam.mold), [
       {
         id: 1
-        name: 'name1'
+        name: 'new name'
       }
       {
         id: 3

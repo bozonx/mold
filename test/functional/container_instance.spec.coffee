@@ -23,7 +23,7 @@ testSchema = () ->
           type: 'string'
           default: 'defaultNestedStringValue'
 
-describe 'Functional. Container instance', ->
+describe 'Functional. Container instance.', ->
   beforeEach () ->
     this.testSchema = testSchema()
     this.state = mold.initSchema( this.testSchema )
@@ -51,11 +51,10 @@ describe 'Functional. Container instance', ->
     assert.isTrue(this.container.has('nested.nestedStringParam'))
     assert.isFalse(this.container.has('nested.nestedStringParam111'))
 
-  it 'Set and get child value', () ->
-    this.container.set('stringParam', 'new value')
-    assert.equal(this.container.child('stringParam').get(), 'new value')
-    assert.equal(this.container.child('stringParam').mold, 'new value')
-    assert.equal(this.container.mold.stringParam, 'new value')
+#  it 'Set and get child value', () ->
+#    this.container.set('stringParam', 'new value')
+#    assert.equal(this.container.child('stringParam').mold, 'new value')
+#    assert.equal(this.container.mold.stringParam, 'new value')
 
 # TODO: init children
 

@@ -1,13 +1,18 @@
 import _ from 'lodash';
 
 export default class ContainerInstance {
-  constructor(root, schema, state, schemaManager) {
-    this._root = root;
+  constructor(state, schemaManager) {
     this._state = state;
     this._schemaManager = schemaManager;
+  }
+
+  init(root, schema) {
+    this._root = root;
     this.schema = schema;
     // mold is just a link to the composition
-    this.mold = this._initComposition();
+    this.mold = {};
+    this._initComposition();
+    this.updateMold();
   }
 
   /**
@@ -31,25 +36,25 @@ export default class ContainerInstance {
     return this._schemaManager.getInstance(this._fullPath(path));
   }
 
-  /**
-   * Set child value for child or for all children if you pass path = ''
-   * @param {string} path - path relative to instance root
-   * @param {object} value for child or children
-   * @returns {object} promise
-   */
-  set(path, value) {
-    // TODO: return promise
-    if (path === '') {
-      // TODO: test it
-      // Set value for all children
-      this._state.setValue(this._root, value);
-    }
-    else {
-      // set value for one param
-      this._state.setValue(this._fullPath(path), value);
-    }
-    this._updateMold();
-  }
+  // /**
+  //  * Set child value for child or for all children if you pass path = ''
+  //  * @param {string} path - path relative to instance root
+  //  * @param {object} value for child or children
+  //  * @returns {object} promise
+  //  */
+  // set(path, value) {
+  //   // TODO: return promise
+  //   if (path === '') {
+  //     // TODO: test it
+  //     // Set value for all children
+  //     this._state.setValue(this._root, value);
+  //   }
+  //   else {
+  //     // set value for one param
+  //     this._state.setValue(this._fullPath(path), value);
+  //   }
+  //   this.updateMold();
+  // }
 
   setSilent(path, values) {
     // TODO: установить значения для всех потомков или для одного если передан path
@@ -77,15 +82,15 @@ export default class ContainerInstance {
     // else {
     //   this._state.resetToDefault(this._root);
     // }
-    this._updateMold();
+    this.updateMold();
+  }
+
+  updateMold() {
+    this.mold = this._state.getDirectly(this._root);
   }
 
   _fullPath(relativePath) {
     return `${this._root}.${relativePath}`;
-  }
-
-  _updateMold() {
-    this.mold = this._state.getDirectly(this._root);
   }
 
   _initComposition() {
@@ -102,7 +107,5 @@ export default class ContainerInstance {
         // TODO: do it recursively - use setSilent. А может вообще не нужно
       }
     });
-
-    return this._state.getDirectly(this._root);
   }
 }

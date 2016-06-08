@@ -2,13 +2,18 @@
 import _ from 'lodash';
 
 export default class ListInstance {
-  constructor(root, schema, state, schemaManager) {
-    this._root = root;
+  constructor(state, schemaManager) {
     this._state = state;
     this._schemaManager = schemaManager;
+  }
+  
+  init(root, schema) {
+    this._root = root;
     this.schema = schema;
     // mold is just a link to the composition
-    this.mold = this._initComposition();
+    this.mold = {};
+    this._initComposition();
+    this.updateMold();
   }
 
   /**
@@ -67,7 +72,7 @@ export default class ListInstance {
     composition.push(item);
     // TODO: return promise
     //return item;
-    this._updateMold();
+    this.updateMold();
   }
 
   /**
@@ -79,7 +84,7 @@ export default class ListInstance {
     // TODO: наверное лучше искать по уникальному ключу
     _.remove(this._state.getDirectly(this._root), item)
     // TODO: return promise
-    this._updateMold();
+    this.updateMold();
   }
 
   has() {
@@ -92,7 +97,7 @@ export default class ListInstance {
   setSilent(list) {
     // TODO: проверить, что установятся значения для всех потомков
     this._state.setValue(this._root, list);
-    this._updateMold();
+    this.updateMold();
   }
 
   /**
@@ -100,7 +105,7 @@ export default class ListInstance {
    */
   clear() {
     _.remove(this._state.getDirectly(this._root));
-    this._updateMold();
+    this.updateMold();
   }
 
   /**
@@ -110,6 +115,10 @@ export default class ListInstance {
     // TODO: do it
   }
 
+  updateMold() {
+    this.mold = this._state.getDirectly(this._root);
+  }
+  
   _fullPath(relativePath) {
     if (_.startsWith(relativePath, '['))
       return `${this._root}${relativePath}`;
@@ -117,15 +126,8 @@ export default class ListInstance {
     return `${this._root}.${relativePath}`;
   }
 
-  _updateMold() {
-    this.mold = this._state.getDirectly(this._root);
-  }
-
   _initComposition() {
     if (_.isUndefined(this._state.getDirectly(this._root)))
       this._state.setDirectly(this._root, []);
-
-    return this._state.getDirectly(this._root);
   }
 }
-

@@ -60,16 +60,22 @@ export default class SchemaManager {
    * @returns {object} - instance of param or list or container
    */
   getInstance(path) {
+    var instance;
     // It rise an error if path doesn't consist with schema
     var schema = this.get(path);
     if (!schema.type) {
-      return new ContainerInstance(path, schema, this._state, this);
+      instance = new ContainerInstance(this._state, this);
     }
     else if (schema.type === 'list') {
-      return new ListInstance(path, schema, this._state, this);
+      instance = new ListInstance(this._state, this);
+    }
+    else {
+      instance = new ParamInstance(this._state, this);      
     }
 
-    return new ParamInstance(path, schema, this._state, this);
+    instance.init(path, schema);
+
+    return instance;
   }
 
 
