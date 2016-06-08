@@ -18,6 +18,8 @@ export default class ContainerInstance {
     return '' + this._root;
   }
 
+  // TODO: add value() or getValue() method - получить значение по пути - нельзя получать корень
+
   /**
    * Get child
    * @param {string} path - path relative to this instance root
@@ -90,7 +92,7 @@ export default class ContainerInstance {
     // TODO: сбрасывать на null только если значение не было проставленно ранее
     // if (_.isUndefined(this._state.getDirectly(this._root)))
     //   this._state.setDirectly(this._root, null);
-    
+
     // It's a container
     _.each(this.schema, (param, name) => {
       if (param.type) {

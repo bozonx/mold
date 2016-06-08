@@ -1,4 +1,8 @@
+// Simple list witout queries like filter or find
+
 import _ from 'lodash';
+
+// TODO: значение массива может быть не только {} но и строка или число
 
 export default class ListInstance {
   constructor(root, schema, state, schemaManager) {
@@ -8,6 +12,9 @@ export default class ListInstance {
     this.schema = schema;
     // mold is just a link to the composition
     this.mold = this._initComposition();
+
+    // TODO: взять из схемы promary key
+    this.primary = 'id';
   }
 
   /**
@@ -18,6 +25,8 @@ export default class ListInstance {
     return '' + this._root;
   }
 
+  // TODO: add value() or getValue() method - получить значение по пути - нельзя получать корень
+
   /**
    * Get child
    * @param {string} path - path relative to this instance root
@@ -27,34 +36,34 @@ export default class ListInstance {
     if (!path)
       throw new Error(`You must pass a path argument.`);
 
-    return this._schemaManager.getInstance(this._fullPath(path));
+    // TODO: test for get long path
+
+    var fullPath = this._fullPath(path);
+    var schemaPath = fullPath.replace(/\[\d+]/, '.item');
+    var instance = this._schemaManager.getInstance(schemaPath);
+    var mold = this._state.getDirectly(fullPath);
+    // TODO: не очень хорошо так устанавливать mold
+    instance.mold = mold;
+
+    return instance;
   }
 
   /**
-   * Get filtered list
-   * @param params - for parametrized query
+   * Get item from list by primary key.
+   * It just useful wrapper for this.child(path)
+   * @param {number} primaryId - your promary id, defined in schema
+   * @returns {object} - instance of param or list or container
    */
-  filter(params) {
-    // TODO: do it
-  }
+  getItem(primaryId) {
+    // TODO: test it
+    return this.child(`[${primaryId}]`);
 
-  getItem(itemFilterParams) {
-    // TODO: возвращаем itemInstance и через него мы можем менять его значения
+    //return this._schemaManager.getInstance(this._fullPath(`[${primaryId}]`));
 
-    // TODO: сделать поддержку колбэка для поиска
-    // TODO: в первую очередь искать по уникальному ключу
-
-    var value = _.find(this._state.getDirectly(this._root), itemFilterParams);
-    if (_.isUndefined(value))
-      throw new Error(`Can't find item by query "${JSON.stringify(itemFilterParams)}" in list "${this._root}"`);
-
-    return value;
-
-    // TODO: сделать чтобы возвращал instance - контейнер или элемент
-
-    // var itemInstance = this._schemaManager.getInstance(`this._root[${itemFilterParams.id}]`);
-    //
-    // return itemInstance;
+    // var value = _.find(this._state.getDirectly(this._root), itemFilterParams);
+    // if (_.isUndefined(value))
+    //   throw new Error(`Can't find item by query "${JSON.stringify(itemFilterParams)}" in list "${this._root}"`);
+    // return value;
   }
 
   /**
@@ -63,12 +72,18 @@ export default class ListInstance {
    * @returns {object} promise
    */
   add(item) {
-    var composition = this._state.getDirectly(this._root);
     // TODO: validate item
-    composition.push(item);
-    // TODO: return promise
-    //return item;
+    var composition = this._state.getDirectly(this._root);
+    
+    if (!_.isNumber(item[this.primary]))
+      throw new Error(`Item ${JSON.stringify(item)} doesn't have primary key value "${this.primary}".`);
+
+    composition[item[this.primary]] = item;
+
+    this._state.setDirectly(this._root, composition);
+
     this._updateMold();
+    // TODO: return promise
   }
 
   /**
@@ -77,10 +92,28 @@ export default class ListInstance {
    * @returns {object} promise
    */
   remove(item) {
-    // TODO: наверное лучше искать по уникальному ключу
-    _.remove(this._state.getDirectly(this._root), item)
-    // TODO: return promise
+    var composition = this._state.getDirectly(this._root);
+    // if (_.isObject(item)) {
+    //   // For collections - remove by primary key
+    //   var removeItem = {};
+    //   removeItem[this.primary] = item[this.primary];
+    //   _.remove(composition, removeItem);
+    // }
+    // else {
+    //   // For primitives
+    //   _.remove(composition, item);
+    // }
+
+    // For collections - remove by primary key
+    var removeItem = {};
+    removeItem[this.primary] = item[this.primary];
+    _.remove(composition, removeItem);
+
+    //this._state.setDirectly(this._root, _.compact(composition));
+    this._state.setDirectly(this._root, composition);
+
     this._updateMold();
+    // TODO: return promise
   }
 
   has() {
@@ -92,7 +125,7 @@ export default class ListInstance {
    */
   setSilent(list) {
     // TODO: проверить, что установятся значения для всех потомков
-    this._state.setValue(this._root, list);
+    this._state.setSilent(this._root, list);
     this._updateMold();
   }
 
@@ -115,13 +148,16 @@ export default class ListInstance {
   }
 
   _fullPath(relativePath) {
+    if (_.startsWith(relativePath, '['))
+      return `${this._root}${relativePath}`;
+
     return `${this._root}.${relativePath}`;
   }
-  
+
   _updateMold() {
     this.mold = this._state.getDirectly(this._root);
   }
-  
+
   _initComposition() {
     if (_.isUndefined(this._state.getDirectly(this._root)))
       this._state.setDirectly(this._root, []);

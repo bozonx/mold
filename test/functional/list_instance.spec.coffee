@@ -32,7 +32,7 @@ describe 'Functional. List instance.', ->
   it 'Add item and get item', ->
     newItem = {id: 3, name: 'name3'}
     this.listParam.add(newItem)
-    assert.equal(this.listParam.getItem({id: 3}), newItem)
+    assert.equal(this.listParam.getItem(3).mold, newItem)
 
   it 'Clear a list', ->
     this.listParam.setSilent(this.list)
@@ -54,7 +54,7 @@ describe 'Functional. List instance.', ->
     this.listParam.add(newItem)
     this.listParam.remove({id: 2})
     # TODO: add change item and to default
-    assert.deepEqual(this.listParam.mold, [
+    assert.deepEqual(_.compact(this.listParam.mold), [
       {
         id: 1
         name: 'name1'
