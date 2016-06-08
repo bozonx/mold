@@ -6,7 +6,6 @@ export default class ContainerInstance {
     this._state = state;
     this._schemaManager = schemaManager;
     this.schema = schema;
-
     // mold is just a link to the composition
     this.mold = this._initComposition();
   }
@@ -80,7 +79,7 @@ export default class ContainerInstance {
   }
 
   _initComposition() {
-    // TODO: только если значение не было проставленно ранее
+    // TODO: сбрасывать на null только если значение не было проставленно ранее
     // if (_.isUndefined(this._state.getDirectly(this._root)))
     //   this._state.setDirectly(this._root, null);
     

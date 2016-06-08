@@ -6,7 +6,6 @@ export default class ParamInstance {
     this._state = state;
     this._schemaManager = schemaManager;
     this.schema = schema;
-
     // mold is just a link to the composition
     this.mold = this._initComposition();
   }
@@ -47,7 +46,6 @@ export default class ParamInstance {
 
   /**
    * Reset to default
-   * @param {string|undefined} path - relative to instance root. If path doesn't pass, it means use instance root.
    */
   resetToDefault() {
     // TODO: test

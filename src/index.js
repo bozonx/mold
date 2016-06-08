@@ -1,16 +1,3 @@
-// TODO: сделать pounch
-// TODO: добавить события
-// TODO: синхронные / асинхронные запросы - async await
-
-// TODO: сделать localStorage
-// TODO: сделать url state
-// TODO: сделать конфигурацию - где можно задать параметры для pounch и тд
-
-// TODO: сделать тест всего - разные операции - одни результат
-// TODO: сделать валидацию параметров
-// TODO: сделать валидацию схемы
-// TODO: forceUpdate - обновить данные с сервера - либо использовать silent
-
 import Composition from './Composition';
 import SchemaManager from './SchemaManager';
 import State from './State';
@@ -20,7 +7,7 @@ class MainInstance {
     this._composition = new Composition();
     this._schemaManager = new SchemaManager();
     this._state = new State();
-    
+
     this._schemaManager.init(schema, this._state);
     this._state.init(this._schemaManager, this._composition);
 

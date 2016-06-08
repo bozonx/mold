@@ -26,7 +26,7 @@ describe 'Functional. List instance.', ->
     ]
 
   it 'Set and get all list', ->
-    this.listParam.set(this.list)
+    this.listParam.setSilent(this.list)
     assert.deepEqual(this.listParam.get(), this.list)
 
   it 'Add item and get item', ->
@@ -35,18 +35,18 @@ describe 'Functional. List instance.', ->
     assert.equal(this.listParam.getItem({id: 3}), newItem)
 
   it 'Clear a list', ->
-    this.listParam.set(this.list)
+    this.listParam.setSilent(this.list)
     this.listParam.clear()
     assert.equal(this.listParam.get().length, 0)
 
   it 'remove', ->
-    this.listParam.set(this.list)
+    this.listParam.setSilent(this.list)
     this.listParam.remove({id: 1})
     assert.deepEqual(this.listParam.get(), _.reject(this.list, {id:1}))
 
   it 'Many manupulations with list', ->
     newItem = {id: 3, name: 'name3'}
-    this.listParam.set(this.list)
+    this.listParam.setSilent(this.list)
     this.listParam.add(newItem)
     this.listParam.remove({id: 2})
     # TODO: add change item and to default
