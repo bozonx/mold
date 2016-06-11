@@ -12,8 +12,8 @@ testSchema = () ->
 
 describe 'Functional. List instance.', ->
   beforeEach () ->
-    this.state = mold.initSchema( testSchema() )
-    this.listParam = this.state.instance('memoryBranch.inMemory.listParam')
+    this.mold = mold.initSchema( testSchema() )
+    this.listParam = this.mold.instance('memoryBranch.inMemory.listParam')
     this.list = [
       {
         id: 1

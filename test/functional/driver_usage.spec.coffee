@@ -10,23 +10,23 @@ testSchema = (localStorage) ->
       param1: {type: 'string'}
     })
 
-describe 'Functional. PounchDb driver.', ->
+describe 'Functional. Driver usage.', ->
   beforeEach ->
     localStorage = new LocalStorage({});
     this.testSchema = testSchema(localStorage)
-    this.state = mold.initSchema( this.testSchema )
-    this.localStorageInstance = this.state.instance('commonBranch.inLocalStorage')
+    this.mold = mold.initSchema( this.testSchema )
+    this.localStorageInstance = this.mold.instance('commonBranch.inLocalStorage')
 
   it 'Schema must be without drivers', ->
-    assert.equal(this.state._schemaManager.get('commonBranch.inLocalStorage.param1'),
+    assert.equal(this.mold.schemaManager.get('commonBranch.inLocalStorage.param1'),
       this.testSchema.commonBranch.inLocalStorage.schema.param1)
 
   it 'get driver from schema', ->
     # TODO: Don't use private
-    driver = this.state._schemaManager.getDriver('commonBranch.inLocalStorage')
+    driver = this.mold.schemaManager.getDriver('commonBranch.inLocalStorage')
     assert.equal(driver.constructor.name, 'LocalLocalStorage')
     assert.equal(driver.root, 'commonBranch.inLocalStorage')
 
-    driverFromDeep = this.state._schemaManager.getDriver('commonBranch.inLocalStorage.param1')
+    driverFromDeep = this.mold.schemaManager.getDriver('commonBranch.inLocalStorage.param1')
     assert.equal(driverFromDeep.constructor.name, 'LocalLocalStorage')
     assert.equal(driverFromDeep.root, 'commonBranch.inLocalStorage')

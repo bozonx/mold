@@ -4,8 +4,8 @@ import _ from 'lodash';
 import { recursiveSchema } from './helpers';
 
 export default class State {
-  init(schemaManager, composition) {
-    this._schemaManager = schemaManager;
+  init(_main, composition) {
+    this._main = _main;
     this._composition = composition;
 
   }
@@ -25,7 +25,7 @@ export default class State {
       // if composition has a value - return it
       return this._composition.get(path);
     }
-    else if (this._schemaManager.has(path)) {
+    else if (this._main.schemaManager.has(path)) {
       // Init a value.
       // In common use it doesn't happens because composition param initializing on creating new item/list instance
       this._composition.set(path, null);
@@ -76,7 +76,7 @@ export default class State {
     // TODO: always returns a promise!!!
 
     // It rise an error if path doesn't consist with schema
-    var schema = this._schemaManager.get(path);
+    var schema = this._main.schemaManager.get(path);
     if (schema.type) {
       // If it's a param or list - just set a value
       this._checkAndSetValue(schema, path, value);
@@ -105,7 +105,7 @@ export default class State {
       }
     };
 
-    var itemSchema = this._schemaManager.get(path);
+    var itemSchema = this._main.schemaManager.get(path);
     if (itemSchema.type) {
       // for item
       setToItem(path, itemSchema);

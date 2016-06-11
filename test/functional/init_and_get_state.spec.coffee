@@ -15,7 +15,7 @@ testSchema = () ->
 
 describe 'Functional. Init and get all values.', ->
   beforeEach () ->
-    this.state = mold.initSchema( testSchema() )
+    this.mold = mold.initSchema( testSchema() )
 
   it 'Set full pack of values', () ->
     values =
@@ -26,26 +26,26 @@ describe 'Functional. Init and get all values.', ->
           nested:
             nestedStringParam1: 'savedNestedString1'
             nestedStringParam2: 'savedNestedString2'
-    this.state.initState(values)
+    this.mold.initState(values)
 
-    assert.equal(this.state.getState('memoryBranch.inMemory.stringParam1'), 'savedString1')
-    assert.equal(this.state.getState('memoryBranch.inMemory.stringParam2'), 'savedString2')
-    assert.equal(this.state.getState('memoryBranch.inMemory.nested.nestedStringParam1'), 'savedNestedString1')
-    assert.equal(this.state.getState('memoryBranch.inMemory.nested.nestedStringParam2'), 'savedNestedString2')
+    assert.equal(this.mold.getState('memoryBranch.inMemory.stringParam1'), 'savedString1')
+    assert.equal(this.mold.getState('memoryBranch.inMemory.stringParam2'), 'savedString2')
+    assert.equal(this.mold.getState('memoryBranch.inMemory.nested.nestedStringParam1'), 'savedNestedString1')
+    assert.equal(this.mold.getState('memoryBranch.inMemory.nested.nestedStringParam2'), 'savedNestedString2')
 
   it 'values to path', () ->
     values =
       nested:
         nestedStringParam1: 'savedNestedString1'
         nestedStringParam2: 'savedNestedString2'
-    this.state.initState('memoryBranch.inMemory', values)
+    this.mold.initState('memoryBranch.inMemory', values)
 
-    assert.equal(this.state.getState('memoryBranch.inMemory.nested.nestedStringParam1'), 'savedNestedString1')
-    assert.equal(this.state.getState('memoryBranch.inMemory.nested.nestedStringParam2'), 'savedNestedString2')
+    assert.equal(this.mold.getState('memoryBranch.inMemory.nested.nestedStringParam1'), 'savedNestedString1')
+    assert.equal(this.mold.getState('memoryBranch.inMemory.nested.nestedStringParam2'), 'savedNestedString2')
 
   it 'set one value', () ->
-    this.state.initState('memoryBranch.inMemory.nested.nestedStringParam1', 'savedNestedString1')
-    assert.equal(this.state.getState('memoryBranch.inMemory.nested.nestedStringParam1'), 'savedNestedString1')
+    this.mold.initState('memoryBranch.inMemory.nested.nestedStringParam1', 'savedNestedString1')
+    assert.equal(this.mold.getState('memoryBranch.inMemory.nested.nestedStringParam1'), 'savedNestedString1')
 
   it 'values doesn\'t correspond to schema', () ->
     values =
@@ -56,16 +56,16 @@ describe 'Functional. Init and get all values.', ->
           nested:
             nestedStringParam1: 'savedNestedString1'
             nestedAnotherParam: 'nestedAnotherParamValue'
-    this.state.initState(values)
+    this.mold.initState(values)
 
-    assert.equal(this.state.getState('memoryBranch.inMemory.stringParam1'), 'savedString1')
-    assert.isNull(this.state.getState('memoryBranch.inMemory.stringParam2'))
-    assert.equal(this.state.getState('memoryBranch.inMemory.nested.nestedStringParam1'), 'savedNestedString1')
-    assert.isNull(this.state.getState('memoryBranch.inMemory.nested.nestedStringParam2'))
+    assert.equal(this.mold.getState('memoryBranch.inMemory.stringParam1'), 'savedString1')
+    assert.isNull(this.mold.getState('memoryBranch.inMemory.stringParam2'))
+    assert.equal(this.mold.getState('memoryBranch.inMemory.nested.nestedStringParam1'), 'savedNestedString1')
+    assert.isNull(this.mold.getState('memoryBranch.inMemory.nested.nestedStringParam2'))
     # get directly from composition
-    assert.equal(this.state._state.getDirectly('memoryBranch.inMemory.stringParam1'), 'savedString1')
-    assert.isUndefined(this.state._state.getDirectly('memoryBranch.inMemory.anotherParam'))
-    assert.isUndefined(this.state._state.getDirectly('memoryBranch.inMemory.nested.nestedAnotherParam'))
+    assert.equal(this.mold.state.getDirectly('memoryBranch.inMemory.stringParam1'), 'savedString1')
+    assert.isUndefined(this.mold.state.getDirectly('memoryBranch.inMemory.anotherParam'))
+    assert.isUndefined(this.mold.state.getDirectly('memoryBranch.inMemory.nested.nestedAnotherParam'))
 
   it 'get full state', () ->
     values =
@@ -76,8 +76,8 @@ describe 'Functional. Init and get all values.', ->
           nested:
             nestedStringParam1: 'savedNestedString1'
             nestedStringParam2: 'savedNestedString2'
-    this.state.initState(values)
-    fullState = this.state.getState('')
+    this.mold.initState(values)
+    fullState = this.mold.getState('')
 
     assert.deepEqual(fullState, values)
 

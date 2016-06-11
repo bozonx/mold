@@ -12,10 +12,10 @@ import { recursiveSchema } from './helpers';
 
 
 export default class SchemaManager {
-  init(schema, state) {
+  init(schema, main) {
     this._schema = null;
     this._rawSchema = schema;
-    this._state = state;
+    this._main = main;
     this._drivers = {};
 
     this.initSchema();
@@ -67,13 +67,13 @@ export default class SchemaManager {
     // It rise an error if path doesn't consist with schema
     var schema = this.get(path);
     if (!schema.type) {
-      instance = new ContainerInstance(this._state, this);
+      instance = new ContainerInstance(this._main.state, this);
     }
     else if (schema.type === 'list') {
-      instance = new ListInstance(this._state, this);
+      instance = new ListInstance(this._main.state, this);
     }
     else {
-      instance = new ParamInstance(this._state, this);
+      instance = new ParamInstance(this._main.state, this);
     }
 
     instance.init(path, schema);
@@ -96,7 +96,7 @@ export default class SchemaManager {
       if (value.driver) {
         this._drivers[newPath] = value.driver;
         // TODO: local events
-        value.driver.init(newPath, this, this._state, {});
+        value.driver.init(newPath, this, this._main.state, {});
 
         if (!_.isObject(value.schema))
           throw new Error(`On a path "${newPath}" driver must has a "schema" param.`);
