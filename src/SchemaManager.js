@@ -97,10 +97,10 @@ export default class SchemaManager {
         this._drivers[newPath] = value.driver;
         // TODO: local events
         value.driver.init(newPath, this, this._state, {});
-        
-        if (!_.isObject(value.item))
+
+        if (!_.isObject(value.schema))
           throw new Error(`On a path "${newPath}" driver must has a "schema" param.`);
-        
+
         _.set(this._schema, newPath, value.schema);
         // Go throw inner param 'schema'
         return 'schema';
@@ -109,7 +109,7 @@ export default class SchemaManager {
         // list
         if (!_.isObject(value.item))
           throw new Error(`On a path "${newPath}" list must has an "item" param.`);
-        
+
         _.set(this._schema, newPath, {
           type: value.type,
           item: {},
@@ -132,41 +132,15 @@ export default class SchemaManager {
     });
   }
 
-
-  // /**
-  //  * Find handler for path
-  //  * @param {string} path
-  //  * @returns {object | undefined} return handler or undefined
-  //  */
-  // getHandler(path) {
-  //
-  //   // TODO: !!!! похоже уже не нужно
-  //
-  //
-  //   var handler = null;
-  //
-  //   // TODO: сделать по другому - восстановить полный путь с innerSchema, потом заменить их на handler, и потом брать последний handler
-  //
-  //   var pathParts = path.split('.');
-  //   // remove last element
-  //   if (pathParts.length >= 2) pathParts.pop();
-  //
-  //   for (var i = pathParts.length; i > 0; i--) {
-  //     // at last time i = 1
-  //     var newPath = pathParts.slice(0, i).concat(['handler']).join('.');
-  //     if (_.has(this._schema, newPath)) {
-  //       handler = _.get(this._schema, newPath);
-  //       break;
-  //     }
-  //   }
-  //
-  //   if (handler) {
-  //     return handler;
-  //   }
-  //   else {
-  //     throw new Error(`Can't find any handlers`);
-  //   }
-  // }
-  //
+  /**
+   * Get driver. If it doesnt exists, returns undefined
+   * @param {string} path - absolute path
+   * @returns {object|undefined}
+   */
+  getDriver(path) {
+    return _.find(this._drivers, (driver, driverPath) => {
+      return path.indexOf(driverPath) === 0;
+    });
+  }
 
 }

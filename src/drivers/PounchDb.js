@@ -41,7 +41,7 @@ export default class eee {
 }
 
 
-class LocalInstance {
+class LocalPounchDb {
   constructor(mainInstatnce, localConfig) {
     this._mainInstatnce = mainInstatnce;
     this._localConfig = localConfig;
@@ -85,7 +85,7 @@ export default class PounchDb {
      */
   schema(localConfig, schema) {
     return {
-      driver: new LocalInstance(this, localConfig),
+      driver: new LocalPounchDb(this, localConfig),
       schema: schema,
     }
   }

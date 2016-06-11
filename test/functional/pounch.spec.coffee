@@ -1,9 +1,6 @@
 mold = require('../../src/index')
 PounchDb = require('../../src/drivers/PounchDb')
 
-# TODO: можно задавать несколько инстансов с разными локальными конфигами
-# TODO: можно делать вложенные инстансы с разными конфигами
-
 testSchema = (pounch) ->
   commonBranch:
     inPounch: pounch.schema({}, {

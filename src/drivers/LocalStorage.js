@@ -1,4 +1,4 @@
-class LocalInstance {
+class LocalLocalStorage {
   constructor(mainInstatnce, localConfig, db) {
     this._mainInstatnce = mainInstatnce;
     this._localConfig = localConfig;
@@ -12,7 +12,7 @@ class LocalInstance {
    * @param {object} events
    */
   init(root, schemaManager, state, events) {
-    this._root = root;
+    this.root = root;
     this._schemaManager = schemaManager;
     this._state = state;
     this._events = events;
@@ -20,11 +20,11 @@ class LocalInstance {
     // TODO: Does it need a main events object?
 
     // Listen all data manipulation events
-    this._events.on('data', (event) => {
-      if (event.method == 'set') {
-        // ...
-      }
-    })
+    // this._events.on('data', (event) => {
+    //   if (event.method == 'set') {
+    //     // ...
+    //   }
+    // })
   }
 }
 
@@ -41,7 +41,7 @@ export default class LocalStorage {
    */
   schema(localConfig, schema) {
     return {
-      driver: new LocalInstance(this, localConfig),
+      driver: new LocalLocalStorage(this, localConfig),
       schema: schema,
     }
   }
