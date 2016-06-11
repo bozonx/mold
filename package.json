@@ -29,6 +29,8 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-0": "^6.5.0",
     "lodash": "^4.13.1",
+    "memdown": "^1.2.0",
+    "pouchdb": "^5.4.1",
     "source-map-support": "^0.4.0",
     "webpack": "^1.13.1"
   },

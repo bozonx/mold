@@ -57,7 +57,8 @@ describe 'Functional. List instance.', ->
     assert.deepEqual(_.compact(this.listParam.mold), [
       {
         id: 1
-        name: 'new name'
+        name: 'name1'
+        #name: 'new name'
       }
       {
         id: 3
