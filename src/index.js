@@ -7,12 +7,10 @@ class MainInstance {
     this._composition = new Composition();
     this._schemaManager = new SchemaManager();
     this._state = new State();
+    
 
     this._schemaManager.init(schema, this._state);
     this._state.init(this._schemaManager, this._composition);
-
-    // initialize all handlers
-    //this._schemaManager.initHandlers();
   }
 
   /**

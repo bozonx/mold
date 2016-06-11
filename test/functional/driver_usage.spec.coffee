@@ -1,12 +1,12 @@
 mold = require('../../src/index')
-PounchDb = require('../../src/drivers/PounchDb')
+LocalStorage = require('../../src/drivers/LocalStorage')
 
 # TODO: можно задавать несколько инстансов с разными локальными конфигами
 # TODO: можно делать вложенные инстансы с разными конфигами
 
-testSchema = (pounch) ->
+testSchema = (localStorage) ->
   commonBranch:
-    inPounch: pounch.schema({}, {
+    inLocalStorage: localStorage.schema({}, {
       param1: {type: 'string'}
       listParam:
         type: 'list'
@@ -16,14 +16,10 @@ testSchema = (pounch) ->
         }
     })
 
-#describe 'Functional. PounchDb driver.', ->
-#  beforeEach ->
-#    pounch = new PounchDb({
-#      # main config
-#    });
-#    this.schema = testSchema(pounch)
-#
-#
-#  it 'simple use', ->
-#
+describe 'Functional. PounchDb driver.', ->
+  beforeEach ->
+    localStorage = new LocalStorage({});
+    this.schema = testSchema(localStorage)
 
+
+it 'simple use', ->

@@ -8,14 +8,17 @@ import ParamInstance from './instances/ParamInstance';
 import ListInstance from './instances/ListInstance';
 import ContainerInstance from './instances/ContainerInstance';
 
-//import { eachHandler } from './helpers';
+import { recursiveSchema } from './helpers';
 
 
 export default class SchemaManager {
   init(schema, state) {
-    this._schema = schema;
+    this._schema = null;
+    this._rawSchema = schema;
     this._state = state;
-    // TODO: нужно из default сделать type во всех элементах при валидации
+    this._drivers = {};
+
+    this.initSchema();
   }
 
   /**
@@ -70,7 +73,7 @@ export default class SchemaManager {
       instance = new ListInstance(this._state, this);
     }
     else {
-      instance = new ParamInstance(this._state, this);      
+      instance = new ParamInstance(this._state, this);
     }
 
     instance.init(path, schema);
@@ -79,6 +82,55 @@ export default class SchemaManager {
   }
 
 
+  /**
+   * Validate schema and initialize drivers
+   * Remove handlers from schema and move it to this._drivers
+   */
+  initSchema() {
+    this._schema = {};
+
+    // TODO: нужно из default сделать type во всех элементах при валидации
+    // TODO: сделать {type: ..., default(or test): ...} из примитивных элементов name: 'value' | 1 | false
+
+    recursiveSchema('', this._rawSchema, (newPath, value, itemName) => {
+      if (value.driver) {
+        this._drivers[newPath] = value.driver;
+        // TODO: local events
+        value.driver.init(newPath, this, this._state, {});
+        
+        if (!_.isObject(value.item))
+          throw new Error(`On a path "${newPath}" driver must has a "schema" param.`);
+        
+        _.set(this._schema, newPath, value.schema);
+        // Go throw inner param 'schema'
+        return 'schema';
+      }
+      else if (value.type == 'list') {
+        // list
+        if (!_.isObject(value.item))
+          throw new Error(`On a path "${newPath}" list must has an "item" param.`);
+        
+        _.set(this._schema, newPath, {
+          type: value.type,
+          item: {},
+        });
+        // Go deeper
+        return 'item';
+      }
+      else if (value.type) {
+        // param
+        // TODO: validate it
+        _.set(this._schema, newPath, value);
+        return false;
+      }
+      else {
+        // container
+        _.set(this._schema, newPath, {});
+        // Go deeper
+        return true;
+      }
+    });
+  }
 
 
   // /**
@@ -116,12 +168,5 @@ export default class SchemaManager {
   //   }
   // }
   //
-  // initHandlers() {
-  //   // TODO: переделать
-  //   // TODO: может для драйверов сделать отдельный список???
-  //   eachHandler('', this._schema, (path, value) => {
-  //     // init handler
-  //     value.handler.onInitializeHandler(path, value.schema, this);
-  //   });
-  // }
+
 }

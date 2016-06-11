@@ -7,6 +7,7 @@ export default class State {
   init(schemaManager, composition) {
     this._schemaManager = schemaManager;
     this._composition = composition;
+
   }
 
   /**
