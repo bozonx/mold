@@ -15,7 +15,7 @@ testSchema = () ->
 
 describe 'Functional. Init and get all values.', ->
   beforeEach () ->
-    this.mold = mold.initSchema( testSchema() )
+    this.mold = mold.initSchema( {}, testSchema() )
 
   it 'Set full pack of values', () ->
     values =

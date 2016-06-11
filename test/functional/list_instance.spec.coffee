@@ -12,7 +12,7 @@ testSchema = () ->
 
 describe 'Functional. List instance.', ->
   beforeEach () ->
-    this.mold = mold.initSchema( testSchema() )
+    this.mold = mold.initSchema( {}, testSchema() )
     this.listParam = this.mold.instance('memoryBranch.inMemory.listParam')
     this.list = [
       {

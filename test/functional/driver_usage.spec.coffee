@@ -14,7 +14,7 @@ describe 'Functional. Driver usage.', ->
   beforeEach ->
     localStorage = new LocalStorage({});
     this.testSchema = testSchema(localStorage)
-    this.mold = mold.initSchema( this.testSchema )
+    this.mold = mold.initSchema( {}, this.testSchema )
     this.localStorageInstance = this.mold.instance('commonBranch.inLocalStorage')
 
   it 'Schema must be without drivers', ->

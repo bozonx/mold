@@ -3,9 +3,14 @@ import SchemaManager from './SchemaManager';
 import State from './State';
 
 export default class MainInstance {
-  constructor(schema) {
+  constructor(config, schema) {
     this._composition = new Composition();
-
+    this.config = config;
+    
+    // TODO: validate a config
+    
+    // TODO: ругаться если не передан
+    this.events = config.eventEmitter;
     this.schemaManager = new SchemaManager();
     this.state = new State();
 

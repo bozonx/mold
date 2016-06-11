@@ -1,5 +1,5 @@
 import MainInstance from './MainInstance';
 
-export function initSchema(schema) {
-  return new MainInstance(schema);
+export function initSchema(config, schema) {
+  return new MainInstance(config, schema);
 }

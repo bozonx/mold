@@ -26,7 +26,7 @@ testSchema = () ->
 describe 'Functional. Container instance.', ->
   beforeEach () ->
     this.testSchema = testSchema()
-    this.mold = mold.initSchema( this.testSchema )
+    this.mold = mold.initSchema( {}, this.testSchema )
     this.rootInstance = this.mold.instance('memoryBranch')
     this.container = this.rootInstance.child('inMemory')
 

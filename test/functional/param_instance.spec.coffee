@@ -14,7 +14,7 @@ testSchema = () ->
 
 describe 'Functional. Param instance.', ->
   beforeEach () ->
-    this.mold = mold.initSchema( testSchema() )
+    this.mold = mold.initSchema( {}, testSchema() )
     this.container = this.mold.instance('inMemory')
 
   # TODO: param.get - must returns a promise
