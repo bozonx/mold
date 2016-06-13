@@ -4,9 +4,9 @@
 
 import _ from 'lodash';
 
-import ParamInstance from './instances/ParamInstance';
-import ListInstance from './instances/ListInstance';
-import ContainerInstance from './instances/ContainerInstance';
+import ParamInstance from './types/ParamInstance';
+import ListInstance from './types/ListInstance';
+import ContainerInstance from './types/ContainerInstance';
 
 import { recursiveSchema } from './helpers';
 

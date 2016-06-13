@@ -7,49 +7,49 @@ export default class State {
   init(_main, composition) {
     this._main = _main;
     this._composition = composition;
-
-  }
-
-  /**
-   * Get data by path
-   * example:
-   *     getValue('settings.showNotifications')
-   *     // it returns promise with current value
-   * @param {string} path - absolute path
-   * @returns {*} a value
-   */
-  getValue(path) {
-    // TODO: always returns a promise!!!
-
-    if (this._composition.has(path)) {
-      // if composition has a value - return it
-      return this._composition.get(path);
-    }
-    else if (this._main.schemaManager.has(path)) {
-      // Init a value.
-      // In common use it doesn't happens because composition param initializing on creating new item/list instance
-      this._composition.set(path, null);
-      return null;
-    }
-
-    // It's a bad request for non existent param
-    throw new Error(`Can't get a value, a param ${path} doesn't exists in schema!`);
   }
 
   /**
    * Get value without any checks
    * @param path
    */
-  getDirectly(path) {
+  getComposition(path) {
     return this._composition.get(path);
   }
+
+  // /**
+  //  * Get data by path
+  //  * example:
+  //  *     getValue('settings.showNotifications')
+  //  *     // it returns promise with current value
+  //  * @param {string} path - absolute path
+  //  * @returns {Promise}
+  //  */
+  // getValue(path) {
+  //   // TODO: always returns a promise!!!
+  //
+  //   if (this._composition.has(path)) {
+  //     // if composition has a value - return it
+  //     return this._composition.get(path);
+  //   }
+  //   else if (this._main.schemaManager.has(path)) {
+  //     // TODO: переделать - нужно делать запрос в драйвер
+  //     // Init a value.
+  //     // In common use it doesn't happens because composition param initializing on creating new item/list instance
+  //     this._composition.set(path, null);
+  //     return null;
+  //   }
+  //
+  //   // It's a bad request for non existent param
+  //   throw new Error(`Can't get a value, a param ${path} doesn't exists in schema!`);
+  // }
 
   /**
    * Set value without any checks
    * @param path
    * @param value
    */
-  setDirectly(path, value) {
+  setComposition(path, value) {
     this._composition.set(path, value);
   }
 
@@ -61,6 +61,7 @@ export default class State {
    */
   setValue(path, value) {
     // TODO: rise an event
+    // TODO: сделать запрос в драйвер
 
     return this.setSilent(path, value);
   }
@@ -97,11 +98,11 @@ export default class State {
     var setToItem = (itemPath, itemSchema) => {
       if (!_.isUndefined(itemSchema.default)) {
         // set a value
-        this.setDirectly(itemPath, itemSchema.default);
+        this.setComposition(itemPath, itemSchema.default);
       }
       else {
         // set null
-        this.setDirectly(itemPath, null);
+        this.setComposition(itemPath, null);
       }
     };
 
@@ -161,12 +162,12 @@ export default class State {
       // For lists
       // TODO: do it for parametrized lists
       // TODO: validate all items in list
-      this.setDirectly(path, value);
+      this.setComposition(path, value);
     }
     else if (schema.type) {
       // For values
       if (this.validateValue(path, value)) {
-        this.setDirectly(path, value);
+        this.setComposition(path, value);
       }
       else {
         throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);

@@ -2,13 +2,13 @@ import Composition from './Composition';
 import SchemaManager from './SchemaManager';
 import State from './State';
 
-export default class MainInstance {
+export default class MoldInstance {
   constructor(config, schema) {
     this._composition = new Composition();
     this.config = config;
-    
+
     // TODO: validate a config
-    
+
     // TODO: ругаться если не передан
     this.events = config.eventEmitter;
     this.schemaManager = new SchemaManager();
@@ -16,15 +16,6 @@ export default class MainInstance {
 
     this.schemaManager.init(schema, this);
     this.state.init(this, this._composition);
-  }
-
-  /**
-   * Get all current runtime state
-   * @param {string} path - path to a state. To get root, pass ''
-   * @returns {object} state
-   */
-  getState(path) {
-    return this.state.getValue(path);
   }
 
   /**

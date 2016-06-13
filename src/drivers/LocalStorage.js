@@ -1,5 +1,5 @@
 class LocalLocalStorage {
-  constructor(mainInstatnce, localConfig, db) {
+  constructor(mainInstatnce, localConfig) {
     this._mainInstatnce = mainInstatnce;
     this._localConfig = localConfig;
   }
@@ -37,7 +37,7 @@ export default class LocalStorage {
    * Schema helper
    * @param {object} localConfig
    * @param {object} schema
-   * @returns {{driver: LocalInstance, schema: *}}
+   * @returns {{driver: LocalLocalStorage, schema: *}}
    */
   schema(localConfig, schema) {
     return {

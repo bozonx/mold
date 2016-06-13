@@ -9,8 +9,8 @@ export default class Composition {
    * Get value from compositon.
    * It hopes a path is correct
    * To get root, pass '' to a path
-   * @param path
-   * @returns {*}
+   * @param {string} path - absolute path
+   * @returns {*} - value by path
    */
   get(path) {
     // TODO: maybe return immutable?
@@ -21,7 +21,7 @@ export default class Composition {
   /**
    * Checks for storage has a value
    * If you pass '' to a path, it means root and returns true
-   * @param path
+   * @param {string} path - absolute path
    * @returns {boolean}
    */
   has(path) {
@@ -31,9 +31,10 @@ export default class Composition {
 
   /**
    * Set value to composition
-   * It hopes a path and a value are correct
-   * @param path
-   * @param value
+   * It hopes a path and a value are correct.
+   * It create or update value on the path.
+   * @param {string} path - absolute path
+   * @param {*} value - new value
    */
   set(path, value) {
     // TODO: поддержка path = ''

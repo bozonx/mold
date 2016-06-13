@@ -62,11 +62,11 @@ export default class ParamInstance {
   }
 
   updateMold() {
-    this.mold = this._state.getDirectly(this._root);
+    this.mold = this._state.getComposition(this._root);
   }
 
   _initComposition() {
-    if (_.isUndefined(this._state.getDirectly(this._root)))
-      this._state.setDirectly(this._root, null);
+    if (_.isUndefined(this._state.getComposition(this._root)))
+      this._state.setComposition(this._root, null);
   }
 }

@@ -1,15 +1,12 @@
-// Simple list witout queries like filter or find
-
+// We can filter or find param
 import _ from 'lodash';
-
-// TODO: значение массива может быть не только {} но и строка или число - как в таком случае использовать primary
 
 export default class ListInstance {
   constructor(state, schemaManager) {
     this._state = state;
     this._schemaManager = schemaManager;
   }
-
+  
   init(root, schema) {
     this._root = root;
     this.schema = schema;
@@ -17,9 +14,6 @@ export default class ListInstance {
     this.mold = {};
     this._initComposition();
     this.updateMold();
-
-    // TODO: взять из схемы promary key
-    this.primary = 'id';
   }
 
   /**
@@ -38,28 +32,33 @@ export default class ListInstance {
    * @returns {object} - instance of param or list or container
    */
   child(path) {
-    // TODO: test for get long path
 
-    if (!path)
-      throw new Error(`You must pass a path argument.`);
+  }
 
-    var fullPath = this._fullPath(path);
-    var schemaPath = fullPath.replace(/\[\d+]/, '.item');
-    var instance = this._schemaManager.getInstance(schemaPath);
-    // reinit instance with correct path
-    instance.init(fullPath, instance.schema);
+  /**
+   * Get filtered list
+   * @param params - for parametrized query
+   */
+  filter(params) {
+    // TODO: do it - for server connect
+  }
 
-    return instance;
+  /**
+   * Find one item via params
+   * @param params - for parametrized query
+   */
+  find(params) {
+    // TODO: do it - for server connect
   }
 
   /**
    * Get item from list by primary key.
    * It just useful wrapper for this.child(path)
-   * @param {number} primaryId - your primary key value, defined in schema
+   * @param {number} primaryId - your promary id, defined in schema
    * @returns {object} - instance of param or list or container
    */
   getItem(primaryId) {
-    return this.child(`[${primaryId}]`);
+
   }
 
   /**
@@ -68,18 +67,12 @@ export default class ListInstance {
    * @returns {object} promise
    */
   add(item) {
+    var composition = this._state.getComposition(this._root);
     // TODO: validate item
-    var composition = this._state.getDirectly(this._root);
-
-    if (!_.isNumber(item[this.primary]))
-      throw new Error(`Item ${JSON.stringify(item)} doesn't have primary key value "${this.primary}".`);
-
-    composition[item[this.primary]] = item;
-
-    this._state.setDirectly(this._root, composition);
-
-    this.updateMold();
+    composition.push(item);
     // TODO: return promise
+    //return item;
+    this.updateMold();
   }
 
   /**
@@ -88,15 +81,10 @@ export default class ListInstance {
    * @returns {object} promise
    */
   remove(item) {
-    var composition = this._state.getDirectly(this._root);
-    var removeItem = {};
-    removeItem[this.primary] = item[this.primary];
-    _.remove(composition, removeItem);
-
-    this._state.setDirectly(this._root, composition);
-
-    this.updateMold();
+    // TODO: наверное лучше искать по уникальному ключу
+    _.remove(this._state.getComposition(this._root), item)
     // TODO: return promise
+    this.updateMold();
   }
 
   has() {
@@ -108,11 +96,7 @@ export default class ListInstance {
    */
   setSilent(list) {
     // TODO: проверить, что установятся значения для всех потомков
-    
-    if (!_.isArray)
-      throw new Error(`You must pass a list argument.`);
-    
-    this._state.setSilent(this._root, list);
+    this._state.setValue(this._root, list);
     this.updateMold();
   }
 
@@ -120,7 +104,7 @@ export default class ListInstance {
    * Clear full list
    */
   clear() {
-    _.remove(this._state.getDirectly(this._root));
+    _.remove(this._state.getComposition(this._root));
     this.updateMold();
   }
 
@@ -129,13 +113,10 @@ export default class ListInstance {
    */
   resetToDefault() {
     // TODO: do it
-    //this._state.resetToDefault(this._root);
-    // TODO: reset to default - должно вызваться сброс по умолчанию у всех элементов списка
-    this.updateMold();
   }
 
   updateMold() {
-    this.mold = this._state.getDirectly(this._root);
+    this.mold = this._state.getComposition(this._root);
   }
   
   _fullPath(relativePath) {
@@ -146,7 +127,7 @@ export default class ListInstance {
   }
 
   _initComposition() {
-    if (_.isUndefined(this._state.getDirectly(this._root)))
-      this._state.setDirectly(this._root, []);
+    if (_.isUndefined(this._state.getComposition(this._root)))
+      this._state.setComposition(this._root, []);
   }
 }

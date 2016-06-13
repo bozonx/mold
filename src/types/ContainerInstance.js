@@ -86,7 +86,7 @@ export default class ContainerInstance {
   }
 
   updateMold() {
-    this.mold = this._state.getDirectly(this._root);
+    this.mold = this._state.getComposition(this._root);
   }
 
   _fullPath(relativePath) {
@@ -95,13 +95,13 @@ export default class ContainerInstance {
 
   _initComposition() {
     // TODO: сбрасывать на null только если значение не было проставленно ранее
-    // if (_.isUndefined(this._state.getDirectly(this._root)))
-    //   this._state.setDirectly(this._root, null);
+    // if (_.isUndefined(this._state.getComposition(this._root)))
+    //   this._state.setComposition(this._root, null);
 
     // It's a container
     _.each(this.schema, (param, name) => {
       if (param.type) {
-        this._state.setDirectly(this._fullPath(name), null);
+        this._state.setComposition(this._fullPath(name), null);
       }
       else {
         // TODO: do it recursively - use setSilent. А может вообще не нужно
