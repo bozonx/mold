@@ -20,8 +20,8 @@ export default class MoldInstance {
 
   /**
    * Set all initial values. Work mode:
-   *    setSilent(value) - pass values to root
-   *    setSilent(path, value) - pass values to path
+   *    initState(value) - pass values to root
+   *    initState(path, value) - pass values to path
    * It silently setup a state.
    */
   initState(param1, param2) {
@@ -31,7 +31,7 @@ export default class MoldInstance {
       path = '';
       value = param1;
     }
-    this.state.setSilent(path, value);
+    return this.state.setSilent(path, value);
   }
 
   /**

@@ -1,3 +1,5 @@
+_ = require('lodash');
+
 mold = require('../../src/index')
 
 # TODO: можно задавать несколько инстансов с разными локальными конфигами
@@ -14,6 +16,10 @@ class LocalTestDriver
     this._state = state;
     this._events = events;
 
+  middleware: (event, next, error) ->
+    newEvent = _.clone(event);
+    next(newEvent);
+
     
 class TestDriver
   constructor: (mainConfig) ->
@@ -23,8 +29,8 @@ class TestDriver
     driver: new LocalTestDriver(this, localConfig)
     schema: schema
 
-    
-    
+
+
 testSchema = (localStorage) ->
   commonBranch:
     inTestDriver: localStorage.schema({}, {

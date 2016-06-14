@@ -57,7 +57,7 @@ export default class State {
    * Set new value to state
    * @param {string} path - absolute path
    * @param {*} value
-   * @returns {object} promise
+   * @returns {Promise}
    */
   setValue(path, value) {
     // TODO: rise an event
@@ -71,21 +71,34 @@ export default class State {
    * You can set all values to branch if you pass a container.
    * @param {string} path - absolute path
    * @param {*} value
-   * @returns {object} promise
+   * @returns {Promise}
    */
   setSilent(path, value) {
     // TODO: always returns a promise!!!
 
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(path);
-    if (schema.type) {
-      // If it's a param or list - just set a value
-      this._checkAndSetValue(schema, path, value);
+
+    // TODO: check  сдедать отдельной функцией
+
+    try {
+      if (schema.type) {
+        // If it's a param or list - just set a value
+        this._checkAndSetValue(schema, path, value);
+      }
+      else {
+        // It's a container - set values for all children
+        recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
+      }
+    } catch (err) {
+      throw new Error(err);
     }
-    else {
-      // It's a container - set values for all children
-      recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
-    }
+
+    return this._startDriverQuery({
+      type: 'set',
+      path: path,
+      value: value,
+    });
   }
 
   /**
@@ -94,6 +107,8 @@ export default class State {
    */
   resetToDefault(path) {
     // TODO: переделать на this.setValue
+    // TODO: наверное тоже надо вернуть {Promise}
+    // TODO: использовать setSilent
 
     var setToItem = (itemPath, itemSchema) => {
       if (!_.isUndefined(itemSchema.default)) {
@@ -123,7 +138,7 @@ export default class State {
   /**
    * Validate value using validate settings by path
    * @param {string} path - absolute path
-   * @param {} value
+   * @param {*} value
    * @returns {boolean}
    */
   validateValue(path, value) {
@@ -174,4 +189,27 @@ export default class State {
       }
     }
   }
+
+  /**
+   * Start query to driver for data.
+   * @param {{type: string, path: string, value: *}} params
+   * @returns {Promise}
+   * @private
+   */
+  _startDriverQuery(params) {
+    var driver = this._main.schemaManager.getDriver(params.path);
+
+    var event = {
+      ... params,
+    };
+    
+    // if driver not defined - it means memory driver
+    if (!driver) return new Promise((resolve) => {resolve()});
+
+    return new Promise((resolve, reject) => {
+      // TODO: сформировать подходящий для драйвера запрос - либо пользователь формирует, либо указать в схеме - указать модель
+      driver.middleware(event, resolve, reject);
+    });
+  }
+
 }

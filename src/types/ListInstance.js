@@ -112,8 +112,11 @@ export default class ListInstance {
     if (!_.isArray)
       throw new Error(`You must pass a list argument.`);
     
-    this._state.setSilent(this._root, list);
+    // TODO: it retuns promise - is it correct for this method???
+
+    var promise = this._state.setSilent(this._root, list);
     this.updateMold();
+    return promise;
   }
 
   /**
