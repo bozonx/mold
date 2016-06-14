@@ -9,6 +9,8 @@ class LocalTestDriver
   constructor: (mainInstatnce, localConfig) ->
     this._mainInstatnce = mainInstatnce
     this._localConfig = localConfig
+    # memory storage for test
+    this.__storage = {}
 
   init: (root, schemaManager, state, events) ->
     this.root = root;
@@ -17,10 +19,10 @@ class LocalTestDriver
     this._events = events;
 
   middleware: (event, next, error) ->
-    newEvent = _.clone(event);
-    next(newEvent);
+    _.set(this.__storage, event.path, event.requestValue);
+    next(event);
 
-    
+
 class TestDriver
   constructor: (mainConfig) ->
     this.mainConfig = mainConfig
@@ -57,3 +59,17 @@ describe 'Functional. Driver usage.', ->
     driverFromDeep = this.mold.schemaManager.getDriver('commonBranch.inTestDriver.param1')
     assert.equal(driverFromDeep.constructor.name, 'LocalTestDriver')
     assert.equal(driverFromDeep.root, 'commonBranch.inTestDriver')
+
+  it 'set data via driver middleware by running state.setSilent()', ->
+    this.mold.state.setSilent('commonBranch.inTestDriver.param1', 'new value')
+    driver = this.mold.schemaManager.getDriver('commonBranch.inTestDriver')
+
+    assert.equal(this.mold.state.getComposition('commonBranch.inTestDriver.param1'), 'new value')
+    # TODO: должен ли быть такой длинный путь у драйвера????
+    assert.equal(_.get(driver.__storage, 'commonBranch.inTestDriver.param1'), 'new value')
+
+  it 'check promise', () ->
+    promise = this.mold.state.setSilent('commonBranch.inTestDriver.param1', 'new value')
+    expect(promise).to.eventually.deep.equal({type: 'set', path: 'commonBranch.inTestDriver.param1', requestValue: 'new value'})
+
+  # TODO: check error in middleware
