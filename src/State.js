@@ -74,12 +74,14 @@ export default class State {
    * @returns {Promise}
    */
   setSilent(path, value) {
-    // TODO: always returns a promise!!!
+    // TODO: по умолчанию mold обновляется и потом делается запрос,
+    // TODO:     * но если запрос не удастся - наверное надо вернуть как было??? или дать приложению решить
+    // TODO:     * в конфиге можно задать, чтобы mold обновлялся только после успешного запроса на сервер
 
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(path);
 
-    // TODO: check  сдедать отдельной функцией
+    // TODO: валидацию сдедать отдельной функцией
 
     try {
       if (schema.type) {
@@ -97,7 +99,7 @@ export default class State {
     return this._startDriverQuery({
       type: 'set',
       path: path,
-      value: value,
+      requestValue: value,
     });
   }
 
@@ -192,7 +194,10 @@ export default class State {
 
   /**
    * Start query to driver for data.
-   * @param {{type: string, path: string, value: *}} params
+   * @param {{type: string, path: string, requestValue: *}} params
+   *     * type is one of: get, set, add, delete
+   *     * path: full path in mold
+   *     * requestValue: for "set" and "add" types - value to set
    * @returns {Promise}
    * @private
    */
@@ -207,7 +212,9 @@ export default class State {
     if (!driver) return new Promise((resolve) => {resolve()});
 
     return new Promise((resolve, reject) => {
-      // TODO: сформировать подходящий для драйвера запрос - либо пользователь формирует, либо указать в схеме - указать модель
+      // TODO: сформировать подходящий для драйвера запрос
+      // TODO:     * либо пользователь формирует
+      // TODO:     * либо указать в схеме - указать модель
       driver.middleware(event, resolve, reject);
     });
   }
