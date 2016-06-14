@@ -211,23 +211,13 @@ export default class State {
     // if driver not defined - it means memory driver
     if (!driver) return new Promise((resolve) => {resolve()});
 
-    var promise =  new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       // TODO: сформировать подходящий для драйвера запрос
       // TODO:     * либо пользователь формирует
       // TODO:     * либо указать в схеме - указать модель
-      
-      var next = (result) => {
-        console.log(111111111111, result)
-        resolve(result);
-      };
-      
-      return driver.middleware(event, next, reject);
-      console.log(234234234234234)
+
+      return driver.middleware(event, resolve, reject);
     });
-    
-    //promise.then()
-    
-    return promise;
   }
 
 }
