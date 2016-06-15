@@ -31,16 +31,16 @@ describe 'Functional. Param instance.', ->
     assert.equal(stringParam.mold, 'new value')
 
   it 'Set and get boolean value', () ->
-    param = this.container.child('boolParam')
-    param.set(true);
-    assert.equal(param.mold, true)
+    primitive = this.container.child('boolParam')
+    primitive.set(true);
+    assert.equal(primitive.mold, true)
 
   it 'Set and get string value', () ->
-    param = this.container.child('stringParam')
-    param.set('new value');
-    assert.equal(param.mold, 'new value')
+    primitive = this.container.child('stringParam')
+    primitive.set('new value');
+    assert.equal(primitive.mold, 'new value')
 
   it 'Set and get number value', () ->
-    param = this.container.child('numberParam')
-    param.set(11);
-    assert.equal(param.mold, 11)
+    primitive = this.container.child('numberParam')
+    primitive.set(11);
+    assert.equal(primitive.mold, 11)

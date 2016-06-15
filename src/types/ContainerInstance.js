@@ -23,7 +23,9 @@ export default class ContainerInstance {
   }
 
   /**
-   * Get value by path
+   * Get value by path.
+   * If you pass path = '' it means get data for this container
+   * @param {string} path - path relative to this instance root
    * @returns {Promise}
    */
   get(path) {

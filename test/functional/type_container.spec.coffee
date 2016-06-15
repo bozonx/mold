@@ -12,8 +12,8 @@ testSchema = () ->
       numberParam:
         type: 'number'
         default: 5
-      listParam:
-        type: 'list'
+      arrayParam:
+        type: 'array'
         item: {
           id: {type: 'number'}
           name: {type: 'string'}
@@ -30,22 +30,20 @@ describe 'Functional. Container instance.', ->
     this.rootInstance = this.mold.instance('memoryBranch')
     this.container = this.rootInstance.child('inMemory')
 
-  it 'Get container and get container instance', () ->
+  it 'child: container', () ->
     containerDeeper = this.container.child('nested')
-    # TODO: что должно быть в mold????
-    #assert.deepEqual(containerDeeper.mold, this.testSchema.memoryBranch.inMemory.nested)
     assert.equal(containerDeeper.getRoot(), 'memoryBranch.inMemory.nested')
     assert.deepEqual(containerDeeper.schema, this.testSchema.memoryBranch.inMemory.nested)
 
-  it 'Get container and get param instance', () ->
-    paramInstance = this.container.child('stringParam')
-    assert.equal(paramInstance.getRoot(), 'memoryBranch.inMemory.stringParam')
-    assert.deepEqual(paramInstance.schema, this.testSchema.memoryBranch.inMemory.stringParam)
+  it 'child: primitive', () ->
+    primitiveInstance = this.container.child('stringParam')
+    assert.equal(primitiveInstance.getRoot(), 'memoryBranch.inMemory.stringParam')
+    assert.deepEqual(primitiveInstance.schema, this.testSchema.memoryBranch.inMemory.stringParam)
 
-  it 'Get container and get list instance', () ->
-    listInstance = this.container.child('listParam')
-    assert.equal(listInstance.getRoot(), 'memoryBranch.inMemory.listParam')
-    assert.deepEqual(listInstance.schema, this.testSchema.memoryBranch.inMemory.listParam)
+  it 'child: array', () ->
+    arrayInstance = this.container.child('arrayParam')
+    assert.equal(arrayInstance.getRoot(), 'memoryBranch.inMemory.arrayParam')
+    assert.deepEqual(arrayInstance.schema, this.testSchema.memoryBranch.inMemory.arrayParam)
 
   it 'Get value by subpath. It returns a promise', () ->
     this.mold.state.setComposition('memoryBranch.inMemory.stringParam', 'new value')

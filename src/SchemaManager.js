@@ -4,7 +4,7 @@
 
 import _ from 'lodash';
 
-import ParamInstance from './types/ParamInstance';
+import PrimitiveInstance from './types/PrimitiveInstance';
 import ArrayInstance from './types/ArrayInstance';
 import ContainerInstance from './types/ContainerInstance';
 
@@ -73,7 +73,7 @@ export default class SchemaManager {
       instance = new ArrayInstance(this._main.state, this);
     }
     else {
-      instance = new ParamInstance(this._main.state, this);
+      instance = new PrimitiveInstance(this._main.state, this);
     }
 
     instance.init(path, schema);
