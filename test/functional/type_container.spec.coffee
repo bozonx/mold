@@ -45,13 +45,22 @@ describe 'Functional. Container instance.', ->
     assert.equal(arrayInstance.getRoot(), 'memoryBranch.inMemory.arrayParam')
     assert.deepEqual(arrayInstance.schema, this.testSchema.memoryBranch.inMemory.arrayParam)
 
-  it 'Get value by subpath. It returns a promise', () ->
+  it 'get(""): itself values. It returns a promise', () ->
+    this.mold.state.setComposition('memoryBranch.inMemory.stringParam', 'new value')
+    promise = this.container.get();
+
+    expect(promise).to.eventually.deep.equal({stringParam: 'new value'})
+    assert.deepEqual(this.container.mold, {stringParam: 'new value'})
+    
+  it 'get(subpath): It returns a promise', () ->
     this.mold.state.setComposition('memoryBranch.inMemory.stringParam', 'new value')
     promise = this.container.get('stringParam');
 
     expect(promise).to.eventually.equal('new value')
     assert.equal(this.container.mold.stringParam, 'new value')
 
+  # TODO: set value
+    
   it 'Has a subpath', () ->
     assert.isTrue(this.container.has('nested.nestedStringParam'))
     assert.isFalse(this.container.has('nested.nestedStringParam111'))

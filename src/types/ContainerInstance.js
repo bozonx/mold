@@ -24,12 +24,12 @@ export default class ContainerInstance {
 
   /**
    * Get value by path.
-   * If you pass path = '' it means get data for this container
+   * If you pass path = '' or undefined, it means get data for this container
    * @param {string} path - path relative to this instance root
    * @returns {Promise}
    */
   get(path) {
-    var promise = this._state.getValue(this._fullPath(path));
+    var promise = this._state.getValue((path) ? this._fullPath(path) : this._root);
     this.updateMold();
     return promise;
   }
@@ -76,6 +76,8 @@ export default class ContainerInstance {
    * @returns {boolean}
    */
   has(path) {
+    if (!path)
+      throw new Error(`You must pass a path argument.`);
     return this._schemaManager.has(this._fullPath(path));
   }
 
