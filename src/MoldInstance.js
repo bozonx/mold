@@ -35,9 +35,9 @@ export default class MoldInstance {
   }
 
   /**
-   * Get list or item or container instance by a path
+   * Get instance of one of the types by a path
    * @param {string} path - absolute path
-   * @returns {object} - instance of param or list or container
+   * @returns {object} - instance of one of the types
    */
   instance(path) {
     return this.schemaManager.getInstance(path);

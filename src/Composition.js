@@ -8,13 +8,13 @@ export default class Composition {
   /**
    * Get value from compositon.
    * It hopes a path is correct
-   * To get root, pass '' to a path
+   * To get root you can pass '' or undefined to a path
    * @param {string} path - absolute path
    * @returns {*} - value by path
    */
   get(path) {
     // TODO: maybe return immutable?
-    if (path === '') return this._storage;
+    if (!path) return this._storage;
     return _.get(this._storage, path);
   }
 
@@ -33,11 +33,16 @@ export default class Composition {
    * Set value to composition
    * It hopes a path and a value are correct.
    * It create or update value on the path.
-   * @param {string} path - absolute path
+   * To set to root you can pass '' or undefined to a path
+   * @param {string} path - absolute path or ''
    * @param {*} value - new value
    */
   set(path, value) {
-    // TODO: поддержка path = ''
-    _.set(this._storage, path, value);
+    if (!path) {
+      return this._storage = value;
+    }
+    else {
+      _.set(this._storage, path, value);      
+    }
   }
 }

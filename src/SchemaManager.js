@@ -4,12 +4,11 @@
 
 import _ from 'lodash';
 
-import PrimitiveInstance from './types/PrimitiveInstance';
 import ArrayInstance from './types/ArrayInstance';
+import CollectionInstance from './types/CollectionInstance';
 import ContainerInstance from './types/ContainerInstance';
-
+import PrimitiveInstance from './types/PrimitiveInstance';
 import { recursiveSchema } from './helpers';
-
 
 export default class SchemaManager {
   init(schema, main) {
@@ -43,9 +42,11 @@ export default class SchemaManager {
    * @returns {boolean}
    */
   has(path) {
-    if (path === '') return true;
+    // TODO: ??? may be rise an error
+    if (!path) return true;
     return _.has(this._schema, path);
   }
+
 
   /**
    * Get full schema
@@ -72,6 +73,9 @@ export default class SchemaManager {
     else if (schema.type === 'array') {
       instance = new ArrayInstance(this._main.state, this);
     }
+    else if (schema.type === 'collection') {
+      instance = new CollectionInstance(this._main.state, this);
+    }
     else {
       instance = new PrimitiveInstance(this._main.state, this);
     }
@@ -88,9 +92,6 @@ export default class SchemaManager {
    */
   initSchema() {
     this._schema = {};
-
-    // TODO: нужно из default сделать type во всех элементах при валидации
-    // TODO: сделать {type: ..., default(or test): ...} из примитивных элементов name: 'value' | 1 | false
 
     recursiveSchema('', this._rawSchema, (newPath, value, itemName) => {
       if (value.driver) {
