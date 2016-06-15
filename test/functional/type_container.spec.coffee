@@ -45,32 +45,37 @@ describe 'Functional. Container instance.', ->
     assert.equal(arrayInstance.getRoot(), 'memoryBranch.inMemory.arrayParam')
     assert.deepEqual(arrayInstance.schema, this.testSchema.memoryBranch.inMemory.arrayParam)
 
-  it 'get(""): itself values. It returns a promise', () ->
+  it 'get(""): itself values', () ->
     this.mold.state.setComposition('memoryBranch.inMemory.stringParam', 'new value')
     promise = this.container.get();
 
     expect(promise).to.eventually.deep.equal({stringParam: 'new value'})
     assert.deepEqual(this.container.mold, {stringParam: 'new value'})
-    
-  it 'get(subpath): It returns a promise', () ->
+
+  it 'get(subpath)', () ->
     this.mold.state.setComposition('memoryBranch.inMemory.stringParam', 'new value')
     promise = this.container.get('stringParam');
 
     expect(promise).to.eventually.equal('new value')
     assert.equal(this.container.mold.stringParam, 'new value')
 
-  # TODO: set value
-    
+  it 'set(): Set for the all children', () ->
+    promise = this.container.set('', {stringParam: 'new value'})
+
+    expect(promise).to.be.fulfilled
+    assert.deepEqual(this.container.mold, {stringParam: 'new value'})
+    assert.equal(this.container.mold.stringParam, 'new value')
+    assert.equal(this.container.child('stringParam').mold, 'new value')
+    assert.equal(this.container.mold.stringParam, 'new value')
+
+  it 'set(subpath, newValue): Set child value', () ->
+    promise = this.container.set('stringParam', 'new value')
+
+    expect(promise).to.be.fulfilled
+    assert.equal(this.container.mold.stringParam, 'new value')
+    assert.equal(this.container.child('stringParam').mold, 'new value')
+    assert.equal(this.container.mold.stringParam, 'new value')
+
   it 'Has a subpath', () ->
     assert.isTrue(this.container.has('nested.nestedStringParam'))
     assert.isFalse(this.container.has('nested.nestedStringParam111'))
-
-#  it 'Set and get child value', () ->
-#    this.container.set('stringParam', 'new value')
-#    assert.equal(this.container.child('stringParam').mold, 'new value')
-#    assert.equal(this.container.mold.stringParam, 'new value')
-
-# TODO: init children
-
-
-# TODO: set values for all children

@@ -45,28 +45,17 @@ export default class ContainerInstance {
     return this._schemaManager.getInstance(this._fullPath(path));
   }
 
-  // /**
-  //  * Set child value for child or for all children if you pass path = ''
-  //  * @param {string} path - path relative to instance root
-  //  * @param {object} value for child or children
-  //  * @returns {object} promise
-  //  */
-  // set(path, value) {
-  //   // TODO: return promise
-  //   if (path === '') {
-  //     // TODO: test it
-  //     // Set value for all children
-  //     this._state.setValue(this._root, value);
-  //   }
-  //   else {
-  //     // set value for one param
-  //     this._state.setValue(this._fullPath(path), value);
-  //   }
-  //   this.updateMold();
-  // }
-
-  setSilent(path, values) {
-    // TODO: установить значения для всех потомков или для одного если передан path
+  /**
+   * Set child value for child or for all children.
+   * If you pass path = '' or undefined, it means set data for the all children of this container
+   * @param {string} path - path relative to instance root
+   * @param {*} value for child or children
+   * @returns {Promise}
+   */
+  set(path, value) {
+    var promise = this._state.setValue((path) ? this._fullPath(path) : this._root, value);
+    this.updateMold();
+    return promise;
   }
 
   /**
