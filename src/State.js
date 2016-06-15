@@ -45,6 +45,23 @@ export default class State {
   // }
 
   /**
+   * Get data by path.
+   * It send request to aplicable driver.
+   * After it set value from response to composition and return promise with this value.
+   * @param {string} path - absolute path
+   * @returns {Promise}
+   */
+  getValue(path) {
+    if (!this._main.schemaManager.has(path))
+      throw new Error(`Can't find path "${path}" in the schema!`);
+
+    return this._startDriverQuery({
+      type: 'get',
+      path: path,
+    });
+  }
+
+  /**
    * Set value without any checks
    * @param path
    * @param value
@@ -103,39 +120,39 @@ export default class State {
     });
   }
 
-  /**
-   * Reset param or children params to defaults
-   * @param {string} path - absolute path
-   */
-  resetToDefault(path) {
-    // TODO: переделать на this.setValue
-    // TODO: наверное тоже надо вернуть {Promise}
-    // TODO: использовать setSilent
-
-    var setToItem = (itemPath, itemSchema) => {
-      if (!_.isUndefined(itemSchema.default)) {
-        // set a value
-        this.setComposition(itemPath, itemSchema.default);
-      }
-      else {
-        // set null
-        this.setComposition(itemPath, null);
-      }
-    };
-
-    var itemSchema = this._main.schemaManager.get(path);
-    if (itemSchema.type) {
-      // for item
-      setToItem(path, itemSchema);
-    }
-    else {
-      // for container, set on each child
-      // TODO: recursively
-      _.each(itemSchema, (value, name) => {
-        if (value.type) setToItem(`${path}.${name}`, value);
-      });
-    }
-  }
+  // /**
+  //  * Reset param or children params to defaults
+  //  * @param {string} path - absolute path
+  //  */
+  // resetToDefault(path) {
+  //   // TODO: переделать на this.setValue
+  //   // TODO: наверное тоже надо вернуть {Promise}
+  //   // TODO: использовать setSilent
+  //
+  //   var setToItem = (itemPath, itemSchema) => {
+  //     if (!_.isUndefined(itemSchema.default)) {
+  //       // set a value
+  //       this.setComposition(itemPath, itemSchema.default);
+  //     }
+  //     else {
+  //       // set null
+  //       this.setComposition(itemPath, null);
+  //     }
+  //   };
+  //
+  //   var itemSchema = this._main.schemaManager.get(path);
+  //   if (itemSchema.type) {
+  //     // for item
+  //     setToItem(path, itemSchema);
+  //   }
+  //   else {
+  //     // for container, set on each child
+  //     // TODO: recursively
+  //     _.each(itemSchema, (value, name) => {
+  //       if (value.type) setToItem(`${path}.${name}`, value);
+  //     });
+  //   }
+  // }
 
   /**
    * Validate value using validate settings by path
@@ -202,6 +219,8 @@ export default class State {
    * @private
    */
   _startDriverQuery(params) {
+    // TODO: add model data to query
+
     var driver = this._main.schemaManager.getDriver(params.path);
 
     var event = {
@@ -209,14 +228,22 @@ export default class State {
     };
 
     // if driver not defined - it means memory driver
-    if (!driver) return new Promise((resolve) => {resolve()});
+    if (!driver)
+      return new Promise((resolve) => {
+        resolve( this.getComposition(params.path) );
+      });
 
     return new Promise((resolve, reject) => {
       // TODO: сформировать подходящий для драйвера запрос
       // TODO:     * либо пользователь формирует
       // TODO:     * либо указать в схеме - указать модель
 
-      return driver.requestHandler(event, resolve, reject);
+      var resolveHandler = (responce) => {
+        // TODO: установить данные в composition, учитывая модель и ответ драйвера
+        resolve(responce);
+      };
+
+      return driver.requestHandler(event, resolveHandler, reject);
     });
   }
 

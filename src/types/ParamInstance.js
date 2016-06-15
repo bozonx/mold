@@ -23,18 +23,20 @@ export default class ParamInstance {
     return '' + this._root;
   }
 
-  // /**
-  //  * Get value.
-  //  * @returns {object} promise
-  //  */
-  // value() {
-  //   return this._state.getValue(this._root);
-  // }
+  /**
+   * Get value.
+   * @returns {Promise}
+   */
+  get() {
+    var promise = this._state.getValue(this._root);
+    this.updateMold();
+    return promise;
+  }
 
   /**
    * Set value
    * @param {string|number|boolean} value
-   * @returns {object} promise
+   * @returns {Promise}
    */
   set(value) {
     var promise = this._state.setValue(this._root, value);
@@ -45,7 +47,7 @@ export default class ParamInstance {
   /**
    * Set value silently
    * @param {string|number|boolean} value
-   * @returns {object} promise
+   * @returns {Promise}
    */
   setSilent(value) {
     var promise = this._state.setSilent(this._root, value);
@@ -53,18 +55,23 @@ export default class ParamInstance {
     return promise;
   }
 
-  /**
-   * Reset to default
-   */
-  resetToDefault() {
-    // TODO: test
-    this._state.resetToDefault(this._root);
-  }
+  // /**
+  //  * Reset to default
+  //  */
+  // resetToDefault() {
+  //   // TODO: test
+  //   this._state.resetToDefault(this._root);
+  // }
 
   updateMold() {
     this.mold = this._state.getComposition(this._root);
   }
 
+  /**
+   * Init a value in composition.
+   * If value haven't inited previously, setting null to it.
+   * @private
+   */
   _initComposition() {
     if (_.isUndefined(this._state.getComposition(this._root)))
       this._state.setComposition(this._root, null);
