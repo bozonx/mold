@@ -22,14 +22,12 @@ export default class ContainerInstance {
     return '' + this._root;
   }
 
-  // TODO: add value() or getValue() method - получить значение по пути - нельзя получать корень
-
   /**
-   * Get value.
+   * Get value by path
    * @returns {Promise}
    */
-  get() {
-    var promise = this._state.getValue(this._root);
+  get(path) {
+    var promise = this._state.getValue(this._fullPath(path));
     this.updateMold();
     return promise;
   }
@@ -76,7 +74,6 @@ export default class ContainerInstance {
    * @returns {boolean}
    */
   has(path) {
-    // TODO: test it
     return this._schemaManager.has(this._fullPath(path));
   }
 
