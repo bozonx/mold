@@ -2,49 +2,7 @@ var PouchDB = require('pouchdb');
 
 var remoteCouch = false;
 
-export default class eee {
-  constructor(state, schemaManager) {
-    db.changes({
-      since: 'now',
-      live: true
-    }).on('change', this.showTodos);
-  }
-
-  requestHandler(event, next, error) {
-    next(event);    
-  }
-
-
-  checkboxChanged(todo, event) {
-    todo.completed = event.target.checked;
-    db.put(todo);
-  }
-
-  deleteButtonPressed(todo) {
-    db.remove(todo);
-  }
-
-  showTodos() {
-    db.allDocs({include_docs: true, descending: true}, function(err, doc) {
-      redrawTodosUI(doc.rows);
-    });
-  }
-
-  addTodo(text) {
-    var todo = {
-      _id: new Date().toISOString(),
-      title: text,
-      completed: false
-    };
-    db.put(todo, function callback(err, result) {
-      if (!err) {
-        console.log('Successfully posted a todo!');
-      }
-    });
-  }
-
-}
-
+// TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
 
 class LocalPounchDb {
   constructor(mainInstatnce, localConfig) {
@@ -58,27 +16,73 @@ class LocalPounchDb {
    * @param {object} schemaManager
    * @param {object} state
    * @param {object} events
-     */
+   */
   init(root, schemaManager, state, events) {
     this._root = root;
     this._schemaManager = schemaManager;
     this._state = state;
+    // TODO: ????
     this._events = events;
 
     // TODO: Does it need a main events object?
 
     // Listen all data manipulation events
-    this._events.on('data', (event) => {
-      if (event.method == 'set') {
-        // ...
-      }
-    })
+    // this._events.on('data', (event) => {
+    //   if (event.method == 'set') {
+    //     // ...
+    //   }
+    // })
   }
+
+  get(request, resolve, reject) {
+    // TODO: test it
+    // TODO: может обрезать path???
+    this._mainInstatnce.db.get(request.path).then(function (doc) {
+      resolve({
+        data: doc,
+      });
+    }).catch(function (err) {
+      reject(err);
+    });
+  }
+
+  set(request, resolve, reject) {
+    // TODO: отлавливать запросы на работу с массивом
+    // TODO: отлавливать запросы на элементы документа - или использовать model(document)
+    this._mainInstatnce.db.put(request.requestValue, request.path).then(function (doc) {
+      resolve({
+        data: doc,
+      });
+    }).catch(function (err) {
+      reject(err);
+    });
+  }
+
+  add(request, resolve, reject) {
+    // TODO:
+  }
+
+  remove(request, resolve, reject) {
+    // TODO: test it
+    this._mainInstatnce.db.remove(request.path).then(function (doc) {
+      resolve({
+        data: doc,
+      });
+    }).catch(function (err) {
+      reject(err);
+    });
+  }
+
+  requestHandler(request, resolve, reject) {
+    this[event.type](request, resolve, reject);
+  }
+
 }
 
 export default class PounchDb {
   constructor(mainConfig) {
     this.mainConfig = mainConfig;
+    // TODO: имя базы из конфига
     this.db = new PouchDB('myDB', {db: require('memdown')});
   }
 
@@ -86,7 +90,7 @@ export default class PounchDb {
    * Schema helper
    * @param {object} localConfig
    * @param {object} schema
-   * @returns {{driver: LocalInstance, schema: *}}
+   * @returns {{driver: LocalPounchDb, schema: *}}
      */
   schema(localConfig, schema) {
     return {

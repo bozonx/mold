@@ -18,9 +18,9 @@ class LocalTestDriver
     this._state = state;
     this._events = events;
 
-  requestHandler: (event, next, error) ->
-    _.set(this.__storage, event.path, event.requestValue);
-    next(event);
+  requestHandler: (request, resolve, reject) ->
+    _.set(this.__storage, request.path, request.requestValue);
+    next(resolve);
 
 
 class TestDriver

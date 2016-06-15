@@ -17,7 +17,7 @@ describe 'Functional. Param instance.', ->
     this.mold = mold.initSchema( {}, testSchema() )
     this.container = this.mold.instance('inMemory')
 
-  it 'After init the all values is undefined', () ->
+  it 'After init all the values is undefined', () ->
     assert.isUndefined(this.container.child('boolParam').mold)
     assert.isUndefined(this.container.child('stringParam').mold)
     assert.isUndefined(this.container.child('numberParam').mold)
