@@ -82,6 +82,7 @@ class LocalPounchDb {
 export default class PounchDb {
   constructor(mainConfig) {
     this.mainConfig = mainConfig;
+    // TODO: брать из конфига root - чтобы обрезать path
     // TODO: имя базы из конфига
     this.db = new PouchDB('myDB', {db: require('memdown')});
   }

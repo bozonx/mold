@@ -4,6 +4,7 @@ mold = require('../../src/index')
 
 # TODO: можно задавать несколько инстансов с разными локальными конфигами
 # TODO: можно делать вложенные инстансы с разными конфигами
+# TODO: тесты на document
 
 class LocalTestDriver
   constructor: (mainInstatnce, localConfig) ->
@@ -20,7 +21,7 @@ class LocalTestDriver
 
   requestHandler: (request, resolve, reject) ->
     _.set(this.__storage, request.path, request.requestValue);
-    next(resolve);
+    resolve(request);
 
 
 class TestDriver
@@ -33,18 +34,18 @@ class TestDriver
 
 
 
-testSchema = (localStorage) ->
+testSchema = (fakeDriver) ->
   commonBranch:
-    inTestDriver: localStorage.schema({}, {
+    inTestDriver: fakeDriver.schema({}, {
       param1: {type: 'string'}
     })
 
 describe 'Functional. Driver usage.', ->
   beforeEach ->
-    localStorage = new TestDriver({});
-    this.testSchema = testSchema(localStorage)
+    fakeDriver = new TestDriver({});
+    this.testSchema = testSchema(fakeDriver)
     this.mold = mold.initSchema( {}, this.testSchema )
-    this.localStorageInstance = this.mold.instance('commonBranch.inTestDriver')
+    this.fakeDriverInstance = this.mold.instance('commonBranch.inTestDriver')
 
   it 'Schema must be without drivers', ->
     assert.equal(this.mold.schemaManager.get('commonBranch.inTestDriver.param1'),
