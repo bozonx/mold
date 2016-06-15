@@ -149,6 +149,7 @@ export default class ListInstance {
   }
 
   _initComposition() {
+    // TODO: это нужно делать при инициализации всей схемы
     if (_.isUndefined(this._state.getComposition(this._root)))
       this._state.setComposition(this._root, []);
   }

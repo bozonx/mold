@@ -11,7 +11,6 @@ export default class ParamInstance {
     this.schema = schema;
     // mold is just a link to the composition
     this.mold = {};
-    this._initComposition();
     this.updateMold();
   }
 
@@ -65,15 +64,5 @@ export default class ParamInstance {
 
   updateMold() {
     this.mold = this._state.getComposition(this._root);
-  }
-
-  /**
-   * Init a value in composition.
-   * If value haven't inited previously, setting null to it.
-   * @private
-   */
-  _initComposition() {
-    if (_.isUndefined(this._state.getComposition(this._root)))
-      this._state.setComposition(this._root, null);
   }
 }

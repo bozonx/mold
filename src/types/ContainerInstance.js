@@ -11,7 +11,6 @@ export default class ContainerInstance {
     this.schema = schema;
     // mold is just a link to the composition
     this.mold = {};
-    this._initComposition();
     this.updateMold();
   }
 
@@ -24,6 +23,16 @@ export default class ContainerInstance {
   }
 
   // TODO: add value() or getValue() method - получить значение по пути - нельзя получать корень
+
+  /**
+   * Get value.
+   * @returns {Promise}
+   */
+  get() {
+    var promise = this._state.getValue(this._root);
+    this.updateMold();
+    return promise;
+  }
 
   /**
    * Get child
@@ -67,23 +76,24 @@ export default class ContainerInstance {
    * @returns {boolean}
    */
   has(path) {
+    // TODO: test it
     return this._schemaManager.has(this._fullPath(path));
   }
 
-  /**
-   * Reset to default
-   * @param {string|undefined} path - relative to instance root. If path doesn't pass, it means use instance root.
-   */
-  resetToDefault(path) {
-    // TODO: do it for all children
-    // if (path) {
-    //   this._state.resetToDefault(this._fullPath(path));
-    // }
-    // else {
-    //   this._state.resetToDefault(this._root);
-    // }
-    this.updateMold();
-  }
+  // /**
+  //  * Reset to default
+  //  * @param {string|undefined} path - relative to instance root. If path doesn't pass, it means use instance root.
+  //  */
+  // resetToDefault(path) {
+  //   // TODO: do it for all children
+  //   // if (path) {
+  //   //   this._state.resetToDefault(this._fullPath(path));
+  //   // }
+  //   // else {
+  //   //   this._state.resetToDefault(this._root);
+  //   // }
+  //   this.updateMold();
+  // }
 
   updateMold() {
     this.mold = this._state.getComposition(this._root);
@@ -91,21 +101,5 @@ export default class ContainerInstance {
 
   _fullPath(relativePath) {
     return `${this._root}.${relativePath}`;
-  }
-
-  _initComposition() {
-    // TODO: сбрасывать на null только если значение не было проставленно ранее
-    // if (_.isUndefined(this._state.getComposition(this._root)))
-    //   this._state.setComposition(this._root, null);
-
-    // It's a container
-    _.each(this.schema, (param, name) => {
-      if (param.type) {
-        this._state.setComposition(this._fullPath(name), null);
-      }
-      else {
-        // TODO: do it recursively - use setSilent. А может вообще не нужно
-      }
-    });
   }
 }

@@ -60,10 +60,3 @@ describe 'Functional. Container instance.', ->
 
 
 # TODO: set values for all children
-
-
-# TODO: reset to defaults
-#  it 'Reset to defaults all children', ->
-#    this.container.resetToDefault();
-#    assert.equal(this.container.get('stringParam'), 'defaultStringValue')
-#assert.equal(this.container.get('nested.nestedStringParam'), 'defaultNestedStringValue')

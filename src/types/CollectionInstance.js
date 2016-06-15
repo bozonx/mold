@@ -6,7 +6,7 @@ export default class ListInstance {
     this._state = state;
     this._schemaManager = schemaManager;
   }
-  
+
   init(root, schema) {
     this._root = root;
     this.schema = schema;
@@ -118,7 +118,7 @@ export default class ListInstance {
   updateMold() {
     this.mold = this._state.getComposition(this._root);
   }
-  
+
   _fullPath(relativePath) {
     if (_.startsWith(relativePath, '['))
       return `${this._root}${relativePath}`;
@@ -127,6 +127,7 @@ export default class ListInstance {
   }
 
   _initComposition() {
+    // TODO: это нужно делать при инициализации всей схемы
     if (_.isUndefined(this._state.getComposition(this._root)))
       this._state.setComposition(this._root, []);
   }
