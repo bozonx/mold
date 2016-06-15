@@ -10,6 +10,11 @@ export default class eee {
     }).on('change', this.showTodos);
   }
 
+  requestHandler(event, next, error) {
+    next(event);    
+  }
+
+
   checkboxChanged(todo, event) {
     todo.completed = event.target.checked;
     db.put(todo);

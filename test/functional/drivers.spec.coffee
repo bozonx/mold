@@ -18,7 +18,7 @@ class LocalTestDriver
     this._state = state;
     this._events = events;
 
-  middleware: (event, next, error) ->
+  requestHandler: (event, next, error) ->
     _.set(this.__storage, event.path, event.requestValue);
     next(event);
 
@@ -60,7 +60,7 @@ describe 'Functional. Driver usage.', ->
     assert.equal(driverFromDeep.constructor.name, 'LocalTestDriver')
     assert.equal(driverFromDeep.root, 'commonBranch.inTestDriver')
 
-  it 'set data via driver middleware by running state.setSilent()', ->
+  it 'set data via driver requestHandler by running state.setSilent()', ->
     this.mold.state.setSilent('commonBranch.inTestDriver.param1', 'new value')
     driver = this.mold.schemaManager.getDriver('commonBranch.inTestDriver')
 

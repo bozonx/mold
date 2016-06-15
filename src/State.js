@@ -216,7 +216,7 @@ export default class State {
       // TODO:     * либо пользователь формирует
       // TODO:     * либо указать в схеме - указать модель
 
-      return driver.middleware(event, resolve, reject);
+      return driver.requestHandler(event, resolve, reject);
     });
   }
 
