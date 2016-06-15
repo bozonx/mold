@@ -5,7 +5,7 @@
 import _ from 'lodash';
 
 import ParamInstance from './types/ParamInstance';
-import ListInstance from './types/ListInstance';
+import ArrayInstance from './types/ArrayInstance';
 import ContainerInstance from './types/ContainerInstance';
 
 import { recursiveSchema } from './helpers';
@@ -60,7 +60,7 @@ export default class SchemaManager {
   /**
    * Get list or item or container instance by a path
    * @param {string} path - absolute path
-   * @returns {object} - instance of param or list or container
+   * @returns {object} - instance of param or array or container
    */
   getInstance(path) {
     var instance;
@@ -69,8 +69,8 @@ export default class SchemaManager {
     if (!schema.type) {
       instance = new ContainerInstance(this._main.state, this);
     }
-    else if (schema.type === 'list') {
-      instance = new ListInstance(this._main.state, this);
+    else if (schema.type === 'array') {
+      instance = new ArrayInstance(this._main.state, this);
     }
     else {
       instance = new ParamInstance(this._main.state, this);

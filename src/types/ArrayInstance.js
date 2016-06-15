@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 // TODO: значение массива может быть не только {} но и строка или число - как в таком случае использовать primary
 
-export default class ListInstance {
+export default class ArrayInstance {
   constructor(state, schemaManager) {
     this._state = state;
     this._schemaManager = schemaManager;
@@ -35,7 +35,7 @@ export default class ListInstance {
   /**
    * Get child
    * @param {string} path - path relative to this instance root
-   * @returns {object} - instance of param or list or container
+   * @returns {object} - instance of child
    */
   child(path) {
     // TODO: test for get long path
@@ -56,7 +56,7 @@ export default class ListInstance {
    * Get item from list by primary key.
    * It just useful wrapper for this.child(path)
    * @param {number} primaryId - your primary key value, defined in schema
-   * @returns {object} - instance of param or list or container
+   * @returns {object} - instance of child
    */
   getItem(primaryId) {
     return this.child(`[${primaryId}]`);
@@ -108,10 +108,10 @@ export default class ListInstance {
    */
   setSilent(list) {
     // TODO: проверить, что установятся значения для всех потомков
-    
+
     if (!_.isArray)
       throw new Error(`You must pass a list argument.`);
-    
+
     // TODO: it retuns promise - is it correct for this method???
 
     var promise = this._state.setSilent(this._root, list);
@@ -127,20 +127,11 @@ export default class ListInstance {
     this.updateMold();
   }
 
-  /**
-   * Reset to default for all items in list
-   */
-  resetToDefault() {
-    // TODO: do it
-    //this._state.resetToDefault(this._root);
-    // TODO: reset to default - должно вызваться сброс по умолчанию у всех элементов списка
-    this.updateMold();
-  }
 
   updateMold() {
     this.mold = this._state.getComposition(this._root);
   }
-  
+
   _fullPath(relativePath) {
     if (_.startsWith(relativePath, '['))
       return `${this._root}${relativePath}`;
