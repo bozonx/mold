@@ -1,4 +1,5 @@
 var PouchDB = require('pouchdb');
+var _ = require('lodash');
 
 var remoteCouch = false;
 
@@ -15,14 +16,11 @@ class LocalPounchDb {
    * @param {string} root - absolute root in main schema
    * @param {object} schemaManager
    * @param {object} state
-   * @param {object} events
    */
-  init(root, schemaManager, state, events) {
+  init(root, schemaManager, state) {
     this._root = root;
     this._schemaManager = schemaManager;
     this._state = state;
-    // TODO: ????
-    this._events = events;
 
     // TODO: Does it need a main events object?
 
@@ -49,13 +47,33 @@ class LocalPounchDb {
   set(request, resolve, reject) {
     // TODO: отлавливать запросы на работу с массивом
     // TODO: отлавливать запросы на элементы документа - или использовать model(document)
-    this._mainInstatnce.db.put(request.requestValue, request.path).then(function (doc) {
-      resolve({
-        data: doc,
-      });
-    }).catch(function (err) {
-      reject(err);
-    });
+    
+    //var document = request.requestValue;
+    //if (_.isUndefined(document._id)) document._id = request.path;
+
+    console.log(11111111, request);
+    resolve()
+
+    // this._mainInstatnce.db.get(request.path).then(function(doc) {
+    //   console.log(111111, doc)
+    //   // return db.put({
+    //   //   _id: 'mydoc',
+    //   //   _rev: doc._rev,
+    //   //   title: "Let's Dance"
+    //   // });
+    // }).then(function(response) {
+    //   // handle response
+    // }).catch(function (err) {
+    //   console.log(err);
+    // });
+    
+    // this._mainInstatnce.db.put(document, request.path).then(function (doc) {
+    //   resolve({
+    //     data: doc,
+    //   });
+    // }).catch(function (err) {
+    //   reject(err);
+    // });
   }
 
   add(request, resolve, reject) {
@@ -74,7 +92,7 @@ class LocalPounchDb {
   }
 
   requestHandler(request, resolve, reject) {
-    this[event.type](request, resolve, reject);
+    this[request.type](request, resolve, reject);
   }
 
 }

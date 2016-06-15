@@ -16,6 +16,7 @@ export default class SchemaManager {
     this._rawSchema = schema;
     this._main = main;
     this._drivers = {};
+    this._documents = {};
 
     this.initSchema();
   }
@@ -87,8 +88,9 @@ export default class SchemaManager {
 
 
   /**
-   * Validate schema and initialize drivers
-   * Remove handlers from schema and move it to this._drivers
+   * Validate schema and initialize drivers.
+   * It's removes drivers from schema and move it to this._drivers.
+   * It's removes documents from schema and move in to this._documents.
    */
   initSchema() {
     this._schema = {};
@@ -103,11 +105,31 @@ export default class SchemaManager {
           throw new Error(`On a path "${newPath}" driver must has a "schema" param.`);
 
         _.set(this._schema, newPath, value.schema);
-        // Go throw inner param 'schema'
+        // Go through inner param 'schema'
         return 'schema';
       }
-      else if (value.type == 'list') {
-        // list
+      else if (_.isObject(value.document)) {
+        this._documents[newPath] = value.document;
+
+        if (!_.isObject(value.schema))
+          throw new Error(`On a path "${newPath}" document must has a "schema" param.`);
+
+        _.set(this._schema, newPath, value.schema);
+        // Go through inner param 'schema'
+        return 'schema';
+      }
+      // else if (value.type == 'array') {
+      //   // TODO: do it
+      //   // array
+      //   _.set(this._schema, newPath, {
+      //     type: value.type,
+      //   });
+      //   // Go deeper
+      //   return false;
+      // }
+      else if (value.type == 'collection') {
+        // collection
+        // TODO: check it
         if (!_.isObject(value.item))
           throw new Error(`On a path "${newPath}" list must has an "item" param.`);
 
@@ -134,12 +156,23 @@ export default class SchemaManager {
   }
 
   /**
+   * Get document. If it doesnt exists, returns undefined
+   * @param {string} path - absolute path for document or its child
+   * @returns {object|undefined}
+   */
+  getDocument(path) {
+    return _.find(this._documents, (value, documentPath) => {
+      return path.indexOf(documentPath) === 0;
+    });
+  }
+
+  /**
    * Get driver. If it doesnt exists, returns undefined
-   * @param {string} path - absolute path
+   * @param {string} path - absolute path for driver or its child
    * @returns {object|undefined}
    */
   getDriver(path) {
-    return _.find(this._drivers, (driver, driverPath) => {
+    return _.find(this._drivers, (value, driverPath) => {
       return path.indexOf(driverPath) === 0;
     });
   }

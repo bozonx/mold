@@ -1,22 +1,18 @@
-# Models
+# Document
 
 ## In schema
 
     rootContainer: {
       model1: {
-        type: 'model',
-        url: '/path/to/api',
-        method: 'GET',
-        // ... other params for your model
+        document: {
+          url: '/path/to/api',
+          // ... other any params
+        },
         schema: {
           stringParam: { type: 'string' },
           numberParam: { type: 'number' },
         },
       },
-      model2: apiGet('/path/to/api', {
-        stringParam: { type: 'string' },
-        numberParam: { type: 'number' },
-      }),
     },
 
 
