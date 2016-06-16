@@ -97,7 +97,9 @@ export default class SchemaManager {
 
     recursiveSchema('', this._rawSchema, (newPath, value, itemName) => {
       if (value.driver) {
+
         this._drivers[newPath] = value.driver;
+
         // TODO: local events
         value.driver.init(newPath, this, this._main.state, {});
 
@@ -161,6 +163,9 @@ export default class SchemaManager {
    * @returns {object|undefined}
    */
   getDocument(path) {
+    if (!_.isString(path))
+      throw new Error(`You must pass the path argument!`);
+
     return _.find(this._documents, (value, documentPath) => {
       return path.indexOf(documentPath) === 0;
     });
@@ -172,9 +177,13 @@ export default class SchemaManager {
    * @returns {object|undefined}
    */
   getDriver(path) {
+    if (!_.isString(path))
+      throw new Error(`You must pass the path argument!`);
+
     return _.find(this._drivers, (value, driverPath) => {
       return path.indexOf(driverPath) === 0;
     });
   }
 
 }
+

@@ -30,7 +30,7 @@ export default class State {
 
     return this._startDriverQuery({
       type: 'get',
-      path: path,
+      fullPath: path,
     });
   }
 
@@ -86,8 +86,8 @@ export default class State {
 
     return this._startDriverQuery({
       type: 'set',
-      path: path,
-      requestValue: value,
+      fullPath: path,
+      value: value,
     });
   }
 
@@ -182,7 +182,7 @@ export default class State {
 
   /**
    * Start query to driver for data.
-   * @param {{type: string, path: string, requestValue: *}} params
+   * @param {{type: string, fullPath: string, value: *}} params
    *     * type is one of: get, set, add, delete
    *     * path: full path in mold
    *     * requestValue: for "set" and "add" types - value to set
@@ -190,9 +190,13 @@ export default class State {
    * @private
    */
   _startDriverQuery(params) {
-    // TODO: add model data to query
 
-    var driver = this._main.schemaManager.getDriver(params.path);
+
+    var driver = this._main.schemaManager.getDriver(params.fullPath);
+    var document = this._main.schemaManager.getDocument(params.fullPath);
+
+    console.log(2222222, document)
+
 
     var event = {
       ... params,
@@ -201,7 +205,7 @@ export default class State {
     // if driver not defined - it means memory driver
     if (!driver)
       return new Promise((resolve) => {
-        resolve( this.getComposition(params.path) );
+        resolve( this.getComposition(params.fullPath) );
       });
 
     return new Promise((resolve, reject) => {

@@ -20,8 +20,10 @@ class LocalTestDriver
     this._events = events;
 
   requestHandler: (request, resolve, reject) ->
-    _.set(this.__storage, request.path, request.requestValue);
-    resolve(request);
+    _.set(this.__storage, request.fullPath, request.value);
+    resolve({
+      status: 'ok'
+    });
 
 
 class TestDriver
@@ -71,6 +73,6 @@ describe 'Functional. Driver usage.', ->
 
   it 'check promise', () ->
     promise = this.mold.state.setSilent('commonBranch.inTestDriver.param1', 'new value')
-    expect(promise).to.eventually.deep.equal({type: 'set', path: 'commonBranch.inTestDriver.param1', requestValue: 'new value'})
+    expect(promise).to.eventually.deep.equal({status: 'ok'})
 
   # TODO: check error in middleware
