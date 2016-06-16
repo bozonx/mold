@@ -47,26 +47,60 @@ class LocalPounchDb {
   set(request, resolve, reject) {
     // TODO: отлавливать запросы на работу с массивом
     // TODO: отлавливать запросы на элементы документа - или использовать model(document)
-    
+
     //var document = request.requestValue;
     //if (_.isUndefined(document._id)) document._id = request.path;
 
     console.log(11111111, request);
-    resolve()
+    // resolve()
 
-    // this._mainInstatnce.db.get(request.path).then(function(doc) {
+
+    this._mainInstatnce.db.put({
+      //...request.value,
+      _id: request.document.pathToDoc,
+      //_rev: doc._rev,
+      title: "Let's Dance"
+    }).then((pounchResponce) => {
+      resolve({
+        successResponce: pounchResponce,
+      })
+    }).catch((pounchError) => {
+      reject({
+        errorResponce: pounchError,
+      })
+    });
+
+    // this._mainInstatnce.db.get(request.document.pathToDoc).then((doc) => {
     //   console.log(111111, doc)
     //   // return db.put({
     //   //   _id: 'mydoc',
     //   //   _rev: doc._rev,
     //   //   title: "Let's Dance"
     //   // });
-    // }).then(function(response) {
-    //   // handle response
-    // }).catch(function (err) {
-    //   console.log(err);
+    // }).catch((err) => {
+    //   console.log(22222222, err)
+    //   if (err.status === 404) {
+    //     // Create document
+    //     this._mainInstatnce.db.put({
+    //       //...request.value,
+    //       _id: request.document.pathToDoc,
+    //       //_rev: doc._rev,
+    //       title: "Let's Dance"
+    //     }).then((pounchResponce) => {
+    //       resolve({
+    //         successResponce: pounchResponce,
+    //       })
+    //     }).catch((pounchError) => {
+    //       reject({
+    //         errorResponce: pounchError,
+    //       })
+    //     });
+    //   }
+    //   else {
+    //     console.log(err);
+    //   }
     // });
-    
+
     // this._mainInstatnce.db.put(document, request.path).then(function (doc) {
     //   resolve({
     //     data: doc,

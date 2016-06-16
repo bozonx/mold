@@ -219,7 +219,7 @@ export default class State {
 
     if (document) {
       // If params.fullPath == document.pathToDoc it will '' and means document root
-      var pathToDocParam = _.trim(params.fullPath.split(document.pathToDoc)[0], '.');
+      var pathToDocParam = _.trim(params.fullPath.split(document.pathToDoc)[1], '.');
 
       request = {
         ...request,
