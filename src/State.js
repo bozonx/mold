@@ -211,20 +211,24 @@ export default class State {
   }
   
   _prepareRequest(params) {
-    var document = this._main.schemaManager.getDocument(params.fullPath);
+    var documentParams = this._main.schemaManager.getDocument(params.fullPath);
+    var request = _.clone(params);
 
-    var request = {
-      ...params,
-    };
-
-    if (document) {
-      // If params.fullPath == document.pathToDoc it will '' and means document root
-      var pathToDocParam = _.trim(params.fullPath.split(document.pathToDoc)[1], '.');
+    if (documentParams) {
+      // If we want set all document
+      let document = request.value;
+      
+      // If we want set one value to document
+      let pathToValue = _.trim(request.fullPath.split(documentParams.pathToDocument)[1], '.');
+      if (pathToValue)
+        document = _.set({}, pathToValue, request.value);        
 
       request = {
         ...request,
+        pathToValue,
+        documentParams,
         document,
-        pathToDocParam,
+        pathToDocument: documentParams.pathToDocument,
       };
     }
     

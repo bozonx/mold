@@ -113,7 +113,7 @@ export default class SchemaManager {
       else if (_.isObject(value.document)) {
         this._documents[newPath] = {
           ...value.document,
-          pathToDoc: newPath,
+          pathToDocument: newPath,
         };
 
         if (!_.isObject(value.schema))

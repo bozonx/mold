@@ -34,80 +34,42 @@ class LocalPounchDb {
 
   get(request, resolve, reject) {
     // TODO: test it
-    // TODO: может обрезать path???
-    this._mainInstatnce.db.get(request.path).then(function (doc) {
+    // TODO: test arrays and collections
+    
+    if (!request.pathToDocument)
+      throw new Error(`PounchDb can't work without specified document in your schema!`);
+    
+    this._mainInstatnce.db.get(request.pathToDocument).then(function (pounchResponse) {
+      console.log(111111111, pounchResponse)
       resolve({
-        data: doc,
+        //data: doc,
+        successResponse: pounchResponse,
       });
-    }).catch(function (err) {
-      reject(err);
+    }).catch(function (pounchError) {
+      reject({
+        errorResponse: pounchError,
+      });
     });
   }
 
   set(request, resolve, reject) {
-    // TODO: отлавливать запросы на работу с массивом
-    // TODO: отлавливать запросы на элементы документа - или использовать model(document)
+    // TODO: test arrays and collections
 
-    //var document = request.requestValue;
-    //if (_.isUndefined(document._id)) document._id = request.path;
-
-    console.log(11111111, request);
-    // resolve()
-
+    if (!request.pathToDocument)
+      throw new Error(`PounchDb can't work without specified document in your schema!`);
 
     this._mainInstatnce.db.put({
-      //...request.value,
-      _id: request.document.pathToDoc,
-      //_rev: doc._rev,
-      title: "Let's Dance"
-    }).then((pounchResponce) => {
+      ...request.document,
+      _id: request.pathToDocument,
+    }).then((pounchResponse) => {
       resolve({
-        successResponce: pounchResponce,
+        successResponse: pounchResponse,
       })
     }).catch((pounchError) => {
       reject({
-        errorResponce: pounchError,
+        errorResponse: pounchError,
       })
     });
-
-    // this._mainInstatnce.db.get(request.document.pathToDoc).then((doc) => {
-    //   console.log(111111, doc)
-    //   // return db.put({
-    //   //   _id: 'mydoc',
-    //   //   _rev: doc._rev,
-    //   //   title: "Let's Dance"
-    //   // });
-    // }).catch((err) => {
-    //   console.log(22222222, err)
-    //   if (err.status === 404) {
-    //     // Create document
-    //     this._mainInstatnce.db.put({
-    //       //...request.value,
-    //       _id: request.document.pathToDoc,
-    //       //_rev: doc._rev,
-    //       title: "Let's Dance"
-    //     }).then((pounchResponce) => {
-    //       resolve({
-    //         successResponce: pounchResponce,
-    //       })
-    //     }).catch((pounchError) => {
-    //       reject({
-    //         errorResponce: pounchError,
-    //       })
-    //     });
-    //   }
-    //   else {
-    //     console.log(err);
-    //   }
-    // });
-
-    // this._mainInstatnce.db.put(document, request.path).then(function (doc) {
-    //   resolve({
-    //     data: doc,
-    //   });
-    // }).catch(function (err) {
-    //   reject(err);
-    // });
   }
 
   add(request, resolve, reject) {
@@ -116,13 +78,13 @@ class LocalPounchDb {
 
   remove(request, resolve, reject) {
     // TODO: test it
-    this._mainInstatnce.db.remove(request.path).then(function (doc) {
-      resolve({
-        data: doc,
-      });
-    }).catch(function (err) {
-      reject(err);
-    });
+    // this._mainInstatnce.db.remove(request.path).then(function (doc) {
+    //   resolve({
+    //     data: doc,
+    //   });
+    // }).catch(function (err) {
+    //   reject(err);
+    // });
   }
 
   requestHandler(request, resolve, reject) {
