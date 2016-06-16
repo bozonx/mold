@@ -111,7 +111,10 @@ export default class SchemaManager {
         return 'schema';
       }
       else if (_.isObject(value.document)) {
-        this._documents[newPath] = value.document;
+        this._documents[newPath] = {
+          ...value.document,
+          pathToDoc: newPath,
+        };
 
         if (!_.isObject(value.schema))
           throw new Error(`On a path "${newPath}" document must has a "schema" param.`);

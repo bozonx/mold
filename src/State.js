@@ -190,17 +190,7 @@ export default class State {
    * @private
    */
   _startDriverQuery(params) {
-
-
     var driver = this._main.schemaManager.getDriver(params.fullPath);
-    var document = this._main.schemaManager.getDocument(params.fullPath);
-
-    console.log(2222222, document)
-
-
-    var event = {
-      ... params,
-    };
 
     // if driver not defined - it means memory driver
     if (!driver)
@@ -209,17 +199,36 @@ export default class State {
       });
 
     return new Promise((resolve, reject) => {
-      // TODO: сформировать подходящий для драйвера запрос
-      // TODO:     * либо пользователь формирует
-      // TODO:     * либо указать в схеме - указать модель
+      var request = this._prepareRequest(params);
 
       var resolveHandler = (responce) => {
         // TODO: установить данные в composition, учитывая модель и ответ драйвера
         resolve(responce);
       };
 
-      return driver.requestHandler(event, resolveHandler, reject);
+      return driver.requestHandler(request, resolveHandler, reject);
     });
+  }
+  
+  _prepareRequest(params) {
+    var document = this._main.schemaManager.getDocument(params.fullPath);
+
+    var request = {
+      ...params,
+    };
+
+    if (document) {
+      // If params.fullPath == document.pathToDoc it will '' and means document root
+      var pathToDocParam = _.trim(params.fullPath.split(document.pathToDoc)[0], '.');
+
+      request = {
+        ...request,
+        document,
+        pathToDocParam,
+      };
+    }
+    
+    return request;
   }
 
 }
