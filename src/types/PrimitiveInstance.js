@@ -54,14 +54,6 @@ export default class ParamInstance {
     return promise;
   }
 
-  // /**
-  //  * Reset to default
-  //  */
-  // resetToDefault() {
-  //   // TODO: test
-  //   this._state.resetToDefault(this._root);
-  // }
-
   updateMold() {
     this.mold = this._state.getComposition(this._root);
   }

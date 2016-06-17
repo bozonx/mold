@@ -1,67 +1,25 @@
 mold = require('../../src/index')
 
 testSchema = () ->
-  memoryBranch:
-    inMemory:
-      arrayParam:
-        type: 'array'
-        item: {
-          id: {type: 'number'}
-          name: {type: 'string'}
-        }
+  inMemory:
+    arrayParam:
+      type: 'array'
+      itemsType: 'string',
 
-describe 'Functional. List instance.', ->
+describe 'Functional. Array instance.', ->
   beforeEach () ->
     this.mold = mold.initSchema( {}, testSchema() )
-    this.arrayParam = this.mold.instance('memoryBranch.inMemory.arrayParam')
-    this.arrayValues = [
-      {
-        id: 1
-        name: 'name1'
-      },
-      {
-        id: 2
-        name: 'name2'
-      },
-    ]
+    this.arrayParam = this.mold.instance('inMemory.arrayParam')
+    this.arrayValues = ['value1', 'value2']
 
-  it 'Set full array', ->
-    this.arrayParam.setSilent(this.arrayValues)
-    assert.deepEqual(this.arrayParam.mold, this.arrayValues)
+  it 'Get array. It returns a promise', () ->
+    this.mold.state.setComposition('inMemory.arrayParam', this.arrayValues)
+    promise = this.arrayParam.get();
 
-  it 'Add item and get item', ->
-    newItem = {id: 3, name: 'name3'}
-    this.arrayParam.add(newItem)
-    assert.equal(this.arrayParam.getItem(3).mold, newItem)
+    expect(promise).to.eventually.equal(this.arrayValues)
+    assert.equal(this.arrayParam.mold, this.arrayValues)
 
-  it 'Clear a array', ->
-    this.arrayParam.setSilent(this.arrayValues)
-    this.arrayParam.clear()
-    assert.equal(this.arrayParam.mold.length, 0)
-
-  it 'remove', ->
-    this.arrayParam.setSilent(this.arrayValues)
-    this.arrayParam.remove({id: 1})
-    assert.deepEqual(this.arrayParam.mold, _.reject(this.arrayValues, {id:1}))
-
-  it 'Get child', ->
-    # TODO: do it
-
-
-  it 'Many manupulations with array', ->
-    newItem = {id: 3, name: 'name3'}
-    this.arrayParam.setSilent(this.arrayValues)
-    this.arrayParam.add(newItem)
-    this.arrayParam.remove({id: 2})
-    #this.arrayParam.getItem(1).child('name').set('new name');
-    assert.deepEqual(_.compact(this.arrayParam.mold), [
-      {
-        id: 1
-        name: 'name1'
-        #name: 'new name'
-      }
-      {
-        id: 3
-        name: 'name3'
-      }
-    ])
+  it 'Set array', () ->
+    promise = this.arrayParam.set(this.arrayValues);
+    assert.equal(this.arrayParam.mold, this.arrayValues)
+    expect(promise).to.eventually.equal(this.arrayValues)

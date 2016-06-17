@@ -37,8 +37,9 @@ describe 'Functional. Param instance.', ->
 
   it 'Set and get string value', () ->
     primitive = this.container.child('stringParam')
-    primitive.set('new value');
+    promise = primitive.set('new value');
     assert.equal(primitive.mold, 'new value')
+    expect(promise).to.eventually.equal('new value')
 
   it 'Set and get number value', () ->
     primitive = this.container.child('numberParam')

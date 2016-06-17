@@ -29,10 +29,21 @@ export default class ListInstance {
   /**
    * Get child
    * @param {string} path - path relative to this instance root
-   * @returns {object} - instance of param or list or container
+   * @returns {object} - instance of child
    */
   child(path) {
+    // TODO: test for get long path
 
+    if (!path)
+      throw new Error(`You must pass a path argument.`);
+
+    var fullPath = this._fullPath(path);
+    var schemaPath = fullPath.replace(/\[\d+]/, '.item');
+    var instance = this._schemaManager.getInstance(schemaPath);
+    // reinit instance with correct path
+    instance.init(fullPath, instance.schema);
+
+    return instance;
   }
 
   /**
@@ -58,7 +69,7 @@ export default class ListInstance {
    * @returns {object} - instance of param or list or container
    */
   getItem(primaryId) {
-
+    return this.child(`[${primaryId}]`);
   }
 
   /**
@@ -73,6 +84,21 @@ export default class ListInstance {
     // TODO: return promise
     //return item;
     this.updateMold();
+    
+    /*
+     // TODO: validate item
+     var composition = this._state.getComposition(this._root);
+
+     if (!_.isNumber(item[this.primary]))
+     throw new Error(`Item ${JSON.stringify(item)} doesn't have primary key value "${this.primary}".`);
+
+     composition[item[this.primary]] = item;
+
+     this._state.setComposition(this._root, composition);
+
+     this.updateMold();
+     // TODO: return promise
+     */
   }
 
   /**
@@ -85,6 +111,17 @@ export default class ListInstance {
     _.remove(this._state.getComposition(this._root), item)
     // TODO: return promise
     this.updateMold();
+    /*
+     var composition = this._state.getComposition(this._root);
+     var removeItem = {};
+     removeItem[this.primary] = item[this.primary];
+     _.remove(composition, removeItem);
+
+     this._state.setComposition(this._root, composition);
+
+     this.updateMold();
+     // TODO: return promise
+     */
   }
 
   has() {
