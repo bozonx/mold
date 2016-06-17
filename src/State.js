@@ -2,11 +2,13 @@
 import _ from 'lodash';
 
 import { recursiveSchema } from './helpers';
+import Request from './Request';
 
 export default class State {
   init(_main, composition) {
     this._main = _main;
     this._composition = composition;
+    this._request = new Request(this._main);
   }
 
   /**
@@ -87,7 +89,7 @@ export default class State {
     return this._startDriverQuery({
       type: 'set',
       fullPath: path,
-      value: value,
+      data: value,
     });
   }
 
@@ -199,40 +201,15 @@ export default class State {
       });
 
     return new Promise((resolve, reject) => {
-      var request = this._prepareRequest(params);
+      var req = this._request.generate(params.type, params.fullPath, params.data);
 
       var resolveHandler = (responce) => {
         // TODO: установить данные в composition, учитывая модель и ответ драйвера
         resolve(responce);
       };
 
-      return driver.requestHandler(request, resolveHandler, reject);
+      return driver.requestHandler(req, resolveHandler, reject);
     });
-  }
-  
-  _prepareRequest(params) {
-    var documentParams = this._main.schemaManager.getDocument(params.fullPath);
-    var request = _.clone(params);
-
-    if (documentParams) {
-      // If we want set all document
-      let document = request.value;
-      
-      // If we want set one value to document
-      let pathToValue = _.trim(request.fullPath.split(documentParams.pathToDocument)[1], '.');
-      if (pathToValue)
-        document = _.set({}, pathToValue, request.value);        
-
-      request = {
-        ...request,
-        pathToValue,
-        documentParams,
-        document,
-        pathToDocument: documentParams.pathToDocument,
-      };
-    }
-    
-    return request;
   }
 
 }

@@ -20,7 +20,7 @@ class LocalTestDriver
     this._events = events;
 
   requestHandler: (request, resolve, reject) ->
-    _.set(this.__storage, request.fullPath, request.value);
+    _.set(this.__storage, request.fullPath, request.data);
     resolve({
       status: 'ok'
     });
