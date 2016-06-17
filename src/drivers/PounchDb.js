@@ -1,8 +1,6 @@
 var PouchDB = require('pouchdb');
 var _ = require('lodash');
 
-var remoteCouch = false;
-
 // TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
 
 class LocalPounchDb {
@@ -38,13 +36,13 @@ class LocalPounchDb {
 
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified document in your schema!`);
-    
-    this._mainInstatnce.db.get(request.pathToDocument).then(function (resp) {
+
+    this._mainInstatnce.db.get(request.pathToDocument).then((resp) => {
       resolve({
         data: resp,
         successResponse: resp,
       });
-    }).catch(function (err) {
+    }).catch((err) => {
       reject({
         errorResponse: err,
       });
@@ -57,18 +55,43 @@ class LocalPounchDb {
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified document in your schema!`);
 
-    this._mainInstatnce.db.put({
-      ...request.document,
-      _id: request.pathToDocument,
-    }).then((resp) => {
-      resolve({
-        data: resp,
-        successResponse: resp,
-      })
+    this._mainInstatnce.db.get(request.pathToDocument).then((resp) => {
+      this._mainInstatnce.db.put({
+        ...resp,
+        ...request.document,
+      }).then((resp) => {
+        console.log(66, resp)
+        resolve({
+          data: resp,
+          successResponse: resp,
+        })
+      }).catch((err) => {
+        reject({
+          errorResponse: err,
+        })
+      });
     }).catch((err) => {
-      reject({
-        errorResponse: err,
-      })
+      if (err.status == 404) {
+        this._mainInstatnce.db.put({
+          ...request.document,
+          _id: request.pathToDocument,
+        }).then((resp) => {
+
+          resolve({
+            data: resp,
+            successResponse: resp,
+          })
+        }).catch((err) => {
+          reject({
+            errorResponse: err,
+          })
+        });
+      }
+      else {
+        reject({
+          errorResponse: err,
+        });
+      }
     });
   }
 
@@ -78,7 +101,7 @@ class LocalPounchDb {
 
   remove(request, resolve, reject) {
     // TODO: test it
-    // this._mainInstatnce.db.remove(request.path).then(function (doc) {
+    // this._mainInstatnce.db.remove(request.path).then((doc) => {
     //   resolve({
     //     data: doc,
     //   });
@@ -98,6 +121,7 @@ export default class PounchDb {
     this.mainConfig = mainConfig;
     // TODO: брать из конфига root - чтобы обрезать path
     // TODO: имя базы из конфига
+    // TODO: Pounch настроенный брать из конфига
     this.db = new PouchDB('myDB', {db: require('memdown')});
   }
 

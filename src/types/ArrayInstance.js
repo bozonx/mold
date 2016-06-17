@@ -2,6 +2,8 @@
 
 import _ from 'lodash';
 
+// TODO: сделать валидация типа дочерних элементов
+
 export default class ArrayInstance {
   constructor(state, schemaManager) {
     this._state = state;
