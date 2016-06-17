@@ -18,14 +18,19 @@ describe 'Functional. PounchDb driver.', ->
     this.mold = mold.initSchema( {}, this.testSchema )
     this.container = this.mold.instance('commonBranch.inPounch.doc1')
 
-  it 'set and get', (done) ->
+  it 'set', (done) ->
+    setPromise = this.container.set('stringParam', 'new value')
+    expect(setPromise).to.eventually.have.property('successResponse')
+    expect(setPromise).to.eventually.have.property('data')
+    expect(setPromise).notify(done)
+    
+  it 'get', (done) ->
     setPromise = this.container.set('stringParam', 'new value')
     expect(setPromise).to.eventually.notify () =>
-      # TODO: set должен вернуть что-то наверное
-
       getPromise = this.container.get('stringParam')
-      expect(getPromise).to.eventually.equal('new value111');
-      done()
+      expect(getPromise).to.eventually
+        .property('data').property('stringParam').equal('new value')
+        .notify(done);
 
 
   # TODO: add

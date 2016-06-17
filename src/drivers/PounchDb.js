@@ -35,19 +35,18 @@ class LocalPounchDb {
   get(request, resolve, reject) {
     // TODO: test it
     // TODO: test arrays and collections
-    
+
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified document in your schema!`);
     
-    this._mainInstatnce.db.get(request.pathToDocument).then(function (pounchResponse) {
-      console.log(111111111, pounchResponse)
+    this._mainInstatnce.db.get(request.pathToDocument).then(function (resp) {
       resolve({
-        //data: doc,
-        successResponse: pounchResponse,
+        data: resp,
+        successResponse: resp,
       });
-    }).catch(function (pounchError) {
+    }).catch(function (err) {
       reject({
-        errorResponse: pounchError,
+        errorResponse: err,
       });
     });
   }
@@ -61,13 +60,14 @@ class LocalPounchDb {
     this._mainInstatnce.db.put({
       ...request.document,
       _id: request.pathToDocument,
-    }).then((pounchResponse) => {
+    }).then((resp) => {
       resolve({
-        successResponse: pounchResponse,
+        data: resp,
+        successResponse: resp,
       })
-    }).catch((pounchError) => {
+    }).catch((err) => {
       reject({
-        errorResponse: pounchError,
+        errorResponse: err,
       })
     });
   }
