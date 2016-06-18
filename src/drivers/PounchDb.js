@@ -4,38 +4,28 @@ var _ = require('lodash');
 // TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
 
 class LocalPounchDb {
-  constructor(mainInstatnce, localConfig) {
-    this._mainInstatnce = mainInstatnce;
-    this._localConfig = localConfig;
+  constructor(driverConfig, instanceConfig, db) {
+    this._driverConfig = driverConfig;
+    this._instanceConfig = instanceConfig;
+    this._db = db;
   }
 
   /**
    * It runs on schema init.
    * @param {string} root - absolute root in main schema
-   * @param {object} schemaManager
-   * @param {object} state
+   * @param {MoldInstance} schemaManager
    */
-  init(root, schemaManager, state) {
+  init(root, main) {
     this._root = root;
-    // TODO: может получать доступ к mold instance?
-    this._schemaManager = schemaManager;
-    this._state = state;
+    this._main = main;
   }
 
   get(request, resolve, reject) {
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
-    this._mainInstatnce.db.get(request.pathToDocument).then((resp) => {
-      resolve({
-        data: resp,
-        successResponse: resp,
-      });
-    }).catch((err) => {
-      reject({
-        errorResponse: err,
-      });
-    });
+    this._db.get(request.pathToDocument)
+      .then(this._resolveHandler.bind(this, resolve), this._rejectHandler.bind(this, reject));
   }
 
   set(request, resolve, reject) {
@@ -44,42 +34,21 @@ class LocalPounchDb {
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
-    this._mainInstatnce.db.get(request.pathToDocument).then((resp) => {
-      this._mainInstatnce.db.put({
+    this._db.get(request.pathToDocument).then((resp) => {
+      this._db.put({
         ...resp,
         ...request.document,
-      }).then((resp) => {
-        resolve({
-          data: resp,
-          successResponse: resp,
-        })
-      }).catch((err) => {
-        reject({
-          errorResponse: err,
-        })
-      });
+      })
+        .then(this._resolveHandler.bind(this, resolve), this._rejectHandler.bind(this, reject));
     }).catch((err) => {
-      if (err.status == 404) {
-        this._mainInstatnce.db.put({
-          ...request.document,
-          _id: request.pathToDocument,
-        }).then((resp) => {
+      if (err.status != 404)
+        this._rejectHandler(reject, err);
 
-          resolve({
-            data: resp,
-            successResponse: resp,
-          })
-        }).catch((err) => {
-          reject({
-            errorResponse: err,
-          })
-        });
-      }
-      else {
-        reject({
-          errorResponse: err,
-        });
-      }
+      this._db.put({
+        ...request.document,
+        _id: request.pathToDocument,
+      })
+        .then(this._resolveHandler.bind(this, resolve), this._rejectHandler.bind(this, reject));
     });
   }
 
@@ -89,7 +58,7 @@ class LocalPounchDb {
 
   remove(request, resolve, reject) {
     // TODO: test it
-    // this._mainInstatnce.db.remove(request.path).then((doc) => {
+    // this._db.remove(request.path).then((doc) => {
     //   resolve({
     //     data: doc,
     //   });
@@ -102,11 +71,26 @@ class LocalPounchDb {
     this[request.type](request, resolve, reject);
   }
 
+  _resolveHandler(resolve, resp) {
+    resolve({
+      data: resp,
+      successResponse: resp,
+    });
+  }
+
+  _rejectHandler(reject, err) {
+    reject({
+      errorResponse: err,
+    })
+  }
 }
 
+/**
+ * Instance of this class creates once a mold instance
+ */
 export default class PounchDb {
-  constructor(mainConfig) {
-    this.mainConfig = mainConfig;
+  constructor(driverConfig) {
+    this.driverConfig = driverConfig;
     // TODO: брать из конфига root - чтобы обрезать path
     // TODO: имя базы из конфига
     // TODO: Pounch настроенный брать из конфига
@@ -115,14 +99,13 @@ export default class PounchDb {
 
   /**
    * Schema helper
-   * @param {object} localConfig
+   * @param {object} instanceConfig
    * @param {object} schema
    * @returns {{driver: LocalPounchDb, schema: *}}
      */
-  schema(localConfig, schema) {
-    // TODO: передавать не ссылку на себя а базу и конфиг
+  schema(instanceConfig, schema) {
     return {
-      driver: new LocalPounchDb(this, localConfig),
+      driver: new LocalPounchDb(this.driverConfig, instanceConfig, this.db),
       schema: schema,
     }
   }

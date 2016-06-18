@@ -7,17 +7,15 @@ mold = require('../../src/index')
 # TODO: тесты на document
 
 class LocalTestDriver
-  constructor: (mainInstatnce, localConfig) ->
-    this._mainInstatnce = mainInstatnce
-    this._localConfig = localConfig
+  constructor: (driverConfig, instanceConfig) ->
+    this._driverConfig = driverConfig;
+    this._instanceConfig = instanceConfig;
     # memory storage for test
     this.__storage = {}
 
-  init: (root, schemaManager, state, events) ->
+  init: (root, main) ->
     this.root = root;
-    this._schemaManager = schemaManager;
-    this._state = state;
-    this._events = events;
+    this._main = main;
 
   requestHandler: (request, resolve, reject) ->
     _.set(this.__storage, request.fullPath, request.data);
@@ -27,11 +25,11 @@ class LocalTestDriver
 
 
 class TestDriver
-  constructor: (mainConfig) ->
-    this.mainConfig = mainConfig
+  constructor: (driverConfig) ->
+    this.driverConfig = driverConfig;
 
-  schema: (localConfig, schema) ->
-    driver: new LocalTestDriver(this, localConfig)
+  schema: (instanceConfig, schema) ->
+    driver: new LocalTestDriver(this.driverConfig, instanceConfig)
     schema: schema
 
 

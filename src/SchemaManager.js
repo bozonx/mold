@@ -171,10 +171,8 @@ export default class SchemaManager {
 
     // Set driver to drivers list
     this._drivers[path] = value.driver;
-
-    // TODO: local events
     // Init driver
-    value.driver.init(path, this, this._main.state, {});
+    value.driver.init(path, this._main);
 
     _.set(this._schema, path, value.schema);
   }
