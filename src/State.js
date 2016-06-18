@@ -12,7 +12,7 @@ export default class State {
   }
 
   /**
-   * Get value without any checks
+   * Get value directly
    * @param path
    */
   getComposition(path) {
@@ -20,9 +20,18 @@ export default class State {
   }
 
   /**
-   * Get data by path.
-   * It send request to aplicable driver.
-   * After it set value from response to composition and return promise with this value.
+   * Set directly
+   * @param path
+   * @param value
+   */
+  setComposition(path, value) {
+    this._composition.set(path, value);
+  }
+
+  /**
+   * Get data by a path.
+   * It sends request to applicable driver.
+   * After it sets a value from response to composition and return promise with this value.
    * @param {string} path - absolute path
    * @returns {Promise}
    */
@@ -36,17 +45,10 @@ export default class State {
     });
   }
 
-  /**
-   * Set value without any checks
-   * @param path
-   * @param value
-   */
-  setComposition(path, value) {
-    this._composition.set(path, value);
-  }
 
   /**
-   * Set new value to state
+   * Set new value to state and rise an event.
+   * It sends request to driver and returns its promise.
    * @param {string} path - absolute path
    * @param {*} value
    * @returns {Promise}
@@ -57,7 +59,7 @@ export default class State {
   }
 
   /**
-   * Set new value silently to state.
+   * Check and set a new value to state without rising an event.
    * You can set all values to branch if you pass a container.
    * @param {string} path - absolute path
    * @param {*} value
@@ -68,22 +70,20 @@ export default class State {
     // TODO:     * но если запрос не удастся - наверное надо вернуть как было??? или дать приложению решить
     // TODO:     * в конфиге можно задать, чтобы mold обновлялся только после успешного запроса на сервер
 
+    // TODO: test - установка всех значений для контейнера
+
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(path);
 
-    // TODO: валидацию сдедать отдельной функцией
-
-    try {
-      if (schema.type) {
-        // If it's a param or list - just set a value
-        this._checkAndSetValue(schema, path, value);
-      }
-      else {
-        // It's a container - set values for all children
-        recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
-      }
-    } catch (err) {
-      throw new Error(err);
+    if (schema.type) {
+      // If it's a param or list - just set a value
+      // It rises an error on invalid value
+      this._checkNode(schema, path, value);
+      this.setComposition(path, value);
+    }
+    else {
+      // It's a container - set values for all children
+      recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
     }
 
     return this._startDriverQuery({
@@ -133,12 +133,12 @@ export default class State {
    * @param {*} value
    * @returns {boolean}
    */
-  validateValue(path, value) {
+  _validateValue(path, value) {
     // TODO: сделать
     return true;
   }
 
-  _setRecursively(path, value, childPath, childSchema, childName) {
+  _setRecursively(path, value, childPath, childSchema) {
     if (childSchema.type) {
       // param
       var valuePath = childPath;
@@ -149,7 +149,10 @@ export default class State {
       // If value doesn't exist for this schema branch - do nothing
       if (_.isUndefined(childValue)) return false;
 
-      this._checkAndSetValue(childSchema, childPath, childValue);
+      // It rises an error on invalid value
+      this._checkNode(childSchema, childPath, childValue);
+      this.setComposition(childPath, childValue);
+
       return false;
     }
 
@@ -158,28 +161,34 @@ export default class State {
   }
 
   /**
-   * Validate and set a value. You must pass list or param, not a container
+   * Check for node. It isn't work with container.
+   * It rises an error on invalid value or node.
    * @param {object} schema - schema for path
-   * @param {string} path - to a param. (Not to container)
+   * @param {string} path - path to a param. (Not to container)
    * @param {*} value - value to set. (Not undefined and not an object)
+   * @returns {boolean}
    * @private
    */
-  _checkAndSetValue(schema, path, value) {
-    if (schema.type == 'list') {
-      // For lists
+  _checkNode(schema, path, value) {
+    if (schema.type == 'array') {
+      // For array
+      // TODO: validate all items in list
+      return true;
+    }
+    if (schema.type == 'collection') {
+      // For collection
       // TODO: do it for parametrized lists
       // TODO: validate all items in list
-      this.setComposition(path, value);
+      return true;
     }
     else if (schema.type) {
-      // For values
-      if (this.validateValue(path, value)) {
-        this.setComposition(path, value);
-      }
-      else {
-        throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);
+      // For primitive
+      if (this._validateValue(path, value)) {
+        return true;
       }
     }
+
+    throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);
   }
 
   /**

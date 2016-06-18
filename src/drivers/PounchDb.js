@@ -17,25 +17,14 @@ class LocalPounchDb {
    */
   init(root, schemaManager, state) {
     this._root = root;
+    // TODO: может получать доступ к mold instance?
     this._schemaManager = schemaManager;
     this._state = state;
-
-    // TODO: Does it need a main events object?
-
-    // Listen all data manipulation events
-    // this._events.on('data', (event) => {
-    //   if (event.method == 'set') {
-    //     // ...
-    //   }
-    // })
   }
 
   get(request, resolve, reject) {
-    // TODO: test it
-    // TODO: test arrays and collections
-
     if (!request.pathToDocument)
-      throw new Error(`PounchDb can't work without specified document in your schema!`);
+      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     this._mainInstatnce.db.get(request.pathToDocument).then((resp) => {
       resolve({
@@ -53,14 +42,13 @@ class LocalPounchDb {
     // TODO: test arrays and collections
 
     if (!request.pathToDocument)
-      throw new Error(`PounchDb can't work without specified document in your schema!`);
+      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     this._mainInstatnce.db.get(request.pathToDocument).then((resp) => {
       this._mainInstatnce.db.put({
         ...resp,
         ...request.document,
       }).then((resp) => {
-        console.log(66, resp)
         resolve({
           data: resp,
           successResponse: resp,
@@ -132,6 +120,7 @@ export default class PounchDb {
    * @returns {{driver: LocalPounchDb, schema: *}}
      */
   schema(localConfig, schema) {
+    // TODO: передавать не ссылку на себя а базу и конфиг
     return {
       driver: new LocalPounchDb(this, localConfig),
       schema: schema,

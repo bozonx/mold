@@ -122,69 +122,94 @@ export default class SchemaManager {
   _initSchema() {
     this._schema = {};
 
-    recursiveSchema('', this._rawSchema, (newPath, value, itemName) => {
+    recursiveSchema('', this._rawSchema, (newPath, value) => {
       if (value.driver) {
+        this._initDriver(newPath, value);
 
-        this._drivers[newPath] = value.driver;
-
-        // TODO: local events
-        value.driver.init(newPath, this, this._main.state, {});
-
-        if (!_.isObject(value.schema))
-          throw new Error(`On a path "${newPath}" driver must has a "schema" param.`);
-
-        _.set(this._schema, newPath, value.schema);
         // Go through inner param 'schema'
         return 'schema';
       }
       else if (_.isObject(value.document)) {
-        this._documents[newPath] = {
-          ...value.document,
-          pathToDocument: newPath,
-        };
+        this._initDocument(newPath, value);
 
-        if (!_.isObject(value.schema))
-          throw new Error(`On a path "${newPath}" document must has a "schema" param.`);
-
-        _.set(this._schema, newPath, value.schema);
         // Go through inner param 'schema'
         return 'schema';
       }
-      // else if (value.type == 'array') {
-      //   // TODO: do it
-      //   // array
-      //   _.set(this._schema, newPath, {
-      //     type: value.type,
-      //   });
-      //   // Go deeper
-      //   return false;
-      // }
-      else if (value.type == 'collection') {
-        // collection
-        // TODO: check it
-        if (!_.isObject(value.item))
-          throw new Error(`On a path "${newPath}" list must has an "item" param.`);
+      else if (value.type == 'array') {
+        // array
+        this._initArray(newPath, value);
 
-        _.set(this._schema, newPath, {
-          type: value.type,
-          item: {},
-        });
+        // Go deeper
+        return false;
+      }
+      else if (value.type == 'collection') {
+        this._initCollection(newPath, value);
+
         // Go deeper
         return 'item';
       }
       else if (value.type) {
-        // param
-        // TODO: validate it
-        _.set(this._schema, newPath, value);
+        // primitive
+        this._initPrimitive(newPath, value);
+
         return false;
       }
       else {
         // container
+        if (!_.isPlainObject(value)) throw new Error(`The container on a path "${path}" must be an object!`);
         _.set(this._schema, newPath, {});
+
         // Go deeper
         return true;
       }
     });
+  }
+
+  _initDriver(path, value) {
+    if (!_.isPlainObject(value.schema))
+      throw new Error(`On a path "${path}" driver must has a "schema" param.`);
+
+    // Set driver to drivers list
+    this._drivers[path] = value.driver;
+
+    // TODO: local events
+    // Init driver
+    value.driver.init(path, this, this._main.state, {});
+
+    _.set(this._schema, path, value.schema);
+  }
+
+  _initDocument(path, value) {
+    if (!_.isPlainObject(value.schema))
+      throw new Error(`On a path "${path}" document must has a "schema" param.`);
+
+    this._documents[path] = {
+      ...value.document,
+      pathToDocument: path,
+    };
+
+    _.set(this._schema, path, value.schema);
+  }
+
+  _initArray(path, value) {
+    // TODO: если есть параметр itemType - проверить, чтобы его типы совпадали с существующими
+    _.set(this._schema, path, value);
+  }
+
+  _initCollection(path, value) {
+    // collection
+    if (!_.isPlainObject(value.item))
+      throw new Error(`On a path "${path}" list must has an "item" param.`);
+
+    _.set(this._schema, path, {
+      type: value.type,
+      item: {},
+    });
+  }
+
+  _initPrimitive(path, value) {
+    // TODO: validate it
+    _.set(this._schema, path, value);
   }
 
 }
