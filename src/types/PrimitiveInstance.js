@@ -1,7 +1,6 @@
 export default class ParamInstance {
-  constructor(state, schemaManager) {
-    this._state = state;
-    this._schemaManager = schemaManager;
+  constructor(main) {
+    this._main = main;
   }
 
   init(root, schema) {
@@ -25,7 +24,7 @@ export default class ParamInstance {
    * @returns {Promise}
    */
   get() {
-    var promise = this._state.getValue(this._root);
+    var promise = this._main.state.getValue(this._root);
     this.updateMold();
     return promise;
   }
@@ -36,7 +35,7 @@ export default class ParamInstance {
    * @returns {Promise}
    */
   set(value) {
-    var promise = this._state.setValue(this._root, value);
+    var promise = this._main.state.setValue(this._root, value);
     this.updateMold();
     return promise;
   }
@@ -47,12 +46,12 @@ export default class ParamInstance {
    * @returns {Promise}
    */
   setSilent(value) {
-    var promise = this._state.setSilent(this._root, value);
+    var promise = this._main.state.setSilent(this._root, value);
     this.updateMold();
     return promise;
   }
 
   updateMold() {
-    this.mold = this._state.getComposition(this._root);
+    this.mold = this._main.state.getComposition(this._root);
   }
 }

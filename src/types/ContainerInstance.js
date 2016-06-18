@@ -1,7 +1,6 @@
 export default class ContainerInstance {
-  constructor(state, schemaManager) {
-    this._state = state;
-    this._schemaManager = schemaManager;
+  constructor(main) {
+    this._main = main;
   }
 
   init(root, schema) {
@@ -27,7 +26,7 @@ export default class ContainerInstance {
    * @returns {Promise}
    */
   get(path) {
-    var promise = this._state.getValue((path) ? this._fullPath(path) : this._root);
+    var promise = this._main.state.getValue((path) ? this._fullPath(path) : this._root);
     this.updateMold();
     return promise;
   }
@@ -40,7 +39,7 @@ export default class ContainerInstance {
   child(path) {
     if (!path)
       throw new Error(`You must pass a path argument.`);
-    return this._schemaManager.getInstance(this._fullPath(path));
+    return this._main.schemaManager.getInstance(this._fullPath(path));
   }
 
   /**
@@ -51,7 +50,7 @@ export default class ContainerInstance {
    * @returns {Promise}
    */
   set(path, value) {
-    var promise = this._state.setValue((path) ? this._fullPath(path) : this._root, value);
+    var promise = this._main.state.setValue((path) ? this._fullPath(path) : this._root, value);
     this.updateMold();
     return promise;
   }
@@ -65,26 +64,11 @@ export default class ContainerInstance {
   has(path) {
     if (!path)
       throw new Error(`You must pass a path argument.`);
-    return this._schemaManager.has(this._fullPath(path));
+    return this._main.schemaManager.has(this._fullPath(path));
   }
 
-  // /**
-  //  * Reset to default
-  //  * @param {string|undefined} path - relative to instance root. If path doesn't pass, it means use instance root.
-  //  */
-  // resetToDefault(path) {
-  //   // TODO: do it for all children
-  //   // if (path) {
-  //   //   this._state.resetToDefault(this._fullPath(path));
-  //   // }
-  //   // else {
-  //   //   this._state.resetToDefault(this._root);
-  //   // }
-  //   this.updateMold();
-  // }
-
   updateMold() {
-    this.mold = this._state.getComposition(this._root);
+    this.mold = this._main.state.getComposition(this._root);
   }
 
   _fullPath(relativePath) {

@@ -18,7 +18,7 @@ export default class SchemaManager {
     this._drivers = {};
     this._documents = {};
 
-    this.initSchema();
+    this._initSchema();
   }
 
   /**
@@ -66,30 +66,60 @@ export default class SchemaManager {
     // It rise an error if path doesn't consist with schema
     var schema = this.get(path);
     if (!schema.type) {
-      instance = new ContainerInstance(this._main.state, this);
+      instance = new ContainerInstance(this._main);
     }
     else if (schema.type === 'array') {
-      instance = new ArrayInstance(this._main.state, this);
+      instance = new ArrayInstance(this._main);
     }
     else if (schema.type === 'collection') {
-      instance = new CollectionInstance(this._main.state, this);
+      instance = new CollectionInstance(this._main);
     }
     else {
-      instance = new PrimitiveInstance(this._main.state, this);
+      instance = new PrimitiveInstance(this._main);
     }
+
+    // TODO: может инициализировать  всё сразу в конструкторе???
 
     instance.init(path, schema);
 
     return instance;
   }
 
+  /**
+   * Get document. If it doesn't exists, returns undefined
+   * @param {string} path - absolute path for document or its child
+   * @returns {object|undefined}
+   */
+  getDocument(path) {
+    if (!_.isString(path))
+      throw new Error(`You must pass the path argument!`);
+
+    return _.find(this._documents, (value, documentPath) => {
+      return path.indexOf(documentPath) === 0;
+    });
+  }
 
   /**
-   * Validate schema and initialize drivers.
-   * It's removes drivers from schema and move it to this._drivers.
-   * It's removes documents from schema and move in to this._documents.
+   * Get driver. If it doesnt exists, returns undefined
+   * @param {string} path - absolute path for driver or its child
+   * @returns {object|undefined}
    */
-  initSchema() {
+  getDriver(path) {
+    if (!_.isString(path))
+      throw new Error(`You must pass the path argument!`);
+
+    return _.find(this._drivers, (value, driverPath) => {
+      return path.indexOf(driverPath) === 0;
+    });
+  }
+
+  /**
+   * Initializing the schema:
+   * * Validate schema
+   * * extract all drivers from schema to this._drivers and init them
+   * * extract all documents from schema to this._documents
+   */
+  _initSchema() {
     this._schema = {};
 
     recursiveSchema('', this._rawSchema, (newPath, value, itemName) => {
@@ -154,34 +184,6 @@ export default class SchemaManager {
         // Go deeper
         return true;
       }
-    });
-  }
-
-  /**
-   * Get document. If it doesnt exists, returns undefined
-   * @param {string} path - absolute path for document or its child
-   * @returns {object|undefined}
-   */
-  getDocument(path) {
-    if (!_.isString(path))
-      throw new Error(`You must pass the path argument!`);
-
-    return _.find(this._documents, (value, documentPath) => {
-      return path.indexOf(documentPath) === 0;
-    });
-  }
-
-  /**
-   * Get driver. If it doesnt exists, returns undefined
-   * @param {string} path - absolute path for driver or its child
-   * @returns {object|undefined}
-   */
-  getDriver(path) {
-    if (!_.isString(path))
-      throw new Error(`You must pass the path argument!`);
-
-    return _.find(this._drivers, (value, driverPath) => {
-      return path.indexOf(driverPath) === 0;
     });
   }
 

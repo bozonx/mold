@@ -5,9 +5,8 @@ import _ from 'lodash';
 // TODO: сделать валидация типа дочерних элементов
 
 export default class ArrayInstance {
-  constructor(state, schemaManager) {
-    this._state = state;
-    this._schemaManager = schemaManager;
+  constructor(main) {
+    this._main = main;
   }
 
   init(root, schema) {
@@ -33,7 +32,7 @@ export default class ArrayInstance {
    * @returns {Promise}
    */
   get() {
-    var promise = this._state.getValue(this._root);
+    var promise = this._main.state.getValue(this._root);
     this.updateMold();
     return promise;
   }
@@ -47,18 +46,18 @@ export default class ArrayInstance {
     if (!_.isArray(value))
       throw new Error(`You must pass a list argument.`);
 
-    var promise = this._state.setValue(this._root, value);
+    var promise = this._main.state.setValue(this._root, value);
     this.updateMold();
     return promise;
   }
 
   updateMold() {
-    this.mold = this._state.getComposition(this._root);
+    this.mold = this._main.state.getComposition(this._root);
   }
 
   _initComposition() {
     // TODO: это нужно делать при инициализации всей схемы
-    if (_.isUndefined(this._state.getComposition(this._root)))
-      this._state.setComposition(this._root, []);
+    if (_.isUndefined(this._main.state.getComposition(this._root)))
+      this._main.state.setComposition(this._root, []);
   }
 }

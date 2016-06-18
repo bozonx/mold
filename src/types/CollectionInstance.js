@@ -2,9 +2,8 @@
 import _ from 'lodash';
 
 export default class ListInstance {
-  constructor(state, schemaManager) {
-    this._state = state;
-    this._schemaManager = schemaManager;
+  constructor(main) {
+    this._main = main;
   }
 
   init(root, schema) {
@@ -39,7 +38,7 @@ export default class ListInstance {
 
     var fullPath = this._fullPath(path);
     var schemaPath = fullPath.replace(/\[\d+]/, '.item');
-    var instance = this._schemaManager.getInstance(schemaPath);
+    var instance = this._main.schemaManager.getInstance(schemaPath);
     // reinit instance with correct path
     instance.init(fullPath, instance.schema);
 
@@ -78,7 +77,7 @@ export default class ListInstance {
    * @returns {object} promise
    */
   add(item) {
-    var composition = this._state.getComposition(this._root);
+    var composition = this._main.state.getComposition(this._root);
     // TODO: validate item
     composition.push(item);
     // TODO: return promise
@@ -108,7 +107,7 @@ export default class ListInstance {
    */
   remove(item) {
     // TODO: наверное лучше искать по уникальному ключу
-    _.remove(this._state.getComposition(this._root), item)
+    _.remove(this._main.state.getComposition(this._root), item)
     // TODO: return promise
     this.updateMold();
     /*
@@ -133,7 +132,7 @@ export default class ListInstance {
    */
   setSilent(list) {
     // TODO: проверить, что установятся значения для всех потомков
-    this._state.setValue(this._root, list);
+    this._main.state.setValue(this._root, list);
     this.updateMold();
   }
 
@@ -141,7 +140,7 @@ export default class ListInstance {
    * Clear full list
    */
   clear() {
-    _.remove(this._state.getComposition(this._root));
+    _.remove(this._main.state.getComposition(this._root));
     this.updateMold();
   }
 
@@ -153,7 +152,7 @@ export default class ListInstance {
   }
 
   updateMold() {
-    this.mold = this._state.getComposition(this._root);
+    this.mold = this._main.state.getComposition(this._root);
   }
 
   _fullPath(relativePath) {
@@ -165,7 +164,7 @@ export default class ListInstance {
 
   _initComposition() {
     // TODO: это нужно делать при инициализации всей схемы
-    if (_.isUndefined(this._state.getComposition(this._root)))
-      this._state.setComposition(this._root, []);
+    if (_.isUndefined(this._main.state.getComposition(this._root)))
+      this._main.state.setComposition(this._root, []);
   }
 }
