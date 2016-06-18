@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export default class ParamInstance {
   constructor(state, schemaManager) {
     this._state = state;

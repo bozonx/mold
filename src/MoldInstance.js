@@ -10,7 +10,8 @@ export default class MoldInstance {
     // TODO: validate a config
 
     // TODO: ругаться если не передан
-    this.events = config.eventEmitter;
+    //this.events = config.eventEmitter;
+    
     this.schemaManager = new SchemaManager();
     this.state = new State();
 

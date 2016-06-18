@@ -24,7 +24,7 @@ export default class SchemaManager {
   /**
    * get schema part by path
    * @param {string} path - absolute path
-   * @returns {object}
+   * @returns {object} schema
    */
   get(path) {
     if (path === '') return this.getFullSchema();
@@ -43,26 +43,23 @@ export default class SchemaManager {
    * @returns {boolean}
    */
   has(path) {
-    // TODO: ??? may be rise an error
-    if (!path) return true;
+    if (path === '') return true;
     return _.has(this._schema, path);
   }
 
-
   /**
    * Get full schema
-   * @returns {object}
+   * @returns {object} schema
    */
   getFullSchema() {
     // TODO: do it immutable
     return this._schema;
   }
 
-
   /**
-   * Get list or item or container instance by a path
+   * Get type instance
    * @param {string} path - absolute path
-   * @returns {object} - instance of param or array or container
+   * @returns {object} - instance of type
    */
   getInstance(path) {
     var instance;

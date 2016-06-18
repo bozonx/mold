@@ -6,7 +6,6 @@ export function recursiveSchema(root, schema, cb) {
 
     var isGoDeeper = cb(childPath, childSchema, childName);
     if (_.isString(isGoDeeper)) {
-      //var newerRoot = `${childPath}.${isGoDeeper}`;
       recursiveSchema(childPath, childSchema[isGoDeeper], cb);
     }
     else if (isGoDeeper) recursiveSchema(childPath, childSchema, cb);

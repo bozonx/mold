@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 export default class ContainerInstance {
   constructor(state, schemaManager) {
     this._state = state;
