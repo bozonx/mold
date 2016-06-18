@@ -1,7 +1,7 @@
 // We can filter or find param
 import _ from 'lodash';
 
-export default class ListInstance {
+export default class CollectionInstance {
   constructor(main) {
     this._main = main;
   }
@@ -23,8 +23,6 @@ export default class ListInstance {
     return '' + this._root;
   }
 
-  // TODO: add value() or getValue() method - получить значение по пути - нельзя получать корень
-
   /**
    * Get child
    * @param {string} path - path relative to this instance root
@@ -32,12 +30,13 @@ export default class ListInstance {
    */
   child(path) {
     // TODO: test for get long path
+    // TODO: [num] в пути это primary id - нужно преобразовать
 
     if (!path)
       throw new Error(`You must pass a path argument.`);
 
     var fullPath = this._fullPath(path);
-    var schemaPath = fullPath.replace(/\[\d+]/, '.item');
+    var schemaPath = this._convertToSchemaPath(fullPath);
     var instance = this._main.schemaManager.getInstance(schemaPath);
     // reinit instance with correct path
     instance.init(fullPath, instance.schema);
@@ -61,15 +60,7 @@ export default class ListInstance {
     // TODO: do it - for server connect
   }
 
-  /**
-   * Get item from list by primary key.
-   * It just useful wrapper for this.child(path)
-   * @param {number} primaryId - your promary id, defined in schema
-   * @returns {object} - instance of param or list or container
-   */
-  getItem(primaryId) {
-    return this.child(`[${primaryId}]`);
-  }
+
 
   /**
    * Add item to list
@@ -83,7 +74,7 @@ export default class ListInstance {
     // TODO: return promise
     //return item;
     this.updateMold();
-    
+
     /*
      // TODO: validate item
      var composition = this._state.getComposition(this._root);
@@ -123,40 +114,47 @@ export default class ListInstance {
      */
   }
 
-  has() {
-    // TODO: сделать проверку по всему списку
-  }
-
   /**
-   * Set full list silently
+   * Is param exists on a path
+   * It check schema and param in composition.
+   * It doesn't do request to driver.
+   * @param {string} path - path relative to instance root
+   * @returns {boolean}
    */
-  setSilent(list) {
-    // TODO: проверить, что установятся значения для всех потомков
-    this._main.state.setValue(this._root, list);
-    this.updateMold();
+  has(path) {
+    // TODO: test deep param
+    
+    if (!path)
+      throw new Error(`You must pass a path argument.`);
+
+    // Check schema
+    var schemaPath = this._convertToSchemaPath(path);
+    if (this._main.schemaManager.has(this._fullPath(schemaPath))) return false;
+    
+    // TODO: нужно сделать поиск элементов в mold, так как в пути будет primaryKey, а нам нужен index
+    // проще всего преобразовать primaryKey в index
   }
 
   /**
-   * Clear full list
+   * Clear all the list
    */
   clear() {
-    _.remove(this._main.state.getComposition(this._root));
-    this.updateMold();
-  }
-
-  /**
-   * Reset to default for all items in list
-   */
-  resetToDefault() {
-    // TODO: do it
+    // TODO: очистить молд, сделать запрос в драйвер
+    // _.remove(this._main.state.getComposition(this._root));
+    // this.updateMold();
   }
 
   updateMold() {
     this.mold = this._main.state.getComposition(this._root);
   }
 
+  _convertToSchemaPath(path) {
+    return path.replace(/\[\d+]/, '.item');
+  }
+  
   _fullPath(relativePath) {
     if (_.startsWith(relativePath, '['))
+      // TODO: without dot
       return `${this._root}${relativePath}`;
 
     return `${this._root}.${relativePath}`;
