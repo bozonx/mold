@@ -9,21 +9,45 @@ testSchema = () ->
         name: {type: 'string'}
       }
 
+testValues = [
+  {
+    id: 1
+    name: 'name1'
+  },
+  {
+    id: 2
+    name: 'name2'
+  },
+]
+      
 describe 'Functional. Collection instance.', ->
   beforeEach () ->
     this.mold = mold.initSchema( {}, testSchema() )
-    #this.container = this.mold.instance('memoryBranch.inMemory.arrayParam')
-    this.arrayParam = this.mold.instance('memoryBranch.inMemory.arrayParam')
-    this.arrayValues = [
-      {
-        id: 1
-        name: 'name1'
-      },
-      {
-        id: 2
-        name: 'name2'
-      },
-    ]
+    this.container = this.mold.instance('inMemory')
+    this.collectionParam = this.mold.instance('inMemory.collectionParam')
+
+  it 'child()', ->
+    # TODO: do it
+
+  it 'filter()', ->
+    # TODO: do it
+
+  it 'find()', ->
+    # TODO: do it
+
+  it 'add()', ->
+    # TODO: do it
+
+  it 'remove()', ->
+    # TODO: do it
+
+  it 'has()', ->
+    # TODO: do it
+
+  it 'clear()', ->
+    # TODO: do it
+
+
 
 #  it 'Add item and get item', ->
 #    newItem = {id: 3, name: 'name3'}
