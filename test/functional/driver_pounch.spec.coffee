@@ -27,7 +27,7 @@ describe 'Functional. PounchDb driver.', ->
 
   it 'set array', (done) ->
     value = [1,2,3]
-    expect(this.container.set('arrayParam', value)).notify =>
+    expect(this.container.set('arrayParam', value)).to.eventually.notify =>
       getPromise = this.container.get('arrayParam')
 
       expect(getPromise).to.eventually
@@ -42,6 +42,6 @@ describe 'Functional. PounchDb driver.', ->
         .property('data').property('stringParam').equal('new value')
         .notify(done);
 
-  # TODO: Do we need add and remove?
+  # TODO: add and remove
 
   # TODO: config

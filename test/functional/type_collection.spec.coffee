@@ -19,7 +19,7 @@ testValues = [
     name: 'name2'
   },
 ]
-      
+
 describe 'Functional. Collection instance.', ->
   beforeEach () ->
     this.mold = mold.initSchema( {}, testSchema() )
@@ -32,11 +32,16 @@ describe 'Functional. Collection instance.', ->
   it 'filter()', ->
     # TODO: do it
 
+  it 'page()', ->
+    # TODO: do it
+
   it 'find()', ->
     # TODO: do it
 
-  it 'add()', ->
-    # TODO: do it
+  it 'add()', () ->
+    newItem = {id: 3, name: 'name3'}
+    this.collectionParam.add(newItem)
+    assert.equal(this.collectionParam.mold[0], newItem)
 
   it 'remove()', ->
     # TODO: do it
@@ -48,11 +53,6 @@ describe 'Functional. Collection instance.', ->
     # TODO: do it
 
 
-
-#  it 'Add item and get item', ->
-#    newItem = {id: 3, name: 'name3'}
-#    this.arrayParam.add(newItem)
-#    assert.equal(this.arrayParam.getItem(3).mold, newItem)
 
 #  it 'Clear a array', ->
 #    this.arrayParam.setSilent(this.arrayValues)

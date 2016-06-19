@@ -45,21 +45,34 @@ export default class CollectionInstance {
   }
 
   /**
-   * Get filtered list
-   * @param params - for parametrized query
+   * Get filtered list. Example:
+   *     collection.filter({name: {contents: 'item'}})
+   * @param {object} params - parameters for query
    */
   filter(params) {
-    // TODO: do it - for server connect
+    // TODO: do it
   }
 
   /**
-   * Find one item via params
-   * @param params - for parametrized query
+   * Find one item via params. Example:
+   *     collection.find({id: 1})
+   * @param {object} params - parameters for query
    */
   find(params) {
-    // TODO: do it - for server connect
+    // TODO: do it
   }
 
+  /**
+   * Like filter, but it load one page. Example:
+   *     collection.page(1)
+   *     collection.page(2, {active: true})
+   * Page numbers start from 1.
+   * @param {number} pageNum -
+   * @param {object} [params] - parameters for query
+   */
+  page(pageNum, params) {
+    return this.filter({...params, page: 1});
+  }
 
 
   /**
@@ -68,12 +81,17 @@ export default class CollectionInstance {
    * @returns {object} promise
    */
   add(item) {
-    var composition = this._main.state.getComposition(this._root);
-    // TODO: validate item
-    composition.push(item);
-    // TODO: return promise
-    //return item;
-    this.updateMold();
+    // TODO: значение устанавливается до того как будет сделан запрос - это нужно менять в настройках
+
+    return this._main.state.addItem(this._root, item);
+    
+    
+    // var composition = this._main.state.getComposition(this._root);
+    // // TODO: validate item
+    // composition.push(item);
+    // // TODO: return promise
+    // //return item;
+    // this.updateMold();
 
     /*
      // TODO: validate item
@@ -123,14 +141,14 @@ export default class CollectionInstance {
    */
   has(path) {
     // TODO: test deep param
-    
+
     if (!path)
       throw new Error(`You must pass a path argument.`);
 
     // Check schema
     var schemaPath = this._convertToSchemaPath(path);
     if (this._main.schemaManager.has(this._fullPath(schemaPath))) return false;
-    
+
     // TODO: нужно сделать поиск элементов в mold, так как в пути будет primaryKey, а нам нужен index
     // проще всего преобразовать primaryKey в index
   }
@@ -151,7 +169,7 @@ export default class CollectionInstance {
   _convertToSchemaPath(path) {
     return path.replace(/\[\d+]/, '.item');
   }
-  
+
   _fullPath(relativePath) {
     if (_.startsWith(relativePath, '['))
       // TODO: without dot

@@ -45,6 +45,9 @@ export default class State {
     });
   }
 
+  addItem(path, newItem) {
+    return this.addSilent(path, newItem);
+  }
 
   /**
    * Set new value to state and rise an event.
@@ -75,10 +78,13 @@ export default class State {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(path);
 
+    // TODO: only for primitives
+
     if (schema.type) {
       // If it's a param or list - just set a value
       // It rises an error on invalid value
       this._checkNode(schema, path, value);
+      // TODO: тут устанавливается значение сразу, до запроса в базу - но в конфиге можно указать чтобы после
       this.setComposition(path, value);
     }
     else {
@@ -90,6 +96,33 @@ export default class State {
       type: 'set',
       fullPath: path,
       data: value,
+    });
+  }
+
+  /**
+   *
+   * @param {string} path - absolute path
+   * @param {object} newItem
+   * @returns {Promise}
+   */
+  addSilent(path, newItem) {
+
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(path);
+
+    if (schema.type !== 'collection')
+      throw new Error(`Only collection type can add item`);
+
+    // It rises an error on invalid value
+    this._checkNode(schema, path, newItem);
+    // TODO: тут устанавливается значение сразу, до запроса в базу - но в конфиге можно указать чтобы после
+    let composition = this.getComposition(path);
+    composition.push(newItem);
+
+    return this._startDriverQuery({
+      type: 'add',
+      fullPath: path,
+      data: newItem,
     });
   }
 
@@ -192,7 +225,7 @@ export default class State {
   }
 
   /**
-   * Start query to driver for data.
+   * Send query to driver for data.
    * @param {{type: string, fullPath: string, value: *}} params
    *     * type is one of: get, set, add, delete
    *     * path: full path in mold
