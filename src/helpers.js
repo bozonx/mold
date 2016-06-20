@@ -11,3 +11,14 @@ export function recursiveSchema(root, schema, cb) {
     else if (isGoDeeper) recursiveSchema(childPath, childSchema, cb);
   });
 }
+
+export function findPrimary(schema) {
+  var primary = '';
+  _.find(schema, (value, name) => {
+    if (_.isObject(value) && value.primary) {
+      primary = name;
+      return true;
+    }
+  });
+  return primary;
+}

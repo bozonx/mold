@@ -43,6 +43,9 @@ describe 'Functional. Collection instance.', ->
   it 'find()', ->
     # TODO: do it
 
+  it 'item()', ->
+    # TODO: do it
+
   it 'add()', () ->
     newItem = {id: 3, name: 'name3'}
     this.collectionParam.add(newItem)

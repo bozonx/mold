@@ -2,6 +2,7 @@
 import _ from 'lodash';
 
 import events from '../events';
+import { findPrimary } from '../helpers';
 
 export default class CollectionInstance {
   constructor(main) {
@@ -38,16 +39,16 @@ export default class CollectionInstance {
     // TODO: test for get long path
     // TODO: [num] в пути это primary id - нужно преобразовать
 
-    if (!path)
-      throw new Error(`You must pass a path argument.`);
-
-    var fullPath = this._fullPath(path);
-    var schemaPath = this._convertToSchemaPath(fullPath);
-    var instance = this._main.schemaManager.getInstance(schemaPath);
-    // reinit instance with correct path
-    instance.init(fullPath, instance.schema);
-
-    return instance;
+    // if (!path)
+    //   throw new Error(`You must pass a path argument.`);
+    //
+    // var fullPath = this._fullPath(path);
+    // var schemaPath = this._convertToSchemaPath(fullPath);
+    // var instance = this._main.schemaManager.getInstance(schemaPath);
+    // // reinit instance with correct path
+    // instance.init(fullPath, instance.schema);
+    //
+    // return instance;
   }
 
   /**
@@ -69,12 +70,25 @@ export default class CollectionInstance {
   }
 
   /**
+   * Get one item from collection by primary id.  Example:
+   *     collection.item(urlParams.id)
+   * @param {number|string} primaryId
+   * @returns {Promise} with item
+   */
+  item(primaryId) {
+    // TODO: get primary id name
+    var primaryKeyName = findPrimary(this.schema.item);
+    return this.find({[primaryKeyName]: primaryId});
+  }
+
+  /**
    * Like filter, but it load one page. Example:
    *     collection.page(1)
    *     collection.page(2, {active: true})
    * Page numbers start from 1.
    * @param {number} pageNum -
    * @param {object} [params] - parameters for query
+   * @returns {Promise} with items list
    */
   page(pageNum, params) {
     return this.filter({...params, page: 1});
@@ -113,12 +127,12 @@ export default class CollectionInstance {
   has(path) {
     // TODO: test deep param
 
-    if (!path)
-      throw new Error(`You must pass a path argument.`);
-
-    // Check schema
-    var schemaPath = this._convertToSchemaPath(path);
-    if (this._main.schemaManager.has(this._fullPath(schemaPath))) return false;
+    // if (!path)
+    //   throw new Error(`You must pass a path argument.`);
+    //
+    // // Check schema
+    // var schemaPath = this._convertToSchemaPath(path);
+    // if (this._main.schemaManager.has(this._fullPath(schemaPath))) return false;
 
     // TODO: нужно сделать поиск элементов в mold, так как в пути будет primaryKey, а нам нужен index
     // проще всего преобразовать primaryKey в index

@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { recursiveSchema } from './helpers';
+import { recursiveSchema, findPrimary } from './helpers';
 import Request from './Request';
 import events from './events';
 
@@ -141,7 +141,7 @@ export default class State {
     if (schema.type !== 'collection')
       throw new Error(`Only collection type can remove item`);
 
-    var primaryKeyName = this._findPrimary(schema);
+    var primaryKeyName = findPrimary(schema);
     var primaryId = item[primaryKeyName];
     if (_.isUndefined(primaryId))
       throw new Error(`The item ${JSON.stringify(item)} doesn't have a primary id. See you schema.`);
@@ -287,14 +287,4 @@ export default class State {
     });
   }
 
-  _findPrimary(schema) {
-    var primary = '';
-    _.find(schema, (value, name) => {
-      if (_.isObject(value) && value.primary) {
-        primary = name;
-        return true;
-      }
-    });
-    return primary;
-  }
 }
