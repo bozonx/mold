@@ -16,17 +16,13 @@ export default class Composition {
    */
   get(path) {
     // TODO: maybe return immutable?
-    
+
     if (!path) return this._storage;
 
     // TODO: как узнать имя primary key?
     var convertedPath = this._convertPrimaryToIndexesInPath(this._storage, path, 'id');
 
-    console.log(1111111111, convertedPath)
-    
     return _.get(this._storage, convertedPath);
-
-    //return _.get(this._storage, path);
   }
 
   /**
@@ -37,8 +33,12 @@ export default class Composition {
    */
   has(path) {
     if (path === '') return true;
-    return _.has(this._storage, path);
-  }
+
+    // TODO: как узнать имя primary key?
+    var convertedPath = this._convertPrimaryToIndexesInPath(this._storage, path, 'id');
+
+    return _.has(this._storage, convertedPath);
+   }
 
   /**
    * Set value to composition
@@ -49,15 +49,43 @@ export default class Composition {
    * @param {*} value - new value
    */
   set(path, value) {
-
-    // TODO: запрещенно устанавливать значение, если путь вида 'one{1}.two{2}' и данные в {1} не определенны
-
-    if (!path) {
+    if (!path) 
       return this._storage = value;
+
+    if (path.match(/\{\d+}/)) {
+      // collection
+
+      // TODO: как узнать имя primary key?
+      var primaryKeyName = 'id';
+
+      var parsed = path.match(/(.*)\{(\d+)}([^{]*)$/);
+      // like "dd.ff{1}.gg"
+      var collectionPath = parsed[1];
+      // primary id
+      var itemPrimary = parseInt(parsed[2]);
+      // Path in item
+      var collectionItemPath = _.trim(parsed[3], '.');
+
+      var convertedCompositonPath = this._convertPrimaryToIndexesInPath(this._storage, collectionPath, primaryKeyName);
+      if (!convertedCompositonPath)
+        throw new Error(`You can't set to collection which not exists in composition.`);
+
+      var collection = _.get(this._storage, convertedCompositonPath);
+      if (!collection) {
+        // new collection
+        _.set(this._storage, _.trim(`${convertedCompositonPath}[0].${collectionItemPath}`), value);
+      }
+      else {
+        // existent collection
+        var index = _.findIndex(collection, {[primaryKeyName]: itemPrimary});
+        _.set(this._storage, _.trim(`${convertedCompositonPath}[${index}].${collectionItemPath}`), value);
+      }
     }
     else {
+      // container or leaf
       _.set(this._storage, path, value);
     }
+    
   }
 
   /**

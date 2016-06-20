@@ -99,6 +99,7 @@ describe 'Functional. Collection instance.', ->
     this.collectionParam.add(newItem)
     this.collectionParam.remove({id: 2})
     this.collectionParam.child(1).set('name', 'new name');
+    # TODO: test deep with two collections
     assert.deepEqual(_.compact(this.collectionParam.mold), [
       {
         id: 1
