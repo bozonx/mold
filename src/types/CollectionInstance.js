@@ -81,32 +81,9 @@ export default class CollectionInstance {
    * @returns {object} promise
    */
   add(item) {
-    // TODO: значение устанавливается до того как будет сделан запрос - это нужно менять в настройках
-
-    return this._main.state.addItem(this._root, item);
-    
-    
-    // var composition = this._main.state.getComposition(this._root);
-    // // TODO: validate item
-    // composition.push(item);
-    // // TODO: return promise
-    // //return item;
-    // this.updateMold();
-
-    /*
-     // TODO: validate item
-     var composition = this._state.getComposition(this._root);
-
-     if (!_.isNumber(item[this.primary]))
-     throw new Error(`Item ${JSON.stringify(item)} doesn't have primary key value "${this.primary}".`);
-
-     composition[item[this.primary]] = item;
-
-     this._state.setComposition(this._root, composition);
-
-     this.updateMold();
-     // TODO: return promise
-     */
+    var promise = this._main.state.addItem(this._root, item);
+    this.updateMold();
+    return promise;
   }
 
   /**
@@ -115,21 +92,9 @@ export default class CollectionInstance {
    * @returns {object} promise
    */
   remove(item) {
-    // TODO: наверное лучше искать по уникальному ключу
-    _.remove(this._main.state.getComposition(this._root), item)
-    // TODO: return promise
+    var promise = this._main.state.removeItem(this._root, item);
     this.updateMold();
-    /*
-     var composition = this._state.getComposition(this._root);
-     var removeItem = {};
-     removeItem[this.primary] = item[this.primary];
-     _.remove(composition, removeItem);
-
-     this._state.setComposition(this._root, composition);
-
-     this.updateMold();
-     // TODO: return promise
-     */
+    return promise;
   }
 
   /**

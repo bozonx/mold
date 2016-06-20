@@ -199,6 +199,8 @@ export default class SchemaManager {
     if (!_.isPlainObject(value.item))
       throw new Error(`On a path "${path}" list must has an "item" param.`);
 
+    // TODO: проверить - только одно поле, не больше не меньше является primary
+    
     _.set(this._schema, path, {
       type: value.type,
       item: {},

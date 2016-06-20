@@ -49,6 +49,10 @@ export default class State {
     return this.addSilent(path, newItem);
   }
 
+  removeItem(path, item) {
+    return this.removeSilent(path, item);
+  }
+
   /**
    * Set new value to state and rise an event.
    * It sends request to driver and returns its promise.
@@ -123,6 +127,27 @@ export default class State {
       type: 'add',
       fullPath: path,
       data: newItem,
+    });
+  }
+
+  removeSilent(path, item) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(path);
+
+    if (schema.type !== 'collection')
+      throw new Error(`Only collection type can remove item`);
+
+    var primaryKeyName = this._findPrimary(schema);
+    var primaryId = item[primaryKeyName];
+    if (_.isUndefined(primaryId))
+      throw new Error(`The item ${JSON.stringify(item)} doesn't have a primary id. See you schema.`);
+
+    _.remove(this.getComposition(path), {[primaryKeyName]: primaryId});
+
+    return this._startDriverQuery({
+      type: 'remove',
+      fullPath: path,
+      data: item,
     });
   }
 
@@ -254,4 +279,14 @@ export default class State {
     });
   }
 
+  _findPrimary(schema) {
+    var primary = '';
+    _.find(schema, (value, name) => {
+      if (_.isObject(value) && value.primary) {
+        primary = name;
+        return true;
+      }
+    });
+    return primary;
+  }
 }

@@ -5,7 +5,7 @@ testSchema = () ->
     collectionParam:
       type: 'collection'
       item: {
-        id: {type: 'number'}
+        id: {type: 'number', primary: true}
         name: {type: 'string'}
       }
 
@@ -44,7 +44,10 @@ describe 'Functional. Collection instance.', ->
     assert.equal(this.collectionParam.mold[0], newItem)
 
   it 'remove()', ->
-    # TODO: do it
+    this.collectionParam.add(testValues[0])
+    this.collectionParam.add(testValues[1])
+    this.collectionParam.remove(testValues[0])
+    assert.deepEqual(this.collectionParam.mold, [testValues[1]])
 
   it 'has()', ->
     # TODO: do it
