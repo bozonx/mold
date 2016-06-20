@@ -32,7 +32,8 @@ describe 'Functional. Collection instance.', ->
     assert.deepEqual(this.collectionParam.mold, testValues)
 
   it 'child()', ->
-    # TODO: do it
+    this.container.setSilent('collectionParam', testValues)
+    assert.equal(this.collectionParam.child(2).mold.name, 'name2');
 
   it 'filter()', ->
     # TODO: do it
