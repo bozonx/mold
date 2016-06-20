@@ -105,7 +105,7 @@ export default class State {
     return this._startDriverQuery({
       type: 'set',
       fullPath: path,
-      data: value,
+      payload: value,
     });
   }
 
@@ -131,7 +131,7 @@ export default class State {
     return this._startDriverQuery({
       type: 'add',
       fullPath: path,
-      data: newItem,
+      payload: newItem,
     });
   }
 
@@ -152,7 +152,7 @@ export default class State {
     return this._startDriverQuery({
       type: 'remove',
       fullPath: path,
-      data: item,
+      payload: item,
     });
   }
 
@@ -277,7 +277,7 @@ export default class State {
       });
 
     return new Promise((resolve, reject) => {
-      var req = this._request.generate(params.type, params.fullPath, params.data);
+      var req = this._request.generate(params.type, params.fullPath, params.payload);
 
       var resolveHandler = (responce) => {
         // TODO: установить данные в composition, учитывая модель и ответ драйвера

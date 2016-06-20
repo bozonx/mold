@@ -5,12 +5,12 @@ export default class Request {
     this._main = main;
   }
 
-  generate(type, fullPath, data) {
+  generate(type, fullPath, payload) {
     var documentParams = this._main.schemaManager.getDocument(fullPath);
     var preRequest = {
       type,
       fullPath,
-      data,
+      payload,
       documentParams,
     };
 
@@ -33,12 +33,12 @@ export default class Request {
     if (!request.documentParams) return request;
 
     // If we want set all the document
-    let document = request.data;
+    let document = request.payload;
 
     // If we want set one value to document
     let pathToField = this._getPathToField(request);
     if (pathToField)
-      document = _.set({}, pathToField, request.data);
+      document = _.set({}, pathToField, request.payload);
 
     return {
       ...request,

@@ -73,7 +73,7 @@ class LocalPounchDb {
 
   _resolveHandler(resolve, resp) {
     resolve({
-      data: resp,
+      payload: resp,
       successResponse: resp,
     });
   }

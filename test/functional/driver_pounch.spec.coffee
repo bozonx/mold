@@ -22,7 +22,7 @@ describe 'Functional. PounchDb driver.', ->
   it 'set string', (done) ->
     setPromise = this.container.set('stringParam', 'new value')
     expect(setPromise).to.eventually.have.property('successResponse')
-    expect(setPromise).to.eventually.have.property('data')
+    expect(setPromise).to.eventually.have.property('payload')
     expect(setPromise).notify(done)
 
   it 'set array', (done) ->
@@ -31,7 +31,7 @@ describe 'Functional. PounchDb driver.', ->
       getPromise = this.container.get('arrayParam')
 
       expect(getPromise).to.eventually
-        .property('data').property('arrayParam').deep.equal(value)
+        .property('payload').property('arrayParam').deep.equal(value)
         .notify(done);
 
   it 'get', (done) ->
@@ -39,7 +39,7 @@ describe 'Functional. PounchDb driver.', ->
     expect(setPromise).to.eventually.notify =>
       getPromise = this.container.get('stringParam')
       expect(getPromise).to.eventually
-        .property('data').property('stringParam').equal('new value')
+        .property('payload').property('stringParam').equal('new value')
         .notify(done);
 
   # TODO: add and remove
