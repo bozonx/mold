@@ -71,6 +71,28 @@ describe 'Functional. Collection instance.', ->
 #    this.arrayParam.clear()
 #    assert.equal(this.arrayParam.mold.length, 0)
 
+
+  it '_convertPrimaryToIndexesInPath', ->
+    store = {
+      aa: [
+        {id: 1},
+        {id: 2},
+      ],
+      bb: [
+        {
+          id: 22,
+          children: [
+            {id: 222},
+          ]
+        }
+      ]
+    }
+    _convert = this.mold._composition._convertPrimaryToIndexesInPath
+
+    assert.equal(_convert(store, 'aa{2}.name', 'id'), 'aa[1].name')
+    assert.equal(_convert(store, 'bb{22}.children{222}', 'id'), 'bb[0].children[0]')
+    assert.isUndefined(_convert(store, 'bb{223}.children{222}', 'id'))
+  
   it 'Many manupulations with collection', ->
     newItem = {id: 3, name: 'name3'}
     this.container.setSilent('collectionParam', testValues)

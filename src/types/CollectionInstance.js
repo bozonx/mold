@@ -2,7 +2,7 @@
 import _ from 'lodash';
 
 import events from '../events';
-import { findPrimary, convertToSchemaPath } from '../helpers';
+import { findPrimary } from '../helpers';
 
 export default class CollectionInstance {
   constructor(main) {
@@ -39,10 +39,9 @@ export default class CollectionInstance {
     if (_.isUndefined(primaryId))
       throw new Error(`You must pass a path argument.`);
 
-    var fullPath = this._fullPath(`[${primaryId}]`);
-    var schemaPath = convertToSchemaPath(fullPath);
+    var fullPath = `${this._root}{${primaryId}}`;
     // get container instance
-    var instance = this._main.schemaManager.getInstance(schemaPath);
+    var instance = this._main.schemaManager.getInstance(fullPath);
     // reinit container instance with correct path
     instance.init(fullPath, instance.schema);
 

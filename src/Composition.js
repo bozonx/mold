@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { splitPath } from './helpers';
+
 export default class Composition {
   constructor() {
     this._storage = {};
@@ -14,8 +16,17 @@ export default class Composition {
    */
   get(path) {
     // TODO: maybe return immutable?
+    
     if (!path) return this._storage;
-    return _.get(this._storage, path);
+
+    // TODO: как узнать имя primary key?
+    var convertedPath = this._convertPrimaryToIndexesInPath(this._storage, path, 'id');
+
+    console.log(1111111111, convertedPath)
+    
+    return _.get(this._storage, convertedPath);
+
+    //return _.get(this._storage, path);
   }
 
   /**
@@ -38,11 +49,61 @@ export default class Composition {
    * @param {*} value - new value
    */
   set(path, value) {
+
+    // TODO: запрещенно устанавливать значение, если путь вида 'one{1}.two{2}' и данные в {1} не определенны
+
     if (!path) {
       return this._storage = value;
     }
     else {
-      _.set(this._storage, path, value);      
+      _.set(this._storage, path, value);
     }
+  }
+
+  /**
+   * It converts path with primary keys like "one{1}.two" to
+   * path with index like "one[1].two".
+   * If item with primary key isn't exiting an the moment, it returns undefined.
+   * @param storage
+   * @param path
+   * @param primaryKeyName
+   * @returns {string}
+   * @private
+   */
+  _convertPrimaryToIndexesInPath(storage, path, primaryKeyName) {
+    var splitted = splitPath(path);
+    var convertedPath = '';
+
+    _.find(splitted, (pathPart) => {
+      if (!_.eq(parseInt(pathPart), NaN)) {
+        // collection item
+        var numPathPart = parseInt(pathPart);
+
+        var itemIndex;
+        var collectionOnCurrentPath = _.get(storage, convertedPath);
+        var item = _.find(collectionOnCurrentPath, (value, index) => {
+          if (value[primaryKeyName] === numPathPart) {
+            itemIndex = index;
+            return true;
+          }
+        });
+
+        if (_.isUndefined(collectionOnCurrentPath) || !item) {
+          convertedPath = undefined;
+          return true;
+        }
+
+        if (convertedPath === '') convertedPath = `[${itemIndex}]`;
+        else convertedPath = `${convertedPath}[${itemIndex}]`;
+      }
+      else {
+        // container child
+
+        if (convertedPath === '') convertedPath = pathPart;
+        else convertedPath = `${convertedPath}.${pathPart}`;
+      }
+    });
+
+    return convertedPath;
   }
 }
