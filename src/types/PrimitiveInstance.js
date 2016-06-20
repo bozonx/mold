@@ -1,6 +1,12 @@
+import events from '../events';
+
 export default class ParamInstance {
   constructor(main) {
     this._main = main;
+
+    events.on('mold.composition.update', (data) => {
+      if (data.path.indexOf(this._root) === 0) this.updateMold();
+    });
   }
 
   init(root, schema) {

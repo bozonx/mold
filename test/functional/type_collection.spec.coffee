@@ -29,7 +29,7 @@ describe 'Functional. Collection instance.', ->
   it 'init via container', ->
     this.container.setSilent('collectionParam', testValues)
     assert.deepEqual(this.container.mold.collectionParam, testValues)
-    #assert.deepEqual(this.collectionParam.mold, testValues)
+    assert.deepEqual(this.collectionParam.mold, testValues)
     
   it 'child()', ->
     # TODO: do it
@@ -67,7 +67,7 @@ describe 'Functional. Collection instance.', ->
 #    this.arrayParam.clear()
 #    assert.equal(this.arrayParam.mold.length, 0)
 
-  it 'Many manupulations with array', ->
+  it 'Many manupulations with collection', ->
     newItem = {id: 3, name: 'name3'}
     this.container.setSilent('collectionParam', testValues)
     this.collectionParam.add(newItem)

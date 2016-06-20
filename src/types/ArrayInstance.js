@@ -2,11 +2,17 @@
 
 import _ from 'lodash';
 
+import events from '../events';
+
 // TODO: сделать валидация типа дочерних элементов
 
 export default class ArrayInstance {
   constructor(main) {
     this._main = main;
+
+    events.on('mold.composition.update', (data) => {
+      if (data.path.indexOf(this._root) === 0) this.updateMold();
+    });
   }
 
   init(root, schema) {
