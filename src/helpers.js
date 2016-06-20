@@ -2,6 +2,8 @@ import _ from 'lodash';
 
 export function recursiveSchema(root, schema, cb) {
   _.each(schema, function (childSchema, childName) {
+    if (!_.isPlainObject(childSchema)) return;
+    
     var childPath = _.trim(`${root}.${childName}`, '.');
 
     var isGoDeeper = cb(childPath, childSchema, childName);
@@ -21,4 +23,9 @@ export function findPrimary(schema) {
     }
   });
   return primary;
+}
+
+
+export function convertToSchemaPath(path) {
+  return path.replace(/\[\d+]/, '.item');
 }

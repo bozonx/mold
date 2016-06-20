@@ -2,7 +2,7 @@
 import _ from 'lodash';
 
 import events from '../events';
-import { findPrimary } from '../helpers';
+import { findPrimary, convertToSchemaPath } from '../helpers';
 
 export default class CollectionInstance {
   constructor(main) {
@@ -31,24 +31,22 @@ export default class CollectionInstance {
   }
 
   /**
-   * Get child
-   * @param {string} path - path relative to this instance root
+   * Get child by primary id.
+   * @param {number|string} primaryId - In this version it supports only primary id, not path.
    * @returns {object} - instance of child
    */
-  child(path) {
-    // TODO: test for get long path
-    // TODO: [num] в пути это primary id - нужно преобразовать
+  child(primaryId) {
+    if (_.isUndefined(primaryId))
+      throw new Error(`You must pass a path argument.`);
 
-    // if (!path)
-    //   throw new Error(`You must pass a path argument.`);
-    //
-    // var fullPath = this._fullPath(path);
-    // var schemaPath = this._convertToSchemaPath(fullPath);
-    // var instance = this._main.schemaManager.getInstance(schemaPath);
-    // // reinit instance with correct path
-    // instance.init(fullPath, instance.schema);
-    //
-    // return instance;
+    var fullPath = this._fullPath(`[${primaryId}]`);
+    var schemaPath = convertToSchemaPath(fullPath);
+    // get container instance
+    var instance = this._main.schemaManager.getInstance(schemaPath);
+    // reinit container instance with correct path
+    instance.init(fullPath, instance.schema);
+
+    return instance;
   }
 
   /**
@@ -149,10 +147,6 @@ export default class CollectionInstance {
 
   updateMold() {
     this.mold = this._main.state.getComposition(this._root);
-  }
-
-  _convertToSchemaPath(path) {
-    return path.replace(/\[\d+]/, '.item');
   }
 
   _fullPath(relativePath) {

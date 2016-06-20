@@ -19,5 +19,5 @@ export default new EventEmitter2({
   //
   // the maximum amount of listeners that can be assigned to an event, default 10.
   //
-  maxListeners: 20
+  maxListeners: 2000
 });

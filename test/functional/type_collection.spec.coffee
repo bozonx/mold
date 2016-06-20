@@ -30,7 +30,7 @@ describe 'Functional. Collection instance.', ->
     this.container.setSilent('collectionParam', testValues)
     assert.deepEqual(this.container.mold.collectionParam, testValues)
     assert.deepEqual(this.collectionParam.mold, testValues)
-    
+
   it 'child()', ->
     # TODO: do it
 
@@ -75,12 +75,11 @@ describe 'Functional. Collection instance.', ->
     this.container.setSilent('collectionParam', testValues)
     this.collectionParam.add(newItem)
     this.collectionParam.remove({id: 2})
-    #this.collectionParam.getItem(1).child('name').set('new name');
+    this.collectionParam.child(1).set('name', 'new name');
     assert.deepEqual(_.compact(this.collectionParam.mold), [
       {
         id: 1
-        name: 'name1'
-        #name: 'new name'
+        name: 'new name'
       }
       {
         id: 3

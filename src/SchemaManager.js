@@ -8,7 +8,7 @@ import ArrayInstance from './types/ArrayInstance';
 import CollectionInstance from './types/CollectionInstance';
 import ContainerInstance from './types/ContainerInstance';
 import PrimitiveInstance from './types/PrimitiveInstance';
-import { recursiveSchema } from './helpers';
+import { recursiveSchema, convertToSchemaPath } from './helpers';
 
 export default class SchemaManager {
   init(schema, main) {
@@ -29,9 +29,11 @@ export default class SchemaManager {
   get(path) {
     if (path === '') return this.getFullSchema();
 
+    var schemaPath = convertToSchemaPath(path);
+
     // TODO: do it immutable
-    var schema = _.get(this._schema, path);
-    if (_.isUndefined(schema)) throw new Error(`Schema on path "${path}" doesn't exists`);
+    var schema = _.get(this._schema, schemaPath);
+    if (_.isUndefined(schema)) throw new Error(`Schema on path "${schemaPath}" doesn't exists`);
 
     return schema;
   }
@@ -44,7 +46,10 @@ export default class SchemaManager {
    */
   has(path) {
     if (path === '') return true;
-    return _.has(this._schema, path);
+
+    var schemaPath = convertToSchemaPath(path);
+    
+    return _.has(this._schema, schemaPath);
   }
 
   /**
@@ -146,7 +151,7 @@ export default class SchemaManager {
         this._initCollection(newPath, value);
 
         // Go deeper
-        return 'item';
+        return true;
       }
       else if (value.type) {
         // primitive
@@ -200,7 +205,8 @@ export default class SchemaManager {
       throw new Error(`On a path "${path}" list must has an "item" param.`);
 
     // TODO: проверить - только одно поле, не больше не меньше является primary
-    
+    // TODO: primary id может быть только числом (или может ещё строкой)
+
     _.set(this._schema, path, {
       type: value.type,
       item: {},

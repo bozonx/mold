@@ -1,9 +1,9 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { recursiveSchema, findPrimary } from './helpers';
 import Request from './Request';
 import events from './events';
+import { recursiveSchema, findPrimary } from './helpers';
 
 export default class State {
   init(_main, composition) {
@@ -39,6 +39,8 @@ export default class State {
   getValue(path) {
     if (!this._main.schemaManager.has(path))
       throw new Error(`Can't find path "${path}" in the schema!`);
+
+    // TODO: set to composition
 
     return this._startDriverQuery({
       type: 'get',
@@ -114,7 +116,6 @@ export default class State {
    * @returns {Promise}
    */
   addSilent(path, newItem) {
-
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(path);
 
@@ -141,10 +142,10 @@ export default class State {
     if (schema.type !== 'collection')
       throw new Error(`Only collection type can remove item`);
 
-    var primaryKeyName = findPrimary(schema);
+    var primaryKeyName = findPrimary(schema.item);
     var primaryId = item[primaryKeyName];
     if (_.isUndefined(primaryId))
-      throw new Error(`The item ${JSON.stringify(item)} doesn't have a primary id. See you schema.`);
+      throw new Error(`The item ${JSON.stringify(item)} doesn't have a primary id. See your schema.`);
 
     _.remove(this.getComposition(path), {[primaryKeyName]: primaryId});
 
