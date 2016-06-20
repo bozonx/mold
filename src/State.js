@@ -89,7 +89,9 @@ export default class State {
       // It rises an error on invalid value
       this._checkNode(schema, path, value);
       // TODO: тут устанавливается значение сразу, до запроса в базу - но в конфиге можно указать чтобы после
+      // TODO: надо поднять событие обновления silent и чтобы обновились все молды дочерних элементов
       this.setComposition(path, value);
+      
     }
     else {
       // It's a container - set values for all children

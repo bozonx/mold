@@ -56,6 +56,19 @@ export default class ContainerInstance {
   }
 
   /**
+   * Set child value for child or for all children silently.
+   * If you pass path = '' or undefined, it means set data for the all children of this container
+   * @param {string} path - path relative to instance root
+   * @param {*} value for child or children
+   * @returns {Promise}
+   */
+  setSilent(path, value) {
+    var promise = this._main.state.setSilent((path) ? this._fullPath(path) : this._root, value);
+    this.updateMold();
+    return promise;
+  }
+
+  /**
    * Is param exists on a path
    * It just check schema.
    * @param {string} path - path relative to instance root

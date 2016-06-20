@@ -26,6 +26,11 @@ describe 'Functional. Collection instance.', ->
     this.container = this.mold.instance('inMemory')
     this.collectionParam = this.mold.instance('inMemory.collectionParam')
 
+  it 'init via container', ->
+    this.container.setSilent('collectionParam', testValues)
+    assert.deepEqual(this.container.mold.collectionParam, testValues)
+    #assert.deepEqual(this.collectionParam.mold, testValues)
+    
   it 'child()', ->
     # TODO: do it
 
@@ -61,30 +66,21 @@ describe 'Functional. Collection instance.', ->
 #    this.arrayParam.setSilent(this.arrayValues)
 #    this.arrayParam.clear()
 #    assert.equal(this.arrayParam.mold.length, 0)
-#
-#  it 'remove', ->
-#    this.arrayParam.setSilent(this.arrayValues)
-#    this.arrayParam.remove({id: 1})
-#    assert.deepEqual(this.arrayParam.mold, _.reject(this.arrayValues, {id:1}))
-#
-#  it 'Get child', ->
-#    # TODO: do it
-#
-#
-#  it 'Many manupulations with array', ->
-#    newItem = {id: 3, name: 'name3'}
-#    this.arrayParam.setSilent(this.arrayValues)
-#    this.arrayParam.add(newItem)
-#    this.arrayParam.remove({id: 2})
-#    #this.arrayParam.getItem(1).child('name').set('new name');
-#    assert.deepEqual(_.compact(this.arrayParam.mold), [
-#      {
-#        id: 1
-#        name: 'name1'
-#        #name: 'new name'
-#      }
-#      {
-#        id: 3
-#        name: 'name3'
-#      }
-#    ])
+
+  it 'Many manupulations with array', ->
+    newItem = {id: 3, name: 'name3'}
+    this.container.setSilent('collectionParam', testValues)
+    this.collectionParam.add(newItem)
+    this.collectionParam.remove({id: 2})
+    #this.collectionParam.getItem(1).child('name').set('new name');
+    assert.deepEqual(_.compact(this.collectionParam.mold), [
+      {
+        id: 1
+        name: 'name1'
+        #name: 'new name'
+      }
+      {
+        id: 3
+        name: 'name3'
+      }
+    ])
