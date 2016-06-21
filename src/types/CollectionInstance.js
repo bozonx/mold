@@ -101,9 +101,7 @@ export default class CollectionInstance {
    * @returns {object} promise
    */
   add(item) {
-    var promise = this._main.state.addItem(this._root, item);
-    this.updateMold();
-    return promise;
+    return this._main.state.addItem(this._root, item);
   }
 
   /**
@@ -112,9 +110,7 @@ export default class CollectionInstance {
    * @returns {object} promise
    */
   remove(item) {
-    var promise = this._main.state.removeItem(this._root, item);
-    this.updateMold();
-    return promise;
+    return this._main.state.removeItem(this._root, item);
   }
 
   /**

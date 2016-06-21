@@ -31,9 +31,11 @@ describe 'Functional. Collection instance.', ->
     assert.deepEqual(this.container.mold.collectionParam, testValues)
     assert.deepEqual(this.collectionParam.mold, testValues)
 
-  it 'child()', ->
-    this.container.setSilent('collectionParam', testValues)
-    assert.equal(this.collectionParam.child(2).mold.name, 'name2');
+  it 'child()', (done) ->
+    expect(this.collectionParam.add(testValues[0])).notify =>
+      expect(this.collectionParam.add(testValues[1])).notify =>
+        assert.equal(this.collectionParam.child(2).mold.name, 'name2')
+        done()
 
   it 'filter()', ->
     data = [
@@ -58,16 +60,16 @@ describe 'Functional. Collection instance.', ->
     expect(this.collectionParam.item(2))
       .to.eventually.deep.equal(testValues[1])
 
-  it 'add()', () ->
-    newItem = {id: 3, name: 'name3'}
-    this.collectionParam.add(newItem)
-    assert.equal(this.collectionParam.mold[0], newItem)
+  it 'add()', ->
+    promise = this.collectionParam.add({id: 3, name: 'name3'})
+    expect(promise).to.eventually.property('payload').deep.equal({id: 3, name: 'name3', $primary: 3})
 
-  it 'remove()', ->
-    this.collectionParam.add(testValues[0])
-    this.collectionParam.add(testValues[1])
-    this.collectionParam.remove(testValues[0])
-    assert.deepEqual(this.collectionParam.mold, [testValues[1]])
+  it 'remove()', (done) ->
+    expect(this.collectionParam.add(testValues[0])).notify =>
+      expect(this.collectionParam.add(testValues[1])).notify =>
+        expect(this.collectionParam.remove(testValues[0])).notify =>
+          assert.deepEqual(_.compact(this.collectionParam.mold), [ { id: 2, name: 'name2', '$primary': 2 } ])
+          done()
 
   it 'has()', ->
     # TODO: do it
@@ -78,41 +80,44 @@ describe 'Functional. Collection instance.', ->
 #    this.arrayParam.clear()
 #    assert.equal(this.arrayParam.mold.length, 0)
 
-  it '_convertPrimaryToIndexesInPath', ->
-    store = {
-      aa: [
-        {id: 1},
-        {id: 2},
-      ],
-      bb: [
-        {
-          id: 22,
-          children: [
-            {id: 222},
-          ]
-        }
-      ]
-    }
-    _convert = this.mold._composition._convertPrimaryToIndexesInPath
+#  it '_convertPrimaryToIndexesInPath', ->
+#    store = {
+#      aa: [
+#        {id: 1},
+#        {id: 2},
+#      ],
+#      bb: [
+#        {
+#          id: 22,
+#          children: [
+#            {id: 222},
+#          ]
+#        }
+#      ]
+#    }
+#    _convert = this.mold._composition._convertPrimaryToIndexesInPath
+#
+#    assert.equal(_convert(store, 'aa{2}.name', 'id'), 'aa[1].name')
+#    assert.equal(_convert(store, 'bb{22}.children{222}', 'id'), 'bb[0].children[0]')
+#    assert.isUndefined(_convert(store, 'bb{223}.children{222}', 'id'))
 
-    assert.equal(_convert(store, 'aa{2}.name', 'id'), 'aa[1].name')
-    assert.equal(_convert(store, 'bb{22}.children{222}', 'id'), 'bb[0].children[0]')
-    assert.isUndefined(_convert(store, 'bb{223}.children{222}', 'id'))
-
-  it 'Many manupulations with collection', ->
+  it 'Many manupulations with collection', (done) ->
     newItem = {id: 3, name: 'name3'}
-    this.container.setSilent('collectionParam', testValues)
-    this.collectionParam.add(newItem)
-    this.collectionParam.remove({id: 2})
-    this.collectionParam.child(1).set('name', 'new name');
-    # TODO: test deep with two collections
-    assert.deepEqual(_.compact(this.collectionParam.mold), [
-      {
-        id: 1
-        name: 'new name'
-      }
-      {
-        id: 3
-        name: 'name3'
-      }
-    ])
+    expect(this.collectionParam.add(testValues[0])).notify =>
+      expect(this.collectionParam.add(testValues[1])).notify =>
+        expect(this.collectionParam.add(newItem)).notify =>
+          expect(this.collectionParam.remove({id: 2})).notify =>
+            #this.collectionParam.child(1).set('name', 'new name');
+            assert.deepEqual _.compact(this.collectionParam.mold), [
+              {
+                id: 1
+                name: 'name1'
+                $primary: 1
+              }
+              {
+                id: 3
+                name: 'name3'
+                $primary: 3
+              }
+            ]
+            done()

@@ -2,7 +2,7 @@
 import _ from 'lodash';
 
 import Request from './Request';
-import events from './events';
+
 import { recursiveSchema, findPrimary } from './helpers';
 
 export default class State {
@@ -122,13 +122,14 @@ export default class State {
       // TODO: тут устанавливается значение сразу, до запроса в базу - но в конфиге можно указать чтобы после
       // Set to composition
       this.setComposition(path, value);
-      // Rise an event
-      events.emit('mold.composition.update', {path: path});
+
     }
     else {
       // It's a container - set values for all children
       recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
     }
+
+    // TODO: обновить composition после ответа
 
     return this._startDriverQuery({
       type: 'set',
@@ -139,13 +140,13 @@ export default class State {
 
   /**
    *
-   * @param {string} path - absolute path
+   * @param {string} pathToCollection - absolute path to collection
    * @param {object} newItem
    * @returns {Promise}
    */
-  addSilent(path, newItem) {
+  addSilent(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(path);
+    var schema = this._main.schemaManager.get(pathToCollection);
 
     if (schema.type !== 'collection')
       throw new Error(`Only collection type can add item`);
@@ -153,38 +154,49 @@ export default class State {
     var primaryKeyName = findPrimary(schema.item);
 
     // It rises an error on invalid value
-    this._checkNode(schema, path, newItem);
-    // TODO: тут устанавливается значение сразу, до запроса в базу - но в конфиге можно указать чтобы после
-    let composition = this.getComposition(path);
-    composition.push(newItem);
+    this._checkNode(schema, pathToCollection, newItem);
 
-    return this._startDriverQuery({
+    var promise = this._startDriverQuery({
       type: 'add',
-      fullPath: path,
-      primaryKeyName,
+      fullPath: pathToCollection,
       payload: newItem,
     });
+
+
+    promise.then((resp) => {
+      // TODO: может за это должен отвечать сам пользователь?
+      this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
+    }, () => {
+      // TODO: what are we doing on error?
+    });
+
+    return promise;
   }
 
-  removeSilent(path, item) {
+  removeSilent(pathToCollection, item) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(path);
+    var schema = this._main.schemaManager.get(pathToCollection);
 
     if (schema.type !== 'collection')
       throw new Error(`Only collection type can remove item`);
 
     var primaryKeyName = findPrimary(schema.item);
-    var primaryId = item[primaryKeyName];
-    if (_.isUndefined(primaryId))
-      throw new Error(`The item ${JSON.stringify(item)} doesn't have a primary id. See your schema.`);
 
-    _.remove(this.getComposition(path), {[primaryKeyName]: primaryId});
-
-    return this._startDriverQuery({
+    var promise = this._startDriverQuery({
       type: 'remove',
-      fullPath: path,
+      fullPath: pathToCollection,
       payload: item,
     });
+
+    promise.then((resp) => {
+      // TODO: может за это должен отвечать сам пользователь?
+      //this._composition.remove(path, item.$primary);
+      this._composition.remove(pathToCollection, resp.payload[primaryKeyName]);
+    }, () => {
+      // TODO: what are we doing on error?
+    });
+
+    return promise;
   }
 
   // /**
@@ -248,8 +260,6 @@ export default class State {
 
       // Set to composition
       this.setComposition(childPath, childValue);
-      // Rise an event
-      events.emit('mold.composition.update', {path: childPath});
 
       return false;
     }
@@ -311,6 +321,24 @@ export default class State {
         else if (params.type == 'filter') {
           let list = this.getComposition(params.fullPath);
           resolve( _.filter(list, params.payload) );
+        }
+        else if (params.type == 'add') {
+          let newItem = {
+            payload: {
+              ...params.payload,
+              $primary: params.payload.id,
+            }
+          };
+          resolve( newItem );
+        }
+        else if (params.type == 'remove') {
+          let newItem = {
+            payload: {
+              ...params.payload,
+              $primary: params.payload.id,
+            }
+          };
+          resolve( newItem );
         }
         else {
           resolve( this.getComposition(params.fullPath) );
