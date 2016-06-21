@@ -29,7 +29,7 @@ class LocalPounchDb {
   }
 
   set(request, resolve, reject) {
-    // TODO: test arrays and collections
+    // TODO: test arrays
 
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
@@ -52,8 +52,50 @@ class LocalPounchDb {
     });
   }
 
+  find(request, resolve, reject) {
+    // TODO:
+  }
+
+  filter(request, resolve, reject) {
+    // TODO:
+  }
+
   add(request, resolve, reject) {
     // TODO:
+    if (!request.pathToDocument)
+      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
+
+    var query = {
+      include_docs: true,
+      startKey: 'commonBranch.inPounch.docColl',
+    };
+
+    console.log(22222222, request)
+
+    this._db.allDocs(query).then((resp) => {
+
+      console.log(111111111, resp)
+
+      if (resp.total_rows) {
+        // add to existing collection
+        // this._db.put({
+        //     ...resp,
+        //     ...request.document,
+        //   })
+        //   .then(this._resolveHandler.bind(this, resolve), this._rejectHandler.bind(this, reject));
+
+      }
+      else {
+        // create new collection
+        this._db.put({
+          ...request.document,
+          [request.primaryKeyName]: 0,
+          _id: `${request.pathToDocument}{0}`,
+        })
+        .then(this._resolveHandler.bind(this, resolve), this._rejectHandler.bind(this, reject));
+      }
+
+    }).catch(this._rejectHandler.bind(this, reject));
   }
 
   remove(request, resolve, reject) {

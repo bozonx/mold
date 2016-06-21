@@ -48,6 +48,18 @@ export default class Request {
     };
   }
 
+  _generateFor_add(request) {
+    if (!request.documentParams) return request;
+
+    let document = request.payload;
+
+    return {
+      ...request,
+      document,
+      pathToDocument: request.documentParams.pathToDocument,
+    };
+  }
+
   _getPathToField(request) {
     return _.trim(request.fullPath.split(request.documentParams.pathToDocument)[1], '.');
   }

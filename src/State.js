@@ -150,6 +150,8 @@ export default class State {
     if (schema.type !== 'collection')
       throw new Error(`Only collection type can add item`);
 
+    var primaryKeyName = findPrimary(schema.item);
+
     // It rises an error on invalid value
     this._checkNode(schema, path, newItem);
     // TODO: тут устанавливается значение сразу, до запроса в базу - но в конфиге можно указать чтобы после
@@ -159,6 +161,7 @@ export default class State {
     return this._startDriverQuery({
       type: 'add',
       fullPath: path,
+      primaryKeyName,
       payload: newItem,
     });
   }
