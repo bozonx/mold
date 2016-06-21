@@ -5,16 +5,14 @@ export default class Request {
     this._main = main;
   }
 
-  generate(type, fullPath, payload) {
-    var documentParams = this._main.schemaManager.getDocument(fullPath);
-    var preRequest = {
-      type,
-      fullPath,
-      payload,
+  generate(preRequest) {
+    var documentParams = this._main.schemaManager.getDocument(preRequest.fullPath);
+    var req = {
+      ...preRequest,
       documentParams,
     };
 
-    return this['_generateFor_' + preRequest.type](preRequest);
+    return this['_generateFor_' + req.type](req);
   }
 
   _generateFor_get(request) {
@@ -59,6 +57,8 @@ export default class Request {
       pathToDocument: request.documentParams.pathToDocument,
     };
   }
+
+  // TODO: remove, find, filter
 
   _getPathToField(request) {
     return _.trim(request.fullPath.split(request.documentParams.pathToDocument)[1], '.');

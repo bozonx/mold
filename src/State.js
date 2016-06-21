@@ -152,7 +152,7 @@ export default class State {
       throw new Error(`Only collection type can add item`);
 
     var primaryKeyName = findPrimary(schema.item);
-
+    
     // It rises an error on invalid value
     this._checkNode(schema, pathToCollection, newItem);
 
@@ -160,6 +160,7 @@ export default class State {
       type: 'add',
       fullPath: pathToCollection,
       payload: newItem,
+      primaryKeyName,
     });
 
 
@@ -186,6 +187,7 @@ export default class State {
       type: 'remove',
       fullPath: pathToCollection,
       payload: item,
+      primaryKeyName,
     });
 
     promise.then((resp) => {
@@ -346,7 +348,7 @@ export default class State {
       });
 
     return new Promise((resolve, reject) => {
-      var req = this._request.generate(params.type, params.fullPath, params.payload);
+      var req = this._request.generate(params);
 
       var resolveHandler = (responce) => {
         // TODO: установить данные в composition, учитывая модель и ответ драйвера

@@ -13,7 +13,7 @@ class LocalPounchDb {
   /**
    * It runs on schema init.
    * @param {string} root - absolute root in main schema
-   * @param {MoldInstance} schemaManager
+   * @param {MoldInstance} main
    */
   init(root, main) {
     this._root = root;
@@ -144,7 +144,7 @@ export default class PounchDb {
    * @param {object} instanceConfig
    * @param {object} schema
    * @returns {{driver: LocalPounchDb, schema: *}}
-     */
+   */
   schema(instanceConfig, schema) {
     return {
       driver: new LocalPounchDb(this.driverConfig, instanceConfig, this.db),
