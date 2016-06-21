@@ -38,3 +38,12 @@ export function splitPath(path) {
   
   return replaced.split('.');
 }
+
+export function parseCollectionPath(path) {
+  var parsed = path.match(/(.*)\{(\d+)}([^{]*)$/);
+  return {
+    collectionPath: parsed[1],
+    itemPrimary: parseInt(parsed[2]),
+    collectionItemPath: _.trim(parsed[3], '.'),
+  };
+}

@@ -36,16 +36,27 @@ describe 'Functional. Collection instance.', ->
     assert.equal(this.collectionParam.child(2).mold.name, 'name2');
 
   it 'filter()', ->
-    # TODO: do it
+    data = [
+      {id:1, name: 'e'}
+      {id:2, name: 'r'}
+      {id:3, name: 'e'}
+    ]
+    this.container.setSilent('collectionParam', data)
+    expect(this.collectionParam.filter({name:'e'}))
+      .to.eventually.deep.equal([data[0], data[2]])
 
   it 'page()', ->
     # TODO: do it
 
   it 'find()', ->
-    # TODO: do it
+    this.container.setSilent('collectionParam', testValues)
+    expect(this.collectionParam.find({id:2}))
+      .to.eventually.deep.equal(testValues[1])
 
   it 'item()', ->
-    # TODO: do it
+    this.container.setSilent('collectionParam', testValues)
+    expect(this.collectionParam.item(2))
+      .to.eventually.deep.equal(testValues[1])
 
   it 'add()', () ->
     newItem = {id: 3, name: 'name3'}
@@ -63,14 +74,9 @@ describe 'Functional. Collection instance.', ->
 
   it 'clear()', ->
     # TODO: do it
-
-
-
-#  it 'Clear a array', ->
 #    this.arrayParam.setSilent(this.arrayValues)
 #    this.arrayParam.clear()
 #    assert.equal(this.arrayParam.mold.length, 0)
-
 
   it '_convertPrimaryToIndexesInPath', ->
     store = {
@@ -92,7 +98,7 @@ describe 'Functional. Collection instance.', ->
     assert.equal(_convert(store, 'aa{2}.name', 'id'), 'aa[1].name')
     assert.equal(_convert(store, 'bb{22}.children{222}', 'id'), 'bb[0].children[0]')
     assert.isUndefined(_convert(store, 'bb{223}.children{222}', 'id'))
-  
+
   it 'Many manupulations with collection', ->
     newItem = {id: 3, name: 'name3'}
     this.container.setSilent('collectionParam', testValues)

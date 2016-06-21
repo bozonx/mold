@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import { splitPath } from './helpers';
+import { parseCollectionPath } from './helpers';
 
 export default class Composition {
   constructor() {
@@ -58,27 +59,21 @@ export default class Composition {
       // TODO: как узнать имя primary key?
       var primaryKeyName = 'id';
 
-      var parsed = path.match(/(.*)\{(\d+)}([^{]*)$/);
-      // like "dd.ff{1}.gg"
-      var collectionPath = parsed[1];
-      // primary id
-      var itemPrimary = parseInt(parsed[2]);
-      // Path in item
-      var collectionItemPath = _.trim(parsed[3], '.');
+      var parsed = parseCollectionPath(path);
 
-      var convertedCompositonPath = this._convertPrimaryToIndexesInPath(this._storage, collectionPath, primaryKeyName);
+      var convertedCompositonPath = this._convertPrimaryToIndexesInPath(this._storage, parsed.collectionPath, primaryKeyName);
       if (!convertedCompositonPath)
         throw new Error(`You can't set to collection which not exists in composition.`);
 
       var collection = _.get(this._storage, convertedCompositonPath);
       if (!collection) {
         // new collection
-        _.set(this._storage, _.trim(`${convertedCompositonPath}[0].${collectionItemPath}`), value);
+        _.set(this._storage, _.trim(`${convertedCompositonPath}[0].${parsed.collectionItemPath}`), value);
       }
       else {
         // existent collection
-        var index = _.findIndex(collection, {[primaryKeyName]: itemPrimary});
-        _.set(this._storage, _.trim(`${convertedCompositonPath}[${index}].${collectionItemPath}`), value);
+        var index = _.findIndex(collection, {[primaryKeyName]: parsed.itemPrimary});
+        _.set(this._storage, _.trim(`${convertedCompositonPath}[${index}].${parsed.collectionItemPath}`), value);
       }
     }
     else {

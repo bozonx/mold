@@ -48,6 +48,34 @@ export default class State {
     });
   }
 
+  find(path, params) {
+    if (!this._main.schemaManager.has(path))
+      throw new Error(`Can't find path "${path}" in the schema!`);
+
+    // TODO: set to composition
+
+    return this._startDriverQuery({
+      type: 'find',
+      fullPath: path,
+      payload: params,
+    });
+  }
+
+
+  filter(path, params) {
+    if (!this._main.schemaManager.has(path))
+      throw new Error(`Can't find path "${path}" in the schema!`);
+
+    // TODO: set to composition
+
+    return this._startDriverQuery({
+      type: 'filter',
+      fullPath: path,
+      payload: params,
+    });
+  }
+
+
   addItem(path, newItem) {
     return this.addSilent(path, newItem);
   }
@@ -273,7 +301,17 @@ export default class State {
     // if driver not defined - it means memory driver
     if (!driver)
       return new Promise((resolve) => {
-        resolve( this.getComposition(params.fullPath) );
+        if (params.type == 'find') {
+          let list = this.getComposition(params.fullPath);
+          resolve( _.find(list, params.payload) );
+        }
+        else if (params.type == 'filter') {
+          let list = this.getComposition(params.fullPath);
+          resolve( _.filter(list, params.payload) );
+        }
+        else {
+          resolve( this.getComposition(params.fullPath) );
+        }
       });
 
     return new Promise((resolve, reject) => {

@@ -50,11 +50,13 @@ export default class CollectionInstance {
 
   /**
    * Get filtered list. Example:
-   *     collection.filter({name: {contents: 'item'}})
+   *     collection.filter({name: 'item'})
    * @param {object} params - parameters for query
    */
   filter(params) {
-    // TODO: do it
+    var promise = this._main.state.filter(this._root, params);
+    this.updateMold();
+    return promise;
   }
 
   /**
@@ -63,7 +65,9 @@ export default class CollectionInstance {
    * @param {object} params - parameters for query
    */
   find(params) {
-    // TODO: do it
+    var promise = this._main.state.find(this._root, params);
+    this.updateMold();
+    return promise;
   }
 
   /**
@@ -73,7 +77,6 @@ export default class CollectionInstance {
    * @returns {Promise} with item
    */
   item(primaryId) {
-    // TODO: get primary id name
     var primaryKeyName = findPrimary(this.schema.item);
     return this.find({[primaryKeyName]: primaryId});
   }
