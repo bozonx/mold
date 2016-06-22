@@ -51,8 +51,6 @@ class LocalMemory {
   add(request, resolve, reject) {
     var collection = _.get(this._db, request.fullPath);
     var newValue;
-    
-    console.log(4345345345, request)
 
     if (_.isUndefined(collection)) {
       newValue = {

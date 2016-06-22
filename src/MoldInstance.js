@@ -1,17 +1,17 @@
 import Composition from './Composition';
 import SchemaManager from './SchemaManager';
 import State from './State';
+import Config from './Config';
 
 export default class MoldInstance {
   constructor(config, schema) {
     this._composition = new Composition();
-    this.config = config;
-
-    // TODO: validate a config
-
-    // TODO: ругаться если не передан
-    //this.events = config.eventEmitter;
     
+    var configInstance = new Config(config);
+    
+    this.config = configInstance.get();
+
+
     this.schemaManager = new SchemaManager();
     this.state = new State();
 
