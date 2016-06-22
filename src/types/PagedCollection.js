@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import { findPrimary } from '../helpers';
 
-export default class CollectionInstance {
+export default class Collection {
   constructor(main) {
     this._main = main;
 
@@ -48,47 +48,13 @@ export default class CollectionInstance {
   }
 
   /**
-   * Get filtered list. Example:
-   *     collection.filter({name: 'item'})
-   * @param {object} params - parameters for query
+   * @param {number} pageNum - number from 0
+   * @returns {Promise} with page simple collection
    */
-  filter(params) {
-    return this._main.state.filter(this._root, params);
+  page(pageNum) {
+    // var primaryKeyName = findPrimary(this.schema.item);
+    // return this.find({[primaryKeyName]: primaryId});
   }
-
-  /**
-   * Find one item via params. Example:
-   *     collection.find({id: 1})
-   * @param {object} params - parameters for query
-   */
-  find(params) {
-    return this._main.state.find(this._root, params);
-  }
-
-  /**
-   * Get one item from collection by primary id.  Example:
-   *     collection.item(urlParams.id)
-   * @param {number|string} primaryId
-   * @returns {Promise} with item
-   */
-  item(primaryId) {
-    var primaryKeyName = findPrimary(this.schema.item);
-    return this.find({[primaryKeyName]: primaryId});
-  }
-
-  /**
-   * Like filter, but it load one page. Example:
-   *     collection.page(1)
-   *     collection.page(2, {active: true})
-   * Page numbers start from 1.
-   * @param {number} pageNum -
-   * @param {object} [params] - parameters for query
-   * @returns {Promise} with items list
-   */
-  page(pageNum, params) {
-    return this.filter({...params, page: 1});
-  }
-
 
   /**
    * Add item to list
@@ -106,27 +72,6 @@ export default class CollectionInstance {
    */
   remove(item) {
     return this._main.state.removeItem(this._root, item);
-  }
-
-  /**
-   * Is param exists on a path
-   * It check schema and param in composition.
-   * It doesn't do request to driver.
-   * @param {string} path - path relative to instance root
-   * @returns {boolean}
-   */
-  has(path) {
-    // TODO: test deep param
-
-    // if (!path)
-    //   throw new Error(`You must pass a path argument.`);
-    //
-    // // Check schema
-    // var schemaPath = this._convertToSchemaPath(path);
-    // if (this._main.schemaManager.has(this._fullPath(schemaPath))) return false;
-
-    // TODO: нужно сделать поиск элементов в mold, так как в пути будет primaryKey, а нам нужен index
-    // проще всего преобразовать primaryKey в index
   }
 
   /**

@@ -4,10 +4,10 @@
 
 import _ from 'lodash';
 
-import ArrayInstance from './types/ArrayInstance';
-import CollectionInstance from './types/CollectionInstance';
-import ContainerInstance from './types/ContainerInstance';
-import PrimitiveInstance from './types/PrimitiveInstance';
+import PrimitiveArray from './types/PrimitiveArray';
+import Collection from './types/Collection';
+import Container from './types/Container';
+import Primitive from './types/Primitive';
 import { recursiveSchema, convertToSchemaPath } from './helpers';
 
 export default class SchemaManager {
@@ -72,16 +72,16 @@ export default class SchemaManager {
     var schema = this.get(path);
 
     if (schema.type == 'boolean' || schema.type == 'string' || schema.type == 'number'){
-      instance = new PrimitiveInstance(this._main);
+      instance = new Primitive(this._main);
     }
     else if (schema.type == 'array') {
-      instance = new ArrayInstance(this._main);
+      instance = new PrimitiveArray(this._main);
     }
     else if (schema.type == 'collection') {
-      instance = new CollectionInstance(this._main);
+      instance = new Collection(this._main);
     }
     else if (!schema.type) {
-      instance = new ContainerInstance(this._main);
+      instance = new Container(this._main);
     }
 
     // TODO: может инициализировать  всё сразу в конструкторе???

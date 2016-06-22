@@ -1,4 +1,4 @@
-export default class ParamInstance {
+export default class Primitive {
   constructor(main) {
     this._main = main;
 

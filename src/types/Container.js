@@ -1,4 +1,4 @@
-export default class ContainerInstance {
+export default class Container {
   constructor(main) {
     this._main = main;
 
