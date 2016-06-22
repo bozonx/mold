@@ -23,7 +23,7 @@ testSchema = () ->
           type: 'string'
           default: 'defaultNestedStringValue'
 
-describe 'Functional. Container instance.', ->
+describe 'Functional. Container type.', ->
   beforeEach () ->
     this.testSchema = testSchema()
     this.mold = mold.initSchema( {}, this.testSchema )

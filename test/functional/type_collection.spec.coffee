@@ -20,7 +20,7 @@ testValues = [
   },
 ]
 
-describe 'Functional. Collection instance.', ->
+describe 'Functional. Collection type.', ->
   beforeEach () ->
     this.mold = mold.initSchema( {}, testSchema() )
     this.container = this.mold.instance('inMemory')

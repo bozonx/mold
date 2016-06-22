@@ -6,7 +6,7 @@ testSchema = () ->
       type: 'array'
       itemsType: 'string',
 
-describe 'Functional. Array instance.', ->
+describe 'Functional. Array Type.', ->
   beforeEach () ->
     this.mold = mold.initSchema( {}, testSchema() )
     this.arrayParam = this.mold.instance('inMemory.arrayParam')
@@ -20,6 +20,8 @@ describe 'Functional. Array instance.', ->
     assert.equal(this.arrayParam.mold, this.arrayValues)
 
   it 'Set array', () ->
-    promise = this.arrayParam.set(this.arrayValues);
-    assert.equal(this.arrayParam.mold, this.arrayValues)
-    expect(promise).to.eventually.equal(this.arrayValues)
+    expect(this.arrayParam.set(this.arrayValues)).to.eventually.property('payload').equal(this.arrayValues)
+
+  it 'Set array - check mold', (done) ->
+    expect(this.arrayParam.set(this.arrayValues)).to.eventually.notify =>
+      expect(Promise.resolve(this.arrayParam.mold)).to.eventually.equal(this.arrayValues).notify(done)

@@ -12,7 +12,7 @@ testSchema = () ->
       type: 'number'
       default: 5
 
-describe 'Functional. Primitive instance.', ->
+describe 'Functional. Primitive type.', ->
   beforeEach () ->
     this.mold = mold.initSchema( {}, testSchema() )
     this.container = this.mold.instance('inMemory')
