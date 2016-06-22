@@ -65,7 +65,8 @@ export default class Composition {
 
     var preparedItem = {
       ...newItem,
-      $primary: primaryId,
+      // TODO: заче это????
+      $index: primaryId,
     };
 
     if (collection) {

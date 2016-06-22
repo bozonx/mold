@@ -5,42 +5,6 @@ class LocalMemory {
     this._driverConfig = driverConfig;
     this._instanceConfig = instanceConfig;
     this._db = db;
-
-
-
-
-    // return new Promise((resolve) => {
-    //   if (params.type == 'find') {
-    //     let list = this.getComposition(params.fullPath);
-    //     resolve( _.find(list, params.payload) );
-    //   }
-    //   else if (params.type == 'filter') {
-    //     let list = this.getComposition(params.fullPath);
-    //     resolve( _.filter(list, params.payload) );
-    //   }
-    //   // else if (params.type == 'add') {
-    //   //   let newItem = {
-    //   //     payload: {
-    //   //       ...params.payload,
-    //   //       $primary: params.payload.id,
-    //   //     }
-    //   //   };
-    //   //   resolve( newItem );
-    //   // }
-    //   // else if (params.type == 'remove') {
-    //   //   let newItem = {
-    //   //     payload: {
-    //   //       ...params.payload,
-    //   //       $primary: params.payload.id,
-    //   //     }
-    //   //   };
-    //   //   resolve( newItem );
-    //   // }
-    //   else {
-    //     resolve( this.getComposition(params.fullPath) );
-    //   }
-    // });
-
   }
 
   /**
@@ -112,7 +76,7 @@ class LocalMemory {
       newValue = {
         [request.primaryKeyName]: 0,
         ...request.payload,
-        $primary: 0,
+        $index: 0,
       };
       _.set(this._db, request.fullPath, [newValue]);
     }
@@ -121,7 +85,7 @@ class LocalMemory {
       newValue = {
         [request.primaryKeyName]: collection.length,
         ...request.payload,
-        $primary: collection.length,
+        $index: collection.length,
       };
       collection[collection.length] = newValue;
     }

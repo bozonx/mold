@@ -203,8 +203,6 @@ export default class State {
     });
 
     promise.then((resp) => {
-      // TODO: может за это должен отвечать сам пользователь?
-      //this._composition.remove(path, item.$primary);
       this._composition.remove(pathToCollection, resp.payload[primaryKeyName]);
     });
 
