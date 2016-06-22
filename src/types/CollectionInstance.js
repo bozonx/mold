@@ -53,9 +53,7 @@ export default class CollectionInstance {
    * @param {object} params - parameters for query
    */
   filter(params) {
-    var promise = this._main.state.filter(this._root, params);
-    this.updateMold();
-    return promise;
+    return this._main.state.filter(this._root, params);
   }
 
   /**
@@ -64,9 +62,7 @@ export default class CollectionInstance {
    * @param {object} params - parameters for query
    */
   find(params) {
-    var promise = this._main.state.find(this._root, params);
-    this.updateMold();
-    return promise;
+    return this._main.state.find(this._root, params);
   }
 
   /**

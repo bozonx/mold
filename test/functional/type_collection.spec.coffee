@@ -37,24 +37,28 @@ describe 'Functional. Collection type.', ->
         assert.equal(this.collectionParam.child(2).mold.name, 'name2')
         done()
 
-#  it 'filter()', ->
-#    data = [
-#      {id:1, name: 'e'}
-#      {id:2, name: 'r'}
-#      {id:3, name: 'e'}
-#    ]
-#    this.container.setSilent('collectionParam', data)
-#    expect(this.collectionParam.filter({name:'e'}))
-#      .to.eventually.deep.equal([data[0], data[2]])
-#
+  it 'filter()', (done) ->
+    data = [
+      {id:1, name: 'e'}
+      {id:2, name: 'r'}
+      {id:3, name: 'e'}
+    ]
+    expect(this.collectionParam.add(data[0])).to.eventually.notify =>
+      expect(this.collectionParam.add(data[1])).to.eventually.notify =>
+        expect(this.collectionParam.add(data[2])).to.eventually.notify =>
+          expect(this.collectionParam.filter({name:'e'})).to.eventually
+          .property('payload').deep.equal([{ id: 1, name: 'e', '$primary': 0 }, { id: 3, name: 'e', '$primary': 2 }]).notify(done)
+
+  it 'find()', (done) ->
+    expect(this.collectionParam.add(testValues[0])).to.eventually.notify =>
+      expect(this.collectionParam.add(testValues[1])).to.eventually.notify =>
+        expect(this.collectionParam.find({id:2})).to.eventually
+        .property('payload').deep.equal({ id: 2, name: 'name2', '$primary': 1 }).notify(done)
+
 #  it 'page()', ->
 #    # TODO: do it
-#
-#  it 'find()', ->
-#    this.container.setSilent('collectionParam', testValues)
-#    expect(this.collectionParam.find({id:2}))
-#      .to.eventually.deep.equal(testValues[1])
-#
+
+
 #  it 'item()', ->
 #    this.container.setSilent('collectionParam', testValues)
 #    expect(this.collectionParam.item(2))

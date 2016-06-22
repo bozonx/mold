@@ -48,17 +48,24 @@ export default class State {
     });
   }
 
+  
   find(path, params) {
     if (!this._main.schemaManager.has(path))
       throw new Error(`Can't find path "${path}" in the schema!`);
 
-    // TODO: set to composition
-
-    return this._startDriverQuery({
+    var promise = this._startDriverQuery({
       type: 'find',
       fullPath: path,
       payload: params,
     });
+
+    promise.then((resp) => {
+      // TODO: !!!!!
+      //console.log(222222222, resp)
+      //this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
+    });
+
+    return promise;
   }
 
 
@@ -66,13 +73,19 @@ export default class State {
     if (!this._main.schemaManager.has(path))
       throw new Error(`Can't find path "${path}" in the schema!`);
 
-    // TODO: set to composition
-
-    return this._startDriverQuery({
+    var promise = this._startDriverQuery({
       type: 'filter',
       fullPath: path,
       payload: params,
     });
+
+    promise.then((resp) => {
+      // TODO: !!!!!
+      console.log(3333333, resp)
+      //this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
+    });
+
+    return promise;
   }
 
 
@@ -152,7 +165,7 @@ export default class State {
       throw new Error(`Only collection type can add item`);
 
     var primaryKeyName = findPrimary(schema.item);
-    
+
     // It rises an error on invalid value
     // TODO: проверка делается в _startDriverQuery
     this._checkNode(schema, pathToCollection, newItem);
@@ -168,8 +181,6 @@ export default class State {
     promise.then((resp) => {
       // TODO: может за это должен отвечать сам пользователь?
       this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
-    }, () => {
-      // TODO: what are we doing on error?
     });
 
     return promise;
@@ -195,8 +206,6 @@ export default class State {
       // TODO: может за это должен отвечать сам пользователь?
       //this._composition.remove(path, item.$primary);
       this._composition.remove(pathToCollection, resp.payload[primaryKeyName]);
-    }, () => {
-      // TODO: what are we doing on error?
     });
 
     return promise;
@@ -320,12 +329,7 @@ export default class State {
     return new Promise((resolve, reject) => {
       var req = this._request.generate(params);
 
-      var resolveHandler = (responce) => {
-        // TODO: установить данные в composition, учитывая модель и ответ драйвера
-        resolve(responce);
-      };
-
-      return driver.requestHandler(req, resolveHandler, reject);
+      return driver.requestHandler(req, resolve, reject);
     });
   }
 

@@ -69,11 +69,30 @@ class LocalMemory {
   }
 
   find(request, resolve, reject) {
-    // TODO:
+    var collection = _.get(this._db, request.fullPath);
+    var found = _.find(collection, request.payload);
+
+    if (!_.isUndefined(found)) {
+      resolve({
+        payload: found,
+        successResponse: found,
+      });
+    }
+    else {
+      reject({
+        errorResponse: 'not found',
+      });
+    }
   }
 
   filter(request, resolve, reject) {
-    // TODO:
+    var collection = _.get(this._db, request.fullPath);
+    var found = _.filter(collection, request.payload);
+
+    resolve({
+      payload: found,
+      successResponse: found,
+    });
   }
 
   set(request, resolve, reject) {
