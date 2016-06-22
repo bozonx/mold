@@ -1,14 +1,13 @@
 // We can filter or find param
 import _ from 'lodash';
 
-import events from '../events';
 import { findPrimary } from '../helpers';
 
 export default class CollectionInstance {
   constructor(main) {
     this._main = main;
 
-    events.on('mold.composition.update', (data) => {
+    this._main.events.on('mold.composition.update', (data) => {
       if (data.path.indexOf(this._root) === 0) this.updateMold();
     });
   }

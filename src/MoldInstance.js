@@ -5,12 +5,11 @@ import Config from './Config';
 
 export default class MoldInstance {
   constructor(config, schema) {
-    this._composition = new Composition();
-    
-    var configInstance = new Config(config);
-    
-    this.config = configInstance.get();
+    this._composition = new Composition(this);
 
+    var configInstance = new Config(config);
+    this.config = configInstance.get();
+    this.events = this.config.eventEmitter;
 
     this.schemaManager = new SchemaManager();
     this.state = new State();

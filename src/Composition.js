@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
 import { convertToCompositionPath } from './helpers';
-import events from './events';
 
 export default class Composition {
-  constructor() {
+  constructor(main) {
+    this._main = main;
     this._storage = {};
   }
 
@@ -51,7 +51,7 @@ export default class Composition {
     _.set(this._storage, convertToCompositionPath(path), value);
 
     // Rise an event
-    events.emit('mold.composition.update', {path: path});
+    this._main.events.emit('mold.composition.update', {path: path});
   }
 
   /**
@@ -79,7 +79,7 @@ export default class Composition {
     }
 
     // Rise an event
-    events.emit('mold.composition.update', {path: path});
+    this._main.events.emit('mold.composition.update', {path: path});
   }
 
   /**
@@ -97,7 +97,7 @@ export default class Composition {
     this.set(pathToCollection, newCollection);
 
     // Rise an event
-    events.emit('mold.composition.update', {path: path});
+    this._main.events.emit('mold.composition.update', {path: path});
   }
 
   find(pathToCollection, params) {

@@ -6,8 +6,8 @@ import Request from './Request';
 import { recursiveSchema, findPrimary } from './helpers';
 
 export default class State {
-  init(_main, composition) {
-    this._main = _main;
+  init(main, composition) {
+    this._main = main;
     this._composition = composition;
     this._request = new Request(this._main);
   }

@@ -24,11 +24,11 @@ export default class Config {
   }
 
   _initEvents() {
-    if (!this._config.events) {
+    if (!this._config.eventEmitter) {
       // TODO: один фиг он подгрузится в сборку
       var EventEmitter2 = require('eventemitter2').EventEmitter2;
 
-      this._config.events = new EventEmitter2({
+      this._config.eventEmitter = new EventEmitter2({
 
         //
         // set this to `true` to use wildcards. It defaults to `false`.
