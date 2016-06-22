@@ -37,39 +37,39 @@ describe 'Functional. Collection instance.', ->
         assert.equal(this.collectionParam.child(2).mold.name, 'name2')
         done()
 
-  it 'filter()', ->
-    data = [
-      {id:1, name: 'e'}
-      {id:2, name: 'r'}
-      {id:3, name: 'e'}
-    ]
-    this.container.setSilent('collectionParam', data)
-    expect(this.collectionParam.filter({name:'e'}))
-      .to.eventually.deep.equal([data[0], data[2]])
-
-  it 'page()', ->
-    # TODO: do it
-
-  it 'find()', ->
-    this.container.setSilent('collectionParam', testValues)
-    expect(this.collectionParam.find({id:2}))
-      .to.eventually.deep.equal(testValues[1])
-
-  it 'item()', ->
-    this.container.setSilent('collectionParam', testValues)
-    expect(this.collectionParam.item(2))
-      .to.eventually.deep.equal(testValues[1])
+#  it 'filter()', ->
+#    data = [
+#      {id:1, name: 'e'}
+#      {id:2, name: 'r'}
+#      {id:3, name: 'e'}
+#    ]
+#    this.container.setSilent('collectionParam', data)
+#    expect(this.collectionParam.filter({name:'e'}))
+#      .to.eventually.deep.equal([data[0], data[2]])
+#
+#  it 'page()', ->
+#    # TODO: do it
+#
+#  it 'find()', ->
+#    this.container.setSilent('collectionParam', testValues)
+#    expect(this.collectionParam.find({id:2}))
+#      .to.eventually.deep.equal(testValues[1])
+#
+#  it 'item()', ->
+#    this.container.setSilent('collectionParam', testValues)
+#    expect(this.collectionParam.item(2))
+#      .to.eventually.deep.equal(testValues[1])
 
   it 'add()', ->
     promise = this.collectionParam.add({id: 3, name: 'name3'})
-    expect(promise).to.eventually.property('payload').deep.equal({id: 3, name: 'name3', $primary: 3})
+    expect(promise).to.eventually.property('payload').deep.equal({id: 3, name: 'name3', $primary: 0})
 
   it 'remove()', (done) ->
-    expect(this.collectionParam.add(testValues[0])).notify =>
-      expect(this.collectionParam.add(testValues[1])).notify =>
-        expect(this.collectionParam.remove(testValues[0])).notify =>
-          assert.deepEqual(_.compact(this.collectionParam.mold), [ { id: 2, name: 'name2', '$primary': 2 } ])
-          done()
+    expect(this.collectionParam.add(testValues[0])).to.eventually.notify =>
+      expect(this.collectionParam.add(testValues[1])).to.eventually.notify =>
+        expect(this.collectionParam.remove(testValues[0])).to.eventually.notify =>
+          expect(Promise.resolve(_.compact(this.collectionParam.mold))).to.eventually
+          .deep.equal([ { id: 2, name: 'name2', '$primary': 2 } ]).notify(done)
 
   it 'has()', ->
     # TODO: do it

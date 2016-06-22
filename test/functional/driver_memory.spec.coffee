@@ -54,7 +54,7 @@ describe 'Functional. Memory driver.', ->
 
     it 'add', ->
       promise = this.collection.add({name: 'name3'})
-      expect(promise).to.eventually.property('payload').deep.equal({ name: 'name3', id: 0 })
+      expect(promise).to.eventually.property('payload').deep.equal({ name: 'name3', id: 0, $primary:0 })
 
 
     it 'add and find', ->

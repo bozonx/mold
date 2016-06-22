@@ -5,6 +5,42 @@ class LocalMemory {
     this._driverConfig = driverConfig;
     this._instanceConfig = instanceConfig;
     this._db = db;
+
+
+
+
+    // return new Promise((resolve) => {
+    //   if (params.type == 'find') {
+    //     let list = this.getComposition(params.fullPath);
+    //     resolve( _.find(list, params.payload) );
+    //   }
+    //   else if (params.type == 'filter') {
+    //     let list = this.getComposition(params.fullPath);
+    //     resolve( _.filter(list, params.payload) );
+    //   }
+    //   // else if (params.type == 'add') {
+    //   //   let newItem = {
+    //   //     payload: {
+    //   //       ...params.payload,
+    //   //       $primary: params.payload.id,
+    //   //     }
+    //   //   };
+    //   //   resolve( newItem );
+    //   // }
+    //   // else if (params.type == 'remove') {
+    //   //   let newItem = {
+    //   //     payload: {
+    //   //       ...params.payload,
+    //   //       $primary: params.payload.id,
+    //   //     }
+    //   //   };
+    //   //   resolve( newItem );
+    //   // }
+    //   else {
+    //     resolve( this.getComposition(params.fullPath) );
+    //   }
+    // });
+
   }
 
   /**
@@ -53,16 +89,20 @@ class LocalMemory {
     var newValue;
 
     if (_.isUndefined(collection)) {
+      // create new collection
       newValue = {
-        ...request.payload,
         [request.primaryKeyName]: 0,
+        ...request.payload,
+        $primary: 0,
       };
       _.set(this._db, request.fullPath, [newValue]);
     }
     else {
+      // add item to existent collection
       newValue = {
-        ...request.payload,
         [request.primaryKeyName]: collection.length,
+        ...request.payload,
+        $primary: collection.length,
       };
       collection[collection.length] = newValue;
     }
@@ -84,15 +124,20 @@ class LocalMemory {
     }
 
     var item = _.find(collection, request.payload);
-    if (!item || !_.isNumber(item.__key)) {
+    if (!item || !_.isNumber(item[request.primaryKeyName])) {
       reject({
         errorResponse: 'Item not found',
       });
       return;
     }
 
-    var newCollection = _.filter(collection, (value) => {return value.__key !== request.payload.__key});
+    var newCollection = _.filter(collection, (value) => {return value[request.primaryKeyName] !== item[request.primaryKeyName]});
     _.set(this._db, request.fullPath, newCollection);
+
+    resolve({
+      payload: item,
+      successResponse: item,
+    });
   }
 
   requestHandler(request, resolve, reject) {

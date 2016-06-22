@@ -154,6 +154,7 @@ export default class State {
     var primaryKeyName = findPrimary(schema.item);
     
     // It rises an error on invalid value
+    // TODO: проверка делается в _startDriverQuery
     this._checkNode(schema, pathToCollection, newItem);
 
     var promise = this._startDriverQuery({
@@ -303,7 +304,7 @@ export default class State {
 
   /**
    * Send query to driver for data.
-   * @param {{type: string, fullPath: string, value: *}} params
+   * @param {{type: string, fullPath: string, payload: *}} params
    *     * type is one of: get, set, add, delete
    *     * path: full path in mold
    *     * requestValue: for "set" and "add" types - value to set
@@ -313,39 +314,8 @@ export default class State {
   _startDriverQuery(params) {
     var driver = this._main.schemaManager.getDriver(params.fullPath);
 
-    // if driver not defined - it means memory driver
     if (!driver)
-      return new Promise((resolve) => {
-        if (params.type == 'find') {
-          let list = this.getComposition(params.fullPath);
-          resolve( _.find(list, params.payload) );
-        }
-        else if (params.type == 'filter') {
-          let list = this.getComposition(params.fullPath);
-          resolve( _.filter(list, params.payload) );
-        }
-        else if (params.type == 'add') {
-          let newItem = {
-            payload: {
-              ...params.payload,
-              $primary: params.payload.id,
-            }
-          };
-          resolve( newItem );
-        }
-        else if (params.type == 'remove') {
-          let newItem = {
-            payload: {
-              ...params.payload,
-              $primary: params.payload.id,
-            }
-          };
-          resolve( newItem );
-        }
-        else {
-          resolve( this.getComposition(params.fullPath) );
-        }
-      });
+      throw new Error(`No-one driver did found!!!`);
 
     return new Promise((resolve, reject) => {
       var req = this._request.generate(params);

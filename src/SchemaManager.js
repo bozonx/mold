@@ -48,7 +48,7 @@ export default class SchemaManager {
     if (path === '') return true;
 
     var schemaPath = convertToSchemaPath(path);
-    
+
     return _.has(this._schema, schemaPath);
   }
 
@@ -114,9 +114,24 @@ export default class SchemaManager {
     if (!_.isString(path))
       throw new Error(`You must pass the path argument!`);
 
-    return _.find(this._drivers, (value, driverPath) => {
-      return path.indexOf(driverPath) === 0;
+    var driverPaths = _.map(this._drivers, (value, driverPath) => {
+      if (path.indexOf(driverPath) === 0) return driverPath;
     });
+    driverPaths = _.compact(driverPaths);
+
+    if (driverPaths.length > 1) {
+      // two or more drivers - get the longest
+      // TODO: !!! do it and test it
+      console.log(5555555555555555)
+    }
+    if (driverPaths.length === 1) {
+      // one driver
+      return this._drivers[driverPaths[0]];
+    }
+    else {
+      // no-one - memory driver
+      return this._main.memory;
+    }
   }
 
   /**

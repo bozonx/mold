@@ -58,7 +58,19 @@ export default class Request {
     };
   }
 
-  // TODO: remove, find, filter
+  _generateFor_remove(request) {
+    if (!request.documentParams) return request;
+
+    let document = request.payload;
+
+    return {
+      ...request,
+      document,
+      pathToDocument: request.documentParams.pathToDocument,
+    };
+  }
+  
+  // TODO: find, filter
 
   _getPathToField(request) {
     return _.trim(request.fullPath.split(request.documentParams.pathToDocument)[1], '.');

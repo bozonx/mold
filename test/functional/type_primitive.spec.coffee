@@ -12,7 +12,7 @@ testSchema = () ->
       type: 'number'
       default: 5
 
-describe 'Functional. Param instance.', ->
+describe 'Functional. Primitive instance.', ->
   beforeEach () ->
     this.mold = mold.initSchema( {}, testSchema() )
     this.container = this.mold.instance('inMemory')
@@ -35,11 +35,12 @@ describe 'Functional. Param instance.', ->
     primitive.set(true);
     assert.equal(primitive.mold, true)
 
-  it 'Set and get string value', () ->
+  it 'Set and get string value', (done) ->
     primitive = this.container.child('stringParam')
     promise = primitive.set('new value');
-    assert.equal(primitive.mold, 'new value')
-    expect(promise).to.eventually.equal('new value')
+    expect(promise).to.eventually.property('payload').equal('new value').notify =>
+      expect(Promise.resolve(primitive.mold)).to.eventually.equal('new value').notify(done)
+
 
   it 'Set and get number value', () ->
     primitive = this.container.child('numberParam')
