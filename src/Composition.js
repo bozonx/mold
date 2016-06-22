@@ -8,7 +8,6 @@ export default class Composition {
     this._storage = {};
   }
 
-
   /**
    * Get value from compositon.
    * It hopes a path is correct

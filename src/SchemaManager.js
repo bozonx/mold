@@ -70,17 +70,18 @@ export default class SchemaManager {
     var instance;
     // It rise an error if path doesn't consist with schema
     var schema = this.get(path);
-    if (!schema.type) {
-      instance = new ContainerInstance(this._main);
+
+    if (schema.type == 'boolean' || schema.type == 'string' || schema.type == 'number'){
+      instance = new PrimitiveInstance(this._main);
     }
-    else if (schema.type === 'array') {
+    else if (schema.type == 'array') {
       instance = new ArrayInstance(this._main);
     }
-    else if (schema.type === 'collection') {
+    else if (schema.type == 'collection') {
       instance = new CollectionInstance(this._main);
     }
-    else {
-      instance = new PrimitiveInstance(this._main);
+    else if (!schema.type) {
+      instance = new ContainerInstance(this._main);
     }
 
     // TODO: может инициализировать  всё сразу в конструкторе???
