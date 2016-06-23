@@ -129,16 +129,14 @@ class LocalPounchDb {
 /**
  * Instance of this class creates once a mold instance
  */
-export default class PounchDb {
-  constructor(driverConfig) {
-    this.driverConfig = driverConfig;
-    // TODO: брать из конфига root - чтобы обрезать path
+export default function(driverConfig) {
+  this.driverConfig = driverConfig;
+  // TODO: брать из конфига root - чтобы обрезать path
 
-    if (!driverConfig.db)
-      throw new Error(`The "db" field in config is required!`);
+  if (!driverConfig.db)
+    throw new Error(`The "db" field in config is required!`);
 
-    this.db = driverConfig.db;
-  }
+  this.db = driverConfig.db;
 
   /**
    * Schema helper
@@ -146,7 +144,7 @@ export default class PounchDb {
    * @param {object} schema
    * @returns {{driver: LocalPounchDb, schema: *}}
    */
-  schema(instanceConfig, schema) {
+  this.schema = (instanceConfig, schema) => {
     return {
       driver: new LocalPounchDb(this.driverConfig, instanceConfig, this.db),
       schema: schema,

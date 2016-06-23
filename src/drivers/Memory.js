@@ -132,11 +132,9 @@ class LocalMemory {
 /**
  * Instance of this class creates once a mold instance
  */
-export default class Memory {
-  constructor(driverConfig) {
-    this.driverConfig = driverConfig;
-    this.db = {};
-  }
+export default function (driverConfig) {
+  this.driverConfig = driverConfig;
+  this.db = {};
 
   /**
    * Schema helper
@@ -144,7 +142,7 @@ export default class Memory {
    * @param {object} schema
    * @returns {{driver: LocalMemory, schema: *}}
    */
-  schema(instanceConfig, schema) {
+  this.schema = (instanceConfig, schema) => {
     return {
       driver: new LocalMemory(this.driverConfig, instanceConfig, this.db),
       schema: schema,
