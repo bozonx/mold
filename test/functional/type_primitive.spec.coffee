@@ -18,9 +18,9 @@ describe 'Functional. Primitive type.', ->
     this.container = this.mold.instance('inMemory')
 
   it 'After init all the values is undefined', () ->
-    assert.isUndefined(this.container.child('boolParam').mold)
-    assert.isUndefined(this.container.child('stringParam').mold)
-    assert.isUndefined(this.container.child('numberParam').mold)
+    assert.isNull(this.container.child('boolParam').mold)
+    assert.isNull(this.container.child('stringParam').mold)
+    assert.isNull(this.container.child('numberParam').mold)
 
   it 'Get value. It returns a promise', () ->
     this.mold.state.setComposition('inMemory.stringParam', 'new value')

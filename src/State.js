@@ -10,6 +10,7 @@ export default class State {
     this._main = main;
     this._composition = composition;
     this._request = new Request(this._main);
+    this._initComposition();
   }
 
   /**
@@ -48,7 +49,7 @@ export default class State {
     });
   }
 
-  
+
   find(path, params) {
     if (!this._main.schemaManager.has(path))
       throw new Error(`Can't find path "${path}" in the schema!`);
@@ -331,4 +332,38 @@ export default class State {
     });
   }
 
+  _initComposition() {
+    var compositionValues = {};
+
+    recursiveSchema('', this._main.schemaManager.get(''), (newPath, value) => {
+      if (value.type == 'array') {
+        // array
+        _.set(compositionValues, newPath, []);
+
+        // Go deeper
+        return false;
+      }
+      else if (value.type == 'collection') {
+        _.set(compositionValues, newPath, []);
+
+        // Go deeper
+        return false;
+      }
+      else if (value.type == 'boolean' || value.type == 'string' || value.type == 'number') {
+        // primitive
+        _.set(compositionValues, newPath, null);
+
+        return false;
+      }
+      else {
+        // container
+        _.set(compositionValues, newPath, {});
+
+        // Go deeper
+        return true;
+      }
+    });
+    
+    this._composition.$initAll(compositionValues);
+  }
 }

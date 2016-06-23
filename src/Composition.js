@@ -8,6 +8,10 @@ export default class Composition {
     this._storage = {};
   }
 
+  $initAll(values) {
+    this._storage = values;
+  }
+
   /**
    * Get value from compositon.
    * It hopes a path is correct

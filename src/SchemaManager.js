@@ -212,6 +212,7 @@ export default class SchemaManager {
 
   _initArray(path, value) {
     // TODO: если есть параметр itemType - проверить, чтобы его типы совпадали с существующими
+
     _.set(this._schema, path, value);
   }
 
