@@ -30,6 +30,7 @@ export default class Container {
    * @returns {Promise}
    */
   get(path) {
+    // TODO: можно не обновлять mold - он обовится по событию
     var promise = this._main.state.getValue((path) ? this._fullPath(path) : this._root);
     this.updateMold();
     return promise;

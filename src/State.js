@@ -43,10 +43,17 @@ export default class State {
 
     // TODO: set to composition
 
-    return this._startDriverQuery({
+    var promise = this._startDriverQuery({
       type: 'get',
       fullPath: path,
     });
+
+    promise.then((resp) => {
+      console.log(555555555, resp)
+      //this._composition.remove(pathToCollection, resp.payload[primaryKeyName]);
+    });
+
+    return promise;
   }
 
 
@@ -363,7 +370,7 @@ export default class State {
         return true;
       }
     });
-    
+
     this._composition.$initAll(compositionValues);
   }
 }
