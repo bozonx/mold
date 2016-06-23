@@ -1,4 +1,3 @@
-var PouchDB = require('pouchdb');
 var _ = require('lodash');
 
 // TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
@@ -134,9 +133,11 @@ export default class PounchDb {
   constructor(driverConfig) {
     this.driverConfig = driverConfig;
     // TODO: брать из конфига root - чтобы обрезать path
-    // TODO: имя базы из конфига
-    // TODO: Pounch настроенный брать из конфига
-    this.db = new PouchDB('myDB', {db: require('memdown')});
+
+    if (!driverConfig.db)
+      throw new Error(`The "db" field in config is required!`);
+
+    this.db = driverConfig.db;
   }
 
   /**

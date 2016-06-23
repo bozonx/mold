@@ -1,5 +1,7 @@
+PouchDB = require('pouchdb')
+
 mold = require('../../src/index')
-PounchDb = require('../../src/drivers/PounchDb').default
+PounchDbDriver = require('../../src/drivers/PounchDb').default
 
 testSchema = (pounch) ->
   commonBranch:
@@ -21,8 +23,8 @@ describe 'Functional. PounchDb driver.', ->
 
   describe 'Common usage.', ->
     beforeEach ->
-      pounch = new PounchDb({
-        # main config
+      pounch = new PounchDbDriver({
+        db: new PouchDB('myDB', {db: require('memdown')}),
       });
       this.testSchema = testSchema(pounch)
       this.mold = mold.initSchema( {}, this.testSchema )
@@ -53,7 +55,9 @@ describe 'Functional. PounchDb driver.', ->
 
   describe 'Collection.', ->
     beforeEach ->
-      pounch = new PounchDb({});
+      pounch = new PounchDbDriver({
+        db: new PouchDB('myDB', {db: require('memdown')}),
+      });
       this.testSchema = testSchema(pounch)
       this.mold = mold.initSchema( {}, this.testSchema )
       this.collection = this.mold.instance('commonBranch.inPounch.docColl')
