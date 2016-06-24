@@ -41,60 +41,62 @@ export default class State {
     if (!this._main.schemaManager.has(path))
       throw new Error(`Can't find path "${path}" in the schema!`);
 
-    // TODO: set to composition
-
     var promise = this._startDriverQuery({
       type: 'get',
       fullPath: path,
     });
 
     promise.then((resp) => {
-      console.log(555555555, resp)
-      //this._composition.remove(pathToCollection, resp.payload[primaryKeyName]);
+      if (resp.request.pathToDocument) {
+        this._composition.update(resp.request.pathToDocument, resp.successResponse);
+      }
+      else {
+        this._composition.update(resp.request.fullPath, resp.successResponse)
+      }
     });
 
     return promise;
   }
 
 
-  find(path, params) {
-    if (!this._main.schemaManager.has(path))
-      throw new Error(`Can't find path "${path}" in the schema!`);
-
-    var promise = this._startDriverQuery({
-      type: 'find',
-      fullPath: path,
-      payload: params,
-    });
-
-    promise.then((resp) => {
-      // TODO: !!!!!
-      //console.log(222222222, resp)
-      //this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
-    });
-
-    return promise;
-  }
-
-
-  filter(path, params) {
-    if (!this._main.schemaManager.has(path))
-      throw new Error(`Can't find path "${path}" in the schema!`);
-
-    var promise = this._startDriverQuery({
-      type: 'filter',
-      fullPath: path,
-      payload: params,
-    });
-
-    promise.then((resp) => {
-      // TODO: !!!!!
-      console.log(3333333, resp)
-      //this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
-    });
-
-    return promise;
-  }
+  // find(path, params) {
+  //   if (!this._main.schemaManager.has(path))
+  //     throw new Error(`Can't find path "${path}" in the schema!`);
+  //
+  //   var promise = this._startDriverQuery({
+  //     type: 'find',
+  //     fullPath: path,
+  //     payload: params,
+  //   });
+  //
+  //   promise.then((resp) => {
+  //     // TODO: !!!!!
+  //     //console.log(222222222, resp)
+  //     //this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
+  //   });
+  //
+  //   return promise;
+  // }
+  //
+  //
+  // filter(path, params) {
+  //   if (!this._main.schemaManager.has(path))
+  //     throw new Error(`Can't find path "${path}" in the schema!`);
+  //
+  //   var promise = this._startDriverQuery({
+  //     type: 'filter',
+  //     fullPath: path,
+  //     payload: params,
+  //   });
+  //
+  //   promise.then((resp) => {
+  //     // TODO: !!!!!
+  //     console.log(3333333, resp)
+  //     //this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
+  //   });
+  //
+  //   return promise;
+  // }
 
 
   addItem(path, newItem) {
@@ -150,7 +152,7 @@ export default class State {
       recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
     }
 
-    // TODO: обновить composition после ответа
+    // TODO: обновить composition после ответа - смотреть в get
 
     return this._startDriverQuery({
       type: 'set',

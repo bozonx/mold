@@ -44,6 +44,7 @@ export default class Composition {
    * It hopes a path and a value are correct.
    * It create or update value on the path.
    * To set to root you can pass '' or undefined to a path
+   * WARNING: it replace object or error but doesn't replace existent them.
    * @param {string} path - absolute path or ''
    * @param {*} value - new value
    */
@@ -52,6 +53,34 @@ export default class Composition {
       return this._storage = value;
 
     _.set(this._storage, convertToCompositionPath(path), value);
+
+    // Rise an event
+    this._main.events.emit('mold.composition.update', {path: path});
+  }
+
+  /**
+   * Update value. It use _.defaultsDeep method.
+   * This method deeply mutates existent object or arrays.
+   * @param path
+   * @param value
+     */
+  update(path, value) {
+    // TODO: test it
+    var compPath = convertToCompositionPath(path);
+    if (_.isObject(value) || _.isArray(value) ) {
+      if (!path) {
+        this._storage = _.defaultsDeep(value, this._storage);
+      }
+      else {
+        // TODO: Сделать рукурсивно с поддержкой массивов
+        _.extend(_.get(this._storage, compPath), value);
+        //let newValue = _.defaultsDeep(value, _.get(this._storage, compPath));
+        //_.set(this._storage, compPath, newValue);
+      }
+    }
+    else {
+      _.set(this._storage, compPath, value);
+    }
 
     // Rise an event
     this._main.events.emit('mold.composition.update', {path: path});

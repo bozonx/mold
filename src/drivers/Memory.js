@@ -24,11 +24,13 @@ class LocalMemory {
         resolve({
           payload: resp,
           successResponse: resp,
+          request,
         });
       }
       else {
         reject({
           errorResponse: 'not found',
+          request,
         });
       }
     });
@@ -67,6 +69,7 @@ class LocalMemory {
       resolve({
         payload: request.payload,
         successResponse: request.payload,
+        request,
       });
     });
 
@@ -99,6 +102,7 @@ class LocalMemory {
       resolve({
         payload: newValue,
         successResponse: newValue,
+        request,
       });
     });
   }
@@ -118,6 +122,7 @@ class LocalMemory {
       if (!item || !_.isNumber(item[request.primaryKeyName])) {
         reject({
           errorResponse: 'Item not found',
+          request,
         });
         return;
       }
@@ -128,6 +133,7 @@ class LocalMemory {
       resolve({
         payload: item,
         successResponse: item,
+        request,
       });
     });
   }

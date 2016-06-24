@@ -24,7 +24,7 @@ class LocalPounchDb {
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     return this._db.get(request.pathToDocument)
-      .then(this._resolveHandler.bind(this), this._rejectHandler.bind(this));
+      .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
   }
 
   set(request) {
@@ -39,7 +39,7 @@ class LocalPounchDb {
         ...resp,
         ...request.document,
       })
-        .then(this._resolveHandler.bind(this), this._rejectHandler.bind(this));
+        .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
     }).catch((err) => {
       if (err.status != 404)
         return this._rejectHandler(err);
@@ -48,7 +48,7 @@ class LocalPounchDb {
         ...request.document,
         _id: request.pathToDocument,
       })
-        .then(this._resolveHandler.bind(this), this._rejectHandler.bind(this));
+        .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
     });
   }
 
@@ -84,10 +84,10 @@ class LocalPounchDb {
           [request.primaryKeyName]: 0,
           _id: `${request.pathToDocument}{0}`,
         })
-        .then(this._resolveHandler.bind(this), this._rejectHandler.bind(this));
+        .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
       }
 
-    }).catch(this._rejectHandler.bind(this));
+    }).catch(this._rejectHandler.bind(this, request));
   }
 
   remove(request, resolve, reject) {
@@ -105,20 +105,25 @@ class LocalPounchDb {
     return this[request.type](request);
   }
 
-  _resolveHandler(resp) {
+  _resolveHandler(request, resp) {
     return {
       payload: resp,
       successResponse: resp,
+      request,
     };
   }
 
-  _rejectHandler(err) {
+  _rejectHandler(request, err) {
     // Return undefined if data hasn't found.
     if (err.status == 404)
-      return;
+      return {
+        errorResponse: err,
+        request,
+      };
 
     throw {
       errorResponse: err,
+      request,
     };
   }
 }
