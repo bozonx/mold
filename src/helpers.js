@@ -28,7 +28,6 @@ export function recursiveMutate(sourceData, newData) {
     });
   }
 
-
   if (_.isPlainObject(newData)) {
     // Sort only arrays or objects
     let primitivesChildren = {};
@@ -66,7 +65,6 @@ export function recursiveMutate(sourceData, newData) {
       // TODO: наверное по primary
       // remove useless items
       removeUnused(sourceData, newData);
-
       _.each(newData, function (value, index) {
         if (!sourceData[index]) sourceData[index] = {};
         // TODO: индекс может не совпадать, тогда придется искать по primary
@@ -76,32 +74,19 @@ export function recursiveMutate(sourceData, newData) {
     else if (_.isArray(newData[0])) {
       // remove useless items
       removeUnused(sourceData, newData);
-
       _.each(newData, function (value, index) {
         if (!sourceData[index]) sourceData[index] = [];
         recursiveMutate(sourceData[index], value);
       });
     }
     else {
-      // TODO: в массиве - примитивы или null или undefined - обновляем всё по индексам
+      // primitives, null or undefined
+      // remove useless items
+      removeUnused(sourceData, newData);
+      _.each(newData, function (value, index) {
+        sourceData[index] = value;
+      });
     }
-
-    // TODO: если потомки массива примитивы
-    //       - обновляем все элементы по индексам и удаляем в соурсе тех которых нет в новых
-    // TODO: если потомки массива - массивы или объекты
-    //       - проходимся по ним и вызываем рекурсию, предварительно убрав тех, которых нет из соурса
-
-    // TODO: What can we do with array?
-    // let primitivesChildren = [];
-    // let objectOrArrayChildren = [];
-    // _.each(newData, function (value, index) {
-    //   if (_.isPlainObject(value) || _.isArray(value)) {
-    //     objectOrArrayChildren[name] = value;
-    //   }
-    //   else {
-    //     others[name] = value;
-    //   }
-    // });
   }
 
   // If it isn't an object or array - do nothing

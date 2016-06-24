@@ -44,7 +44,7 @@ describe 'Unit. helpers.', ->
       assert.deepEqual(sourceData, newData)
       assert.equal(nestedLink.stringValue, 'new2')
 
-    it 'Collection update', ->
+    it 'Collection common', ->
       sourceData =
         collection: [
           {
@@ -86,6 +86,62 @@ describe 'Unit. helpers.', ->
       assert.deepEqual(sourceData, newData)
       assert.equal(collectionLink[0].name, 'new')
 
+    it 'Collection deep', ->
+      sourceData = [
+        {
+          id: 1
+          name: 'old name'
+          childrenCollection: [
+            {
+              id: 1,
+              name: 'nested old name'
+            }
+          ]
+        }
+      ]
 
-    # TODO: array, массив вложенный в массив
-    # TODO: collection at start, deep
+      newData = [
+        {
+          id: 1
+          name: 'new1'
+          childrenCollection: [
+            {
+              id: 1,
+              name: 'new2'
+            }
+          ]
+        }
+      ]
+
+      collectionLink = sourceData[0].childrenCollection
+
+      helpers.recursiveMutate(sourceData, newData)
+
+      assert.deepEqual(sourceData, newData)
+      assert.equal(collectionLink[0].name, 'new2')
+
+    it 'Array', ->
+      sourceData = {
+        arr: ['one', 'two', 'useless']
+      }
+
+      newData = {
+        arr: ['one1', 'two2']
+      }
+
+      helpers.recursiveMutate(sourceData, newData)
+
+      assert.deepEqual(sourceData, newData)
+
+    it 'Array nested', ->
+      sourceData = [
+        ['one']
+      ]
+
+      newData = [
+        ['two']
+      ]
+
+      helpers.recursiveMutate(sourceData, newData)
+
+      assert.deepEqual(sourceData, newData)
