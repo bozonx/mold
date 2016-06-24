@@ -332,11 +332,8 @@ export default class State {
     if (!driver)
       throw new Error(`No-one driver did found!!!`);
 
-    return new Promise((resolve, reject) => {
-      var req = this._request.generate(params);
-
-      return driver.requestHandler(req, resolve, reject);
-    });
+    var req = this._request.generate(params);
+    return driver.requestHandler(req);
   }
 
   _initComposition() {

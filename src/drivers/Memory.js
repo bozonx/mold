@@ -17,114 +17,123 @@ class LocalMemory {
     this._main = main;
   }
 
-  get(request, resolve, reject) {
-    var resp = _.get(this._db, request.fullPath);
-    if (!_.isUndefined(resp)) {
+  get(request) {
+    return new Promise((resolve, reject) => {
+      var resp = _.get(this._db, request.fullPath);
+      if (!_.isUndefined(resp)) {
+        resolve({
+          payload: resp,
+          successResponse: resp,
+        });
+      }
+      else {
+        reject({
+          errorResponse: 'not found',
+        });
+      }
+    });
+  }
+
+  // find(request, resolve, reject) {
+  //   var collection = _.get(this._db, request.fullPath);
+  //   var found = _.find(collection, request.payload);
+  //
+  //   if (!_.isUndefined(found)) {
+  //     resolve({
+  //       payload: found,
+  //       successResponse: found,
+  //     });
+  //   }
+  //   else {
+  //     reject({
+  //       errorResponse: 'not found',
+  //     });
+  //   }
+  // }
+  //
+  // filter(request, resolve, reject) {
+  //   var collection = _.get(this._db, request.fullPath);
+  //   var found = _.filter(collection, request.payload);
+  //
+  //   resolve({
+  //     payload: found,
+  //     successResponse: found,
+  //   });
+  // }
+
+  set(request) {
+    return new Promise((resolve, reject) => {
+      _.set(this._db, request.fullPath, request.payload);
       resolve({
-        payload: resp,
-        successResponse: resp,
+        payload: request.payload,
+        successResponse: request.payload,
       });
-    }
-    else {
-      reject({
-        errorResponse: 'not found',
-      });
-    }
+    });
+
   }
 
-  find(request, resolve, reject) {
-    var collection = _.get(this._db, request.fullPath);
-    var found = _.find(collection, request.payload);
+  add(request) {
+    return new Promise((resolve, reject) => {
+      var collection = _.get(this._db, request.fullPath);
+      var newValue;
 
-    if (!_.isUndefined(found)) {
+      if (_.isUndefined(collection)) {
+        // create new collection
+        newValue = {
+          [request.primaryKeyName]: 0,
+          ...request.payload,
+          $index: 0,
+        };
+        _.set(this._db, request.fullPath, [newValue]);
+      }
+      else {
+        // add item to existent collection
+        newValue = {
+          [request.primaryKeyName]: collection.length,
+          ...request.payload,
+          $index: collection.length,
+        };
+        collection[collection.length] = newValue;
+      }
+
       resolve({
-        payload: found,
-        successResponse: found,
+        payload: newValue,
+        successResponse: newValue,
       });
-    }
-    else {
-      reject({
-        errorResponse: 'not found',
-      });
-    }
-  }
-
-  filter(request, resolve, reject) {
-    var collection = _.get(this._db, request.fullPath);
-    var found = _.filter(collection, request.payload);
-
-    resolve({
-      payload: found,
-      successResponse: found,
     });
   }
 
-  set(request, resolve, reject) {
-    _.set(this._db, request.fullPath, request.payload);
-    resolve({
-      payload: request.payload,
-      successResponse: request.payload,
-    });
-  }
+  remove(request) {
+    return new Promise((resolve, reject) => {
+      var collection = _.get(this._db, request.fullPath);
 
-  add(request, resolve, reject) {
-    var collection = _.get(this._db, request.fullPath);
-    var newValue;
+      if (!collection) {
+        reject({
+          errorResponse: 'Collection not found',
+        });
+        return;
+      }
 
-    if (_.isUndefined(collection)) {
-      // create new collection
-      newValue = {
-        [request.primaryKeyName]: 0,
-        ...request.payload,
-        $index: 0,
-      };
-      _.set(this._db, request.fullPath, [newValue]);
-    }
-    else {
-      // add item to existent collection
-      newValue = {
-        [request.primaryKeyName]: collection.length,
-        ...request.payload,
-        $index: collection.length,
-      };
-      collection[collection.length] = newValue;
-    }
+      var item = _.find(collection, request.payload);
+      if (!item || !_.isNumber(item[request.primaryKeyName])) {
+        reject({
+          errorResponse: 'Item not found',
+        });
+        return;
+      }
 
-    resolve({
-      payload: newValue,
-      successResponse: newValue,
-    });
-  }
+      var newCollection = _.filter(collection, (value) => {return value[request.primaryKeyName] !== item[request.primaryKeyName]});
+      _.set(this._db, request.fullPath, newCollection);
 
-  remove(request, resolve, reject) {
-    var collection = _.get(this._db, request.fullPath);
-
-    if (!collection) {
-      reject({
-        errorResponse: 'Collection not found',
+      resolve({
+        payload: item,
+        successResponse: item,
       });
-      return;
-    }
-
-    var item = _.find(collection, request.payload);
-    if (!item || !_.isNumber(item[request.primaryKeyName])) {
-      reject({
-        errorResponse: 'Item not found',
-      });
-      return;
-    }
-
-    var newCollection = _.filter(collection, (value) => {return value[request.primaryKeyName] !== item[request.primaryKeyName]});
-    _.set(this._db, request.fullPath, newCollection);
-
-    resolve({
-      payload: item,
-      successResponse: item,
     });
   }
 
-  requestHandler(request, resolve, reject) {
-    this[request.type](request, resolve, reject);
+  requestHandler(request) {
+    return this[request.type](request);
   }
 
 }

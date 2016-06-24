@@ -17,11 +17,12 @@ class LocalTestDriver
     this.root = root;
     this._main = main;
 
-  requestHandler: (request, resolve, reject) ->
-    _.set(this.__storage, request.fullPath, request.payload);
-    resolve({
-      status: 'ok'
-    });
+  requestHandler: (request) ->
+    return new Promise (resolve, reject) =>
+      _.set(this.__storage, request.fullPath, request.payload);
+      resolve({
+        status: 'ok'
+      });
 
 
 class TestDriver

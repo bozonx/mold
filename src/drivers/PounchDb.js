@@ -19,48 +19,41 @@ class LocalPounchDb {
     this._main = main;
   }
 
-  get(request, resolve, reject) {
+  get(request) {
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
-    this._db.get(request.pathToDocument)
-      .then(this._resolveHandler.bind(this, resolve), this._rejectHandler.bind(this, reject));
+    return this._db.get(request.pathToDocument)
+      .then(this._resolveHandler.bind(this), this._rejectHandler.bind(this));
   }
 
-  set(request, resolve, reject) {
+  set(request) {
     // TODO: test arrays
+    // TODO: !!!!! пересмотреть
 
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
-    this._db.get(request.pathToDocument).then((resp) => {
+    return this._db.get(request.pathToDocument).then((resp) => {
       this._db.put({
         ...resp,
         ...request.document,
       })
-        .then(this._resolveHandler.bind(this, resolve), this._rejectHandler.bind(this, reject));
+        .then(this._resolveHandler.bind(this), this._rejectHandler.bind(this));
     }).catch((err) => {
       if (err.status != 404)
-        this._rejectHandler(reject, err);
+        return this._rejectHandler(err);
 
       this._db.put({
         ...request.document,
         _id: request.pathToDocument,
       })
-        .then(this._resolveHandler.bind(this, resolve), this._rejectHandler.bind(this, reject));
+        .then(this._resolveHandler.bind(this), this._rejectHandler.bind(this));
     });
   }
 
-  find(request, resolve, reject) {
-    // TODO:
-  }
-
-  filter(request, resolve, reject) {
-    // TODO:
-  }
-
-  add(request, resolve, reject) {
-    // TODO:
+  add(request) {
+    // TODO: !!!!! пересмотреть
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
@@ -86,15 +79,15 @@ class LocalPounchDb {
       }
       else {
         // create new collection
-        this._db.put({
+        return this._db.put({
           ...request.document,
           [request.primaryKeyName]: 0,
           _id: `${request.pathToDocument}{0}`,
         })
-        .then(this._resolveHandler.bind(this, resolve), this._rejectHandler.bind(this, reject));
+        .then(this._resolveHandler.bind(this), this._rejectHandler.bind(this));
       }
 
-    }).catch(this._rejectHandler.bind(this, reject));
+    }).catch(this._rejectHandler.bind(this));
   }
 
   remove(request, resolve, reject) {
@@ -108,21 +101,25 @@ class LocalPounchDb {
     // });
   }
 
-  requestHandler(request, resolve, reject) {
-    this[request.type](request, resolve, reject);
+  requestHandler(request) {
+    return this[request.type](request);
   }
 
-  _resolveHandler(resolve, resp) {
-    resolve({
+  _resolveHandler(resp) {
+    return {
       payload: resp,
       successResponse: resp,
-    });
+    };
   }
 
-  _rejectHandler(reject, err) {
-    reject({
+  _rejectHandler(err) {
+    // Return undefined if data hasn't found.
+    if (err.status == 404)
+      return;
+
+    throw {
       errorResponse: err,
-    })
+    };
   }
 }
 

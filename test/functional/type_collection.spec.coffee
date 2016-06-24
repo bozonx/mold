@@ -37,23 +37,23 @@ describe 'Functional. Collection type.', ->
         assert.equal(this.collectionParam.child(2).mold.name, 'name2')
         done()
 
-  it 'filter()', (done) ->
-    data = [
-      {id:1, name: 'e'}
-      {id:2, name: 'r'}
-      {id:3, name: 'e'}
-    ]
-    expect(this.collectionParam.add(data[0])).to.eventually.notify =>
-      expect(this.collectionParam.add(data[1])).to.eventually.notify =>
-        expect(this.collectionParam.add(data[2])).to.eventually.notify =>
-          expect(this.collectionParam.filter({name:'e'})).to.eventually
-          .property('payload').deep.equal([{ id: 1, name: 'e', '$index': 0 }, { id: 3, name: 'e', '$index': 2 }]).notify(done)
-
-  it 'find()', (done) ->
-    expect(this.collectionParam.add(testValues[0])).to.eventually.notify =>
-      expect(this.collectionParam.add(testValues[1])).to.eventually.notify =>
-        expect(this.collectionParam.find({id:2})).to.eventually
-        .property('payload').deep.equal({ id: 2, name: 'name2', '$index': 1 }).notify(done)
+#  it 'filter()', (done) ->
+#    data = [
+#      {id:1, name: 'e'}
+#      {id:2, name: 'r'}
+#      {id:3, name: 'e'}
+#    ]
+#    expect(this.collectionParam.add(data[0])).to.eventually.notify =>
+#      expect(this.collectionParam.add(data[1])).to.eventually.notify =>
+#        expect(this.collectionParam.add(data[2])).to.eventually.notify =>
+#          expect(this.collectionParam.filter({name:'e'})).to.eventually
+#          .property('payload').deep.equal([{ id: 1, name: 'e', '$index': 0 }, { id: 3, name: 'e', '$index': 2 }]).notify(done)
+#
+#  it 'find()', (done) ->
+#    expect(this.collectionParam.add(testValues[0])).to.eventually.notify =>
+#      expect(this.collectionParam.add(testValues[1])).to.eventually.notify =>
+#        expect(this.collectionParam.find({id:2})).to.eventually
+#        .property('payload').deep.equal({ id: 2, name: 'name2', '$index': 1 }).notify(done)
 
 #  it 'page()', ->
 #    # TODO: do it
