@@ -20,13 +20,22 @@ export function recursiveSchema(root, schema, cb) {
  * @param {object|array} newData - This is new data
  */
 export function recursiveMutate(sourceData, newData) {
-  if (_.isObject(newData)) {
+  function removeUnused(sourceData, newData) {
+    _.each(sourceData, function (value, name) {
+      if (!newData[name]) {
+        delete sourceData[name];
+      }
+    });
+  }
+
+
+  if (_.isPlainObject(newData)) {
     // Sort only arrays or objects
     let primitivesChildren = {};
     let objectOrArrayChildren = {};
 
     _.each(newData, function (value, name) {
-      if (_.isObject(value)) {
+      if (_.isPlainObject(value)) {
         objectOrArrayChildren[name] = value;
         if (!sourceData[name]) sourceData[name] = {};
       }
@@ -40,11 +49,7 @@ export function recursiveMutate(sourceData, newData) {
     });
 
     // remove useless items
-    _.each(sourceData, function (value, name) {
-      if (!newData[name]) {
-        delete sourceData[name];
-      }
-    });
+    removeUnused(sourceData, newData);
 
     // extend only primitives
     _.extend(sourceData, primitivesChildren);
@@ -54,6 +59,33 @@ export function recursiveMutate(sourceData, newData) {
     });
   }
   else if (_.isArray(newData)) {
+    if (newData.length === 0) {
+      _.remove(sourceData)
+    }
+    else if (_.isPlainObject(newData[0])) {
+      // TODO: наверное по primary
+      // remove useless items
+      removeUnused(sourceData, newData);
+
+      _.each(newData, function (value, index) {
+        if (!sourceData[index]) sourceData[index] = {};
+        // TODO: индекс может не совпадать, тогда придется искать по primary
+        recursiveMutate(sourceData[index], value);
+      });
+    }
+    else if (_.isArray(newData[0])) {
+      // remove useless items
+      removeUnused(sourceData, newData);
+
+      _.each(newData, function (value, index) {
+        if (!sourceData[index]) sourceData[index] = [];
+        recursiveMutate(sourceData[index], value);
+      });
+    }
+    else {
+      // TODO: в массиве - примитивы или null или undefined - обновляем всё по индексам
+    }
+
     // TODO: если потомки массива примитивы
     //       - обновляем все элементы по индексам и удаляем в соурсе тех которых нет в новых
     // TODO: если потомки массива - массивы или объекты
@@ -63,7 +95,7 @@ export function recursiveMutate(sourceData, newData) {
     // let primitivesChildren = [];
     // let objectOrArrayChildren = [];
     // _.each(newData, function (value, index) {
-    //   if (_.isObject(value) || _.isArray(value)) {
+    //   if (_.isPlainObject(value) || _.isArray(value)) {
     //     objectOrArrayChildren[name] = value;
     //   }
     //   else {
@@ -78,7 +110,7 @@ export function recursiveMutate(sourceData, newData) {
 export function findPrimary(schema) {
   var primary = '';
   _.find(schema, (value, name) => {
-    if (_.isObject(value) && value.primary) {
+    if (_.isPlainObject(value) && value.primary) {
       primary = name;
       return true;
     }

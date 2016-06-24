@@ -150,7 +150,7 @@ export default class SchemaManager {
         // Go through inner param 'schema'
         return 'schema';
       }
-      else if (_.isObject(value.document)) {
+      else if (_.isPlainObject(value.document)) {
         this._initDocument(newPath, value);
 
         // Go through inner param 'schema'

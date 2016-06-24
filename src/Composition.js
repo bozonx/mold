@@ -67,7 +67,7 @@ export default class Composition {
   update(path, value) {
     // TODO: test it
     var compPath = convertToCompositionPath(path);
-    if (_.isObject(value) || _.isArray(value) ) {
+    if (_.isPlainObject(value) || _.isArray(value) ) {
       if (!path) {
         this._storage = _.defaultsDeep(value, this._storage);
       }

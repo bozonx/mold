@@ -31,19 +31,61 @@ describe 'Unit. helpers.', ->
             stringValue: 'very nested'
 
       newData =
-        stringValue: 'new',
+        stringValue: 'new1',
         nested:
-          stringValue: 'new'
+          stringValue: 'new2'
           nestedSecond:
-            stringValue: 'new'
+            stringValue: 'new3'
 
-      topLink = sourceData.stringValue
       nestedLink = sourceData.nested
-      nestedValueLink = sourceData.nested.stringValue
 
       helpers.recursiveMutate(sourceData, newData)
 
       assert.deepEqual(sourceData, newData)
+      assert.equal(nestedLink.stringValue, 'new2')
 
-    # TODO: array
-    # TODO: collection
+    it 'Collection update', ->
+      sourceData =
+        collection: [
+          {
+            id: 1
+            name: 'old name'
+            unusedField: 'unused'
+          }
+          {
+            id: 2
+            name: 'unused'
+          }
+        ],
+        toClear: [
+          {
+            id: 1
+          }
+        ],
+
+      newData =
+        collection: [
+          {
+            id: 1
+            name: 'new'
+            newField: 'new',
+          }
+        ],
+        toClear: []
+        newCollection: [
+          {
+            id: 1,
+            name: 'new'
+          }
+        ],
+
+      collectionLink = sourceData.collection
+
+      helpers.recursiveMutate(sourceData, newData)
+
+      assert.deepEqual(sourceData, newData)
+      assert.equal(collectionLink[0].name, 'new')
+
+
+    # TODO: array, массив вложенный в массив
+    # TODO: collection at start, deep
