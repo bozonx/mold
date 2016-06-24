@@ -28,6 +28,13 @@ export function recursiveMutate(sourceData, newData) {
     });
   }
 
+  function updateArray(sourceData, newData) {
+    _.each(newData, function (value, index) {
+      if (!sourceData[index]) sourceData[index] = {};
+      recursiveMutate(sourceData[index], value);
+    });
+  }
+
   if (_.isPlainObject(newData)) {
     // Sort only arrays or objects
     let primitivesChildren = {};
@@ -59,25 +66,19 @@ export function recursiveMutate(sourceData, newData) {
   }
   else if (_.isArray(newData)) {
     if (newData.length === 0) {
+      // remove all
       _.remove(sourceData)
     }
     else if (_.isPlainObject(newData[0])) {
-      // TODO: наверное по primary
+      // TODO: наверное по primary, так как индекс может не совпадать
       // remove useless items
       removeUnused(sourceData, newData);
-      _.each(newData, function (value, index) {
-        if (!sourceData[index]) sourceData[index] = {};
-        // TODO: индекс может не совпадать, тогда придется искать по primary
-        recursiveMutate(sourceData[index], value);
-      });
+      updateArray(sourceData, newData);
     }
     else if (_.isArray(newData[0])) {
       // remove useless items
       removeUnused(sourceData, newData);
-      _.each(newData, function (value, index) {
-        if (!sourceData[index]) sourceData[index] = [];
-        recursiveMutate(sourceData[index], value);
-      });
+      updateArray(sourceData, newData);
     }
     else {
       // primitives, null or undefined
