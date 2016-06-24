@@ -14,6 +14,67 @@ export function recursiveSchema(root, schema, cb) {
   });
 }
 
+/**
+ * Mutate object or array.
+ * @param {object|array} sourceData - This will be mutate
+ * @param {object|array} newData - This is new data
+ */
+export function recursiveMutate(sourceData, newData) {
+  if (_.isObject(newData)) {
+    // Sort only arrays or objects
+    let primitivesChildren = {};
+    let objectOrArrayChildren = {};
+
+    _.each(newData, function (value, name) {
+      if (_.isObject(value)) {
+        objectOrArrayChildren[name] = value;
+        if (!sourceData[name]) sourceData[name] = {};
+      }
+      else if (_.isArray(value)) {
+        objectOrArrayChildren[name] = value;
+        if (!sourceData[name]) sourceData[name] = [];
+      }
+      else {
+        primitivesChildren[name] = value;
+      }
+    });
+
+    // remove useless items
+    _.each(sourceData, function (value, name) {
+      if (!newData[name]) {
+        delete sourceData[name];
+      }
+    });
+
+    // extend only primitives
+    _.extend(sourceData, primitivesChildren);
+
+    _.each(objectOrArrayChildren, function (value, name) {
+      recursiveMutate(sourceData[name], value);
+    });
+  }
+  else if (_.isArray(newData)) {
+    // TODO: если потомки массива примитивы
+    //       - обновляем все элементы по индексам и удаляем в соурсе тех которых нет в новых
+    // TODO: если потомки массива - массивы или объекты
+    //       - проходимся по ним и вызываем рекурсию, предварительно убрав тех, которых нет из соурса
+
+    // TODO: What can we do with array?
+    // let primitivesChildren = [];
+    // let objectOrArrayChildren = [];
+    // _.each(newData, function (value, index) {
+    //   if (_.isObject(value) || _.isArray(value)) {
+    //     objectOrArrayChildren[name] = value;
+    //   }
+    //   else {
+    //     others[name] = value;
+    //   }
+    // });
+  }
+
+  // If it isn't an object or array - do nothing
+}
+
 export function findPrimary(schema) {
   var primary = '';
   _.find(schema, (value, name) => {

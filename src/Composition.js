@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { convertToCompositionPath } from './helpers';
+import { convertToCompositionPath, recursiveMutate } from './helpers';
 
 export default class Composition {
   constructor(main) {
@@ -72,10 +72,7 @@ export default class Composition {
         this._storage = _.defaultsDeep(value, this._storage);
       }
       else {
-        // TODO: Сделать рукурсивно с поддержкой массивов
-        _.extend(_.get(this._storage, compPath), value);
-        //let newValue = _.defaultsDeep(value, _.get(this._storage, compPath));
-        //_.set(this._storage, compPath, newValue);
+        recursiveMutate(_.get(this._storage, compPath), value);
       }
     }
     else {
