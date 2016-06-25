@@ -90,16 +90,14 @@ export default class State {
    * @returns {Promise}
    */
   setSilent(path, value) {
-    // TODO: по умолчанию mold обновляется и потом делается запрос,
-    // TODO:     * но если запрос не удастся - наверное надо вернуть как было??? или дать приложению решить
-    // TODO:     * в конфиге можно задать, чтобы mold обновлялся только после успешного запроса на сервер
-
     // TODO: test - установка всех значений для контейнера
 
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(path);
 
     // TODO: only for primitives
+    
+    
 
     if (schema.type) {
       // If it's a param or list - just set a value
@@ -107,21 +105,31 @@ export default class State {
       this._checkNode(schema, path, value);
       // TODO: тут устанавливается значение сразу, до запроса в базу - но в конфиге можно указать чтобы после
       // Set to composition
-      this.setComposition(path, value);
+      //this.setComposition(path, value);
 
     }
     else {
+      // TODO: валидация всех параметров
       // It's a container - set values for all children
-      recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
+      //recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
     }
 
-    // TODO: обновить composition после ответа - смотреть в get
-
-    return this._startDriverQuery({
+    var promise = this._startDriverQuery({
       type: 'set',
       fullPath: path,
       payload: value,
     });
+
+    promise.then((resp) => {
+      if (resp.request.pathToDocument) {
+        this._composition.update(resp.request.pathToDocument, resp.successResponse);
+      }
+      else {
+        this._composition.update(resp.request.fullPath, resp.successResponse)
+      }
+    });
+
+    return promise;
   }
 
   /**
