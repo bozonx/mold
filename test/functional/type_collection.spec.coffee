@@ -26,10 +26,10 @@ describe 'Functional. Collection type.', ->
     this.container = this.mold.instance('inMemory')
     this.collectionParam = this.mold.instance('inMemory.collectionParam')
 
-  it 'init via container', ->
-    this.container.setSilent('collectionParam', testValues)
-    assert.deepEqual(this.container.mold.collectionParam, testValues)
-    assert.deepEqual(this.collectionParam.mold, testValues)
+#  it 'init via container', ->
+#    this.container.setSilent('collectionParam', testValues)
+#    assert.deepEqual(this.container.mold.collectionParam, testValues)
+#    assert.deepEqual(this.collectionParam.mold, testValues)
 
   it 'child()', (done) ->
     expect(this.collectionParam.add(testValues[0])).notify =>

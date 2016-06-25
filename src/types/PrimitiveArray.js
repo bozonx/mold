@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 
-// TODO: сделать валидация типа дочерних элементов
+// TODO: сделать валидацию типа дочерних элементов - itemsType
 
 export default class PrimitiveArray {
   constructor(main) {
@@ -18,7 +18,6 @@ export default class PrimitiveArray {
     this.schema = schema;
     // mold is just a link to the composition
     this.mold = {};
-    this._initComposition();
     this.updateMold();
   }
 
@@ -29,7 +28,6 @@ export default class PrimitiveArray {
   getRoot() {
     return '' + this._root;
   }
-
 
   /**
    * Get all
@@ -59,9 +57,4 @@ export default class PrimitiveArray {
     this.mold = this._main.state.getComposition(this._root);
   }
 
-  _initComposition() {
-    // TODO: это нужно делать при инициализации всей схемы
-    if (_.isUndefined(this._main.state.getComposition(this._root)))
-      this._main.state.setComposition(this._root, []);
-  }
 }

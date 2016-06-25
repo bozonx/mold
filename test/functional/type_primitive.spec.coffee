@@ -17,32 +17,27 @@ describe 'Functional. Primitive type.', ->
     this.mold = mold.initSchema( {}, testSchema() )
     this.container = this.mold.instance('inMemory')
 
-  it 'After init all the values is undefined', () ->
+  it 'After init all the values is null', () ->
     assert.isNull(this.container.child('boolParam').mold)
     assert.isNull(this.container.child('stringParam').mold)
     assert.isNull(this.container.child('numberParam').mold)
 
-  it 'Get value. It returns a promise', () ->
-    this.mold.state.setComposition('inMemory.stringParam', 'new value')
-    stringParam = this.container.child('stringParam')
-    promise = stringParam.get();
-
-    expect(promise).to.eventually.equal('new value')
-    assert.equal(stringParam.mold, 'new value')
-
-  it 'Set and get boolean value', () ->
+  it 'Set boolean value and check mold', (done) ->
     primitive = this.container.child('boolParam')
-    primitive.set(true);
-    assert.equal(primitive.mold, true)
+    expect(primitive.set(true)).to.eventually.notify =>
+      expect(Promise.resolve(primitive.mold)).to.eventually.equal(true).notify(done)
+
+  it 'Set number value and check mold', (done) ->
+    primitive = this.container.child('numberParam')
+    expect(primitive.set(11)).to.eventually.notify =>
+      expect(Promise.resolve(primitive.mold)).to.eventually.equal(11).notify(done)
+
+  it 'Set string value and check mold', (done) ->
+    primitive = this.container.child('stringParam')
+    expect(primitive.set('new value')).to.eventually.notify =>
+      expect(Promise.resolve(primitive.mold)).to.eventually.equal('new value').notify(done)
 
   it 'Set and get string value', (done) ->
     primitive = this.container.child('stringParam')
-    promise = primitive.set('new value');
-    expect(promise).to.eventually.property('payload').equal('new value').notify =>
-      expect(Promise.resolve(primitive.mold)).to.eventually.equal('new value').notify(done)
-
-
-  it 'Set and get number value', () ->
-    primitive = this.container.child('numberParam')
-    primitive.set(11);
-    assert.equal(primitive.mold, 11)
+    expect(primitive.set('new value')).to.eventually.notify =>
+      expect(primitive.get()).to.eventually.property('payload').equal('new value').notify(done)

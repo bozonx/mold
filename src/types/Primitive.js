@@ -44,16 +44,16 @@ export default class Primitive {
     return promise;
   }
 
-  /**
-   * Set value silently
-   * @param {string|number|boolean} value
-   * @returns {Promise}
-   */
-  setSilent(value) {
-    var promise = this._main.state.setSilent(this._root, value);
-    this.updateMold();
-    return promise;
-  }
+  // /**
+  //  * Set value silently
+  //  * @param {string|number|boolean} value
+  //  * @returns {Promise}
+  //  */
+  // setSilent(value) {
+  //   var promise = this._main.state.setSilent(this._root, value);
+  //   this.updateMold();
+  //   return promise;
+  // }
 
   updateMold() {
     this.mold = this._main.state.getComposition(this._root);

@@ -27,8 +27,8 @@ describe 'Functional. Container type.', ->
   beforeEach () ->
     this.testSchema = testSchema()
     this.mold = mold.initSchema( {}, this.testSchema )
-    this.rootInstance = this.mold.instance('memoryBranch')
-    this.container = this.rootInstance.child('inMemory')
+    rootInstance = this.mold.instance('memoryBranch')
+    this.container = rootInstance.child('inMemory')
 
   it 'child: container', () ->
     containerDeeper = this.container.child('nested')
@@ -59,12 +59,15 @@ describe 'Functional. Container type.', ->
 #    .deep.equal(result).notify =>
 #      expect(Promise.resolve(this.container.mold)).to.eventually.deep.equal(result).notify(done)
 
-  it 'get(subpath)', () ->
-    this.mold.state.setComposition('memoryBranch.inMemory.stringParam', 'new value')
-    promise = this.container.get('stringParam');
-
-    expect(promise).to.eventually.equal('new value')
-    assert.equal(this.container.mold.stringParam, 'new value')
+#  it 'get(subpath)', () ->
+#    
+#  
+#  
+#    this.mold.state.setComposition('memoryBranch.inMemory.stringParam', 'new value')
+#    promise = this.container.get('stringParam');
+#
+#    expect(promise).to.eventually.equal('new value')
+#    assert.equal(this.container.mold.stringParam, 'new value')
 
   it 'set(): Set for the all children', () ->
     # TODO: надо в momory установить значение, и потом его получить
@@ -76,14 +79,14 @@ describe 'Functional. Container type.', ->
 #    assert.equal(this.container.child('stringParam').mold, 'new value')
 #    assert.equal(this.container.mold.stringParam, 'new value')
 
-  it 'set(subpath, newValue): Set child value', () ->
-    promise = this.container.set('stringParam', 'new value')
+  it 'set(subpath, newValue): Set child value', (done) ->
+    expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
+      expect(Promise.resolve(this.container.mold.stringParam)).to.eventually.equal('new value').notify(done)
+  
+# TODO: write test for child
+#    assert.equal(this.container.child('stringParam').mold, 'new value')
 
-    expect(promise).to.be.fulfilled
-    assert.equal(this.container.mold.stringParam, 'new value')
-    assert.equal(this.container.child('stringParam').mold, 'new value')
-    assert.equal(this.container.mold.stringParam, 'new value')
-
+  # TODO: ??? методы has не нужны в типах и композиции
   it 'Has a subpath', () ->
     assert.isTrue(this.container.has('nested.nestedStringParam'))
     assert.isFalse(this.container.has('nested.nestedStringParam111'))

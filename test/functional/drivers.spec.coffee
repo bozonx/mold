@@ -1,5 +1,7 @@
 _ = require('lodash');
 
+# TODO: наверное перенести в memory
+
 mold = require('../../src/index')
 
 # TODO: можно задавать несколько инстансов с разными локальными конфигами
@@ -62,13 +64,13 @@ describe 'Functional. Driver usage.', ->
     assert.equal(driverFromDeep.constructor.name, 'LocalTestDriver')
     assert.equal(driverFromDeep.root, 'commonBranch.inTestDriver')
 
-  it 'set data via driver requestHandler by running state.setSilent()', ->
-    this.mold.state.setSilent('commonBranch.inTestDriver.param1', 'new value')
-    driver = this.mold.schemaManager.getDriver('commonBranch.inTestDriver')
-
-    assert.equal(this.mold.state.getComposition('commonBranch.inTestDriver.param1'), 'new value')
-    # TODO: должен ли быть такой длинный путь у драйвера????
-    assert.equal(_.get(driver.__storage, 'commonBranch.inTestDriver.param1'), 'new value')
+#  it 'set data via driver requestHandler by running state.setSilent()', ->
+#    this.mold.state.setSilent('commonBranch.inTestDriver.param1', 'new value')
+#    driver = this.mold.schemaManager.getDriver('commonBranch.inTestDriver')
+#
+#    assert.equal(this.mold.state.getComposition('commonBranch.inTestDriver.param1'), 'new value')
+#    # TODO: должен ли быть такой длинный путь у драйвера????
+#    assert.equal(_.get(driver.__storage, 'commonBranch.inTestDriver.param1'), 'new value')
 
   it 'check promise', () ->
     promise = this.mold.state.setSilent('commonBranch.inTestDriver.param1', 'new value')
