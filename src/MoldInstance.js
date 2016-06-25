@@ -10,9 +10,6 @@ export default class MoldInstance {
     var configInstance = new Config(config);
     this.config = configInstance.get();
     this.events = this.config.eventEmitter;
-    
-    // TODO: убрать из конфига memoryDriver - его можно и так установить через схему
-    this.memory = this.config.memoryDriver.schema({}, {}).driver;
 
     this.schemaManager = new SchemaManager();
     this.state = new State();

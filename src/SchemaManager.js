@@ -9,6 +9,7 @@ import Collection from './types/Collection';
 import Container from './types/Container';
 import Primitive from './types/Primitive';
 import { recursiveSchema, convertToSchemaPath } from './helpers';
+import Memory from './drivers/Memory';
 
 export default class SchemaManager {
   init(schema, main) {
@@ -17,6 +18,11 @@ export default class SchemaManager {
     this._main = main;
     this._drivers = {};
     this._documents = {};
+
+    var memoryDriver = new Memory({
+      db: {},
+    });
+    this.mainMemoryDriver = memoryDriver.schema({}, {}).driver;
 
     this._initSchema();
   }
@@ -130,7 +136,7 @@ export default class SchemaManager {
     }
     else {
       // no-one - memory driver
-      return this._main.memory;
+      return this.mainMemoryDriver;
     }
   }
 

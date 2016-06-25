@@ -1,10 +1,7 @@
-import Memory from './drivers/Memory';
-
 export default class Config {
   constructor(conf) {
     this._config = conf;
 
-    this._initMemoryDriver();
     this._initEvents();
 
     // TODO: validate a config
@@ -13,14 +10,6 @@ export default class Config {
   get() {
     // TODO: immutable????
     return this._config;
-  }
-
-  _initMemoryDriver() {
-    if (!this._config.memoryDriver) {
-      this._config.memoryDriver = new Memory({
-        db: {},
-      });
-    }
   }
 
   _initEvents() {
