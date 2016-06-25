@@ -1,4 +1,4 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
 class LocalMemory {
   constructor(driverConfig, instanceConfig, db) {

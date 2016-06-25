@@ -45,44 +45,18 @@ describe 'Functional. Container type.', ->
     assert.equal(arrayInstance.getRoot(), 'memoryBranch.inMemory.arrayParam')
     assert.deepEqual(arrayInstance.schema, this.testSchema.memoryBranch.inMemory.arrayParam)
 
-  it 'get(""): itself values', () ->
-    # TODO: надо в momory установить значение, и потом его получить
-#    this.mold.state.setComposition('memoryBranch.inMemory.stringParam', 'new value')
-#    result = {
-#      boolParam: null
-#      stringParam: 'new value'
-#      numberParam: null
-#      arrayParam: []
-#    }
-#
-#    expect(this.container.get()).to.eventually
-#    .deep.equal(result).notify =>
-#      expect(Promise.resolve(this.container.mold)).to.eventually.deep.equal(result).notify(done)
+  it 'Set to child and check child mold', (done) ->
+    expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
+      expect(Promise.resolve(this.container.child('stringParam').mold)).to.eventually.equal('new value').notify(done)
 
-#  it 'get(subpath)', () ->
-#    
-#  
-#  
-#    this.mold.state.setComposition('memoryBranch.inMemory.stringParam', 'new value')
-#    promise = this.container.get('stringParam');
-#
-#    expect(promise).to.eventually.equal('new value')
-#    assert.equal(this.container.mold.stringParam, 'new value')
+  it 'set({...}) and get("")', (done) ->
+    expect(this.container.set({stringParam: 'new value'})).to.eventually.notify =>
+      expect(this.container.get('')).to.eventually.property('payload').deep.equal({stringParam: 'new value'}).notify(done)
 
-  it 'set(): Set for the all children', () ->
-    # TODO: надо в momory установить значение, и потом его получить
-#    promise = this.container.set('', {stringParam: 'new value'})
-#
-#    expect(promise).to.be.fulfilled
-#    assert.deepEqual(this.container.mold, {stringParam: 'new value'})
-#    assert.equal(this.container.mold.stringParam, 'new value')
-#    assert.equal(this.container.child('stringParam').mold, 'new value')
-#    assert.equal(this.container.mold.stringParam, 'new value')
+  it 'get(subpath)', (done) ->
+    expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
+      expect(this.container.get('stringParam')).to.eventually.property('payload').equal('new value').notify(done)
 
-  it 'set(subpath, newValue): Set child value', (done) ->
+  it 'set(subpath, newValue): Set to primitive via container', (done) ->
     expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
       expect(Promise.resolve(this.container.mold.stringParam)).to.eventually.equal('new value').notify(done)
-  
-# TODO: write test for child
-#    assert.equal(this.container.child('stringParam').mold, 'new value')
-

@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default class Container {
   constructor(main) {
     this._main = main;
@@ -36,18 +38,27 @@ export default class Container {
   child(path) {
     if (!path)
       throw new Error(`You must pass a path argument.`);
-    
+
     return this._main.schemaManager.getInstance(this._fullPath(path));
   }
 
   /**
    * Set child value for child or for all children.
    * If you pass path = '' or undefined, it means set data for the all children of this container
-   * @param {string} path - path relative to instance root
-   * @param {*} value for child or children
+   * There are 2 ways to use this methods:
+   * * set({param: value})
+   * * set('param', value)
    * @returns {Promise}
    */
-  set(path, value) {
+  set(pathOrValue, valueOrNothing) {
+    var path = pathOrValue;
+    var value = valueOrNothing;
+
+    if (_.isPlainObject(pathOrValue)) {
+      path = '';
+      value = pathOrValue;
+    }
+
     return this._main.state.setValue((path) ? this._fullPath(path) : this._root, value);
   }
 

@@ -1,4 +1,4 @@
-var _ = require('lodash');
+//import _ from 'lodash';
 
 // TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
 
