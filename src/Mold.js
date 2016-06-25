@@ -3,7 +3,7 @@ import SchemaManager from './SchemaManager';
 import State from './State';
 import Config from './Config';
 
-export default class MoldInstance {
+export default class Mold {
   constructor(config, schema) {
     this._composition = new Composition(this);
 
@@ -25,6 +25,8 @@ export default class MoldInstance {
    * It silently setup a state.
    */
   initState(param1, param2) {
+    // TODO: !!!!! не нужно !!!! это делается через memory
+    
     var path = param1;
     var value = param2;
     if (!param2) {

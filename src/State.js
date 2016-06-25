@@ -18,6 +18,7 @@ export default class State {
    * @param path
    */
   getComposition(path) {
+    // Does it really need?
     return this._composition.get(path);
   }
 
@@ -27,6 +28,7 @@ export default class State {
    * @param value
    */
   setComposition(path, value) {
+    // Does it really need?
     this._composition.set(path, value);
   }
 
@@ -58,52 +60,13 @@ export default class State {
     return promise;
   }
 
-
-  // find(path, params) {
-  //   if (!this._main.schemaManager.has(path))
-  //     throw new Error(`Can't find path "${path}" in the schema!`);
-  //
-  //   var promise = this._startDriverQuery({
-  //     type: 'find',
-  //     fullPath: path,
-  //     payload: params,
-  //   });
-  //
-  //   promise.then((resp) => {
-  //     // TODO: !!!!!
-  //     //console.log(222222222, resp)
-  //     //this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
-  //   });
-  //
-  //   return promise;
-  // }
-  //
-  //
-  // filter(path, params) {
-  //   if (!this._main.schemaManager.has(path))
-  //     throw new Error(`Can't find path "${path}" in the schema!`);
-  //
-  //   var promise = this._startDriverQuery({
-  //     type: 'filter',
-  //     fullPath: path,
-  //     payload: params,
-  //   });
-  //
-  //   promise.then((resp) => {
-  //     // TODO: !!!!!
-  //     console.log(3333333, resp)
-  //     //this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
-  //   });
-  //
-  //   return promise;
-  // }
-
-
   addItem(path, newItem) {
+    // TODO: rise an event
     return this.addSilent(path, newItem);
   }
 
   removeItem(path, item) {
+    // TODO: rise an event
     return this.removeSilent(path, item);
   }
 
@@ -219,40 +182,6 @@ export default class State {
     return promise;
   }
 
-  // /**
-  //  * Reset param or children params to defaults
-  //  * @param {string} path - absolute path
-  //  */
-  // resetToDefault(path) {
-  //   // TODO: переделать на this.setValue
-  //   // TODO: наверное тоже надо вернуть {Promise}
-  //   // TODO: использовать setSilent
-  //
-  //   var setToItem = (itemPath, itemSchema) => {
-  //     if (!_.isUndefined(itemSchema.default)) {
-  //       // set a value
-  //       this.setComposition(itemPath, itemSchema.default);
-  //     }
-  //     else {
-  //       // set null
-  //       this.setComposition(itemPath, null);
-  //     }
-  //   };
-  //
-  //   var itemSchema = this._main.schemaManager.get(path);
-  //   if (itemSchema.type) {
-  //     // for item
-  //     setToItem(path, itemSchema);
-  //   }
-  //   else {
-  //     // for container, set on each child
-  //     // TODO: recursively
-  //     _.each(itemSchema, (value, name) => {
-  //       if (value.type) setToItem(`${path}.${name}`, value);
-  //     });
-  //   }
-  // }
-
   /**
    * Validate value using validate settings by path
    * @param {string} path - absolute path
@@ -338,6 +267,10 @@ export default class State {
     return driver.requestHandler(req);
   }
 
+  /**
+   * Set initial values (null|[]) to composition for all items from schema.
+   * @private
+   */
   _initComposition() {
     var compositionValues = {};
 

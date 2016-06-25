@@ -1,4 +1,4 @@
-import MainInstance from './MoldInstance';
+import MainInstance from './Mold';
 
 // TODO: переделать на export default
 

@@ -37,7 +37,7 @@ export default class SchemaManager {
 
     var schemaPath = convertToSchemaPath(path);
 
-    // TODO: do it immutable
+    // TODO: ??? do it immutable
     var schema = _.get(this._schema, schemaPath);
     if (_.isUndefined(schema)) throw new Error(`Schema on path "${schemaPath}" doesn't exists`);
 
@@ -48,7 +48,7 @@ export default class SchemaManager {
    * Has a param on path
    * Path = '' means root.
    * @param {string} path - absolute path
-   * @returns {boolean}
+   * @returns {boolean} If path = '' it means root and return true
    */
   has(path) {
     if (path === '') return true;
@@ -77,21 +77,20 @@ export default class SchemaManager {
     // It rise an error if path doesn't consist with schema
     var schema = this.get(path);
 
-    if (schema.type == 'boolean' || schema.type == 'string' || schema.type == 'number'){
-      instance = new Primitive(this._main);
-    }
-    else if (schema.type == 'array') {
-      instance = new PrimitiveArray(this._main);
+    if (!schema.type) {
+      instance = new Container(this._main);
     }
     else if (schema.type == 'collection') {
       instance = new Collection(this._main);
     }
-    else if (!schema.type) {
-      instance = new Container(this._main);
+    else if (schema.type == 'array') {
+      instance = new PrimitiveArray(this._main);
+    }
+    else if (schema.type == 'boolean' || schema.type == 'string' || schema.type == 'number'){
+      instance = new Primitive(this._main);
     }
 
-    // TODO: может инициализировать  всё сразу в конструкторе???
-
+    // It's need for creating collection child
     instance.init(path, schema);
 
     return instance;
@@ -106,9 +105,9 @@ export default class SchemaManager {
     if (!_.isString(path))
       throw new Error(`You must pass the path argument!`);
 
-    return _.find(this._documents, (value, documentPath) => {
-      return path.indexOf(documentPath) === 0;
-    });
+    var matchPath = this._getTheBestMatchPath(path, this._documents);
+
+    return this._documents[matchPath];
   }
 
   /**
@@ -120,24 +119,13 @@ export default class SchemaManager {
     if (!_.isString(path))
       throw new Error(`You must pass the path argument!`);
 
-    var driverPaths = _.map(this._drivers, (value, driverPath) => {
-      if (path.indexOf(driverPath) === 0) return driverPath;
-    });
-    driverPaths = _.compact(driverPaths);
+    var matchPath = this._getTheBestMatchPath(path, this._drivers);
 
-    if (driverPaths.length > 1) {
-      // two or more drivers - get the longest
-      // TODO: !!! do it and test it
-      console.log(5555555555555555)
-    }
-    if (driverPaths.length === 1) {
-      // one driver
-      return this._drivers[driverPaths[0]];
-    }
-    else {
-      // no-one - memory driver
-      return this.mainMemoryDriver;
-    }
+    if (matchPath)
+      return this._drivers[matchPath];
+
+    // no-one - memory driver
+    return this.mainMemoryDriver;
   }
 
   /**
@@ -222,13 +210,18 @@ export default class SchemaManager {
     _.set(this._schema, path, value);
   }
 
+  _initPrimitive(path, value) {
+    // TODO: validate it
+    _.set(this._schema, path, value);
+  }
+
   _initCollection(path, value) {
     // collection
     if (!_.isPlainObject(value.item))
       throw new Error(`On a path "${path}" list must has an "item" param.`);
 
-    // TODO: проверить - только одно поле, не больше не меньше является primary
-    // TODO: primary id может быть только числом (или может ещё строкой)
+    // TODO: проверить - только одно поле, не больше не меньше, что является primary
+    // TODO: primary id может быть только числом или строкой
 
     _.set(this._schema, path, {
       type: value.type,
@@ -236,10 +229,22 @@ export default class SchemaManager {
     });
   }
 
-  _initPrimitive(path, value) {
-    // TODO: validate it
-    _.set(this._schema, path, value);
+  _getTheBestMatchPath(sourcePath, pathsList) {
+    var matchList = _.map(pathsList, (value, driverPath) => {
+      if (sourcePath.indexOf(driverPath) === 0) return driverPath;
+    });
+    matchList = _.compact(matchList);
+
+    if (matchList.length > 1) {
+      // two or more drivers - get the longest
+      // TODO: !!! do it and test it
+      console.log(5555555555555555)
+    }
+    else if (matchList.length === 1) {
+      // one path
+      return matchList[0];
+    }
+    // Else return undefined
   }
 
 }
-
