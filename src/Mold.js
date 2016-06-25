@@ -36,6 +36,18 @@ export default class Mold {
     return this.state.setSilent(path, value);
   }
 
+  // /**
+  //  * Is param exists on a path
+  //  * It just check schema.
+  //  * @param {string} path - path relative to instance root
+  //  * @returns {boolean}
+  //  */
+  // has(path) {
+  //   if (!path)
+  //     throw new Error(`You must pass a path argument.`);
+  //   return this._main.schemaManager.has(this._fullPath(path));
+  // }
+
   /**
    * Get instance of one of the types by a path
    * @param {string} path - absolute path

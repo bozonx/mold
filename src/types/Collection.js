@@ -7,6 +7,7 @@ export default class Collection {
   constructor(main) {
     this._main = main;
 
+    // TODO: it's not need
     this._main.events.on('mold.composition.update', (data) => {
       if (data.path.indexOf(this._root) === 0) this.updateMold();
     });

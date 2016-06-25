@@ -86,7 +86,3 @@ describe 'Functional. Container type.', ->
 # TODO: write test for child
 #    assert.equal(this.container.child('stringParam').mold, 'new value')
 
-  # TODO: ??? методы has не нужны в типах и композиции
-  it 'Has a subpath', () ->
-    assert.isTrue(this.container.has('nested.nestedStringParam'))
-    assert.isFalse(this.container.has('nested.nestedStringParam111'))

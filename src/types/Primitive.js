@@ -3,7 +3,7 @@ export default class Primitive {
     this._main = main;
 
     this._main.events.on('mold.composition.update', (data) => {
-      if (data.path.indexOf(this._root) === 0) this.updateMold();
+      if (data.path.indexOf(this._root) === 0) this._updateMold();
     });
   }
 
@@ -12,7 +12,7 @@ export default class Primitive {
     this.schema = schema;
     // mold is just a link to the composition
     this.mold = {};
-    this.updateMold();
+    this._updateMold();
   }
 
   /**
@@ -28,9 +28,7 @@ export default class Primitive {
    * @returns {Promise}
    */
   get() {
-    var promise = this._main.state.getValue(this._root);
-    this.updateMold();
-    return promise;
+    return this._main.state.getValue(this._root);
   }
 
   /**
@@ -39,23 +37,10 @@ export default class Primitive {
    * @returns {Promise}
    */
   set(value) {
-    var promise = this._main.state.setValue(this._root, value);
-    this.updateMold();
-    return promise;
+    return this._main.state.setValue(this._root, value);
   }
 
-  // /**
-  //  * Set value silently
-  //  * @param {string|number|boolean} value
-  //  * @returns {Promise}
-  //  */
-  // setSilent(value) {
-  //   var promise = this._main.state.setSilent(this._root, value);
-  //   this.updateMold();
-  //   return promise;
-  // }
-
-  updateMold() {
+  _updateMold() {
     this.mold = this._main.state.getComposition(this._root);
   }
 }

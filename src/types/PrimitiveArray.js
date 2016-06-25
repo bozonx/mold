@@ -9,7 +9,7 @@ export default class PrimitiveArray {
     this._main = main;
 
     this._main.events.on('mold.composition.update', (data) => {
-      if (data.path.indexOf(this._root) === 0) this.updateMold();
+      if (data.path.indexOf(this._root) === 0) this._updateMold();
     });
   }
 
@@ -18,7 +18,7 @@ export default class PrimitiveArray {
     this.schema = schema;
     // mold is just a link to the composition
     this.mold = {};
-    this.updateMold();
+    this._updateMold();
   }
 
   /**
@@ -34,9 +34,7 @@ export default class PrimitiveArray {
    * @returns {Promise}
    */
   get() {
-    var promise = this._main.state.getValue(this._root);
-    this.updateMold();
-    return promise;
+    return this._main.state.getValue(this._root);
   }
 
   /**
@@ -48,12 +46,10 @@ export default class PrimitiveArray {
     if (!_.isArray(value))
       throw new Error(`You must pass a list argument.`);
 
-    var promise = this._main.state.setValue(this._root, value);
-    this.updateMold();
-    return promise;
+    return this._main.state.setValue(this._root, value);
   }
 
-  updateMold() {
+  _updateMold() {
     this.mold = this._main.state.getComposition(this._root);
   }
 
