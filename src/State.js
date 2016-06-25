@@ -43,6 +43,7 @@ export default class State {
     if (!this._main.schemaManager.has(path))
       throw new Error(`Can't find path "${path}" in the schema!`);
 
+    // TODO: санчало должно быть обновление composition. А не паралельно
     var promise = this._startDriverQuery({
       type: 'get',
       fullPath: path,
@@ -90,30 +91,13 @@ export default class State {
    * @returns {Promise}
    */
   setSilent(path, value) {
-    // TODO: test - установка всех значений для контейнера
-
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(path);
 
-    // TODO: only for primitives
-    
-    
+    // Check all nodes
+    this._checkNode(schema, path, value);
 
-    if (schema.type) {
-      // If it's a param or list - just set a value
-      // It rises an error on invalid value
-      this._checkNode(schema, path, value);
-      // TODO: тут устанавливается значение сразу, до запроса в базу - но в конфиге можно указать чтобы после
-      // Set to composition
-      //this.setComposition(path, value);
-
-    }
-    else {
-      // TODO: валидация всех параметров
-      // It's a container - set values for all children
-      //recursiveSchema(path, schema, this._setRecursively.bind(this, path, value));
-    }
-
+    // TODO: санчало должно быть обновление composition. А не паралельно
     var promise = this._startDriverQuery({
       type: 'set',
       fullPath: path,
@@ -151,6 +135,7 @@ export default class State {
     // TODO: проверка делается в _startDriverQuery
     this._checkNode(schema, pathToCollection, newItem);
 
+    // TODO: санчало должно быть обновление composition. А не паралельно
     var promise = this._startDriverQuery({
       type: 'add',
       fullPath: pathToCollection,
@@ -176,6 +161,7 @@ export default class State {
 
     var primaryKeyName = findPrimary(schema.item);
 
+    // TODO: санчало должно быть обновление composition. А не паралельно
     var promise = this._startDriverQuery({
       type: 'remove',
       fullPath: pathToCollection,
@@ -201,30 +187,6 @@ export default class State {
     return true;
   }
 
-  _setRecursively(path, value, childPath, childSchema) {
-    if (childSchema.type) {
-      // param
-      var valuePath = childPath;
-      if (path !== '') valuePath = childPath.replace(path + '.', '');
-
-      var childValue = _.get(value, valuePath);
-
-      // If value doesn't exist for this schema branch - do nothing
-      if (_.isUndefined(childValue)) return false;
-
-      // It rises an error on invalid value
-      this._checkNode(childSchema, childPath, childValue);
-
-      // Set to composition
-      this.setComposition(childPath, childValue);
-
-      return false;
-    }
-
-    // If it's a container - go deeper
-    return true;
-  }
-
   /**
    * Check for node. It isn't work with container.
    * It rises an error on invalid value or node.
@@ -235,12 +197,35 @@ export default class State {
    * @private
    */
   _checkNode(schema, path, value) {
+    // TODO: переделать!!!
+
+    var _checkRecursively = function(path, value, childPath, childSchema) {
+      if (childSchema.type) {
+        // param
+        var valuePath = childPath;
+        if (path !== '') valuePath = childPath.replace(path + '.', '');
+
+        var childValue = _.get(value, valuePath);
+
+        // If value doesn't exist for this schema branch - do nothing
+        if (_.isUndefined(childValue)) return false;
+
+        // It rises an error on invalid value
+        this._checkNode(childSchema, childPath, childValue);
+
+        return false;
+      }
+
+      // If it's a container - go deeper
+      return true;
+    }
+
     if (schema.type == 'array') {
       // For array
       // TODO: validate all items in list
       return true;
     }
-    if (schema.type == 'collection') {
+    else if (schema.type == 'collection') {
       // For collection
       // TODO: do it for parametrized lists
       // TODO: validate all items in list
@@ -252,8 +237,14 @@ export default class State {
         return true;
       }
     }
+    else if (!schema.type) {
+      // It's a container - check values for all children
+      //recursiveSchema(path, schema, _checkRecursively.bind(this, path, value));
+      return true;
+    }
 
-    throw new Error(`Not valid value "${value}" of param "${path}"! See validation rules in your schema.`);
+
+    throw new Error(`Not valid value "${JSON.stringify(value)}" of param "${path}"! See validation rules in your schema.`);
   }
 
   /**
