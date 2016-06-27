@@ -39,9 +39,7 @@ describe 'Functional. PounchDb driver.', ->
     it 'set array', (done) ->
       value = [1,2,3]
       expect(this.container.set('arrayParam', value)).to.eventually.notify =>
-        getPromise = this.container.get('arrayParam')
-
-        expect(getPromise).to.eventually
+        expect(this.container.get('arrayParam')).to.eventually
           .property('payload').property('arrayParam').deep.equal(value)
           .notify(done);
 

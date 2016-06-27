@@ -70,26 +70,6 @@ export default class Request {
     };
   }
 
-  _generateFor_find(request) {
-    if (!request.documentParams) return request;
-
-    return {
-      ...request,
-      pathToDocument: request.documentParams.pathToDocument,
-    };
-  }
-
-  _generateFor_filter(request) {
-    if (!request.documentParams) return request;
-
-    return {
-      ...request,
-      pathToDocument: request.documentParams.pathToDocument,
-    };
-  }
-  
-  // TODO: filter
-
   _getPathToField(request) {
     return _.trim(request.fullPath.split(request.documentParams.pathToDocument)[1], '.');
   }

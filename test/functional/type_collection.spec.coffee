@@ -37,52 +37,16 @@ describe 'Functional. Collection type.', ->
         assert.equal(this.collectionParam.child(2).mold.name, 'name2')
         done()
 
-#  it 'filter()', (done) ->
-#    data = [
-#      {id:1, name: 'e'}
-#      {id:2, name: 'r'}
-#      {id:3, name: 'e'}
-#    ]
-#    expect(this.collectionParam.add(data[0])).to.eventually.notify =>
-#      expect(this.collectionParam.add(data[1])).to.eventually.notify =>
-#        expect(this.collectionParam.add(data[2])).to.eventually.notify =>
-#          expect(this.collectionParam.filter({name:'e'})).to.eventually
-#          .property('payload').deep.equal([{ id: 1, name: 'e', '$index': 0 }, { id: 3, name: 'e', '$index': 2 }]).notify(done)
+#  it 'add()', ->
+#    promise = this.collectionParam.add({id: 3, name: 'name3'})
+#    expect(promise).to.eventually.property('payload').deep.equal({id: 3, name: 'name3', $index: 0})
 #
-#  it 'find()', (done) ->
+#  it 'remove()', (done) ->
 #    expect(this.collectionParam.add(testValues[0])).to.eventually.notify =>
 #      expect(this.collectionParam.add(testValues[1])).to.eventually.notify =>
-#        expect(this.collectionParam.find({id:2})).to.eventually
-#        .property('payload').deep.equal({ id: 2, name: 'name2', '$index': 1 }).notify(done)
-
-#  it 'page()', ->
-#    # TODO: do it
-
-
-#  it 'item()', ->
-#    this.container.setSilent('collectionParam', testValues)
-#    expect(this.collectionParam.item(2))
-#      .to.eventually.deep.equal(testValues[1])
-
-  it 'add()', ->
-    promise = this.collectionParam.add({id: 3, name: 'name3'})
-    expect(promise).to.eventually.property('payload').deep.equal({id: 3, name: 'name3', $index: 0})
-
-  it 'remove()', (done) ->
-    expect(this.collectionParam.add(testValues[0])).to.eventually.notify =>
-      expect(this.collectionParam.add(testValues[1])).to.eventually.notify =>
-        expect(this.collectionParam.remove(testValues[0])).to.eventually.notify =>
-          expect(Promise.resolve(_.compact(this.collectionParam.mold))).to.eventually
-          .deep.equal([ { id: 2, name: 'name2', '$index': 2 } ]).notify(done)
-
-  it 'has()', ->
-    # TODO: do it
-
-  it 'clear()', ->
-    # TODO: do it
-#    this.arrayParam.setSilent(this.arrayValues)
-#    this.arrayParam.clear()
-#    assert.equal(this.arrayParam.mold.length, 0)
+#        expect(this.collectionParam.remove(testValues[0])).to.eventually.notify =>
+#          expect(Promise.resolve(_.compact(this.collectionParam.mold))).to.eventually
+#          .deep.equal([ { id: 2, name: 'name2', '$index': 2 } ]).notify(done)
 
   it 'Many manupulations with collection', (done) ->
     newItem = {id: 3, name: 'name3'}

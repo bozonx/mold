@@ -1,5 +1,6 @@
 mold = require('../../src/index')
 Memory = require('../../src/drivers/Memory').default
+driverHelpers = require('../_drivers_helpers.coffee')
 
 testSchema = (memory) ->
   commonBranch:
@@ -25,24 +26,16 @@ describe 'Functional. Memory driver.', ->
       this.container = this.mold.instance('commonBranch.inMemory')
 
     it 'set string', ->
-      promise = this.container.set('stringParam', 'new value')
-      expect(promise).to.eventually.property('payload').equal('new value')
-
-    it 'set sand get string', (done) ->
-      promise = this.container.set('stringParam', 'new value')
-      expect(promise).to.eventually.notify =>
-        expect(this.container.get('stringParam')).to.eventually.property('payload').equal('new value').notify(done)
+      driverHelpers.check_responce_set_primitive(this.container)
 
     it 'set array', () ->
-      value = [1,2,3]
-      promise = this.container.set('arrayParam', value)
-      expect(promise).to.eventually.property('payload').deep.equal(value)
+      driverHelpers.check_responce_set_array(this.container)
+
+    it 'set and get string', ->
+      driverHelpers.set_and_get_primitive(this.container, done)
 
     it 'set and get array', (done) ->
-      value = [1,2,3]
-      promise = this.container.set('arrayParam', value)
-      expect(promise).notify =>
-        expect(this.container.get('arrayParam')).to.eventually.property('payload').deep.equal(value).notify(done)
+      driverHelpers.set_and_get_array(this.container, done)
 
   describe 'Collection.', ->
     beforeEach ->
@@ -52,10 +45,9 @@ describe 'Functional. Memory driver.', ->
       this.container = this.mold.instance('commonBranch.inMemory')
       this.collection = this.mold.instance('commonBranch.inMemory.collection')
 
-    it 'add', ->
-      promise = this.collection.add({name: 'name3'})
-      expect(promise).to.eventually.property('payload').deep.equal({ name: 'name3', id: 0, $index:0 })
-
+#    it 'add', ->
+#      promise = this.collection.add({name: 'name3'})
+#      expect(promise).to.eventually.property('payload').deep.equal({ name: 'name3', id: 0, $index:0 })
 
     it 'add and find', ->
       # TODO: !!!
