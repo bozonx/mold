@@ -2,6 +2,7 @@ PouchDB = require('pouchdb')
 
 mold = require('../../src/index')
 PounchDbDriver = require('../../src/drivers/PounchDb').default
+driverHelpers = require('../_drivers_helpers.coffee')
 
 testSchema = (pounch) ->
   commonBranch:
@@ -30,27 +31,30 @@ describe 'Functional. PounchDb driver.', ->
       this.mold = mold.initSchema( {}, this.testSchema )
       this.container = this.mold.instance('commonBranch.inPounch.doc1')
 
-    it 'set string', (done) ->
-      setPromise = this.container.set('stringParam', 'new value')
-      expect(setPromise).to.eventually.have.property('successResponse')
-      expect(setPromise).to.eventually.have.property('payload')
-      expect(setPromise).notify(done)
+    it 'get primitive', (done) ->
+      driverHelpers.get_primitive(this.mold, 'commonBranch.inPounch.doc1', done)
+
+    it 'set primitive', (done) ->
+      driverHelpers.set_primitive(this.mold, 'commonBranch.inPounch.doc1', done)
+
+    it 'get array', (done) ->
+      driverHelpers.get_array(this.mold, 'commonBranch.inPounch.doc1', done)
 
     it 'set array', (done) ->
-      value = [1,2,3]
-      expect(this.container.set('arrayParam', value)).to.eventually.notify =>
-        expect(this.container.get('arrayParam')).to.eventually
-          .property('payload').property('arrayParam').deep.equal(value)
-          .notify(done);
+      driverHelpers.set_array(this.mold, 'commonBranch.inPounch.doc1', done)
 
-    it 'get', (done) ->
-      setPromise = this.container.set('stringParam', 'new value')
-      expect(setPromise).to.eventually.notify =>
-        getPromise = this.container.get('stringParam')
-        expect(getPromise).to.eventually
-          .property('payload').property('stringParam').equal('new value')
-          .notify(done);
 
+#    it 'get', (done) ->
+#      setPromise = this.container.set('stringParam', 'new value')
+#      expect(setPromise).to.eventually.notify =>
+#        getPromise = this.container.get('stringParam')
+#        expect(getPromise).to.eventually
+#          .property('payload').property('stringParam').equal('new value')
+#          .notify(done);
+
+        
+        
+        
   describe 'Collection.', ->
     beforeEach ->
       pounch = new PounchDbDriver({

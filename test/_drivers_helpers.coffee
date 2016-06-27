@@ -1,22 +1,52 @@
 module.exports =
-  check_responce_set_primitive: (docContainer) ->
+
+  # TODO: test coocked responce param
+
+  get_primitive: (mold, pathToDoc, done) ->
+    docContainer = mold.instance(pathToDoc)
+    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+
     # TODO: use another primitives
-    promise = docContainer.set('stringParam', 'new value')
-    expect(promise).to.eventually.property('payload').equal('new value')
+    value = 'new value'
+    driverRequest = {
+      type: 'set'
+      fullPath: pathToDoc
+      payload: {stringParam: value}
+      document: {stringParam: value}
+      pathToDocument: pathToDoc
+    }
+    expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+      expect(docContainer.get('stringParam')).to.eventually.notify =>
+        expect(Promise.resolve(docContainer.mold)).to.eventually.property('stringParam').equal(value).notify(done)
 
-  set_and_get_primitive: (docContainer, done) ->
+  set_primitive: (mold, pathToDoc, done) ->
+    docContainer = mold.instance(pathToDoc)
+
     # TODO: use another primitives
-    promise = docContainer.set('stringParam', 'new value')
-    expect(promise).to.eventually.notify =>
-      expect(docContainer.get('stringParam')).to.eventually.property('payload').equal('new value').notify(done)
+    expect(docContainer.set('stringParam', 'new value')).to.eventually.notify =>
+      console.log(docContainer.mold)
+      expect(Promise.resolve(docContainer.mold)).to.eventually.property('stringParam').equal('new value').notify(done)
 
-  check_responce_set_array: (docContainer) ->
-    value = [1,2,3]
-    promise = docContainer.set('arrayParam', value)
-    expect(promise).to.eventually.property('payload').deep.equal(value)
+  get_array: (mold, pathToDoc, done) ->
+    docContainer = mold.instance(pathToDoc)
+    driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
-  set_and_get_array: (docContainer, done) ->
     value = [1,2,3]
-    promise = docContainer.set('arrayParam', value)
-    expect(promise).notify =>
-      expect(docContainer.get('arrayParam')).to.eventually.property('payload').deep.equal(value).notify(done)
+    driverRequest = {
+      type: 'set'
+      fullPath: pathToDoc
+      payload: {arrayParam: value}
+      document: {arrayParam: value}
+      pathToDocument: pathToDoc
+    }
+    expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+      expect(docContainer.get('arrayParam')).to.eventually.notify =>
+        expect(Promise.resolve(docContainer.mold)).to.eventually.property('arrayParam').deep.equal(value).notify(done)
+
+
+  set_array: (mold, pathToDoc, done) ->
+    docContainer = mold.instance(pathToDoc)
+
+    value = [1,2,3]
+    expect(docContainer.set('arrayParam', value)).to.eventually.notify =>
+      expect(Promise.resolve(docContainer.mold)).to.eventually.property('arrayParam').deep.equal(value).notify(done)

@@ -28,8 +28,6 @@ class LocalPounchDb {
   }
 
   set(request) {
-    // TODO: !!!!! пересмотреть
-
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
@@ -41,7 +39,17 @@ class LocalPounchDb {
           ...request.document,
         })
           .then((resp) => {
-            resolve(this._resolveHandler(request, resp));
+            if (!resp.ok) reject(this._rejectHandler.bind(request, err));
+
+            resolve({
+              coocked: {
+                ...request.document,
+                _id: resp.id,
+                _rev: resp.rev,
+              },
+              successResponse: resp,
+              request,
+            });
           }, (err) => {
             reject(this._rejectHandler.bind(request, err));
           });
@@ -55,7 +63,17 @@ class LocalPounchDb {
           _id: request.pathToDocument,
         })
           .then((resp) => {
-            resolve(this._resolveHandler(request, resp));
+            if (!resp.ok) reject(this._rejectHandler.bind(request, err));
+
+            resolve({
+              coocked: {
+                ...request.document,
+                _id: resp.id,
+                _rev: resp.rev,
+              },
+              successResponse: resp,
+              request,
+            });
           }, (err) => {
             reject(this._rejectHandler.bind(request, err));
           });
