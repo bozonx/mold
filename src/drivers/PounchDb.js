@@ -118,7 +118,7 @@ class LocalPounchDb {
 
   _resolveHandler(request, resp) {
     return {
-      payload: resp,
+      coocked: resp,
       successResponse: resp,
       request,
     };

@@ -22,7 +22,7 @@ class LocalMemory {
       var resp = _.get(this._db, request.fullPath);
       if (!_.isUndefined(resp)) {
         resolve({
-          payload: resp,
+          coocked: resp,
           successResponse: resp,
           request,
         });
@@ -40,7 +40,7 @@ class LocalMemory {
     return new Promise((resolve, reject) => {
       _.set(this._db, request.fullPath, request.payload);
       resolve({
-        payload: request.payload,
+        coocked: request.payload,
         successResponse: request.payload,
         request,
       });
@@ -73,7 +73,7 @@ class LocalMemory {
       }
 
       resolve({
-        payload: newValue,
+        coocked: newValue,
         successResponse: newValue,
         request,
       });
@@ -104,7 +104,7 @@ class LocalMemory {
       _.set(this._db, request.fullPath, newCollection);
 
       resolve({
-        payload: item,
+        coocked: item,
         successResponse: item,
         request,
       });

@@ -40,4 +40,4 @@ describe 'Functional. Primitive type.', ->
   it 'Set and get string value', (done) ->
     primitive = this.container.child('stringParam')
     expect(primitive.set('new value')).to.eventually.notify =>
-      expect(primitive.get()).to.eventually.property('payload').equal('new value').notify(done)
+      expect(primitive.get()).to.eventually.property('coocked').equal('new value').notify(done)

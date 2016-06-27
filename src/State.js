@@ -112,7 +112,7 @@ export default class State {
         payload: value,
       }).then((resp) => {
         var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-        this._composition.update(pathTo, resp.successResponse);
+        this._composition.update(pathTo, resp.coocked);
         resolve(resp);
       }, (err) => {
         reject(err);
@@ -161,7 +161,7 @@ export default class State {
       primaryKeyName,
     }).then((resp) => {
       // TODO: может за это должен отвечать сам пользователь?
-      this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
+      this._composition.add(pathToCollection, resp.coocked[primaryKeyName], resp.coocked);
     });
   }
 
@@ -180,7 +180,7 @@ export default class State {
       payload: item,
       primaryKeyName,
     }).then((resp) => {
-      this._composition.remove(pathToCollection, resp.payload[primaryKeyName]);
+      this._composition.remove(pathToCollection, resp.coocked[primaryKeyName]);
     });
   }
 

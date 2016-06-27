@@ -21,4 +21,4 @@ describe 'Functional. Array Type.', ->
 
   it 'Set and get array', () ->
     expect(this.arrayParam.set(this.arrayValues)).to.eventually.notify =>
-      expect(this.arrayParam.get()).to.eventually.property('payload').deep.equal(this.arrayValues).notify(done)
+      expect(this.arrayParam.get()).to.eventually.property('coocked').deep.equal(this.arrayValues).notify(done)
