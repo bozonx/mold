@@ -28,27 +28,38 @@ class LocalPounchDb {
   }
 
   set(request) {
-    // TODO: test arrays
     // TODO: !!!!! пересмотреть
 
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
-    return this._db.get(request.pathToDocument).then((resp) => {
-      this._db.put({
-        ...resp,
-        ...request.document,
-      })
-        .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
-    }).catch((err) => {
-      if (err.status != 404)
-        return this._rejectHandler(err);
+    return new Promise((resolve, reject) => {
+      this._db.get(request.pathToDocument).then((resp) => {
+        // update
+        this._db.put({
+          ...resp,
+          ...request.document,
+        })
+          .then((resp) => {
+            resolve(this._resolveHandler(request, resp));
+          }, (err) => {
+            reject(this._rejectHandler.bind(request, err));
+          });
+      }).catch((err) => {
+        if (err.status != 404)
+          return reject(this._rejectHandler.bind(request, err));
 
-      this._db.put({
-        ...request.document,
-        _id: request.pathToDocument,
-      })
-        .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
+        // create
+        this._db.put({
+          ...request.document,
+          _id: request.pathToDocument,
+        })
+          .then((resp) => {
+            resolve(this._resolveHandler(request, resp));
+          }, (err) => {
+            reject(this._rejectHandler.bind(request, err));
+          });
+      });
     });
   }
 

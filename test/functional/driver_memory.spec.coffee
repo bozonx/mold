@@ -18,7 +18,7 @@ testSchema = (memory) ->
 
 describe 'Functional. Memory driver.', ->
 
-  describe 'Common usage.', ->
+  describe 'Primitives and array.', ->
     beforeEach ->
       memory = new Memory({});
       this.testSchema = testSchema(memory)
@@ -31,7 +31,7 @@ describe 'Functional. Memory driver.', ->
     it 'set array', () ->
       driverHelpers.check_responce_set_array(this.container)
 
-    it 'set and get string', ->
+    it 'set and get string', (done) ->
       driverHelpers.set_and_get_primitive(this.container, done)
 
     it 'set and get array', (done) ->

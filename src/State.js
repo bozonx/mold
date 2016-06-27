@@ -43,22 +43,30 @@ export default class State {
     if (!this._main.schemaManager.has(path))
       throw new Error(`Can't find path "${path}" in the schema!`);
 
-    // TODO: санчало должно быть обновление composition. А не паралельно
-    var promise = this._startDriverQuery({
-      type: 'get',
-      fullPath: path,
-    });
+    // return this._startDriverQuery({
+    //   type: 'get',
+    //   fullPath: path,
+    // }).then((resp) => {
+    //   if (resp.request.pathToDocument) {
+    //     this._composition.update(resp.request.pathToDocument, resp.successResponse);
+    //   }
+    //   else {
+    //     this._composition.update(resp.request.fullPath, resp.successResponse)
+    //   }
+    // });
 
-    promise.then((resp) => {
-      if (resp.request.pathToDocument) {
-        this._composition.update(resp.request.pathToDocument, resp.successResponse);
-      }
-      else {
-        this._composition.update(resp.request.fullPath, resp.successResponse)
-      }
+    return new Promise((resolve, reject) => {
+      this._startDriverQuery({
+        type: 'get',
+        fullPath: path,
+      }).then((resp) => {
+        var pathTo = resp.request.pathToDocument || resp.request.fullPath;
+        this._composition.update(pathTo, resp.successResponse);
+        resolve(resp);
+      }, (err) => {
+        reject(err);
+      });
     });
-
-    return promise;
   }
 
   addItem(path, newItem) {
@@ -97,23 +105,34 @@ export default class State {
     // Check all nodes
     this._checkNode(schema, path, value);
 
-    // TODO: санчало должно быть обновление composition. А не паралельно
-    var promise = this._startDriverQuery({
-      type: 'set',
-      fullPath: path,
-      payload: value,
+    return new Promise((resolve, reject) => {
+      this._startDriverQuery({
+        type: 'set',
+        fullPath: path,
+        payload: value,
+      }).then((resp) => {
+        var pathTo = resp.request.pathToDocument || resp.request.fullPath;
+        this._composition.update(pathTo, resp.successResponse);
+        resolve(resp);
+      }, (err) => {
+        reject(err);
+      });
     });
 
-    promise.then((resp) => {
-      if (resp.request.pathToDocument) {
-        this._composition.update(resp.request.pathToDocument, resp.successResponse);
-      }
-      else {
-        this._composition.update(resp.request.fullPath, resp.successResponse)
-      }
-    });
-
-    return promise;
+    // return this._startDriverQuery({
+    //   type: 'set',
+    //   fullPath: path,
+    //   payload: value,
+    // }).then((resp) => {
+    //   console.log(234234234234, resp)
+    //   if (resp.request.pathToDocument) {
+    //     this._composition.update(resp.request.pathToDocument, resp.successResponse);
+    //   }
+    //   else {
+    //     this._composition.update(resp.request.fullPath, resp.successResponse)
+    //   }
+    //   return resp;
+    // });
   }
 
   /**
@@ -135,21 +154,15 @@ export default class State {
     // TODO: проверка делается в _startDriverQuery
     this._checkNode(schema, pathToCollection, newItem);
 
-    // TODO: санчало должно быть обновление composition. А не паралельно
-    var promise = this._startDriverQuery({
+    return this._startDriverQuery({
       type: 'add',
       fullPath: pathToCollection,
       payload: newItem,
       primaryKeyName,
-    });
-
-
-    promise.then((resp) => {
+    }).then((resp) => {
       // TODO: может за это должен отвечать сам пользователь?
       this._composition.add(pathToCollection, resp.payload[primaryKeyName], resp.payload);
     });
-
-    return promise;
   }
 
   removeSilent(pathToCollection, item) {
@@ -161,19 +174,14 @@ export default class State {
 
     var primaryKeyName = findPrimary(schema.item);
 
-    // TODO: санчало должно быть обновление composition. А не паралельно
-    var promise = this._startDriverQuery({
+    return this._startDriverQuery({
       type: 'remove',
       fullPath: pathToCollection,
       payload: item,
       primaryKeyName,
-    });
-
-    promise.then((resp) => {
+    }).then((resp) => {
       this._composition.remove(pathToCollection, resp.payload[primaryKeyName]);
     });
-
-    return promise;
   }
 
   /**
