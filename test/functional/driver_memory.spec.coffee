@@ -24,24 +24,26 @@ describe 'Functional. Memory driver.', ->
       this.testSchema = testSchema(memory)
       this.mold = mold.initSchema( {}, this.testSchema )
       this.container = this.mold.instance('commonBranch.inMemory')
-      #this.driverInstance = this.mold.schemaManager.getDriver('commonBranch.inMemory')
 
-    it 'get primitive', (done) ->
-      driverHelpers.get_primitive(this.mold, 'commonBranch.inMemory', done)
-      
+    it 'get_primitive_check_responce', (done) ->
+      driverHelpers.get_primitive_check_responce(this.mold, 'commonBranch.inMemory', done)
+
+    it 'get_primitive_check_mold', (done) ->
+      driverHelpers.get_primitive_check_mold(this.mold, 'commonBranch.inMemory', done)
+
     it 'set primitive', (done) ->
       driverHelpers.set_primitive(this.mold, 'commonBranch.inMemory', done)
 
     it 'get array', (done) ->
       driverHelpers.get_array(this.mold, 'commonBranch.inMemory', done)
-      
+
     it 'set array', (done) ->
       driverHelpers.set_array(this.mold, 'commonBranch.inMemory', done)
 
 
-      
-      
-      
+
+
+
   describe 'Collection.', ->
     beforeEach ->
       memory = new Memory({});

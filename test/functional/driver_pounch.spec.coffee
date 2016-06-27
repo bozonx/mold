@@ -31,9 +31,12 @@ describe 'Functional. PounchDb driver.', ->
       this.mold = mold.initSchema( {}, this.testSchema )
       this.container = this.mold.instance('commonBranch.inPounch.doc1')
 
-    it 'get primitive', (done) ->
-      driverHelpers.get_primitive(this.mold, 'commonBranch.inPounch.doc1', done)
+    it 'get_primitive_check_responce', (done) ->
+      driverHelpers.get_primitive_check_responce(this.mold, 'commonBranch.inPounch.doc1', done)
 
+    it 'get_primitive_check_mold', (done) ->
+      driverHelpers.get_primitive_check_mold(this.mold, 'commonBranch.inPounch.doc1', done)
+      
     it 'set primitive', (done) ->
       driverHelpers.set_primitive(this.mold, 'commonBranch.inPounch.doc1', done)
 

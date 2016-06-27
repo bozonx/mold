@@ -2,7 +2,24 @@ module.exports =
 
   # TODO: test coocked responce param
 
-  get_primitive: (mold, pathToDoc, done) ->
+  get_primitive_check_responce: (mold, pathToDoc, done) ->
+    docContainer = mold.instance(pathToDoc)
+    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+
+    # TODO: use another primitives
+    value = 'new value'
+    driverRequest = {
+      type: 'set'
+      fullPath: pathToDoc
+      payload: {stringParam: value}
+      document: {stringParam: value}
+      pathToDocument: pathToDoc
+    }
+    expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+      expect(docContainer.get('stringParam')).to.eventually
+      .property('coocked').property('stringParam').equal(value).notify(done)
+
+  get_primitive_check_mold: (mold, pathToDoc, done) ->
     docContainer = mold.instance(pathToDoc)
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
@@ -18,6 +35,7 @@ module.exports =
     expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
       expect(docContainer.get('stringParam')).to.eventually.notify =>
         expect(Promise.resolve(docContainer.mold)).to.eventually.property('stringParam').equal(value).notify(done)
+
 
   set_primitive: (mold, pathToDoc, done) ->
     docContainer = mold.instance(pathToDoc)
