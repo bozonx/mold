@@ -34,10 +34,10 @@ returns
 ## Request format
 State manager generate request like:
 
-* type - one of: get, set, add, remove
+* method - one of: get, set, add, remove
 * fullPath - fullPath to requested param
 * payload - There is different data for different methods
-* document - parameters for document from schema
+* documentParams - parameters for document from schema
 * pathToDocument - It's part of fullPath to document container or collection.
                    If in schema doesn't use document, it will be unefined.
 * pathToField - It's part of fullPath to item or field in document/
@@ -47,5 +47,5 @@ State manager generate request like:
 
 * coocked - It's prepared data to insert to composition
 * successResponse - It's raw data from server
-* errorResponse - It's raw error from server
+* error - It's raw error from server
 * request - there is link to request

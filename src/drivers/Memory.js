@@ -29,7 +29,7 @@ class LocalMemory {
       }
       else {
         reject({
-          errorResponse: 'not found',
+          error: 'not found',
           request,
         });
       }
@@ -86,7 +86,7 @@ class LocalMemory {
 
       if (!collection) {
         reject({
-          errorResponse: 'Collection not found',
+          error: 'Collection not found',
         });
         return;
       }
@@ -94,7 +94,7 @@ class LocalMemory {
       var item = _.find(collection, request.payload);
       if (!item || !_.isNumber(item[request.primaryKeyName])) {
         reject({
-          errorResponse: 'Item not found',
+          error: 'Item not found',
           request,
         });
         return;
@@ -112,7 +112,7 @@ class LocalMemory {
   }
 
   requestHandler(request) {
-    return this[request.type](request);
+    return this[request.method](request);
   }
 
 }

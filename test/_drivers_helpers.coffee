@@ -9,7 +9,7 @@ module.exports =
     # TODO: use another primitives
     value = 'new value'
     driverRequest = {
-      type: 'set'
+      method: 'set'
       fullPath: pathToDoc
       payload: {stringParam: value}
       document: {stringParam: value}
@@ -26,7 +26,7 @@ module.exports =
     # TODO: use another primitives
     value = 'new value'
     driverRequest = {
-      type: 'set'
+      method: 'set'
       fullPath: pathToDoc
       payload: {stringParam: value}
       document: {stringParam: value}
@@ -51,7 +51,7 @@ module.exports =
 
     value = [1,2,3]
     driverRequest = {
-      type: 'set'
+      method: 'set'
       fullPath: pathToDoc
       payload: {arrayParam: value}
       document: {arrayParam: value}

@@ -131,7 +131,7 @@ class LocalPounchDb {
   }
 
   requestHandler(request) {
-    return this[request.type](request);
+    return this[request.method](request);
   }
 
   _resolveHandler(request, resp) {
@@ -146,12 +146,12 @@ class LocalPounchDb {
     // Return undefined if data hasn't found.
     if (err.status == 404)
       return {
-        errorResponse: err,
+        error: err,
         request,
       };
 
     throw {
-      errorResponse: err,
+      error: err,
       request,
     };
   }

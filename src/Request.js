@@ -12,7 +12,7 @@ export default class Request {
       documentParams,
     };
 
-    return this['_generateFor_' + req.type](req);
+    return this['_generateFor_' + req.method](req);
   }
 
   _generateFor_get(request) {

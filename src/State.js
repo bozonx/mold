@@ -57,7 +57,7 @@ export default class State {
 
     return new Promise((resolve, reject) => {
       this._startDriverQuery({
-        type: 'get',
+        method: 'get',
         fullPath: path,
       }).then((resp) => {
         var pathTo = resp.request.pathToDocument || resp.request.fullPath;
@@ -107,7 +107,7 @@ export default class State {
 
     return new Promise((resolve, reject) => {
       this._startDriverQuery({
-        type: 'set',
+        method: 'set',
         fullPath: path,
         payload: value,
       }).then((resp) => {
@@ -155,7 +155,7 @@ export default class State {
     this._checkNode(schema, pathToCollection, newItem);
 
     return this._startDriverQuery({
-      type: 'add',
+      method: 'add',
       fullPath: pathToCollection,
       payload: newItem,
       primaryKeyName,
@@ -175,7 +175,7 @@ export default class State {
     var primaryKeyName = findPrimary(schema.item);
 
     return this._startDriverQuery({
-      type: 'remove',
+      method: 'remove',
       fullPath: pathToCollection,
       payload: item,
       primaryKeyName,
@@ -257,10 +257,10 @@ export default class State {
 
   /**
    * Send query to driver for data.
-   * @param {{type: string, fullPath: string, payload: *}} params
-   *     * type is one of: get, set, add, delete
-   *     * path: full path in mold
-   *     * requestValue: for "set" and "add" types - value to set
+   * @param {{method: string, fullPath: string, payload: *}} params
+   *     * method is one of: get, set, add, remove
+   *     * fullPath: full path in mold
+   *     * payload: for "set" and "add" methods - value to set
    * @returns {Promise}
    * @private
    */
