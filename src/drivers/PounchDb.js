@@ -21,7 +21,8 @@ class LocalPounchDb {
 
   get(request) {
     if (!request.pathToDocument)
-      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
+      // TODO: проверять documentParams
+      throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
 
     return this._db.get(request.pathToDocument)
       .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
@@ -29,21 +30,22 @@ class LocalPounchDb {
 
   set(request) {
     if (!request.pathToDocument)
-      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
+    // TODO: проверять documentParams
+      throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
 
     return new Promise((resolve, reject) => {
       this._db.get(request.pathToDocument).then((resp) => {
         // update
         this._db.put({
           ...resp,
-          ...request.document,
+          ...request.payload,
         })
           .then((resp) => {
             if (!resp.ok) reject(this._rejectHandler.bind(request, err));
 
             resolve({
               coocked: {
-                ...request.document,
+                ...request.payload,
                 _id: resp.id,
                 _rev: resp.rev,
               },
@@ -59,7 +61,7 @@ class LocalPounchDb {
 
         // create
         this._db.put({
-          ...request.document,
+          ...request.payload,
           _id: request.pathToDocument,
         })
           .then((resp) => {
@@ -67,7 +69,7 @@ class LocalPounchDb {
 
             resolve({
               coocked: {
-                ...request.document,
+                ...request.payload,
                 _id: resp.id,
                 _rev: resp.rev,
               },
@@ -84,18 +86,14 @@ class LocalPounchDb {
   add(request) {
     // TODO: !!!!! пересмотреть
     if (!request.pathToDocument)
-      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
+      throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
 
     var query = {
       include_docs: true,
       startKey: 'commonBranch.inPounch.docColl',
     };
 
-    console.log(22222222, request)
-
     this._db.allDocs(query).then((resp) => {
-
-      console.log(111111111, resp)
 
       if (resp.total_rows) {
         // add to existing collection
@@ -109,7 +107,7 @@ class LocalPounchDb {
       else {
         // create new collection
         return this._db.put({
-          ...request.document,
+          ...request.payload,
           [request.primaryKeyName]: 0,
           _id: `${request.pathToDocument}{0}`,
         })

@@ -6,30 +6,30 @@ module.exports =
     docContainer = mold.instance(pathToDoc)
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
-    # TODO: use another primitives
+    # TODO: test another primitives
+
     value = 'new value'
     driverRequest = {
       method: 'set'
       fullPath: pathToDoc
       payload: {stringParam: value}
-      document: {stringParam: value}
       pathToDocument: pathToDoc
     }
     expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
       expect(docContainer.get('stringParam')).to.eventually
-      .property('coocked').property('stringParam').equal(value).notify(done)
+      .property('coocked').equal(value).notify(done)
 
   get_primitive_check_mold: (mold, pathToDoc, done) ->
     docContainer = mold.instance(pathToDoc)
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
-    # TODO: use another primitives
+    # TODO: test another primitives
+
     value = 'new value'
     driverRequest = {
       method: 'set'
       fullPath: pathToDoc
       payload: {stringParam: value}
-      document: {stringParam: value}
       pathToDocument: pathToDoc
     }
     expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
@@ -40,9 +40,9 @@ module.exports =
   set_primitive: (mold, pathToDoc, done) ->
     docContainer = mold.instance(pathToDoc)
 
-    # TODO: use another primitives
+    # TODO: test another primitives
+
     expect(docContainer.set('stringParam', 'new value')).to.eventually.notify =>
-      console.log(docContainer.mold)
       expect(Promise.resolve(docContainer.mold)).to.eventually.property('stringParam').equal('new value').notify(done)
 
   get_array: (mold, pathToDoc, done) ->
@@ -54,7 +54,6 @@ module.exports =
       method: 'set'
       fullPath: pathToDoc
       payload: {arrayParam: value}
-      document: {arrayParam: value}
       pathToDocument: pathToDoc
     }
     expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>

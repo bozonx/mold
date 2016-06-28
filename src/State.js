@@ -39,9 +39,15 @@ export default class State {
    * @param {string} path - absolute path
    * @returns {Promise}
    */
-  getValue(path) {
-    if (!this._main.schemaManager.has(path))
-      throw new Error(`Can't find path "${path}" in the schema!`);
+  getValue(pathToContainer) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(pathToContainer);
+
+    // if (!this._main.schemaManager.has(path))
+    //   throw new Error(`Can't find path "${path}" in the schema!`);
+
+    if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
+      throw new Error(`You can't request for a primitive! Only containers are support.`);
 
     // return this._startDriverQuery({
     //   type: 'get',
@@ -58,14 +64,12 @@ export default class State {
     return new Promise((resolve, reject) => {
       this._startDriverQuery({
         method: 'get',
-        fullPath: path,
+        fullPath: pathToContainer,
       }).then((resp) => {
         var pathTo = resp.request.pathToDocument || resp.request.fullPath;
         this._composition.update(pathTo, resp.successResponse);
         resolve(resp);
-      }, (err) => {
-        reject(err);
-      });
+      }, reject);
     });
   }
 
@@ -93,30 +97,31 @@ export default class State {
 
   /**
    * Check and set a new value to state without rising an event.
-   * You can set all values to branch if you pass a container.
-   * @param {string} path - absolute path
-   * @param {*} value
+   * You can set only to container
+   * @param {string} pathToContainer - absolute path to container
+   * @param {*} containerValue
    * @returns {Promise}
    */
-  setSilent(path, value) {
+  setSilent(pathToContainer, containerValue) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(path);
+    var schema = this._main.schemaManager.get(pathToContainer);
+
+    if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
+      throw new Error(`You can't do request for a primitive! Only containers are support.`);
 
     // Check all nodes
-    this._checkNode(schema, path, value);
+    this._checkNode(schema, pathToContainer, containerValue);
 
     return new Promise((resolve, reject) => {
       this._startDriverQuery({
         method: 'set',
-        fullPath: path,
-        payload: value,
+        fullPath: pathToContainer,
+        payload: containerValue,
       }).then((resp) => {
         var pathTo = resp.request.pathToDocument || resp.request.fullPath;
         this._composition.update(pathTo, resp.coocked);
         resolve(resp);
-      }, (err) => {
-        reject(err);
-      });
+      }, reject);
     });
 
     // return this._startDriverQuery({
@@ -226,7 +231,7 @@ export default class State {
 
       // If it's a container - go deeper
       return true;
-    }
+    };
 
     if (schema.type == 'array') {
       // For array
@@ -271,6 +276,7 @@ export default class State {
       throw new Error(`No-one driver did found!!!`);
 
     var req = this._request.generate(params);
+
     return driver.requestHandler(req);
   }
 

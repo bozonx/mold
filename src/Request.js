@@ -30,18 +30,11 @@ export default class Request {
   _generateFor_set(request) {
     if (!request.documentParams) return request;
 
-    // If we want set all the document
-    let document = request.payload;
-
-    // If we want set one value to document
     let pathToField = this._getPathToField(request);
-    if (pathToField)
-      document = _.set({}, pathToField, request.payload);
 
     return {
       ...request,
       pathToField,
-      document,
       pathToDocument: request.documentParams.pathToDocument,
     };
   }
@@ -49,11 +42,8 @@ export default class Request {
   _generateFor_add(request) {
     if (!request.documentParams) return request;
 
-    let document = request.payload;
-
     return {
       ...request,
-      document,
       pathToDocument: request.documentParams.pathToDocument,
     };
   }
@@ -61,11 +51,8 @@ export default class Request {
   _generateFor_remove(request) {
     if (!request.documentParams) return request;
 
-    let document = request.payload;
-
     return {
       ...request,
-      document,
       pathToDocument: request.documentParams.pathToDocument,
     };
   }

@@ -86,6 +86,7 @@ export default class Container {
       });
     }
 
+    // set whole container
     return this._main.state.setValue(this._root, value);
   }
 

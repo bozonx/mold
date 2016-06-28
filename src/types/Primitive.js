@@ -43,6 +43,7 @@ export default class Primitive {
           coocked: _.get(resp.coocked, this.paramPath),
           // TODO: может добавить pathToParam???
         });
+        this._updateMold();
       }, reject);
     });
 
@@ -63,7 +64,8 @@ export default class Primitive {
           ...resp,
           coocked: resp.coocked[this.paramPath],
           // TODO: может добавить pathToParam???
-      });
+        });
+        this._updateMold();
       }, reject);
     });
 
