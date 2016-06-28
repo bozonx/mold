@@ -35,15 +35,15 @@ returns
 State manager generate request like:
 
 * method - one of: get, set, add, remove
-* fullPath - fullPath to requested param
 * payload - There is different data for different methods
-* documentParams - parameters for document from schema
+* fullPath - fullPath to requested param
+* documentParams - parameters of document from schema if document uses in schema
 * pathToDocument - It's part of fullPath to document container or collection.
                    If in schema doesn't use document, it will be unefined.
 * pathToField - It's part of fullPath to item or field in document/
                 If in schema doesn't use document, it will be unefined.
 
-## Responce format
+## Response format
 
 * coocked - It's prepared data to insert to composition
 * successResponse - It's raw data from server

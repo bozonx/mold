@@ -1,3 +1,7 @@
+import _ from 'lodash';
+
+import { splitLastParamPath } from '../helpers';
+
 export default class Primitive {
   constructor(main) {
     this._main = main;
@@ -13,6 +17,10 @@ export default class Primitive {
     // mold is just a link to the composition
     this.mold = {};
     this._updateMold();
+
+    var splits = splitLastParamPath(this._root);
+    this.basePath = splits.basePath;
+    this.paramPath = splits.paramPath;
   }
 
   /**
@@ -28,7 +36,17 @@ export default class Primitive {
    * @returns {Promise}
    */
   get() {
-    return this._main.state.getValue(this._root);
+    return new Promise((resolve, reject) => {
+      this._main.state.getValue(this.basePath).then((resp) => {
+        resolve({
+          ...resp,
+          coocked: _.get(resp.coocked, this.paramPath),
+          // TODO: может добавить pathToParam???
+        });
+      }, reject);
+    });
+
+    //return this._main.state.getValue(this._root);
   }
 
   /**
@@ -37,10 +55,23 @@ export default class Primitive {
    * @returns {Promise}
    */
   set(value) {
-    return this._main.state.setValue(this._root, value);
+    let payload = _.set({}, this.paramPath, value);
+
+    return new Promise((resolve, reject) => {
+      this._main.state.setValue(this.basePath, payload).then((resp) => {
+        resolve({
+          ...resp,
+          coocked: resp.coocked[this.paramPath],
+          // TODO: может добавить pathToParam???
+      });
+      }, reject);
+    });
+
+    //return this._main.state.setValue(this._root, value);
   }
 
   _updateMold() {
     this.mold = this._main.state.getComposition(this._root);
   }
+
 }

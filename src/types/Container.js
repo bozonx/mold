@@ -21,16 +21,6 @@ export default class Container {
   }
 
   /**
-   * Get value by path.
-   * If you pass path = '' or undefined, it means get data for this container
-   * @param {string} path - path relative to this instance root
-   * @returns {Promise}
-   */
-  get(path) {
-    return this._main.state.getValue((path) ? this._fullPath(path) : this._root);
-  }
-
-  /**
    * Get child
    * @param {string} path - path relative to this instance root
    * @returns {object} - instance of param or list or container
@@ -40,6 +30,30 @@ export default class Container {
       throw new Error(`You must pass a path argument.`);
 
     return this._main.schemaManager.getInstance(this._fullPath(path));
+  }
+
+  /**
+   * Get value by path.
+   * If you pass path = '' or undefined, it means get data for this container
+   * @param {string} path - path relative to this instance root
+   * @returns {Promise}
+   */
+  get(path) {
+    if (path) {
+      return new Promise((resolve, reject) => {
+        this._main.state.getValue(this._root).then((resp) => {
+          resolve({
+            ...resp,
+            coocked: _.get(resp.coocked, path),
+            // TODO: может добавить pathToParam???
+          });
+        }, reject);
+      });
+    }
+
+    return this._main.state.getValue(this._root);
+
+    //return this._main.state.getValue((path) ? this._fullPath(path) : this._root);
   }
 
   /**
@@ -59,7 +73,20 @@ export default class Container {
       value = pathOrValue;
     }
 
-    return this._main.state.setValue((path) ? this._fullPath(path) : this._root, value);
+    if (path) {
+      let payload = _.set({}, path, value);
+      return new Promise((resolve, reject) => {
+        this._main.state.setValue(this._root, payload).then((resp) => {
+          resolve({
+            ...resp,
+            coocked: _.get(resp.coocked, path),
+            // TODO: может добавить pathToParam???
+          });
+        }, reject);
+      });
+    }
+
+    return this._main.state.setValue(this._root, value);
   }
 
   _fullPath(relativePath) {

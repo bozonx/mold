@@ -2,6 +2,8 @@
 
 import _ from 'lodash';
 
+import { splitLastParamPath } from '../helpers';
+
 // TODO: сделать валидацию типа дочерних элементов - itemsType
 
 export default class PrimitiveArray {
@@ -19,6 +21,10 @@ export default class PrimitiveArray {
     // mold is just a link to the composition
     this.mold = {};
     this._updateMold();
+
+    var splits = splitLastParamPath(this._root);
+    this.basePath = splits.basePath;
+    this.paramPath = splits.paramPath;
   }
 
   /**
@@ -34,7 +40,17 @@ export default class PrimitiveArray {
    * @returns {Promise}
    */
   get() {
-    return this._main.state.getValue(this._root);
+    return new Promise((resolve, reject) => {
+      this._main.state.getValue(this.basePath).then((resp) => {
+        resolve({
+          ...resp,
+          coocked: _.get(resp.coocked, this.paramPath),
+          // TODO: может добавить pathToParam???
+        });
+      }, reject);
+    });
+
+    //return this._main.state.getValue(this._root);
   }
 
   /**
@@ -46,7 +62,19 @@ export default class PrimitiveArray {
     if (!_.isArray(value))
       throw new Error(`You must pass a list argument.`);
 
-    return this._main.state.setValue(this._root, value);
+    let payload = _.set({}, this.paramPath, value);
+
+    return new Promise((resolve, reject) => {
+      this._main.state.setValue(this.basePath, payload).then((resp) => {
+        resolve({
+          ...resp,
+          coocked: resp.coocked[this.paramPath],
+          // TODO: может добавить pathToParam???
+        });
+      }, reject);
+    });
+
+    //return this._main.state.setValue(this._root, value);
   }
 
   _updateMold() {

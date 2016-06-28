@@ -115,6 +115,21 @@ export function convertToCompositionPath(moldPath) {
   return compositionPath;
 }
 
+export function splitLastParamPath(path) {
+  var splits = path.split('.');
+  if (splits.length === 0) return {
+    basePath: path,
+    paramPath: undefined,
+  };
+  
+  var paramPath = splits.pop();
+  
+  return {
+    basePath: splits.join('.'),
+    paramPath,
+  };
+}
+
 // export function splitPath(path) {
 //   // TODO: not need
 //   // It gets path like this: "one.two[1].three[2].four"
