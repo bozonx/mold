@@ -40,7 +40,7 @@ State manager generate request like:
 * documentParams - parameters of document from schema if document uses in schema
 * pathToDocument - It's part of fullPath to document container or collection.
                    If in schema doesn't use document, it will be unefined.
-* pathToField - It's part of fullPath to item or field in document/
+* ?????pathToField - It's part of fullPath to item or field in document/
                 If in schema doesn't use document, it will be unefined.
 
 ## Response format

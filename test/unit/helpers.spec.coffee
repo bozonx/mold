@@ -145,3 +145,21 @@ describe 'Unit. helpers.', ->
       helpers.recursiveMutate(sourceData, newData)
 
       assert.deepEqual(sourceData, newData)
+
+  describe 'getTheBestMatchPath.', ->
+    it 'bad path', ->
+      assert.isUndefined(helpers.getTheBestMatchPath('two', ['one.two']))
+      assert.isUndefined(helpers.getTheBestMatchPath('two.three', ['one.two']))
+
+    it 'get one path', ->
+      assert.equal(helpers.getTheBestMatchPath('one.two', ['one.two']), 'one.two')
+      assert.equal(helpers.getTheBestMatchPath('one.two.three', ['one.two']), 'one.two')
+
+    it 'get the longest', ->
+      paths = ['one.two', 'one', 'one.two.three.four', 'one.two.three']
+      assert.equal(helpers.getTheBestMatchPath('one', paths), 'one')
+      assert.equal(helpers.getTheBestMatchPath('one.other', paths), 'one')
+      assert.equal(helpers.getTheBestMatchPath('one.two', paths), 'one.two')
+      assert.equal(helpers.getTheBestMatchPath('one.two.other', paths), 'one.two')
+      assert.equal(helpers.getTheBestMatchPath('one.two.three.other', paths), 'one.two.three')
+      assert.equal(helpers.getTheBestMatchPath('one.two.three.four.other', paths), 'one.two.three.four')

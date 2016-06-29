@@ -121,13 +121,30 @@ export function splitLastParamPath(path) {
     basePath: path,
     paramPath: undefined,
   };
-  
+
   var paramPath = splits.pop();
-  
+
   return {
     basePath: splits.join('.'),
     paramPath,
   };
+}
+
+export function getTheBestMatchPath(sourcePath, pathsList) {
+  var matchList = _.map(pathsList, (path) => {
+    if (sourcePath.indexOf(path) === 0) return path;
+  });
+  matchList = _.compact(matchList);
+
+  if (matchList.length > 1) {
+    // two or more drivers - get the longest
+    return _.reduce(matchList, (result, value) => (value > result) ? value : result);
+  }
+  else if (matchList.length === 1) {
+    // one path
+    return matchList[0];
+  }
+  // Else return undefined
 }
 
 // export function splitPath(path) {

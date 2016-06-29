@@ -8,7 +8,7 @@ import PrimitiveArray from './types/PrimitiveArray';
 import Collection from './types/Collection';
 import Container from './types/Container';
 import Primitive from './types/Primitive';
-import { recursiveSchema, convertToSchemaPath } from './helpers';
+import { recursiveSchema, convertToSchemaPath, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
 
 export default class SchemaManager {
@@ -105,7 +105,7 @@ export default class SchemaManager {
     if (!_.isString(path))
       throw new Error(`You must pass the path argument!`);
 
-    var matchPath = this._getTheBestMatchPath(path, this._documents);
+    var matchPath = getTheBestMatchPath(path, _.keys(this._documents));
 
     return this._documents[matchPath];
   }
@@ -119,7 +119,7 @@ export default class SchemaManager {
     if (!_.isString(path))
       throw new Error(`You must pass the path argument!`);
 
-    var matchPath = this._getTheBestMatchPath(path, this._drivers);
+    var matchPath = getTheBestMatchPath(path, _.keys(this._drivers));
 
     if (matchPath)
       return this._drivers[matchPath];
@@ -229,22 +229,6 @@ export default class SchemaManager {
     });
   }
 
-  _getTheBestMatchPath(sourcePath, pathsList) {
-    var matchList = _.map(pathsList, (value, driverPath) => {
-      if (sourcePath.indexOf(driverPath) === 0) return driverPath;
-    });
-    matchList = _.compact(matchList);
 
-    if (matchList.length > 1) {
-      // two or more drivers - get the longest
-      // TODO: !!! do it and test it
-      console.log(5555555555555555)
-    }
-    else if (matchList.length === 1) {
-      // one path
-      return matchList[0];
-    }
-    // Else return undefined
-  }
 
 }
