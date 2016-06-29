@@ -8,23 +8,24 @@ import PrimitiveArray from './types/PrimitiveArray';
 import Collection from './types/Collection';
 import Container from './types/Container';
 import Primitive from './types/Primitive';
-import { recursiveSchema, convertToSchemaPath, getTheBestMatchPath } from './helpers';
+import { convertToSchemaPath, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
+import SchemaInit from './SchemaInit';
 
 export default class SchemaManager {
   init(schema, main) {
-    this._schema = null;
     this._rawSchema = schema;
     this._main = main;
-    this._drivers = {};
-    this._documents = {};
 
     var memoryDriver = new Memory({
       db: {},
     });
     this.mainMemoryDriver = memoryDriver.schema({}, {}).driver;
 
-    this._initSchema();
+    var completed = new SchemaInit(this._rawSchema, this._main);
+    this._schema = completed.schema;
+    this._drivers = completed.drivers;
+    this._documents = completed.documents;
   }
 
   /**
@@ -127,108 +128,5 @@ export default class SchemaManager {
     // no-one - memory driver
     return this.mainMemoryDriver;
   }
-
-  /**
-   * Initializing the schema:
-   * * Validate schema
-   * * extract all drivers from schema to this._drivers and init them
-   * * extract all documents from schema to this._documents
-   */
-  _initSchema() {
-    this._schema = {};
-
-    recursiveSchema('', this._rawSchema, (newPath, value) => {
-      if (value.driver) {
-        this._initDriver(newPath, value);
-
-        // Go through inner param 'schema'
-        return 'schema';
-      }
-      else if (_.isPlainObject(value.document)) {
-        this._initDocument(newPath, value);
-
-        // Go through inner param 'schema'
-        return 'schema';
-      }
-      else if (value.type == 'array') {
-        // array
-        this._initArray(newPath, value);
-
-        // Go deeper
-        return false;
-      }
-      else if (value.type == 'collection') {
-        this._initCollection(newPath, value);
-
-        // Go deeper
-        return true;
-      }
-      else if (value.type) {
-        // primitive
-        this._initPrimitive(newPath, value);
-
-        return false;
-      }
-      else {
-        // container
-        if (!_.isPlainObject(value)) throw new Error(`The container on a path "${path}" must be an object!`);
-        _.set(this._schema, newPath, {});
-
-        // Go deeper
-        return true;
-      }
-    });
-  }
-
-  _initDriver(path, value) {
-    if (!_.isPlainObject(value.schema))
-      throw new Error(`On a path "${path}" driver must has a "schema" param.`);
-
-    // Set driver to drivers list
-    this._drivers[path] = value.driver;
-    // Init driver
-    value.driver.init(path, this._main);
-
-    _.set(this._schema, path, value.schema);
-  }
-
-  _initDocument(path, value) {
-    if (!_.isPlainObject(value.schema))
-      throw new Error(`On a path "${path}" document must has a "schema" param.`);
-
-    this._documents[path] = {
-      ...value.document,
-      pathToDocument: path,
-    };
-
-    _.set(this._schema, path, value.schema);
-  }
-
-  _initArray(path, value) {
-    // TODO: если есть параметр itemType - проверить, чтобы его типы совпадали с существующими
-
-    _.set(this._schema, path, value);
-  }
-
-  _initPrimitive(path, value) {
-    // TODO: validate it
-    _.set(this._schema, path, value);
-  }
-
-  _initCollection(path, value) {
-    // collection
-    if (!_.isPlainObject(value.item))
-      throw new Error(`On a path "${path}" list must has an "item" param.`);
-
-    // TODO: проверить - только одно поле, не больше не меньше, что является primary
-    // TODO: primary id может быть только числом или строкой
-
-    _.set(this._schema, path, {
-      type: value.type,
-      item: {},
-    });
-  }
-
-
 
 }
