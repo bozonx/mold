@@ -3,6 +3,12 @@ import _ from 'lodash';
 export default class Container {
   constructor(main) {
     this._main = main;
+
+    this._main.events.on('mold.composition.update', (data) => {
+      if (data.path.indexOf(this._root) === 0) {
+        this._main.events.emit('mold.type.event::' + this._root);
+      }
+    });
   }
 
   init(root, schema) {
@@ -23,6 +29,11 @@ export default class Container {
    */
   getRoot() {
     return '' + this._root;
+  }
+
+  onMoldUpdate(cb) {
+    // TODO: test it
+    this._main.events.on('mold.type.event::' + this._root, cb);
   }
 
   /**

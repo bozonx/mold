@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { convertToCompositionPath, recursiveMutate } from './helpers';
+import { recursively, convertToCompositionPath, recursiveMutate } from './helpers';
 
 export default class Composition {
   constructor(main) {
@@ -74,13 +74,21 @@ export default class Composition {
       else {
         recursiveMutate(_.get(this._storage, compPath), value);
       }
+
+      console.log(777777, path, compPath, value)
+
+      recursively(compPath, this._storage, (path) => {
+        console.log(8888888888, path)
+        this._main.events.emit('mold.composition.update', {path: path});
+        return true;
+      });
     }
     else {
       _.set(this._storage, compPath, value);
+      // Rise an event
+      this._main.events.emit('mold.composition.update', {path: path});
     }
 
-    // Rise an event
-    this._main.events.emit('mold.composition.update', {path: path});
   }
 
   /**

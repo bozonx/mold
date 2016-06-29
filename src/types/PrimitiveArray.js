@@ -11,7 +11,10 @@ export default class PrimitiveArray {
     this._main = main;
 
     this._main.events.on('mold.composition.update', (data) => {
-      if (data.path.indexOf(this._root) === 0) this._updateMold();
+      if (data.path.indexOf(this._root) === 0) {
+        this._updateMold();
+        this._main.events.emit('mold.type.event::' + this._root);
+      }
     });
   }
 
@@ -33,6 +36,11 @@ export default class PrimitiveArray {
    */
   getRoot() {
     return '' + this._root;
+  }
+
+  onMoldUpdate(cb) {
+    // TODO: test it
+    this._main.events.on('mold.type.event::' + this._root, cb);
   }
 
   /**

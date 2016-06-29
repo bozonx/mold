@@ -2,12 +2,17 @@ import _ from 'lodash';
 
 import { splitLastParamPath } from '../helpers';
 
+
 export default class Primitive {
   constructor(main) {
     this._main = main;
 
     this._main.events.on('mold.composition.update', (data) => {
-      if (data.path.indexOf(this._root) === 0) this._updateMold();
+      console.log(345345345345345, data)
+      if (data.path.indexOf(this._root) === 0) {
+        this._updateMold();
+        this._main.events.emit('mold.type.event::' + this._root);
+      }
     });
   }
 
@@ -29,6 +34,11 @@ export default class Primitive {
    */
   getRoot() {
     return '' + this._root;
+  }
+
+  onMoldUpdate(cb) {
+    // TODO: test it
+    this._main.events.on('mold.type.event::' + this._root, cb);
   }
 
   /**
