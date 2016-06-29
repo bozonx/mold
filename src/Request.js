@@ -9,37 +9,41 @@ export default class Request {
     var documentParams = this._main.schemaManager.getDocument(preRequest.fullPath);
     var req = {
       ...preRequest,
-      documentParams,
     };
+    
+    if (documentParams) req['documentParams'] = documentParams;
 
     return this['_generateFor_' + req.method](req);
   }
 
   _generateFor_get(request) {
+    // TODO: зачем???
     if (!request.documentParams) return request;
 
-    let pathToField = this._getPathToField(request);
+    //let pathToField = this._getPathToField(request);
 
     return {
       ...request,
-      pathToField,
+      //pathToField: pathToField || undefined,
       pathToDocument: request.documentParams.pathToDocument,
     };
   }
 
   _generateFor_set(request) {
+    // TODO: зачем???
     if (!request.documentParams) return request;
 
-    let pathToField = this._getPathToField(request);
+    //let pathToField = this._getPathToField(request);
 
     return {
       ...request,
-      pathToField,
+      //pathToField: pathToField || undefined,
       pathToDocument: request.documentParams.pathToDocument,
     };
   }
 
   _generateFor_add(request) {
+    // TODO: зачем???
     if (!request.documentParams) return request;
 
     return {
@@ -49,6 +53,7 @@ export default class Request {
   }
 
   _generateFor_remove(request) {
+    // TODO: зачем???
     if (!request.documentParams) return request;
 
     return {

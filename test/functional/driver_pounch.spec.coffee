@@ -36,28 +36,21 @@ describe 'Functional. PounchDb driver.', ->
 
     it 'get_primitive_check_mold', (done) ->
       driverHelpers.get_primitive_check_mold(this.mold, 'commonBranch.inPounch.doc1', done)
-      
-    it 'set primitive', (done) ->
-      driverHelpers.set_primitive(this.mold, 'commonBranch.inPounch.doc1', done)
 
+    it 'set_primitive_check_response', (done) ->
+      driverHelpers.set_primitive_check_response(this.mold, 'commonBranch.inPounch.doc1', done)
+
+    it 'set_primitive_check_mold', (done) ->
+      driverHelpers.set_primitive_check_mold(this.mold, 'commonBranch.inPounch.doc1', done)
+      
     it 'get array', (done) ->
       driverHelpers.get_array(this.mold, 'commonBranch.inPounch.doc1', done)
 
     it 'set array', (done) ->
       driverHelpers.set_array(this.mold, 'commonBranch.inPounch.doc1', done)
+      
 
 
-#    it 'get', (done) ->
-#      setPromise = this.container.set('stringParam', 'new value')
-#      expect(setPromise).to.eventually.notify =>
-#        getPromise = this.container.get('stringParam')
-#        expect(getPromise).to.eventually
-#          .property('payload').property('stringParam').equal('new value')
-#          .notify(done);
-
-        
-        
-        
   describe 'Collection.', ->
     beforeEach ->
       pounch = new PounchDbDriver({

@@ -10,6 +10,11 @@ export default class Container {
     this.schema = schema;
     // mold is just a link to the composition
     this.mold = this._main.state.getComposition(this._root);
+    this._isDocument = !!this._main.schemaManager.getDocument(this._root);
+  }
+
+  isDocument() {
+    return this._isDocument;
   }
 
   /**
