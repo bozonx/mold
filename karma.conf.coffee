@@ -5,7 +5,7 @@
 path = require('path')
 RewirePlugin = require("rewire-webpack");
 #_ = require('lodash')
-appWebpackConfig = require('./webpack.config.js')
+appWebpackConfig = require('./__old/webpack.config.js')
 
 wpConf = {
   cache: false,
