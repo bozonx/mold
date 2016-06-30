@@ -8,7 +8,6 @@ export default class Primitive {
     this._main = main;
 
     this._main.events.on('mold.composition.update', (data) => {
-      console.log(345345345345345, data)
       if (data.path.indexOf(this._root) === 0) {
         this._updateMold();
         this._main.events.emit('mold.type.event::' + this._root);

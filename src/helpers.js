@@ -39,12 +39,23 @@ export function recursiveSchema(root, schema, cb) {
  * Mutate object or array.
  * @param {object|array} sourceData - This will be mutate
  * @param {object|array} newData - This is new data
+ * @param {function} cb - Callback(path, newValue, oldValue, action). It rises on each mutation or deletion
+ * @param {string} root - It's path like "path.to[0].any[1].child".
+ *                        It uses lodash path format form functions _.get(), _.set() etc.
  */
-export function recursiveMutate(sourceData, newData) {
-  function removeUnused(sourceData, newData) {
+export function recursiveMutate(sourceData, newData, cb, root) {
+  if (!root) root = '';
+
+  function makePath(root, child) {
+    // TODO: поддержка массивов
+    return _.trim(`${root}.${child}`, '.');
+  }
+
+  function removeUnused(sourceData, newData, cb) {
     _.each(sourceData, function (value, name) {
       if (!newData[name]) {
         delete sourceData[name];
+        if (cb) cb(makePath(root, name), undefined, sourceData[name], 'delete');
       }
     });
   }
@@ -52,15 +63,14 @@ export function recursiveMutate(sourceData, newData) {
   function updateArray(sourceData, newData) {
     _.each(newData, function (value, index) {
       if (!sourceData[index]) sourceData[index] = {};
-      recursiveMutate(sourceData[index], value);
+      recursiveMutate(sourceData[index], value, cb, makePath(root, index));
     });
   }
 
   if (_.isPlainObject(newData)) {
-    // Sort only arrays or objects
+    // Sort new data
     let primitivesChildren = {};
     let objectOrArrayChildren = {};
-
     _.each(newData, function (value, name) {
       if (_.isPlainObject(value)) {
         objectOrArrayChildren[name] = value;
@@ -75,17 +85,31 @@ export function recursiveMutate(sourceData, newData) {
       }
     });
 
+    // TODO: упростить - собрать во время сортировки
+    var oldSourceData = _.cloneDeep(sourceData);
+
     // remove useless items
-    removeUnused(sourceData, newData);
+    removeUnused(sourceData, newData, cb);
 
     // extend only primitives
     _.extend(sourceData, primitivesChildren);
 
+    // run callback on container
+    if (cb) cb(root, newData, oldSourceData, 'update');
+    
+    // run callback on all leafs
+    _.each(primitivesChildren, function (value, name) {
+      if (cb) cb(makePath(root, name), value, oldSourceData[name], 'update');
+    });
+
+
+    // run recursively objects or arrays
     _.each(objectOrArrayChildren, function (value, name) {
-      recursiveMutate(sourceData[name], value);
+      recursiveMutate(sourceData[name], value, cb, makePath(root, name));
     });
   }
   else if (_.isArray(newData)) {
+    // TODO: callbacks!!!
     if (newData.length === 0) {
       // remove all
       _.remove(sourceData)
@@ -93,18 +117,18 @@ export function recursiveMutate(sourceData, newData) {
     else if (_.isPlainObject(newData[0])) {
       // TODO: наверное по primary, так как индекс может не совпадать
       // remove useless items
-      removeUnused(sourceData, newData);
+      removeUnused(sourceData, newData, cb);
       updateArray(sourceData, newData);
     }
     else if (_.isArray(newData[0])) {
       // remove useless items
-      removeUnused(sourceData, newData);
+      removeUnused(sourceData, newData, cb);
       updateArray(sourceData, newData);
     }
     else {
       // primitives, null or undefined
       // remove useless items
-      removeUnused(sourceData, newData);
+      removeUnused(sourceData, newData, cb);
       _.each(newData, function (value, index) {
         sourceData[index] = value;
       });

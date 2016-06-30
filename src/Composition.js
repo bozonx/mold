@@ -52,6 +52,8 @@ export default class Composition {
     if (!path)
       return this._storage = value;
 
+    // TODO: какое назначение этой ф-и теперь???? и должна ли она поднимать событие на по томков???
+
     _.set(this._storage, convertToCompositionPath(path), value);
 
     // Rise an event
@@ -65,30 +67,61 @@ export default class Composition {
    * @param value
      */
   update(path, value) {
-    // TODO: test it
     var compPath = convertToCompositionPath(path);
-    if (_.isPlainObject(value) || _.isArray(value) ) {
+    if (_.isPlainObject(value)) {
+      // It's a container
+
+      var itemCallBack = (leafPath, newValue, oldValue, action) => {
+        // TODO: сравнивать ли oldValue???
+        if (_.isPlainObject(newValue)) {
+          // Containers
+          // Don't rise event if value unchanged
+          if (_.isEqual(newValue, oldValue)) return;
+        }
+        else if (_.isArray(newValue)) {
+
+        }
+        else {
+          // Primitive
+          // Don't rise event if value unchanged
+          if (newValue === oldValue) return;
+        }
+
+        // TODO: может добавить newValue, oldValue в событие        
+        this._main.events.emit('mold.composition.update', {
+          path: _.trim(`${compPath}.${leafPath}`, '.'),
+          action: action,
+        });
+      };
+
       if (!path) {
-        this._storage = _.defaultsDeep(value, this._storage);
+        // Update whore storage
+        recursiveMutate(this._storage, value, itemCallBack, '');
       }
       else {
-        recursiveMutate(_.get(this._storage, compPath), value);
+        // Update part of storage
+        // TODO: лучше передавать path
+        recursiveMutate(_.get(this._storage, compPath), value, itemCallBack, '');
       }
-
-      console.log(777777, path, compPath, value)
-
-      recursively(compPath, this._storage, (path) => {
-        console.log(8888888888, path)
-        this._main.events.emit('mold.composition.update', {path: path});
-        return true;
-      });
+    }
+    else if (_.isArray(value)) {
+      // It's a collection or primitive array or empty array
+      // TODO: в коллекциях формировать путь как положенно
+      // TODO: в примитивных массивах нужно поднимать событие только на сам массив, не на потомков
+      // TODO: если передан пустой массив и в старых данных это примитивный массив - то заменяем его и поднимаем событие
+      // TODO: если передан пустой массив и в старых данных это коллекция - то очищаем коллекцию, и поднимаем событие update-delete на каждом элементе
+      // TODO: поднимать событие только если элемен изменился
     }
     else {
+      // It's a primitive or null|undefined
+      // Don't update if value doesn't change
+      if (_.get(this._storage, compPath) === value) return;
+
       _.set(this._storage, compPath, value);
       // Rise an event
-      this._main.events.emit('mold.composition.update', {path: path});
+      // TODO: может добавить newValue, oldValue в событие
+      this._main.events.emit('mold.composition.update', {path: path, action: 'update'});
     }
-
   }
 
   /**

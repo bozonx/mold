@@ -1,6 +1,8 @@
 helpers = require('../../src/helpers')
 
 describe 'Unit. helpers.', ->
+  # TODO: тесты на cb
+  # TODO: тесты на path
   describe 'recursiveMutate.', ->
     it 'primitive update', ->
       sourceData =
