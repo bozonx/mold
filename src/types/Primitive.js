@@ -61,7 +61,7 @@ export default class Primitive {
           coocked: _.get(resp.coocked, this.paramPath),
           // TODO: может добавить pathToParam???
         });
-        this._updateMold();
+        //this._updateMold();
       }, reject);
     });
 

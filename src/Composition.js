@@ -72,11 +72,14 @@ export default class Composition {
       // It's a container
 
       var itemCallBack = (leafPath, newValue, oldValue, action) => {
+        // TODO: здесь так же вызываются leafPath == '_id' || leafPath == '_rev'
+
         // TODO: сравнивать ли oldValue???
         if (_.isPlainObject(newValue)) {
           // Containers
           // Don't rise event if value unchanged
-          if (_.isEqual(newValue, oldValue)) return;
+          // TODO: из-за этого не отрисовывается форма при переходах по страницам
+          //if (_.isEqual(newValue, oldValue)) return;
         }
         else if (_.isArray(newValue)) {
 
@@ -84,10 +87,11 @@ export default class Composition {
         else {
           // Primitive
           // Don't rise event if value unchanged
-          if (newValue === oldValue) return;
+          // TODO: из-за этого не отрисовывается форма при переходах по страницам
+          //if (newValue === oldValue) return;
         }
 
-        // TODO: может добавить newValue, oldValue в событие        
+        // TODO: может добавить newValue, oldValue в событие
         this._main.events.emit('mold.composition.update', {
           path: _.trim(`${compPath}.${leafPath}`, '.'),
           action: action,
