@@ -42,6 +42,12 @@ export default class Primitive {
     this._main.events.on('mold.type.event::' + this._root, cb);
   }
 
+  offMoldUpdate(cb) {
+    // TODO: test it
+    // TODO: наверное лучше на собственный дестрой удалиь все листереры
+    this._main.events.removeListener('mold.type.event::' + this._root, cb);
+  }
+
   /**
    * Get value.
    * @returns {Promise}
