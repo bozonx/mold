@@ -140,6 +140,19 @@ export default class State {
     // });
   }
 
+  setMold(pathToContainer, containerValue) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(pathToContainer);
+
+    if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
+      throw new Error(`You can't do request for a primitive! Only containers are support.`);
+
+    // Check all nodes
+    this._checkNode(schema, pathToContainer, containerValue);
+
+    this._composition.update(pathToContainer, containerValue);
+  }
+
   /**
    *
    * @param {string} pathToCollection - absolute path to collection

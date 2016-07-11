@@ -2,6 +2,17 @@ mold = require('../../src/index')
 
 testSchema = () ->
   memoryBranch:
+    simpleContainer:
+      numberParam:
+        type: 'number'
+      stringParam:
+        type: 'string'
+    nestedContainer:
+      stringParam:
+        type: 'string'
+      nested:
+        nestedStringParam:
+          type: 'string'
     inMemory:
       boolParam:
         type: 'boolean'
@@ -21,14 +32,13 @@ testSchema = () ->
       nested:
         nestedStringParam:
           type: 'string'
-          default: 'defaultNestedStringValue'
 
 describe 'Functional. Container type.', ->
   beforeEach () ->
     this.testSchema = testSchema()
     this.mold = mold.initSchema( {}, this.testSchema )
-    rootInstance = this.mold.instance('memoryBranch')
-    this.container = rootInstance.child('inMemory')
+    this.rootInstance = this.mold.instance('memoryBranch')
+    this.container = this.rootInstance.child('inMemory')
 
   it 'child: container', () ->
     containerDeeper = this.container.child('nested')
@@ -60,3 +70,40 @@ describe 'Functional. Container type.', ->
   it 'set(subpath, newValue): Set to primitive via container', (done) ->
     expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
       expect(Promise.resolve(this.container.mold.stringParam)).to.eventually.equal('new value').notify(done)
+
+  describe 'setMold', ->
+    beforeEach ->
+      this.simpleContainer = this.rootInstance.child('simpleContainer')
+      this.nestedContainer = this.rootInstance.child('nestedContainer')
+
+    it 'to root', ->
+      this.simpleContainer.setMold({stringParam: 'new value'})
+      assert.deepEqual(this.simpleContainer.mold, {
+        stringParam: 'new value'
+        numberParam: null
+      })
+
+    it 'to child', ->
+      this.simpleContainer.setMold('stringParam', 'new value')
+      assert.deepEqual(this.simpleContainer.mold, {
+        stringParam: 'new value'
+        numberParam: null
+      })
+
+    it 'to nested container', ->
+      this.nestedContainer.setMold('nested', {nestedStringParam: 'new value'})
+      assert.deepEqual(this.nestedContainer.mold, {
+        stringParam: null
+        nested: {
+          nestedStringParam: 'new value'
+        }
+      })
+
+    it 'to nested container child', ->
+      this.nestedContainer.setMold('nested.nestedStringParam', 'new value')
+      assert.deepEqual(this.nestedContainer.mold, {
+        stringParam: null
+        nested: {
+          nestedStringParam: 'new value'
+        }
+      })

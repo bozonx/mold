@@ -81,6 +81,8 @@ export default class Container {
    * @returns {Promise}
    */
   set(pathOrValue, valueOrNothing) {
+    // TODO: just run setMold and save
+
     var path = pathOrValue;
     var value = valueOrNothing;
 
@@ -95,6 +97,54 @@ export default class Container {
         this._main.state.setValue(this._root, payload).then((resp) => {
           resolve({
             ...resp,
+            coocked: _.get(resp.coocked, path),
+            // TODO: может добавить pathToParam???
+          });
+        }, reject);
+      });
+    }
+
+    // set whole container
+    return this._main.state.setValue(this._root, value);
+  }
+
+  setMold(pathOrValue, valueOrNothing) {
+    var path = pathOrValue;
+    var value = valueOrNothing;
+    var payload;
+
+    if (_.isPlainObject(pathOrValue)) {
+      path = '';
+      value = pathOrValue;
+    }
+
+    if (path) {
+      payload = _.set(_.cloneDeep(this.mold), path, value);
+    }
+    else {
+      // set whole container
+      payload = _.defaultsDeep(value, _.cloneDeep(this.mold));
+    }
+
+    this._main.state.setMold(this._root, payload);
+  }
+
+  save(pathOrNothing) {
+    var path = pathOrValue;
+    var value = valueOrNothing;
+
+    if (_.isPlainObject(pathOrValue)) {
+      path = '';
+      value = pathOrValue;
+    }
+
+    if (path) {
+      let payload = _.set({}, path, value);
+      return new Promise((resolve, reject) => {
+        this._main.state.setValue(this._root, payload).then((resp) => {
+          resolve({
+            ...resp,
+            // TODO: где-то здесь косяк - отдается не полный container а только изменившейся параметр
             coocked: _.get(resp.coocked, path),
             // TODO: может добавить pathToParam???
           });
