@@ -97,6 +97,7 @@ export default class Container {
         this._main.state.setValue(this._root, payload).then((resp) => {
           resolve({
             ...resp,
+            // TODO: где-то здесь косяк - отдается не полный container а только изменившейся параметр
             coocked: _.get(resp.coocked, path),
             // TODO: может добавить pathToParam???
           });
@@ -130,30 +131,15 @@ export default class Container {
   }
 
   save(pathOrNothing) {
-    var path = pathOrValue;
-    var value = valueOrNothing;
-
-    if (_.isPlainObject(pathOrValue)) {
-      path = '';
-      value = pathOrValue;
+    var path;
+    if (pathOrNothing) {
+      path = this._fullPath(pathOrNothing);
+    }
+    else {
+      path = this._root;
     }
 
-    if (path) {
-      let payload = _.set({}, path, value);
-      return new Promise((resolve, reject) => {
-        this._main.state.setValue(this._root, payload).then((resp) => {
-          resolve({
-            ...resp,
-            // TODO: где-то здесь косяк - отдается не полный container а только изменившейся параметр
-            coocked: _.get(resp.coocked, path),
-            // TODO: может добавить pathToParam???
-          });
-        }, reject);
-      });
-    }
-
-    // set whole container
-    return this._main.state.setValue(this._root, value);
+    return this._main.state.save(path);
   }
 
   _fullPath(relativePath) {

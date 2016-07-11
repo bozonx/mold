@@ -71,7 +71,7 @@ describe 'Functional. Container type.', ->
     expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
       expect(Promise.resolve(this.container.mold.stringParam)).to.eventually.equal('new value').notify(done)
 
-  describe 'setMold', ->
+  describe 'setMold and save', ->
     beforeEach ->
       this.simpleContainer = this.rootInstance.child('simpleContainer')
       this.nestedContainer = this.rootInstance.child('nestedContainer')
@@ -82,10 +82,20 @@ describe 'Functional. Container type.', ->
         stringParam: 'new value'
         numberParam: null
       })
+      expect(this.simpleContainer.save()).to.eventually
+      .property('coocked').deep.equal({
+        stringParam: 'new value'
+        numberParam: null
+      })
 
     it 'to child', ->
       this.simpleContainer.setMold('stringParam', 'new value')
       assert.deepEqual(this.simpleContainer.mold, {
+        stringParam: 'new value'
+        numberParam: null
+      })
+      expect(this.simpleContainer.save('stringParam')).to.eventually
+      .property('coocked').deep.equal({
         stringParam: 'new value'
         numberParam: null
       })
@@ -98,6 +108,10 @@ describe 'Functional. Container type.', ->
           nestedStringParam: 'new value'
         }
       })
+      expect(this.nestedContainer.save('nested')).to.eventually
+      .property('coocked').deep.equal({
+        nestedStringParam: 'new value'
+      })
 
     it 'to nested container child', ->
       this.nestedContainer.setMold('nested.nestedStringParam', 'new value')
@@ -106,4 +120,8 @@ describe 'Functional. Container type.', ->
         nested: {
           nestedStringParam: 'new value'
         }
+      })
+      expect(this.nestedContainer.save('nested.nestedStringParam')).to.eventually
+      .property('coocked').deep.equal({
+        nestedStringParam: 'new value'
       })

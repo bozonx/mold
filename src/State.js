@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import Request from './Request';
 
-import { recursiveSchema, findPrimary } from './helpers';
+import { recursiveSchema, findPrimary, splitLastParamPath } from './helpers';
 
 export default class State {
   init(main, composition) {
@@ -141,6 +141,8 @@ export default class State {
   }
 
   setMold(pathToContainer, containerValue) {
+    // TODO: тут не обязательно устанавливать в контейнер, можно прямо в primitive
+
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToContainer);
 
@@ -151,6 +153,45 @@ export default class State {
     this._checkNode(schema, pathToContainer, containerValue);
 
     this._composition.update(pathToContainer, containerValue);
+  }
+
+  save(pathToContainerOrPrimitive) {
+    // TODO: rise an event - saved
+
+    var pathToContainer;
+
+    if (this._main.schemaManager.get(pathToContainerOrPrimitive).type) {
+      // If it isn't container, get container upper on path
+      let split = splitLastParamPath(pathToContainerOrPrimitive);
+
+      if (_.isUndefined(split.paramPath))
+      // TODO: это должно проверяться ещё на стадии валидации схемы.
+        throw new Error(`Something wrong with your schema. Root of primitive must be a container.`);
+
+      pathToContainer = split.basePath;
+      if (this._main.schemaManager.get(pathToContainer).type) {
+        // TODO: это должно проверяться ещё на стадии валидации схемы.
+        throw new Error(`Something wrong with your schema. Primitive must be placed in container.`);
+      }
+    }
+    else {
+      pathToContainer = pathToContainerOrPrimitive;
+    }
+
+    var payload = this.getComposition(pathToContainer);
+
+    return new Promise((resolve, reject) => {
+      this._startDriverQuery({
+        method: 'set',
+        fullPath: pathToContainer,
+        payload: payload,
+      }).then((resp) => {
+        var pathTo = resp.request.pathToDocument || resp.request.fullPath;
+        // update composition with server response
+        this._composition.update(pathTo, resp.coocked);
+        resolve(resp);
+      }, reject);
+    });
   }
 
   /**
