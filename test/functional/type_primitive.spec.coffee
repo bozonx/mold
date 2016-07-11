@@ -41,3 +41,11 @@ describe 'Functional. Primitive type.', ->
     primitive = this.container.child('stringParam')
     expect(primitive.set('new value')).to.eventually.notify =>
       expect(primitive.get()).to.eventually.property('coocked').equal('new value').notify(done)
+
+  it 'setMold and save', ->
+    primitive = this.container.child('stringParam')
+    primitive.setMold('new value')
+
+    assert.equal(primitive.mold, 'new value')
+    expect(primitive.save()).to.eventually
+    .property('coocked').deep.equal('new value')

@@ -86,6 +86,8 @@ export default class PrimitiveArray {
 
     //return this._main.state.setValue(this._root, value);
   }
+  
+  // TODO: сделать как в primitive
 
   _updateMold() {
     this.mold = this._main.state.getComposition(this._root);

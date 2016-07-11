@@ -25,6 +25,8 @@ export default class Primitive {
     var splits = splitLastParamPath(this._root);
     this.basePath = splits.basePath;
     this.paramPath = splits.paramPath;
+
+    this.parent = this._main.schemaManager.getInstance(this.basePath);
   }
 
   /**
@@ -45,6 +47,7 @@ export default class Primitive {
    * @returns {Promise}
    */
   get() {
+    // TODO: переделать, вызывать метод родительского контейнера
     return new Promise((resolve, reject) => {
       this._main.state.getValue(this.basePath).then((resp) => {
         resolve({
@@ -65,6 +68,7 @@ export default class Primitive {
    * @returns {Promise}
    */
   set(value) {
+    // TODO: пуределать - вызывать setMold and save
     let payload = _.set({}, this.paramPath, value);
 
     return new Promise((resolve, reject) => {
@@ -79,6 +83,21 @@ export default class Primitive {
     });
 
     //return this._main.state.setValue(this._root, value);
+  }
+
+  setMold(value) {
+    this.parent.setMold(this.paramPath, value);
+  }
+
+  save() {
+    return new Promise((resolve, reject) => {
+      this.parent.save(this.paramPath).then((resp) => {
+        resolve({
+          ...resp,
+          coocked: resp.coocked[this.paramPath],
+        });
+      }, reject);
+    });
   }
 
   _updateMold() {
