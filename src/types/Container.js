@@ -49,7 +49,7 @@ export default class Container {
   }
 
   /**
-   * Get value by path.
+   * Request for data.
    * If you pass path = '' or undefined, it means get data for this container
    * @param {string} path - path relative to this instance root
    * @returns {Promise}

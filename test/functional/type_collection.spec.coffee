@@ -31,11 +31,11 @@ describe 'Functional. Collection type.', ->
 #    assert.deepEqual(this.container.mold.collectionParam, testValues)
 #    assert.deepEqual(this.collectionParam.mold, testValues)
 
-  it 'child()', (done) ->
-    expect(this.collectionParam.add(testValues[0])).notify =>
-      expect(this.collectionParam.add(testValues[1])).notify =>
-        assert.equal(this.collectionParam.child(2).mold.name, 'name2')
-        done()
+#  it 'child()', (done) ->
+#    expect(this.collectionParam.add(testValues[0])).notify =>
+#      expect(this.collectionParam.add(testValues[1])).notify =>
+#        assert.equal(this.collectionParam.child(2).mold.name, 'name2')
+#        done()
 
 #  it 'add()', ->
 #    promise = this.collectionParam.add({id: 3, name: 'name3'})
@@ -48,23 +48,23 @@ describe 'Functional. Collection type.', ->
 #          expect(Promise.resolve(_.compact(this.collectionParam.mold))).to.eventually
 #          .deep.equal([ { id: 2, name: 'name2', '$index': 2 } ]).notify(done)
 
-  it 'Many manupulations with collection', (done) ->
-    newItem = {id: 3, name: 'name3'}
-    expect(this.collectionParam.add(testValues[0])).notify =>
-      expect(this.collectionParam.add(testValues[1])).notify =>
-        expect(this.collectionParam.add(newItem)).notify =>
-          expect(this.collectionParam.remove({id: 2})).notify =>
-            #this.collectionParam.child(1).set('name', 'new name');
-            assert.deepEqual _.compact(this.collectionParam.mold), [
-              {
-                id: 1
-                name: 'name1'
-                $index: 1
-              }
-              {
-                id: 3
-                name: 'name3'
-                $index: 3
-              }
-            ]
-            done()
+#  it 'Many manupulations with collection', (done) ->
+#    newItem = {id: 3, name: 'name3'}
+#    expect(this.collectionParam.add(testValues[0])).notify =>
+#      expect(this.collectionParam.add(testValues[1])).notify =>
+#        expect(this.collectionParam.add(newItem)).notify =>
+#          expect(this.collectionParam.remove({id: 2})).notify =>
+#            #this.collectionParam.child(1).set('name', 'new name');
+#            assert.deepEqual _.compact(this.collectionParam.mold), [
+#              {
+#                id: 1
+#                name: 'name1'
+#                $index: 1
+#              }
+#              {
+#                id: 3
+#                name: 'name3'
+#                $index: 3
+#              }
+#            ]
+#            done()

@@ -1,4 +1,5 @@
-// We can filter or find param
+// Simple collection
+
 import _ from 'lodash';
 
 import { findPrimary } from '../helpers';
@@ -9,7 +10,7 @@ export default class Collection {
 
     // TODO: it's not need
     this._main.events.on('mold.composition.update', (data) => {
-      if (data.path.indexOf(this._root) === 0) this.updateMold();
+      //if (data.path.indexOf(this._root) === 0) this.updateMold();
     });
   }
 
@@ -17,9 +18,14 @@ export default class Collection {
     this._root = root;
     this.schema = schema;
     // mold is just a link to the composition
-    this.mold = {};
-    this._initComposition();
-    this.updateMold();
+    this.mold = this._main.state.getComposition(this._root);
+    //this._initComposition();
+    //this.updateMold();
+    this._isDocument = !!this._main.schemaManager.getDocument(this._root);
+  }
+
+  isDocument() {
+    return this._isDocument;
   }
 
   /**
@@ -36,6 +42,7 @@ export default class Collection {
    * @returns {object} - instance of child
    */
   child(primaryId) {
+    // TODO: пересмотреть - должна возвращать контейнер
     if (_.isUndefined(primaryId))
       throw new Error(`You must pass a path argument.`);
 
@@ -49,32 +56,18 @@ export default class Collection {
   }
 
   /**
-   * Get filtered list. Example:
-   *     collection.filter({name: 'item'})
-   * @param {object} params - parameters for query
-   */
-  filter(params) {
-    return this._main.state.filter(this._root, params);
-  }
-
-  /**
-   * Find one item via params. Example:
-   *     collection.find({id: 1})
-   * @param {object} params - parameters for query
-   */
-  find(params) {
-    return this._main.state.find(this._root, params);
-  }
-
-  /**
+   * Request for data.
    * Get one item from collection by primary id.  Example:
    *     collection.item(urlParams.id)
-   * @param {number|string} primaryId
-   * @returns {Promise} with item
+   * @param {number|string|undefined} noneOrIdOrPath - path, or promary id or nothing for whore collection
+   * @returns {Promise} with item or collection
    */
-  item(primaryId) {
-    var primaryKeyName = findPrimary(this.schema.item);
-    return this.find({[primaryKeyName]: primaryId});
+  get(noneOrIdOrPath) {
+    // TODO: !!!
+
+
+    // var primaryKeyName = findPrimary(this.schema.item);
+    // return this.find({[primaryKeyName]: primaryId});
   }
 
   /**
@@ -83,7 +76,8 @@ export default class Collection {
    * @returns {object} promise
    */
   add(item) {
-    return this._main.state.addItem(this._root, item);
+    // TODO: !!!
+    //return this._main.state.addItem(this._root, item);
   }
 
   /**
@@ -92,20 +86,8 @@ export default class Collection {
    * @returns {object} promise
    */
   remove(item) {
-    return this._main.state.removeItem(this._root, item);
-  }
-
-  /**
-   * Clear all the list
-   */
-  clear() {
-    // TODO: очистить молд, сделать запрос в драйвер
-    // _.remove(this._main.state.getComposition(this._root));
-    // this.updateMold();
-  }
-
-  updateMold() {
-    this.mold = this._main.state.getComposition(this._root);
+    // TODO: !!!
+    //return this._main.state.removeItem(this._root, item);
   }
 
   _fullPath(relativePath) {
@@ -116,9 +98,42 @@ export default class Collection {
     return `${this._root}.${relativePath}`;
   }
 
-  _initComposition() {
-    // TODO: это нужно делать при инициализации всей схемы
-    if (_.isUndefined(this._main.state.getComposition(this._root)))
-      this._main.state.setComposition(this._root, []);
-  }
+
+  // /**
+  //  * Clear all the list
+  //  */
+  // clear() {
+  //   // TODO: очистить молд, сделать запрос в драйвер
+  //   // _.remove(this._main.state.getComposition(this._root));
+  //   // this.updateMold();
+  // }
+
+  // updateMold() {
+  //   this.mold = this._main.state.getComposition(this._root);
+  // }
+
+  // _initComposition() {
+  //   // TODO: это нужно делать при инициализации всей схемы
+  //   if (_.isUndefined(this._main.state.getComposition(this._root)))
+  //     this._main.state.setComposition(this._root, []);
+  // }
+
+
+  // /**
+  //  * Get filtered list. Example:
+  //  *     collection.filter({name: 'item'})
+  //  * @param {object} params - parameters for query
+  //  */
+  // filter(params) {
+  //   return this._main.state.filter(this._root, params);
+  // }
+  //
+  // /**
+  //  * Find one item via params. Example:
+  //  *     collection.find({id: 1})
+  //  * @param {object} params - parameters for query
+  //  */
+  // find(params) {
+  //   return this._main.state.find(this._root, params);
+  // }
 }

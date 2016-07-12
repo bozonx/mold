@@ -79,7 +79,7 @@ export default class Composition {
           // Containers
           // Don't rise event if value unchanged
           // TODO: из-за этого не отрисовывается форма при переходах по страницам
-          //if (_.isEqual(newValue, oldValue)) return;
+          if (_.isEqual(newValue, oldValue)) return;
         }
         else if (_.isArray(newValue)) {
 
@@ -88,7 +88,7 @@ export default class Composition {
           // Primitive
           // Don't rise event if value unchanged
           // TODO: из-за этого не отрисовывается форма при переходах по страницам
-          //if (newValue === oldValue) return;
+          if (newValue === oldValue) return;
         }
 
         // TODO: может добавить newValue, oldValue в событие
