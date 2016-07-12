@@ -63,8 +63,20 @@ export default class Collection {
    * @returns {Promise} with item or collection
    */
   get(noneOrIdOrPath) {
-    // TODO: !!!
-
+    var path;
+    if (_.isUndefined(noneOrIdOrPath)) {
+      path = this._root;
+      return this._main.state.getValue(path);
+    }
+    else if (_.isNumber(noneOrIdOrPath)) {
+      // TODO: !!!
+    }
+    else if (_.isString(noneOrIdOrPath)) {
+      // TODO: !!!
+    }
+    else {
+      throw new Error(`You must pass only number or string or undefined!`);
+    }
 
     // var primaryKeyName = findPrimary(this.schema.item);
     // return this.find({[primaryKeyName]: primaryId});

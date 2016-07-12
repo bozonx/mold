@@ -1,13 +1,24 @@
 mold = require('../../src/index')
+Memory = require('../../src/drivers/Memory').default
 
-testSchema = () ->
-  inMemory:
-    collectionParam:
+testSchema = (memory) ->
+  inMemory: memory({}, {
+    collectionParam: document: {}, schema: {
       type: 'collection'
       item: {
         id: {type: 'number', primary: true}
         name: {type: 'string'}
       }
+    }
+  })
+#  inMemory: memory({}, {
+#    collectionParam:
+#      type: 'collection'
+#      item: {
+#        id: {type: 'number', primary: true}
+#        name: {type: 'string'}
+#      }
+#  })
 
 testValues = [
   {
@@ -22,7 +33,9 @@ testValues = [
 
 describe 'Functional. Collection type.', ->
   beforeEach () ->
-    this.mold = mold.initSchema( {}, testSchema() )
+    this.memoryDb = {};
+    memory = new Memory({db: this.memoryDb});
+    this.mold = mold.initSchema( {}, testSchema(memory.schema) )
     this.container = this.mold.instance('inMemory')
     this.collectionParam = this.mold.instance('inMemory.collectionParam')
 
@@ -36,6 +49,13 @@ describe 'Functional. Collection type.', ->
 #      expect(this.collectionParam.add(testValues[1])).notify =>
 #        assert.equal(this.collectionParam.child(2).mold.name, 'name2')
 #        done()
+
+  it 'get()', () ->
+    this.memoryDb.inMemory = {collectionParam: testValues[0]}
+
+    expect(this.collectionParam.get()).to.eventually
+    .property('coocked').deep.equal(testValues[0])
+
 
 #  it 'add()', ->
 #    promise = this.collectionParam.add({id: 3, name: 'name3'})

@@ -122,7 +122,12 @@ class LocalMemory {
  */
 export default function (driverConfig) {
   this.driverConfig = driverConfig;
-  this.db = {};
+  if (_.isPlainObject(driverConfig.db)) {
+    this.db = driverConfig.db;
+  }
+  else {
+    this.db = {};
+  }
 
   /**
    * Schema helper
