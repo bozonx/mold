@@ -66,14 +66,14 @@ describe 'Functional. Collection type.', ->
       ])
       .notify(done)
 
-  it 'add() - check mold', ->
+  it 'addMold() - check mold', ->
     newItem = {name: 'name3'}
     this.collectionParam.addMold(newItem)
     assert.deepEqual(this.collectionParam.mold, [
       {name: 'name3', __isNew: true, $index: 0},
     ])
 
-  it 'add() - after get', (done) ->
+  it 'addMold() - after get', (done) ->
     this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
 
     newItem = {name: 'name3'}
@@ -86,13 +86,16 @@ describe 'Functional. Collection type.', ->
       ])
       .notify(done)
 
+  it 'removeMold() - after get', (done) ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0], testValues[1]]}
 
-#  it 'remove()', (done) ->
-#    expect(this.collectionParam.add(testValues[0])).to.eventually.notify =>
-#      expect(this.collectionParam.add(testValues[1])).to.eventually.notify =>
-#        expect(this.collectionParam.remove(testValues[0])).to.eventually.notify =>
-#          expect(Promise.resolve(_.compact(this.collectionParam.mold))).to.eventually
-#          .deep.equal([ { id: 2, name: 'name2', '$index': 2 } ]).notify(done)
+    expect(this.collectionParam.get()).to.eventually.notify =>
+      this.collectionParam.removeMold({$index: 0})
+      expect(Promise.resolve(this.collectionParam.mold)).to.eventually
+      .deep.equal([
+        {id: 2, name: 'name2', $index: 0},
+      ])
+      .notify(done)
 
 #  it 'Many manupulations with collection', (done) ->
 #    newItem = {id: 3, name: 'name3'}

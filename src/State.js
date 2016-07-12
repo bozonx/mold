@@ -73,15 +73,15 @@ export default class State {
     });
   }
 
-  addItem(path, newItem) {
-    // TODO: rise an event
-    return this.addSilent(path, newItem);
-  }
-
-  removeItem(path, item) {
-    // TODO: rise an event
-    return this.removeSilent(path, item);
-  }
+  // addItem(path, newItem) {
+  //   // TODO: rise an event
+  //   return this.addSilent(path, newItem);
+  // }
+  //
+  // removeItem(path, item) {
+  //   // TODO: rise an event
+  //   return this.removeSilent(path, item);
+  // }
 
   /**
    * Set new value to state and rise an event.
@@ -179,6 +179,21 @@ export default class State {
     //var primaryKeyName = findPrimary(schema.item);
   }
 
+  removeMold(pathToCollection, newItem) {
+    // It rise an error if path doesn't consist with schema
+    // TODO: наверное конвертировать путь в schemaPath
+    var schema = this._main.schemaManager.get(pathToCollection);
+
+    if (schema.type !== 'collection')
+      throw new Error(`Only collection type has "add" method.`);
+    
+    if (!_.isNumber(newItem.$index))
+      throw new Error(`Deleted item must has an $index param.`);
+    
+    this._composition.remove(pathToCollection, newItem.$index);
+  }
+
+
   save(pathToContainerOrPrimitive) {
     // TODO: rise an event - saved
 
@@ -218,54 +233,55 @@ export default class State {
     });
   }
 
+
   /**
    *
    * @param {string} pathToCollection - absolute path to collection
    * @param {object} newItem
    * @returns {Promise}
    */
-  addSilent(pathToCollection, newItem) {
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToCollection);
+  // addSilent(pathToCollection, newItem) {
+  //   // It rise an error if path doesn't consist with schema
+  //   var schema = this._main.schemaManager.get(pathToCollection);
+  //
+  //   if (schema.type !== 'collection')
+  //     throw new Error(`Only collection type can add item`);
+  //
+  //   var primaryKeyName = findPrimary(schema.item);
+  //
+  //   // It rises an error on invalid value
+  //   // TODO: проверка делается в _startDriverQuery
+  //   this._checkNode(schema, pathToCollection, newItem);
+  //
+  //   return this._startDriverQuery({
+  //     method: 'add',
+  //     fullPath: pathToCollection,
+  //     payload: newItem,
+  //     primaryKeyName,
+  //   }).then((resp) => {
+  //     // TODO: может за это должен отвечать сам пользователь?
+  //     this._composition.add(pathToCollection, resp.coocked[primaryKeyName], resp.coocked);
+  //   });
+  // }
 
-    if (schema.type !== 'collection')
-      throw new Error(`Only collection type can add item`);
-
-    var primaryKeyName = findPrimary(schema.item);
-
-    // It rises an error on invalid value
-    // TODO: проверка делается в _startDriverQuery
-    this._checkNode(schema, pathToCollection, newItem);
-
-    return this._startDriverQuery({
-      method: 'add',
-      fullPath: pathToCollection,
-      payload: newItem,
-      primaryKeyName,
-    }).then((resp) => {
-      // TODO: может за это должен отвечать сам пользователь?
-      this._composition.add(pathToCollection, resp.coocked[primaryKeyName], resp.coocked);
-    });
-  }
-
-  removeSilent(pathToCollection, item) {
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToCollection);
-
-    if (schema.type !== 'collection')
-      throw new Error(`Only collection type can remove item`);
-
-    var primaryKeyName = findPrimary(schema.item);
-
-    return this._startDriverQuery({
-      method: 'remove',
-      fullPath: pathToCollection,
-      payload: item,
-      primaryKeyName,
-    }).then((resp) => {
-      this._composition.remove(pathToCollection, resp.coocked[primaryKeyName]);
-    });
-  }
+  // removeSilent(pathToCollection, item) {
+  //   // It rise an error if path doesn't consist with schema
+  //   var schema = this._main.schemaManager.get(pathToCollection);
+  //
+  //   if (schema.type !== 'collection')
+  //     throw new Error(`Only collection type can remove item`);
+  //
+  //   var primaryKeyName = findPrimary(schema.item);
+  //
+  //   return this._startDriverQuery({
+  //     method: 'remove',
+  //     fullPath: pathToCollection,
+  //     payload: item,
+  //     primaryKeyName,
+  //   }).then((resp) => {
+  //     this._composition.remove(pathToCollection, resp.coocked[primaryKeyName]);
+  //   });
+  // }
 
   /**
    * Validate value using validate settings by path

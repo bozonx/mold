@@ -48,68 +48,68 @@ class LocalMemory {
 
   }
 
-  add(request) {
-    return new Promise((resolve, reject) => {
-      var collection = _.get(this._db, request.fullPath);
-      var newValue;
-
-      if (_.isUndefined(collection)) {
-        // create new collection
-        newValue = {
-          [request.primaryKeyName]: 0,
-          ...request.payload,
-          $index: 0,
-        };
-        _.set(this._db, request.fullPath, [newValue]);
-      }
-      else {
-        // add item to existent collection
-        newValue = {
-          [request.primaryKeyName]: collection.length,
-          ...request.payload,
-          $index: collection.length,
-        };
-        collection[collection.length] = newValue;
-      }
-
-      resolve({
-        coocked: newValue,
-        successResponse: newValue,
-        request,
-      });
-    });
-  }
-
-  remove(request) {
-    return new Promise((resolve, reject) => {
-      var collection = _.get(this._db, request.fullPath);
-
-      if (!collection) {
-        reject({
-          error: 'Collection not found',
-        });
-        return;
-      }
-
-      var item = _.find(collection, request.payload);
-      if (!item || !_.isNumber(item[request.primaryKeyName])) {
-        reject({
-          error: 'Item not found',
-          request,
-        });
-        return;
-      }
-
-      var newCollection = _.filter(collection, (value) => {return value[request.primaryKeyName] !== item[request.primaryKeyName]});
-      _.set(this._db, request.fullPath, newCollection);
-
-      resolve({
-        coocked: item,
-        successResponse: item,
-        request,
-      });
-    });
-  }
+  // add(request) {
+  //   return new Promise((resolve, reject) => {
+  //     var collection = _.get(this._db, request.fullPath);
+  //     var newValue;
+  //
+  //     if (_.isUndefined(collection)) {
+  //       // create new collection
+  //       newValue = {
+  //         [request.primaryKeyName]: 0,
+  //         ...request.payload,
+  //         $index: 0,
+  //       };
+  //       _.set(this._db, request.fullPath, [newValue]);
+  //     }
+  //     else {
+  //       // add item to existent collection
+  //       newValue = {
+  //         [request.primaryKeyName]: collection.length,
+  //         ...request.payload,
+  //         $index: collection.length,
+  //       };
+  //       collection[collection.length] = newValue;
+  //     }
+  //
+  //     resolve({
+  //       coocked: newValue,
+  //       successResponse: newValue,
+  //       request,
+  //     });
+  //   });
+  // }
+  //
+  // remove(request) {
+  //   return new Promise((resolve, reject) => {
+  //     var collection = _.get(this._db, request.fullPath);
+  //
+  //     if (!collection) {
+  //       reject({
+  //         error: 'Collection not found',
+  //       });
+  //       return;
+  //     }
+  //
+  //     var item = _.find(collection, request.payload);
+  //     if (!item || !_.isNumber(item[request.primaryKeyName])) {
+  //       reject({
+  //         error: 'Item not found',
+  //         request,
+  //       });
+  //       return;
+  //     }
+  //
+  //     var newCollection = _.filter(collection, (value) => {return value[request.primaryKeyName] !== item[request.primaryKeyName]});
+  //     _.set(this._db, request.fullPath, newCollection);
+  //
+  //     resolve({
+  //       coocked: item,
+  //       successResponse: item,
+  //       request,
+  //     });
+  //   });
+  // }
 
   requestHandler(request) {
     return this[request.method](request);

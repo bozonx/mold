@@ -100,8 +100,7 @@ export default class Collection {
    * @returns {object} promise
    */
   removeMold(item) {
-    // TODO: !!!
-    //return this._main.state.removeItem(this._root, item);
+    return this._main.state.removeMold(this._root, item);
   }
 
   save() {

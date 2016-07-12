@@ -137,35 +137,6 @@ export default class Composition {
   }
 
   /**
-   * Add new item to collection.
-   * The primary id is index in an array in composition.
-   * @param {string} pathToCollection
-   * @param {string|number} primaryId
-   * @param {object} newItem
-   */
-  // add(pathToCollection, primaryId, newItem) {
-  //   var collection = this.get(pathToCollection);
-  //
-  //   var preparedItem = {
-  //     ...newItem,
-  //     // TODO: заче это????
-  //     $index: primaryId,
-  //   };
-  //
-  //   if (collection) {
-  //     collection[primaryId] = preparedItem;
-  //   }
-  //   else {
-  //     let collection = [];
-  //     collection[primaryId] = preparedItem;
-  //     this.set(pathToCollection, collection);
-  //   }
-  //
-  //   // Rise an event
-  //   this._main.events.emit('mold.composition.update', {path: path});
-  // }
-
-  /**
    * Add to collection
    * @param {string} pathToCollection
    * @param {object} newItem
@@ -184,18 +155,16 @@ export default class Composition {
    * Remove item from collection by its primary id.
    * It hopes primary id is equal to index in an array in composition.
    * @param {string} pathToCollection
-   * @param {string|number} primaryId
+   * @param {number} $index
    */
-  remove(pathToCollection, primaryId) {
-    var collection = this.get(pathToCollection);
+  remove(pathToCollection, $index) {
+    var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
 
-    if (!collection) return;
-
-    var newCollection = _.filter(collection, (value, name) => {return name !== primaryId});
-    this.set(pathToCollection, newCollection);
+    _.remove(collection, function(value) {return value.$index === $index});
 
     // Rise an event
-    this._main.events.emit('mold.composition.update', {path: path});
+    this._main.events.emit('mold.composition.update', {path: pathToCollection});
+    this._updateIndexes(pathToCollection);
   }
 
   // find(pathToCollection, params) {
