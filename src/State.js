@@ -67,7 +67,7 @@ export default class State {
         fullPath: pathToContainer,
       }).then((resp) => {
         var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-        this._composition.update(pathTo, resp.successResponse);
+        this._composition.update(pathTo, resp.coocked);
         resolve(resp);
       }, reject);
     });
@@ -144,6 +144,7 @@ export default class State {
     // TODO: тут не обязательно устанавливать в контейнер, можно прямо в primitive
 
     // It rise an error if path doesn't consist with schema
+    // TODO: наверное конвертировать путь в schemaPath
     var schema = this._main.schemaManager.get(pathToContainer);
 
     if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
@@ -153,6 +154,29 @@ export default class State {
     this._checkNode(schema, pathToContainer, containerValue);
 
     this._composition.update(pathToContainer, containerValue);
+  }
+
+  addMold(pathToCollection, newItem) {
+    // It rise an error if path doesn't consist with schema
+    // TODO: наверное конвертировать путь в schemaPath
+    var schema = this._main.schemaManager.get(pathToCollection);
+
+    if (schema.type !== 'collection')
+      throw new Error(`Only collection type has "add" method.`);
+
+    var preparedItem = {
+      ...newItem,
+      __isNew: true,
+    };
+
+    // Check all nodes
+    this._checkNode(schema, pathToCollection, preparedItem);
+
+    this._composition.add(pathToCollection, preparedItem);
+
+    //this._composition.update(pathToCollection, preparedItem);
+
+    //var primaryKeyName = findPrimary(schema.item);
   }
 
   save(pathToContainerOrPrimitive) {

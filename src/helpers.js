@@ -60,7 +60,7 @@ export function recursiveMutate(sourceData, newData, cb, root) {
     });
   }
 
-  function updateArray(sourceData, newData) {
+  function updateArray(sourceData, newData, cb) {
     _.each(newData, function (value, index) {
       if (!sourceData[index]) sourceData[index] = {};
       recursiveMutate(sourceData[index], value, cb, makePath(root, index));
@@ -96,7 +96,7 @@ export function recursiveMutate(sourceData, newData, cb, root) {
 
     // run callback on container
     if (cb) cb(root, newData, oldSourceData, 'update');
-    
+
     // run callback on all leafs
     _.each(primitivesChildren, function (value, name) {
       if (cb) cb(makePath(root, name), value, oldSourceData[name], 'update');
@@ -113,17 +113,20 @@ export function recursiveMutate(sourceData, newData, cb, root) {
     if (newData.length === 0) {
       // remove all
       _.remove(sourceData)
+      // TODO: callbacks!!!
     }
-    else if (_.isPlainObject(newData[0])) {
+    else if (_.isPlainObject(_.head(newData))) {
+      // it's is collection
       // TODO: наверное по primary, так как индекс может не совпадать
       // remove useless items
       removeUnused(sourceData, newData, cb);
-      updateArray(sourceData, newData);
+      updateArray(sourceData, newData, cb);
     }
-    else if (_.isArray(newData[0])) {
+    else if (_.isArray(_.head(newData))) {
+      // is't simple array
       // remove useless items
       removeUnused(sourceData, newData, cb);
-      updateArray(sourceData, newData);
+      updateArray(sourceData, newData, cb);
     }
     else {
       // primitives, null or undefined
@@ -132,6 +135,7 @@ export function recursiveMutate(sourceData, newData, cb, root) {
       _.each(newData, function (value, index) {
         sourceData[index] = value;
       });
+      // TODO: callbacks!!!
     }
   }
 

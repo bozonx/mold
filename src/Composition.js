@@ -68,35 +68,38 @@ export default class Composition {
      */
   update(path, value) {
     var compPath = convertToCompositionPath(path);
+    var itemCallBack = (leafPath, newValue, oldValue, action) => {
+      // TODO: здесь так же вызываются leafPath == '_id' || leafPath == '_rev'
+
+      // TODO: сравнивать ли oldValue???
+      if (_.isPlainObject(newValue)) {
+
+        // Containers
+        // Don't rise event if value unchanged
+        // TODO: из-за этого не отрисовывается форма при переходах по страницам
+        if (_.isEqual(newValue, oldValue)) return;
+      }
+      else if (_.isArray(newValue)) {
+        // TODO: !!!????
+      }
+      else {
+        // Primitive
+        // Don't rise event if value unchanged
+        // TODO: из-за этого не отрисовывается форма при переходах по страницам
+        if (newValue === oldValue) return;
+      }
+
+      // TODO: может добавить newValue, oldValue в событие
+      this._main.events.emit('mold.composition.update', {
+        path: _.trim(`${compPath}.${leafPath}`, '.'),
+        action: action,
+      });
+    };
+
     if (_.isPlainObject(value)) {
       // It's a container
 
-      var itemCallBack = (leafPath, newValue, oldValue, action) => {
-        // TODO: здесь так же вызываются leafPath == '_id' || leafPath == '_rev'
 
-        // TODO: сравнивать ли oldValue???
-        if (_.isPlainObject(newValue)) {
-          // Containers
-          // Don't rise event if value unchanged
-          // TODO: из-за этого не отрисовывается форма при переходах по страницам
-          if (_.isEqual(newValue, oldValue)) return;
-        }
-        else if (_.isArray(newValue)) {
-
-        }
-        else {
-          // Primitive
-          // Don't rise event if value unchanged
-          // TODO: из-за этого не отрисовывается форма при переходах по страницам
-          if (newValue === oldValue) return;
-        }
-
-        // TODO: может добавить newValue, oldValue в событие
-        this._main.events.emit('mold.composition.update', {
-          path: _.trim(`${compPath}.${leafPath}`, '.'),
-          action: action,
-        });
-      };
 
       if (!path) {
         // Update whore storage
@@ -115,6 +118,11 @@ export default class Composition {
       // TODO: если передан пустой массив и в старых данных это примитивный массив - то заменяем его и поднимаем событие
       // TODO: если передан пустой массив и в старых данных это коллекция - то очищаем коллекцию, и поднимаем событие update-delete на каждом элементе
       // TODO: поднимать событие только если элемен изменился
+
+      recursiveMutate(_.get(this._storage, compPath), value, itemCallBack, '');
+
+      // TODO: это работает с не вложенными коллекциями. Поидее нужно в колбеке обновлять индексы
+      this._updateIndexes(compPath);
     }
     else {
       // It's a primitive or null|undefined
@@ -135,27 +143,42 @@ export default class Composition {
    * @param {string|number} primaryId
    * @param {object} newItem
    */
-  add(pathToCollection, primaryId, newItem) {
-    var collection = this.get(pathToCollection);
+  // add(pathToCollection, primaryId, newItem) {
+  //   var collection = this.get(pathToCollection);
+  //
+  //   var preparedItem = {
+  //     ...newItem,
+  //     // TODO: заче это????
+  //     $index: primaryId,
+  //   };
+  //
+  //   if (collection) {
+  //     collection[primaryId] = preparedItem;
+  //   }
+  //   else {
+  //     let collection = [];
+  //     collection[primaryId] = preparedItem;
+  //     this.set(pathToCollection, collection);
+  //   }
+  //
+  //   // Rise an event
+  //   this._main.events.emit('mold.composition.update', {path: path});
+  // }
 
-    var preparedItem = {
-      ...newItem,
-      // TODO: заче это????
-      $index: primaryId,
-    };
-
-    if (collection) {
-      collection[primaryId] = preparedItem;
-    }
-    else {
-      let collection = [];
-      collection[primaryId] = preparedItem;
-      this.set(pathToCollection, collection);
-    }
-
+  /**
+   * Add to collection
+   * @param {string} pathToCollection
+   * @param {object} newItem
+   */
+  add(pathToCollection, newItem) {
+    var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
+    // add to beginning
+    collection.unshift(newItem);
     // Rise an event
-    this._main.events.emit('mold.composition.update', {path: path});
+    this._main.events.emit('mold.composition.update', {path: pathToCollection});
+    this._updateIndexes(pathToCollection);
   }
+
 
   /**
    * Remove item from collection by its primary id.
@@ -175,12 +198,20 @@ export default class Composition {
     this._main.events.emit('mold.composition.update', {path: path});
   }
 
-  find(pathToCollection, params) {
-    // TODO: !!!!
-  }
+  // find(pathToCollection, params) {
+  //   // TODO: !!!!
+  // }
+  //
+  // filter(pathToCollection, params) {
+  //   // TODO: !!!!
+  // }
 
-  filter(pathToCollection, params) {
-    // TODO: !!!!
+
+  _updateIndexes(pathToCollection) {
+    var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
+    _.each(collection, (value, index) => {
+      value.$index = index;
+    });
   }
 
 }

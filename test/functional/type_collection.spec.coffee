@@ -50,17 +50,43 @@ describe 'Functional. Collection type.', ->
 #        assert.equal(this.collectionParam.child(2).mold.name, 'name2')
 #        done()
 
-  it 'get()', () ->
-    this.memoryDb.inMemory = {collectionParam: testValues[0]}
+  it 'get() - check promise', ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
 
     expect(this.collectionParam.get()).to.eventually
-    .property('coocked').deep.equal(testValues[0])
+    .property('coocked').deep.equal([testValues[0]])
+
+  it 'get() - check mold', (done) ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
+
+    expect(this.collectionParam.get()).to.eventually.notify =>
+      expect(Promise.resolve(this.collectionParam.mold)).to.eventually
+      .deep.equal([
+        {id: 1, name: 'name1', $index: 0},
+      ])
+      .notify(done)
+
+  it 'add() - check mold', ->
+    newItem = {name: 'name3'}
+    this.collectionParam.addMold(newItem)
+    assert.deepEqual(this.collectionParam.mold, [
+      {name: 'name3', __isNew: true, $index: 0},
+    ])
+
+  it 'add() - after get', (done) ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
+
+    newItem = {name: 'name3'}
+    expect(this.collectionParam.get()).to.eventually.notify =>
+      this.collectionParam.addMold(newItem)
+      expect(Promise.resolve(this.collectionParam.mold)).to.eventually
+      .deep.equal([
+        {name: 'name3', __isNew: true, $index: 0},
+        {id: 1, name: 'name1', $index: 1},
+      ])
+      .notify(done)
 
 
-#  it 'add()', ->
-#    promise = this.collectionParam.add({id: 3, name: 'name3'})
-#    expect(promise).to.eventually.property('payload').deep.equal({id: 3, name: 'name3', $index: 0})
-#
 #  it 'remove()', (done) ->
 #    expect(this.collectionParam.add(testValues[0])).to.eventually.notify =>
 #      expect(this.collectionParam.add(testValues[1])).to.eventually.notify =>

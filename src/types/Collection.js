@@ -8,9 +8,10 @@ export default class Collection {
   constructor(main) {
     this._main = main;
 
-    // TODO: it's not need
     this._main.events.on('mold.composition.update', (data) => {
-      //if (data.path.indexOf(this._root) === 0) this.updateMold();
+      if (data.path.indexOf(this._root) === 0) {
+        this._main.events.emit('mold.type.event::' + this._root);
+      }
     });
   }
 
@@ -69,10 +70,10 @@ export default class Collection {
       return this._main.state.getValue(path);
     }
     else if (_.isNumber(noneOrIdOrPath)) {
-      // TODO: !!!
+      // TODO: !!! primary id
     }
     else if (_.isString(noneOrIdOrPath)) {
-      // TODO: !!!
+      // TODO: !!! внетренний путь
     }
     else {
       throw new Error(`You must pass only number or string or undefined!`);
@@ -82,14 +83,15 @@ export default class Collection {
     // return this.find({[primaryKeyName]: primaryId});
   }
 
+  // TODO: add method getUnsavedNewItems
+  // TODO: add method getUnsavedRemovedItems
+
   /**
    * Add item to list
    * @param item
-   * @returns {object} promise
    */
-  add(item) {
-    // TODO: !!!
-    //return this._main.state.addItem(this._root, item);
+  addMold(item) {
+    this._main.state.addMold(this._root, item);
   }
 
   /**
@@ -97,9 +99,13 @@ export default class Collection {
    * @param item
    * @returns {object} promise
    */
-  remove(item) {
+  removeMold(item) {
     // TODO: !!!
     //return this._main.state.removeItem(this._root, item);
+  }
+
+  save() {
+    // TODO: !!! сохранить накопившиеся запросы add, remove
   }
 
   _fullPath(relativePath) {
