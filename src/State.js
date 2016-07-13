@@ -20,7 +20,7 @@ export default class State {
    * @param path
    */
   getComposition(path) {
-    // Does it really need?
+    // TODO: Does it really need?
     return this._composition.get(path);
   }
 
@@ -30,7 +30,7 @@ export default class State {
    * @param value
    */
   setComposition(path, value) {
-    // Does it really need?
+    // TODO: Does it really need?
     this._composition.set(path, value);
   }
 
@@ -38,30 +38,15 @@ export default class State {
    * Get data by a path.
    * It sends request to applicable driver.
    * After it sets a value from response to composition and return promise with this value.
-   * @param {string} path - absolute path
+   * @param {string} pathToContainer - absolute path
    * @returns {Promise}
    */
   getValue(pathToContainer) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToContainer);
 
-    // if (!this._main.schemaManager.has(path))
-    //   throw new Error(`Can't find path "${path}" in the schema!`);
-
     if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
       throw new Error(`You can't request for a primitive! Only containers are support.`);
-
-    // return this._startDriverQuery({
-    //   type: 'get',
-    //   fullPath: path,
-    // }).then((resp) => {
-    //   if (resp.request.pathToDocument) {
-    //     this._composition.update(resp.request.pathToDocument, resp.successResponse);
-    //   }
-    //   else {
-    //     this._composition.update(resp.request.fullPath, resp.successResponse)
-    //   }
-    // });
 
     return new Promise((resolve, reject) => {
       this._startDriverQuery({
@@ -75,16 +60,6 @@ export default class State {
     });
   }
 
-  // addItem(path, newItem) {
-  //   // TODO: rise an event
-  //   return this.addSilent(path, newItem);
-  // }
-  //
-  // removeItem(path, item) {
-  //   // TODO: rise an event
-  //   return this.removeSilent(path, item);
-  // }
-
   /**
    * Set new value to state and rise an event.
    * It sends request to driver and returns its promise.
@@ -93,6 +68,7 @@ export default class State {
    * @returns {Promise}
    */
   setValue(path, value) {
+    // TODO: не нужно
     // TODO: rise an event
     return this.setSilent(path, value);
   }
@@ -105,6 +81,7 @@ export default class State {
    * @returns {Promise}
    */
   setSilent(pathToContainer, containerValue) {
+    // TODO: не нужно
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToContainer);
 
@@ -125,21 +102,6 @@ export default class State {
         resolve(resp);
       }, reject);
     });
-
-    // return this._startDriverQuery({
-    //   type: 'set',
-    //   fullPath: path,
-    //   payload: value,
-    // }).then((resp) => {
-    //   console.log(234234234234, resp)
-    //   if (resp.request.pathToDocument) {
-    //     this._composition.update(resp.request.pathToDocument, resp.successResponse);
-    //   }
-    //   else {
-    //     this._composition.update(resp.request.fullPath, resp.successResponse)
-    //   }
-    //   return resp;
-    // });
   }
 
   setMold(pathToContainer, containerValue) {
@@ -201,7 +163,49 @@ export default class State {
     this._removedUnsavedItems[pathToCollection].push(itemToRemove);
   }
 
+  saveContainerOrPrimitive(pathToContainerOrPrimitive) {
+    // TODO: rise an event - saved
+
+    var pathToContainer;
+
+    if (this._main.schemaManager.get(pathToContainerOrPrimitive).type) {
+      // If it isn't container, get container upper on path
+      let split = splitLastParamPath(pathToContainerOrPrimitive);
+
+      if (_.isUndefined(split.paramPath))
+      // TODO: это должно проверяться ещё на стадии валидации схемы.
+        throw new Error(`Something wrong with your schema. Root of primitive must be a container.`);
+
+      pathToContainer = split.basePath;
+      if (this._main.schemaManager.get(pathToContainer).type) {
+        // TODO: это должно проверяться ещё на стадии валидации схемы.
+        throw new Error(`Something wrong with your schema. Primitive must be placed in container.`);
+      }
+    }
+    else {
+      pathToContainer = pathToContainerOrPrimitive;
+    }
+
+    var payload = this.getComposition(pathToContainer);
+
+    return new Promise((resolve, reject) => {
+      this._startDriverQuery({
+        method: 'set',
+        fullPath: pathToContainer,
+        payload: payload,
+      }).then((resp) => {
+        var pathTo = resp.request.pathToDocument || resp.request.fullPath;
+        // update composition with server response
+        this._composition.update(pathTo, resp.coocked);
+        resolve(resp);
+      }, reject);
+    });
+  }
+
+
   saveCollection(pathToCollection) {
+    // TODO: rise an event - saved
+
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToCollection);
 
@@ -214,72 +218,6 @@ export default class State {
         }),
         ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, {method: 'remove', primaryKeyName}),
       ];
-
-      // _.each(this._addedUnsavedItems[pathToCollection], (unsavedItem) => {
-      //   var payload = _.omit(_.cloneDeep(unsavedItem), '$index');
-      //
-      //   // remove item from unsaved list
-      //   _.remove(this._addedUnsavedItems[pathToCollection], unsavedItem);
-      //   if (_.isEmpty(this._addedUnsavedItems[pathToCollection])) delete this._addedUnsavedItems[pathToCollection];
-      //
-      //   promises.push(new Promise((resolve) => {
-      //     this._startDriverQuery({
-      //       method: 'add',
-      //       fullPath: pathToCollection,
-      //       payload: payload,
-      //       primaryKeyName,
-      //     }).then((resp) => {
-      //       // update composition with server response
-      //       _.extend(unsavedItem, resp.coocked);
-      //       resolve({
-      //         path: pathToCollection,
-      //         isOk: true,
-      //         resp,
-      //       });
-      //     }, (error) => {
-      //       // on error make item unsaved again
-      //       if (_.isUndefined(this._addedUnsavedItems[pathToCollection])) this._addedUnsavedItems[pathToCollection] = [];
-      //       this._addedUnsavedItems[pathToCollection].push(unsavedItem);
-      //       resolve({
-      //         path: pathToCollection,
-      //         isOk: false,
-      //         error,
-      //       });
-      //     });
-      //   }));
-      // });
-
-      // _.each(_.cloneDeep(this._removedUnsavedItems[pathToCollection]), (unsavedItem) => {
-      //   var payload = _.omit(unsavedItem, '$index');
-      //
-      //   // remove item from unsaved list
-      //   _.remove(this._removedUnsavedItems[pathToCollection], unsavedItem);
-      //   if (_.isEmpty(this._removedUnsavedItems[pathToCollection])) delete this._removedUnsavedItems[pathToCollection];
-      //
-      //   promises.push(new Promise((resolve) => {
-      //     this._startDriverQuery({
-      //       method: 'remove',
-      //       fullPath: pathToCollection,
-      //       payload: payload,
-      //       primaryKeyName,
-      //     }).then((resp) => {
-      //       resolve({
-      //         path: pathToCollection,
-      //         isOk: true,
-      //         resp,
-      //       });
-      //     }, (error) => {
-      //       // on error make item unsaved again
-      //       if (_.isUndefined(this._removedUnsavedItems[pathToCollection])) this._removedUnsavedItems[pathToCollection] = [];
-      //       this._removedUnsavedItems[pathToCollection].push(unsavedItem);
-      //       resolve({
-      //         path: pathToCollection,
-      //         isOk: false,
-      //         error,
-      //       });
-      //     });
-      //   }));
-      // });
 
       Promise.all(promises).then(results => {
         mainResolve(results);
@@ -324,64 +262,6 @@ export default class State {
 
     return promises;
   }
-
-  saveContainerOrPrimitive(pathToContainerOrPrimitive) {
-    // TODO: rise an event - saved
-
-    var pathToContainer;
-
-    if (this._main.schemaManager.get(pathToContainerOrPrimitive).type) {
-      // If it isn't container, get container upper on path
-      let split = splitLastParamPath(pathToContainerOrPrimitive);
-
-      if (_.isUndefined(split.paramPath))
-      // TODO: это должно проверяться ещё на стадии валидации схемы.
-        throw new Error(`Something wrong with your schema. Root of primitive must be a container.`);
-
-      pathToContainer = split.basePath;
-      if (this._main.schemaManager.get(pathToContainer).type) {
-        // TODO: это должно проверяться ещё на стадии валидации схемы.
-        throw new Error(`Something wrong with your schema. Primitive must be placed in container.`);
-      }
-    }
-    else {
-      pathToContainer = pathToContainerOrPrimitive;
-    }
-
-    var payload = this.getComposition(pathToContainer);
-
-    return new Promise((resolve, reject) => {
-      this._startDriverQuery({
-        method: 'set',
-        fullPath: pathToContainer,
-        payload: payload,
-      }).then((resp) => {
-        var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-        // update composition with server response
-        this._composition.update(pathTo, resp.coocked);
-        resolve(resp);
-      }, reject);
-    });
-  }
-
-  // removeSilent(pathToCollection, item) {
-  //   // It rise an error if path doesn't consist with schema
-  //   var schema = this._main.schemaManager.get(pathToCollection);
-  //
-  //   if (schema.type !== 'collection')
-  //     throw new Error(`Only collection type can remove item`);
-  //
-  //   var primaryKeyName = findPrimary(schema.item);
-  //
-  //   return this._startDriverQuery({
-  //     method: 'remove',
-  //     fullPath: pathToCollection,
-  //     payload: item,
-  //     primaryKeyName,
-  //   }).then((resp) => {
-  //     this._composition.remove(pathToCollection, resp.coocked[primaryKeyName]);
-  //   });
-  // }
 
   /**
    * Validate value using validate settings by path
