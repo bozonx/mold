@@ -77,36 +77,35 @@ class LocalMemory {
     });
   }
 
-  // remove(request) {
-  //   return new Promise((resolve, reject) => {
-  //     var collection = _.get(this._db, request.fullPath);
-  //
-  //     if (!collection) {
-  //       reject({
-  //         error: 'Collection not found',
-  //       });
-  //       return;
-  //     }
-  //
-  //     var item = _.find(collection, request.payload);
-  //     if (!item || !_.isNumber(item[request.primaryKeyName])) {
-  //       reject({
-  //         error: 'Item not found',
-  //         request,
-  //       });
-  //       return;
-  //     }
-  //
-  //     var newCollection = _.filter(collection, (value) => {return value[request.primaryKeyName] !== item[request.primaryKeyName]});
-  //     _.set(this._db, request.fullPath, newCollection);
-  //
-  //     resolve({
-  //       coocked: item,
-  //       successResponse: item,
-  //       request,
-  //     });
-  //   });
-  // }
+  remove(request) {
+    return new Promise((resolve, reject) => {
+      var collection = _.get(this._db, request.fullPath);
+  
+      if (!collection) {
+        reject({
+          error: 'Collection not found',
+        });
+        return;
+      }
+  
+      var item = _.find(collection, request.payload);
+      if (!item || !_.isNumber(item[request.primaryKeyName])) {
+        reject({
+          error: 'Item not found',
+          request,
+        });
+        return;
+      }
+
+      _.remove(collection, item);
+  
+      resolve({
+        coocked: item,
+        successResponse: item,
+        request,
+      });
+    });
+  }
 
   requestHandler(request) {
     return this[request.method](request);

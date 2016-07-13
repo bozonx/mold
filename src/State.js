@@ -155,12 +155,14 @@ export default class State {
     if (!_.isNumber(itemToRemove.$index))
       throw new Error(`Deleted item must has an $index param.`);
 
+    var realItem = _.find(this.getComposition(pathToCollection), itemToRemove);
+
     this._composition.remove(pathToCollection, itemToRemove.$index);
 
     if (!this._removedUnsavedItems[pathToCollection])
       this._removedUnsavedItems[pathToCollection] = [];
 
-    this._removedUnsavedItems[pathToCollection].push(itemToRemove);
+    this._removedUnsavedItems[pathToCollection].push(realItem);
   }
 
   saveContainerOrPrimitive(pathToContainerOrPrimitive) {

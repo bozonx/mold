@@ -97,14 +97,14 @@ describe 'Functional. Collection type.', ->
       ])
       .notify(done)
 
-  it 'save() - check promise', ->
+  it 'save() added - check promise', ->
     this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
     this.collectionParam.addMold({name: 'name3'})
 
     expect(this.collectionParam.save()).to.eventually
     .property(0).property('resp').property('coocked').deep.equal({id: 1, name: 'name3'})
 
-  it 'save() - check memory and unsaved', (done) ->
+  it 'save() added - check memory', (done) ->
     this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
     this.collectionParam.addMold({name: 'name3'})
 
@@ -114,11 +114,37 @@ describe 'Functional. Collection type.', ->
         testValues[0],
         {name: 'name3', id: 1}
       ]}})
-      .notify =>
+      .notify(done)
+
+  it 'save() added - check unsaved', (done) ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
+    this.collectionParam.addMold({name: 'name3'})
+
+    expect(this.collectionParam.save()).to.eventually.notify =>
+      expect(Promise.resolve(this.memoryDb)).to.eventually.notify =>
         expect(Promise.resolve(this.collectionParam._main.state._addedUnsavedItems)).to.eventually
         .deep.equal({})
         .notify(done)
 
+  it 'save() removed - check memory', (done) ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0], testValues[1]]}
+    expect(this.collectionParam.get()).to.eventually.notify =>
+      this.collectionParam.removeMold(this.collectionParam.mold[0])
+
+      expect(this.collectionParam.save()).to.eventually.notify =>
+        expect(Promise.resolve(this.memoryDb)).to.eventually
+        .deep.equal({inMemory: {collectionParam: [testValues[1]]}})
+        .notify(done)
+
+  it 'save() removed - check unsaved', (done) ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0], testValues[1]]}
+    expect(this.collectionParam.get()).to.eventually.notify =>
+      this.collectionParam.removeMold(this.collectionParam.mold[0])
+
+      expect(this.collectionParam.save()).to.eventually.notify =>
+        expect(Promise.resolve(this.collectionParam._main.state._removedUnsavedItems)).to.eventually
+        .deep.equal({})
+        .notify(done)
 
 #  it 'Many manupulations with collection', (done) ->
 #    newItem = {id: 3, name: 'name3'}
