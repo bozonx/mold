@@ -48,38 +48,30 @@ class LocalMemory {
 
   }
 
-  // add(request) {
-  //   return new Promise((resolve, reject) => {
-  //     var collection = _.get(this._db, request.fullPath);
-  //     var newValue;
-  //
-  //     if (_.isUndefined(collection)) {
-  //       // create new collection
-  //       newValue = {
-  //         [request.primaryKeyName]: 0,
-  //         ...request.payload,
-  //         $index: 0,
-  //       };
-  //       _.set(this._db, request.fullPath, [newValue]);
-  //     }
-  //     else {
-  //       // add item to existent collection
-  //       newValue = {
-  //         [request.primaryKeyName]: collection.length,
-  //         ...request.payload,
-  //         $index: collection.length,
-  //       };
-  //       collection[collection.length] = newValue;
-  //     }
-  //
-  //     resolve({
-  //       coocked: newValue,
-  //       successResponse: newValue,
-  //       request,
-  //     });
-  //   });
-  // }
-  //
+  add(request) {
+    return new Promise((resolve) => {
+      var collection = _.get(this._db, request.fullPath);
+      if (_.isUndefined(collection)) {
+        collection = [];
+        _.set(this._db, request.fullPath, collection);
+      }
+
+      var newValue = {
+        [request.primaryKeyName]: collection.length,
+        ...request.payload,
+      };
+
+      // add item to existent collection
+      collection[collection.length] = newValue;
+
+      resolve({
+        coocked: newValue,
+        successResponse: newValue,
+        request,
+      });
+    });
+  }
+
   // remove(request) {
   //   return new Promise((resolve, reject) => {
   //     var collection = _.get(this._db, request.fullPath);

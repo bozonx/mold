@@ -22,11 +22,11 @@ testSchema = (memory) ->
 
 testValues = [
   {
-    id: 1
+    id: 0
     name: 'name1'
   },
   {
-    id: 2
+    id: 1
     name: 'name2'
   },
 ]
@@ -62,7 +62,7 @@ describe 'Functional. Collection type.', ->
     expect(this.collectionParam.get()).to.eventually.notify =>
       expect(Promise.resolve(this.collectionParam.mold)).to.eventually
       .deep.equal([
-        {id: 1, name: 'name1', $index: 0},
+        {id: 0, name: 'name1', $index: 0},
       ])
       .notify(done)
 
@@ -82,7 +82,7 @@ describe 'Functional. Collection type.', ->
       expect(Promise.resolve(this.collectionParam.mold)).to.eventually
       .deep.equal([
         {name: 'name3', __isNew: true, $index: 0},
-        {id: 1, name: 'name1', $index: 1},
+        {id: 0, name: 'name1', $index: 1},
       ])
       .notify(done)
 
@@ -93,9 +93,32 @@ describe 'Functional. Collection type.', ->
       this.collectionParam.removeMold({$index: 0})
       expect(Promise.resolve(this.collectionParam.mold)).to.eventually
       .deep.equal([
-        {id: 2, name: 'name2', $index: 0},
+        {id: 1, name: 'name2', $index: 0},
       ])
       .notify(done)
+
+  it 'save() - check promise', ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
+    this.collectionParam.addMold({name: 'name3'})
+
+    expect(this.collectionParam.save()).to.eventually
+    .property(0).property('resp').property('coocked').deep.equal({id: 1, name: 'name3'})
+
+  it 'save() - check memory and unsaved', (done) ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
+    this.collectionParam.addMold({name: 'name3'})
+
+    expect(this.collectionParam.save()).to.eventually.notify =>
+      expect(Promise.resolve(this.memoryDb)).to.eventually
+      .deep.equal({inMemory: {collectionParam: [
+        testValues[0],
+        {name: 'name3', id: 1}
+      ]}})
+      .notify =>
+        expect(Promise.resolve(this.collectionParam._main.state._addedUnsavedItems)).to.eventually
+        .deep.equal({})
+        .notify(done)
+
 
 #  it 'Many manupulations with collection', (done) ->
 #    newItem = {id: 3, name: 'name3'}

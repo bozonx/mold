@@ -83,9 +83,6 @@ export default class Collection {
     // return this.find({[primaryKeyName]: primaryId});
   }
 
-  // TODO: add method getUnsavedNewItems
-  // TODO: add method getUnsavedRemovedItems
-
   /**
    * Add item to list
    * @param item
@@ -97,23 +94,26 @@ export default class Collection {
   /**
    * Remove item by uniq key
    * @param item
-   * @returns {object} promise
    */
   removeMold(item) {
-    return this._main.state.removeMold(this._root, item);
+    this._main.state.removeMold(this._root, item);
   }
 
+  /**
+   * Save unsaved added and remove elements.
+   * @returns {Promise}
+   */
   save() {
-    // TODO: !!! сохранить накопившиеся запросы add, remove
+    return this._main.state.saveCollection(this._root);
   }
 
-  _fullPath(relativePath) {
-    if (_.startsWith(relativePath, '['))
-      // TODO: without dot
-      return `${this._root}${relativePath}`;
-
-    return `${this._root}.${relativePath}`;
-  }
+  // _fullPath(relativePath) {
+  //   if (_.startsWith(relativePath, '['))
+  //     // TODO: without dot
+  //     return `${this._root}${relativePath}`;
+  //
+  //   return `${this._root}.${relativePath}`;
+  // }
 
 
   // /**

@@ -11,6 +11,8 @@ export default class State {
     this._composition = composition;
     this._request = new Request(this._main);
     this._initComposition();
+    this._addedUnsavedItems = {};
+    this._removedUnsavedItems = {};
   }
 
   /**
@@ -174,7 +176,10 @@ export default class State {
 
     this._composition.add(pathToCollection, preparedItem);
 
-    //this._composition.update(pathToCollection, preparedItem);
+    if (!this._addedUnsavedItems[pathToCollection])
+      this._addedUnsavedItems[pathToCollection] = [];
+
+    this._addedUnsavedItems[pathToCollection].push(newItem);
 
     //var primaryKeyName = findPrimary(schema.item);
   }
@@ -186,15 +191,68 @@ export default class State {
 
     if (schema.type !== 'collection')
       throw new Error(`Only collection type has "add" method.`);
-    
+
     if (!_.isNumber(newItem.$index))
       throw new Error(`Deleted item must has an $index param.`);
-    
+
     this._composition.remove(pathToCollection, newItem.$index);
   }
 
+  saveCollection(pathToCollection) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(pathToCollection);
 
-  save(pathToContainerOrPrimitive) {
+    var primaryKeyName = findPrimary(schema.item);
+
+    return new Promise((mainResolve) => {
+      var promises = [];
+
+      _.each(_.cloneDeep(this._addedUnsavedItems[pathToCollection]), (unsavedItem) => {
+        var payload = _.omit(unsavedItem, '$index');
+
+        // remove item from unsaved list
+        _.remove(this._addedUnsavedItems[pathToCollection], unsavedItem);
+        if (_.isEmpty(this._addedUnsavedItems[pathToCollection])) delete this._addedUnsavedItems[pathToCollection];
+
+        // TODO: сделать поддержку add в memory
+
+        promises.push(new Promise((resolve) => {
+          this._startDriverQuery({
+            method: 'add',
+            fullPath: pathToCollection,
+            payload: payload,
+            primaryKeyName,
+          }).then((resp) => {
+            // update composition with server response
+            _.extend(unsavedItem, resp.coocked);
+            resolve({
+              path: pathToCollection,
+              isOk: true,
+              resp,
+            });
+          }, (error) => {
+            // on error make item unsaved again
+            if (_.isUndefined(this._addedUnsavedItems[pathToCollection])) this._addedUnsavedItems[pathToCollection] = [];
+            this._addedUnsavedItems[pathToCollection].push(unsavedItem);
+            resolve({
+              path: pathToCollection,
+              isOk: false,
+              error,
+            });
+          });
+        }));
+      });
+
+
+      // TODO: add removed items
+
+      Promise.all(promises).then(results => {
+        mainResolve(results);
+      });
+    });
+  }
+
+  saveContainerOrPrimitive(pathToContainerOrPrimitive) {
     // TODO: rise an event - saved
 
     var pathToContainer;

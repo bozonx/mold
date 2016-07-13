@@ -139,7 +139,7 @@ export default class Container {
       path = this._root;
     }
 
-    return this._main.state.save(path);
+    return this._main.state.saveContainerOrPrimitive(path);
   }
 
   _fullPath(relativePath) {
