@@ -180,11 +180,9 @@ export default class State {
       this._addedUnsavedItems[pathToCollection] = [];
 
     this._addedUnsavedItems[pathToCollection].push(newItem);
-
-    //var primaryKeyName = findPrimary(schema.item);
   }
 
-  removeMold(pathToCollection, newItem) {
+  removeMold(pathToCollection, itemToRemove) {
     // It rise an error if path doesn't consist with schema
     // TODO: наверное конвертировать путь в schemaPath
     var schema = this._main.schemaManager.get(pathToCollection);
@@ -192,10 +190,15 @@ export default class State {
     if (schema.type !== 'collection')
       throw new Error(`Only collection type has "add" method.`);
 
-    if (!_.isNumber(newItem.$index))
+    if (!_.isNumber(itemToRemove.$index))
       throw new Error(`Deleted item must has an $index param.`);
 
-    this._composition.remove(pathToCollection, newItem.$index);
+    this._composition.remove(pathToCollection, itemToRemove.$index);
+
+    if (!this._removedUnsavedItems[pathToCollection])
+      this._removedUnsavedItems[pathToCollection] = [];
+
+    this._removedUnsavedItems[pathToCollection].push(itemToRemove);
   }
 
   saveCollection(pathToCollection) {
@@ -205,51 +208,121 @@ export default class State {
     var primaryKeyName = findPrimary(schema.item);
 
     return new Promise((mainResolve) => {
-      var promises = [];
+      var promises = [
+        ...this._saveUnsaved(this._addedUnsavedItems, pathToCollection, {method: 'add', primaryKeyName}, (unsavedItem, resp) => {
+          _.extend(unsavedItem, resp.coocked);
+        }),
+        ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, {method: 'remove', primaryKeyName}),
+      ];
 
-      _.each(_.cloneDeep(this._addedUnsavedItems[pathToCollection]), (unsavedItem) => {
-        var payload = _.omit(unsavedItem, '$index');
+      // _.each(this._addedUnsavedItems[pathToCollection], (unsavedItem) => {
+      //   var payload = _.omit(_.cloneDeep(unsavedItem), '$index');
+      //
+      //   // remove item from unsaved list
+      //   _.remove(this._addedUnsavedItems[pathToCollection], unsavedItem);
+      //   if (_.isEmpty(this._addedUnsavedItems[pathToCollection])) delete this._addedUnsavedItems[pathToCollection];
+      //
+      //   promises.push(new Promise((resolve) => {
+      //     this._startDriverQuery({
+      //       method: 'add',
+      //       fullPath: pathToCollection,
+      //       payload: payload,
+      //       primaryKeyName,
+      //     }).then((resp) => {
+      //       // update composition with server response
+      //       _.extend(unsavedItem, resp.coocked);
+      //       resolve({
+      //         path: pathToCollection,
+      //         isOk: true,
+      //         resp,
+      //       });
+      //     }, (error) => {
+      //       // on error make item unsaved again
+      //       if (_.isUndefined(this._addedUnsavedItems[pathToCollection])) this._addedUnsavedItems[pathToCollection] = [];
+      //       this._addedUnsavedItems[pathToCollection].push(unsavedItem);
+      //       resolve({
+      //         path: pathToCollection,
+      //         isOk: false,
+      //         error,
+      //       });
+      //     });
+      //   }));
+      // });
 
-        // remove item from unsaved list
-        _.remove(this._addedUnsavedItems[pathToCollection], unsavedItem);
-        if (_.isEmpty(this._addedUnsavedItems[pathToCollection])) delete this._addedUnsavedItems[pathToCollection];
-
-        // TODO: сделать поддержку add в memory
-
-        promises.push(new Promise((resolve) => {
-          this._startDriverQuery({
-            method: 'add',
-            fullPath: pathToCollection,
-            payload: payload,
-            primaryKeyName,
-          }).then((resp) => {
-            // update composition with server response
-            _.extend(unsavedItem, resp.coocked);
-            resolve({
-              path: pathToCollection,
-              isOk: true,
-              resp,
-            });
-          }, (error) => {
-            // on error make item unsaved again
-            if (_.isUndefined(this._addedUnsavedItems[pathToCollection])) this._addedUnsavedItems[pathToCollection] = [];
-            this._addedUnsavedItems[pathToCollection].push(unsavedItem);
-            resolve({
-              path: pathToCollection,
-              isOk: false,
-              error,
-            });
-          });
-        }));
-      });
-
-
-      // TODO: add removed items
+      // _.each(_.cloneDeep(this._removedUnsavedItems[pathToCollection]), (unsavedItem) => {
+      //   var payload = _.omit(unsavedItem, '$index');
+      //
+      //   // remove item from unsaved list
+      //   _.remove(this._removedUnsavedItems[pathToCollection], unsavedItem);
+      //   if (_.isEmpty(this._removedUnsavedItems[pathToCollection])) delete this._removedUnsavedItems[pathToCollection];
+      //
+      //   promises.push(new Promise((resolve) => {
+      //     this._startDriverQuery({
+      //       method: 'remove',
+      //       fullPath: pathToCollection,
+      //       payload: payload,
+      //       primaryKeyName,
+      //     }).then((resp) => {
+      //       resolve({
+      //         path: pathToCollection,
+      //         isOk: true,
+      //         resp,
+      //       });
+      //     }, (error) => {
+      //       // on error make item unsaved again
+      //       if (_.isUndefined(this._removedUnsavedItems[pathToCollection])) this._removedUnsavedItems[pathToCollection] = [];
+      //       this._removedUnsavedItems[pathToCollection].push(unsavedItem);
+      //       resolve({
+      //         path: pathToCollection,
+      //         isOk: false,
+      //         error,
+      //       });
+      //     });
+      //   }));
+      // });
 
       Promise.all(promises).then(results => {
         mainResolve(results);
       });
     });
+  }
+
+  _saveUnsaved(unsavedList, pathToCollection, rawQuery, successCb) {
+    var promises = [];
+    _.each(unsavedList[pathToCollection], (unsavedItem) => {
+      var payload = _.omit(_.cloneDeep(unsavedItem), '$index');
+
+      // remove item from unsaved list
+      _.remove(unsavedList[pathToCollection], unsavedItem);
+      if (_.isEmpty(unsavedList[pathToCollection])) delete unsavedList[pathToCollection];
+
+      promises.push(new Promise((resolve) => {
+        this._startDriverQuery({
+          ...rawQuery,
+          fullPath: pathToCollection,
+          payload: payload,
+        }).then((resp) => {
+          if (successCb) successCb(unsavedItem, resp);
+          resolve({
+            path: pathToCollection,
+            isOk: true,
+            resp,
+          });
+        }, (error) => {
+          // on error make item unsaved again
+          if (_.isUndefined(unsavedList[pathToCollection])) unsavedList[pathToCollection] = [];
+          unsavedList[pathToCollection].push(unsavedItem);
+
+          resolve({
+            path: pathToCollection,
+            isOk: false,
+            error,
+          });
+        });
+      }));
+    });
+
+    return promises;
   }
 
   saveContainerOrPrimitive(pathToContainerOrPrimitive) {
@@ -290,37 +363,6 @@ export default class State {
       }, reject);
     });
   }
-
-
-  /**
-   *
-   * @param {string} pathToCollection - absolute path to collection
-   * @param {object} newItem
-   * @returns {Promise}
-   */
-  // addSilent(pathToCollection, newItem) {
-  //   // It rise an error if path doesn't consist with schema
-  //   var schema = this._main.schemaManager.get(pathToCollection);
-  //
-  //   if (schema.type !== 'collection')
-  //     throw new Error(`Only collection type can add item`);
-  //
-  //   var primaryKeyName = findPrimary(schema.item);
-  //
-  //   // It rises an error on invalid value
-  //   // TODO: проверка делается в _startDriverQuery
-  //   this._checkNode(schema, pathToCollection, newItem);
-  //
-  //   return this._startDriverQuery({
-  //     method: 'add',
-  //     fullPath: pathToCollection,
-  //     payload: newItem,
-  //     primaryKeyName,
-  //   }).then((resp) => {
-  //     // TODO: может за это должен отвечать сам пользователь?
-  //     this._composition.add(pathToCollection, resp.coocked[primaryKeyName], resp.coocked);
-  //   });
-  // }
 
   // removeSilent(pathToCollection, item) {
   //   // It rise an error if path doesn't consist with schema
