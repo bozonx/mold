@@ -7,24 +7,23 @@ testSchema = (memory) ->
     inMemory: memory.schema({}, {
       stringParam: {type: 'string'}
       arrayParam: {type: 'array'}
-      collection: {
+      collection: {document: {}, schema: {
         type: 'collection'
         item: {
           id: {type: 'number', primary: true}
           name: {type: 'string'}
         }
-      }
+      }}
     })
 
 describe 'Functional. Memory driver.', ->
+  beforeEach ->
+    memory = new Memory({});
+    this.testSchema = testSchema(memory)
+    this.mold = mold.initSchema( {}, this.testSchema )
+    this.container = this.mold.instance('commonBranch.inMemory')
 
   describe 'Primitives and array.', ->
-    beforeEach ->
-      memory = new Memory({});
-      this.testSchema = testSchema(memory)
-      this.mold = mold.initSchema( {}, this.testSchema )
-      this.container = this.mold.instance('commonBranch.inMemory')
-
     it 'get_primitive_check_responce', (done) ->
       driverHelpers.get_primitive_check_responce(this.mold, 'commonBranch.inMemory', done)
 
@@ -43,38 +42,43 @@ describe 'Functional. Memory driver.', ->
     it 'set array', (done) ->
       driverHelpers.set_array(this.mold, 'commonBranch.inMemory', done)
 
-
-
-
-
   describe 'Collection.', ->
-    beforeEach ->
-      memory = new Memory({});
-      this.testSchema = testSchema(memory)
-      this.mold = mold.initSchema( {}, this.testSchema )
-      this.container = this.mold.instance('commonBranch.inMemory')
-      this.collection = this.mold.instance('commonBranch.inMemory.collection')
+    it 'collection_add', ->
+      driverHelpers.collection_add(this.mold, 'commonBranch.inMemory.collection')
 
-#    it 'add', ->
-#      promise = this.collection.add({name: 'name3'})
-#      expect(promise).to.eventually.property('payload').deep.equal({ name: 'name3', id: 0, $index:0 })
-
-    it 'add and find', ->
-      # TODO: !!!
-#      promise = this.collection.add({name: 'name3'})
-#      expect(promise).notify =>
-#        expect(this.collection.find('arrayParam')).to.eventually.property('payload').deep.equal(value).notify(done)
+    it 'collection_remove', (done) ->
+      driverHelpers.collection_remove(this.mold, 'commonBranch.inMemory.collection', done)
 
 
-    it 'remove', ->
-      # TODO: !!!
 
-    it 'find', ->
-      # TODO: !!!
-
-    it 'filter', ->
-      # TODO: !!!
-
+#  describe 'Collection.', ->
+#    beforeEach ->
+#      memory = new Memory({});
+#      this.testSchema = testSchema(memory)
+#      this.mold = mold.initSchema( {}, this.testSchema )
+#      this.container = this.mold.instance('commonBranch.inMemory')
+#      this.collection = this.mold.instance('commonBranch.inMemory.collection')
+#
+##    it 'add', ->
+##      promise = this.collection.add({name: 'name3'})
+##      expect(promise).to.eventually.property('payload').deep.equal({ name: 'name3', id: 0, $index:0 })
+#
+#    it 'add and find', ->
+#      # TODO: !!!
+##      promise = this.collection.add({name: 'name3'})
+##      expect(promise).notify =>
+##        expect(this.collection.find('arrayParam')).to.eventually.property('payload').deep.equal(value).notify(done)
+#
+#
+#    it 'remove', ->
+#      # TODO: !!!
+#
+#    it 'find', ->
+#      # TODO: !!!
+#
+#    it 'filter', ->
+#      # TODO: !!!
+#
 
 
 

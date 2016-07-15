@@ -74,7 +74,7 @@ module.exports =
     value = 'new value'
 
     # don't check successResponse because it can be any for each type of driver
-    
+
     response = {
       coocked: value
       request:
@@ -119,3 +119,51 @@ module.exports =
     value = [1,2,3]
     expect(docContainer.set('arrayParam', value)).to.eventually.notify =>
       expect(Promise.resolve(docContainer.mold)).to.eventually.property('arrayParam').deep.equal(value).notify(done)
+
+  collection_add: (mold, pathToDoc) ->
+    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+
+    driverRequest = {
+      method: 'add'
+      fullPath: pathToDoc
+      payload: {name: 'name1', __isNew: true}
+      pathToDocument: pathToDoc
+      primaryKeyName: 'id'
+    }
+    expect(driverInstance.requestHandler(driverRequest)).to.eventually
+    .property('coocked').deep.equal({id: 0, name: 'name1'})
+
+  collection_remove: (mold, pathToDoc, done) ->
+    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+
+    requestBase = {
+      fullPath: pathToDoc
+      pathToDocument: pathToDoc
+      primaryKeyName: 'id'
+    }
+
+    # add one
+    driverRequest = _.defaults({
+      method: 'add'
+      payload: {name: 'name1', __isNew: true}
+    }, requestBase)
+    expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+      # add two
+      driverRequest = _.defaults({
+        method: 'add'
+        payload: {name: 'name2', __isNew: true}
+      }, requestBase)
+      expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+        # remove first
+        driverRequest = _.defaults({
+          method: 'remove'
+          payload: {id: 0}
+        }, requestBase)
+        expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+          # get all
+          driverRequest = _.defaults({
+            method: 'get'
+          }, requestBase)
+          expect(driverInstance.requestHandler(driverRequest)).to.eventually
+          .property('coocked').deep.equal([{id: 1, name: 'name2'}])
+          .notify(done)

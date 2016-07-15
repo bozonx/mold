@@ -63,7 +63,7 @@ class LocalMemory {
 
       var newValue = {
         [request.primaryKeyName]: primary,
-        ...request.payload,
+        ..._.omit(request.payload, '__isNew'),
       };
 
       // add item to existent collection
@@ -80,15 +80,15 @@ class LocalMemory {
   remove(request) {
     return new Promise((resolve, reject) => {
       var collection = _.get(this._db, request.fullPath);
-  
+
       if (!collection) {
         reject({
           error: 'Collection not found',
         });
         return;
       }
-  
-      var item = _.find(collection, request.payload);
+
+      var item = _.find(collection, {[[request.primaryKeyName]]: request.payload[[request.primaryKeyName]]});
       if (!item || !_.isNumber(item[request.primaryKeyName])) {
         reject({
           error: 'Item not found',
@@ -98,7 +98,7 @@ class LocalMemory {
       }
 
       _.remove(collection, item);
-  
+
       resolve({
         coocked: item,
         successResponse: item,
