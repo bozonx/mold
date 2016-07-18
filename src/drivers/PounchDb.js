@@ -25,7 +25,14 @@ class LocalPounchDb {
       throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
 
     return this._db.get(request.pathToDocument)
-      .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
+      .then((resp) => {
+        console.log(13123123, resp)
+        return this._resolveHandler(request, resp)
+      }, (err) => {
+        console.log(6666, request, err)
+        return this._rejectHandler(request, err)
+      });
+      //.then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
   }
 
   set(request) {
@@ -92,21 +99,21 @@ class LocalPounchDb {
       startkey: request.pathToDocument,
     };
 
-    console.log(111111, request)
+    //console.log(111111, request)
 
 
     return new Promise((resolve, reject) => {
       this._db.allDocs(getAllQuery).then((getAllResp) => {
         var primaryId = 0;
 
-        console.log(2222, getAllResp)
+        //console.log(2222, getAllResp)
 
         if (!_.isEmpty(getAllResp.rows)) {
-          console.log(33333, _.last(getAllResp.rows))
+          //console.log(33333, _.last(getAllResp.rows))
           primaryId = _.last(getAllResp.rows).doc[request.primaryKeyName] + 1;
         }
 
-        console.log(7777, primaryId)
+        //console.log(7777, primaryId)
 
         this._db.put({
             ...request.payload,
@@ -133,19 +140,33 @@ class LocalPounchDb {
         reject(this._rejectHandler.bind(request, err))
       });
     });
-
-
   }
 
-  remove(request, resolve, reject) {
-    // TODO: test it
-    // this._db.remove(request.path).then((doc) => {
-    //   resolve({
-    //     data: doc,
-    //   });
-    // }).catch(function (err) {
-    //   reject(err);
-    // });
+  remove(request) {
+    if (!request.pathToDocument)
+      throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
+
+    // TODO: какой должен быть формат .0. или {0} ?
+    var docId = `${request.pathToDocument}.${request.payload[request.primaryKeyName]}`;
+
+    return new Promise((resolve, reject) => {
+      this._db.get(docId).then((getResp) => {
+        this._db.remove(getResp).then((resp) => {
+          resolve({
+            coocked: _.omit(getResp, '_id', '_rev'),
+            successResponse: resp,
+            request,
+          });
+        }).catch(function (err) {
+          reject({
+            error: err,
+            request,
+          });
+        });
+      }).catch((err) => {
+        reject(this._rejectHandler.bind(request, err))
+      });
+    });
   }
 
   requestHandler(request) {
