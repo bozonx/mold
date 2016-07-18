@@ -89,9 +89,7 @@ class LocalPounchDb {
 
     var getAllQuery = {
       include_docs: true,
-      //startKey: request.pathToDocument,
-      // TODO: проверить будет ли выбирать все дочерние
-      key: request.pathToDocument,
+      startkey: request.pathToDocument,
     };
 
     console.log(111111, request)

@@ -124,11 +124,11 @@ module.exports =
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
     driverRequest = {
-      method: 'add'
       fullPath: pathToDoc
-      payload: {name: 'name1'}
       pathToDocument: pathToDoc
       primaryKeyName: 'id'
+      method: 'add'
+      payload: {name: 'name1'}
     }
 
     driverInstance.requestHandler(driverRequest).then((resp) ->
