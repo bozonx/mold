@@ -43,8 +43,8 @@ describe 'Functional. Memory driver.', ->
       driverHelpers.set_array(this.mold, 'commonBranch.inMemory', done)
 
   describe 'Collection.', ->
-    it 'collection_add', ->
-      driverHelpers.collection_add(this.mold, 'commonBranch.inMemory.collection')
+    it 'collection_add', (done) ->
+      driverHelpers.collection_add(this.mold, 'commonBranch.inMemory.collection', done)
 
     it 'collection_remove', (done) ->
       driverHelpers.collection_remove(this.mold, 'commonBranch.inMemory.collection', done)

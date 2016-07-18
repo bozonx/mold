@@ -1,4 +1,4 @@
-//import _ from 'lodash';
+import _ from 'lodash';
 
 // TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
 
@@ -84,37 +84,59 @@ class LocalPounchDb {
   }
 
   add(request) {
-    // TODO: !!!!! пересмотреть
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
 
-    var query = {
+    var getAllQuery = {
       include_docs: true,
-      startKey: 'commonBranch.inPounch.docColl',
+      //startKey: request.pathToDocument,
+      // TODO: проверить будет ли выбирать все дочерние
+      key: request.pathToDocument,
     };
 
-    this._db.allDocs(query).then((resp) => {
+    console.log(111111, request)
 
-      if (resp.total_rows) {
-        // add to existing collection
-        // this._db.put({
-        //     ...resp,
-        //     ...request.document,
-        //   })
-        //   .then(this._resolveHandler.bind(this, resolve), this._rejectHandler.bind(this, reject));
 
-      }
-      else {
-        // create new collection
-        return this._db.put({
-          ...request.payload,
-          [request.primaryKeyName]: 0,
-          _id: `${request.pathToDocument}{0}`,
-        })
-        .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
-      }
+    return new Promise((resolve, reject) => {
+      this._db.allDocs(getAllQuery).then((getAllResp) => {
+        var primaryId = 0;
 
-    }).catch(this._rejectHandler.bind(this, request));
+        console.log(2222, getAllResp)
+
+        if (!_.isEmpty(getAllResp.rows)) {
+          console.log(33333, _.last(getAllResp.rows))
+          primaryId = _.last(getAllResp.rows).doc[request.primaryKeyName] + 1;
+        }
+
+        console.log(7777, primaryId)
+
+        this._db.put({
+            ...request.payload,
+            [request.primaryKeyName]: primaryId,
+            // TODO: какой должен быть формат .0. или {0} ?
+            _id: `${request.pathToDocument}.${primaryId}`,
+          })
+          .then((resp) => {
+            resolve({
+              coocked: {
+                ...request.payload,
+                _id: resp.id,
+                _rev: resp.rev,
+                id: primaryId,
+              },
+              successResponse: resp,
+              request,
+            });
+          }, (err) => {
+            reject(this._rejectHandler(request, err));
+          });
+
+      }).catch((err) => {
+        reject(this._rejectHandler.bind(request, err))
+      });
+    });
+
+
   }
 
   remove(request, resolve, reject) {

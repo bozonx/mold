@@ -231,6 +231,8 @@ export default class State {
     var promises = [];
     _.each(unsavedList[pathToCollection], (unsavedItem) => {
       var payload = _.omit(_.cloneDeep(unsavedItem), '$index');
+      // TODO: проверить в реальных условиях - не должно быть __isNew
+      //payload = _.omit(payload, '__isNew');
 
       // remove item from unsaved list
       _.remove(unsavedList[pathToCollection], unsavedItem);

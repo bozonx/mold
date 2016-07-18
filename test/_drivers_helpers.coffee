@@ -120,18 +120,24 @@ module.exports =
     expect(docContainer.set('arrayParam', value)).to.eventually.notify =>
       expect(Promise.resolve(docContainer.mold)).to.eventually.property('arrayParam').deep.equal(value).notify(done)
 
-  collection_add: (mold, pathToDoc) ->
+  collection_add: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
     driverRequest = {
       method: 'add'
       fullPath: pathToDoc
-      payload: {name: 'name1', __isNew: true}
+      payload: {name: 'name1'}
       pathToDocument: pathToDoc
       primaryKeyName: 'id'
     }
-    expect(driverInstance.requestHandler(driverRequest)).to.eventually
-    .property('coocked').deep.equal({id: 0, name: 'name1'})
+
+    driverInstance.requestHandler(driverRequest).then((resp) ->
+      assert.deepEqual(_.omit(resp.coocked, '_id', '_rev'), {id: 0, name: 'name1'})
+      done()
+    , (err) ->
+      assert.equal(1, err)
+      done()
+    )
 
   collection_remove: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
@@ -145,13 +151,13 @@ module.exports =
     # add one
     driverRequest = _.defaults({
       method: 'add'
-      payload: {name: 'name1', __isNew: true}
+      payload: {name: 'name1'}
     }, requestBase)
     expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
       # add two
       driverRequest = _.defaults({
         method: 'add'
-        payload: {name: 'name2', __isNew: true}
+        payload: {name: 'name2'}
       }, requestBase)
       expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
         # remove first

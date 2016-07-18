@@ -21,15 +21,15 @@ testSchema = (pounch) ->
     })
 
 describe 'Functional. PounchDb driver.', ->
+  beforeEach ->
+    pounch = new PounchDbDriver({
+      db: new PouchDB('myDB', {db: require('memdown')}),
+    });
+    this.testSchema = testSchema(pounch)
+    this.mold = mold.initSchema( {}, this.testSchema )
+    this.container = this.mold.instance('commonBranch.inPounch.doc1')
 
   describe 'Common usage.', ->
-    beforeEach ->
-      pounch = new PounchDbDriver({
-        db: new PouchDB('myDB', {db: require('memdown')}),
-      });
-      this.testSchema = testSchema(pounch)
-      this.mold = mold.initSchema( {}, this.testSchema )
-      this.container = this.mold.instance('commonBranch.inPounch.doc1')
 
     it 'get_primitive_check_responce', (done) ->
       driverHelpers.get_primitive_check_responce(this.mold, 'commonBranch.inPounch.doc1', done)
@@ -42,35 +42,19 @@ describe 'Functional. PounchDb driver.', ->
 
     it 'set_primitive_check_mold', (done) ->
       driverHelpers.set_primitive_check_mold(this.mold, 'commonBranch.inPounch.doc1', done)
-      
+
     it 'get array', (done) ->
       driverHelpers.get_array(this.mold, 'commonBranch.inPounch.doc1', done)
 
     it 'set array', (done) ->
       driverHelpers.set_array(this.mold, 'commonBranch.inPounch.doc1', done)
-      
-
 
   describe 'Collection.', ->
-    beforeEach ->
-      pounch = new PounchDbDriver({
-        db: new PouchDB('myDB', {db: require('memdown')}),
-      });
-      this.testSchema = testSchema(pounch)
-      this.mold = mold.initSchema( {}, this.testSchema )
-      this.collection = this.mold.instance('commonBranch.inPounch.docColl')
+    it 'collection_add', (done) ->
+      driverHelpers.collection_add(this.mold, 'commonBranch.inPounch.docColl', done)
 
-    it 'add', ->
-#      addPromise = this.collection.add({name: 'name3'})
-#      expect(addPromise).to.eventually.property('payload').deep.equal([{id: 0, name: 'name3'}])
-
-
-    it 'remove', ->
-
-    it 'find', ->
-
-    it 'filter', ->
-
+#    it 'collection_remove', (done) ->
+#      driverHelpers.collection_remove(this.mold, 'commonBranch.inPounch.docColl', done)
 
 
   # TODO: config
