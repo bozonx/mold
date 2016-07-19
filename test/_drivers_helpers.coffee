@@ -168,8 +168,17 @@ module.exports =
         expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
           # get all
           driverRequest = _.defaults({
-            method: 'get'
+            method: 'filter'
           }, requestBase)
-          expect(driverInstance.requestHandler(driverRequest)).to.eventually
-          .property('coocked').deep.equal([{id: 1, name: 'name2'}])
-          .notify(done)
+          driverInstance.requestHandler(driverRequest).then((resp) =>
+            clearValue = _.map(resp.coocked, (value) => _.omit(value, '_id', '_rev'))
+            assert.deepEqual(clearValue, [{id: 1, name: 'name2'}])
+            done()
+          , (err) =>
+            assert.equal(1, err)
+            done()
+          )
+
+#          expect(driverInstance.requestHandler(driverRequest)).to.eventually
+#          .property('coocked').deep.equal([{id: 1, name: 'name2'}])
+#          .notify(done)

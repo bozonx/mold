@@ -25,14 +25,38 @@ class LocalPounchDb {
       throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
 
     return this._db.get(request.pathToDocument)
+      // .then((resp) => {
+      //   return this._resolveHandler(request, resp)
+      // }, (err) => {
+      //   return this._rejectHandler(request, err)
+      // });
+      .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
+  }
+
+  filter(request) {
+    if (!request.pathToDocument)
+    // TODO: проверять documentParams
+      throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
+
+    var getAllQuery = {
+      include_docs: true,
+      startkey: request.pathToDocument,
+    };
+
+    return this._db.allDocs(getAllQuery)
       .then((resp) => {
         console.log(13123123, resp)
-        return this._resolveHandler(request, resp)
+        return {
+          coocked: _.map(resp.rows, (value) => {
+            return value.doc;
+          }),
+          successResponse: resp,
+          request,
+        }
       }, (err) => {
-        console.log(6666, request, err)
         return this._rejectHandler(request, err)
       });
-      //.then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
+    //.then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
   }
 
   set(request) {

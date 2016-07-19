@@ -1,4 +1,5 @@
 PouchDB = require('pouchdb')
+memdown = require('memdown')
 
 mold = require('../../src/index')
 PounchDbDriver = require('../../src/drivers/PounchDb').default
@@ -21,14 +22,18 @@ testSchema = (pounch) ->
     })
 
 describe 'Functional. PounchDb driver.', ->
-  describe 'Common usage.', ->
-    beforeEach ->
+  beforeEach ->
+    this.init = (dbName) =>
+      memdown.clearGlobalStore();
       pounch = new PounchDbDriver({
-        db: new PouchDB('myDB', {db: require('memdown')}),
+        db: new PouchDB(dbName, {db: memdown}),
       });
       this.testSchema = testSchema(pounch)
       this.mold = mold.initSchema( {}, this.testSchema )
-      this.container = this.mold.instance('commonBranch.inPounch.doc1')
+
+  describe 'Common usage.', ->
+    beforeEach ->
+      this.init('container')
 
     it 'get_primitive_check_responce', (done) ->
       driverHelpers.get_primitive_check_responce(this.mold, 'commonBranch.inPounch.doc1', done)
@@ -49,18 +54,12 @@ describe 'Functional. PounchDb driver.', ->
       driverHelpers.set_array(this.mold, 'commonBranch.inPounch.doc1', done)
 
   describe 'Collection.', ->
-    beforeEach ->
-      pounch = new PounchDbDriver({
-        db: new PouchDB('myDB', {db: require('memdown')}),
-      });
-      this.testSchema = testSchema(pounch)
-      this.mold = mold.initSchema( {}, this.testSchema )
-      this.container = this.mold.instance('commonBranch.inPounch.doc1')
-
     it 'collection_add', (done) ->
+      this.init('add')
       driverHelpers.collection_add(this.mold, 'commonBranch.inPounch.docColl', done)
 
     it 'collection_remove', (done) ->
+      this.init('remove')
       driverHelpers.collection_remove(this.mold, 'commonBranch.inPounch.docColl', done)
 
 
