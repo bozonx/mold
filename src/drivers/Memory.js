@@ -36,6 +36,26 @@ class LocalMemory {
     });
   }
 
+  
+  filter(request) {
+    return new Promise((resolve, reject) => {
+      var resp = _.get(this._db, request.fullPath);
+      if (!_.isUndefined(resp)) {
+        resolve({
+          coocked: resp,
+          successResponse: resp,
+          request,
+        });
+      }
+      else {
+        reject({
+          error: 'not found',
+          request,
+        });
+      }
+    });
+  }
+
   set(request) {
     return new Promise((resolve, reject) => {
       _.set(this._db, request.fullPath, request.payload);

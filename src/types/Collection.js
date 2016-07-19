@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 
-import { findPrimary } from '../helpers';
+//import { findPrimary } from '../helpers';
 
 export default class Collection {
   constructor(main) {
@@ -67,7 +67,7 @@ export default class Collection {
     var path;
     if (_.isUndefined(noneOrIdOrPath)) {
       path = this._root;
-      return this._main.state.getValue(path);
+      return this._main.state.getCollection(path);
     }
     else if (_.isNumber(noneOrIdOrPath)) {
       // TODO: !!! primary id
@@ -78,9 +78,6 @@ export default class Collection {
     else {
       throw new Error(`You must pass only number or string or undefined!`);
     }
-
-    // var primaryKeyName = findPrimary(this.schema.item);
-    // return this.find({[primaryKeyName]: primaryId});
   }
 
   /**
@@ -115,42 +112,4 @@ export default class Collection {
   //   return `${this._root}.${relativePath}`;
   // }
 
-
-  // /**
-  //  * Clear all the list
-  //  */
-  // clear() {
-  //   // TODO: очистить молд, сделать запрос в драйвер
-  //   // _.remove(this._main.state.getComposition(this._root));
-  //   // this.updateMold();
-  // }
-
-  // updateMold() {
-  //   this.mold = this._main.state.getComposition(this._root);
-  // }
-
-  // _initComposition() {
-  //   // TODO: это нужно делать при инициализации всей схемы
-  //   if (_.isUndefined(this._main.state.getComposition(this._root)))
-  //     this._main.state.setComposition(this._root, []);
-  // }
-
-
-  // /**
-  //  * Get filtered list. Example:
-  //  *     collection.filter({name: 'item'})
-  //  * @param {object} params - parameters for query
-  //  */
-  // filter(params) {
-  //   return this._main.state.filter(this._root, params);
-  // }
-  //
-  // /**
-  //  * Find one item via params. Example:
-  //  *     collection.find({id: 1})
-  //  * @param {object} params - parameters for query
-  //  */
-  // find(params) {
-  //   return this._main.state.find(this._root, params);
-  // }
 }

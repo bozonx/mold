@@ -29,10 +29,10 @@ export default class State {
    * @param path
    * @param value
    */
-  setComposition(path, value) {
-    // TODO: Does it really need?
-    this._composition.set(path, value);
-  }
+  // setComposition(path, value) {
+  //   // TODO: Does it really need?
+  //   this._composition.set(path, value);
+  // }
 
   /**
    * Get data by a path.
@@ -42,15 +42,38 @@ export default class State {
    * @returns {Promise}
    */
   getValue(pathToContainer) {
+    // TODO: rename to getContainer
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToContainer);
 
-    if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
-      throw new Error(`You can't request for a primitive! Only containers are support.`);
+    //if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
+    //  throw new Error(`You can't request for a primitive! Only containers are support.`);
+
+    if (schema.type)
+      throw new Error(`Method "getValue" supports only container type.`);
 
     return new Promise((resolve, reject) => {
       this._startDriverQuery({
         method: 'get',
+        fullPath: pathToContainer,
+      }).then((resp) => {
+        var pathTo = resp.request.pathToDocument || resp.request.fullPath;
+        this._composition.update(pathTo, resp.coocked);
+        resolve(resp);
+      }, reject);
+    });
+  }
+
+  getCollection(pathToContainer) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(pathToContainer);
+
+    if (schema.type != 'collection')
+      throw new Error(`Method "getCollection" supports only collection type.`);
+
+    return new Promise((resolve, reject) => {
+      this._startDriverQuery({
+        method: 'filter',
         fullPath: pathToContainer,
       }).then((resp) => {
         var pathTo = resp.request.pathToDocument || resp.request.fullPath;

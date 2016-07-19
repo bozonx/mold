@@ -10,7 +10,7 @@ export default class Request {
     var req = {
       ...preRequest,
     };
-    
+
     if (documentParams) req['documentParams'] = documentParams;
 
     return this['_generateFor_' + req.method](req);
@@ -28,6 +28,20 @@ export default class Request {
       pathToDocument: request.documentParams.pathToDocument,
     };
   }
+
+  _generateFor_filter(request) {
+    // TODO: зачем???
+    if (!request.documentParams) return request;
+
+    //let pathToField = this._getPathToField(request);
+
+    return {
+      ...request,
+      //pathToField: pathToField || undefined,
+      pathToDocument: request.documentParams.pathToDocument,
+    };
+  }
+
 
   _generateFor_set(request) {
     // TODO: зачем???
