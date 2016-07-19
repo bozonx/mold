@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import Request from './Request';
 
-import { recursiveSchema, findPrimary, splitLastParamPath } from './helpers';
+import { recursiveSchema, findPrimary, splitLastParamPath, convertToSchemaPath } from './helpers';
 
 export default class State {
   init(main, composition) {
@@ -44,10 +44,7 @@ export default class State {
   getValue(pathToContainer) {
     // TODO: rename to getContainer
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToContainer);
-
-    //if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
-    //  throw new Error(`You can't request for a primitive! Only containers are support.`);
+    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToContainer));
 
     if (schema.type)
       throw new Error(`Method "getValue" supports only container type.`);
@@ -57,16 +54,18 @@ export default class State {
         method: 'get',
         fullPath: pathToContainer,
       }).then((resp) => {
-        var pathTo = resp.request.pathToDocument || resp.request.fullPath;
+        //var pathTo = resp.request.pathToDocument || resp.request.fullPath;
+        // TODO: формировать путь pathToDocument + путь внутненнего параметра
+        var pathTo = resp.request.fullPath;
         this._composition.update(pathTo, resp.coocked);
         resolve(resp);
       }, reject);
     });
   }
 
-  getCollection(pathToContainer) {
+  getCollection(pathToCollection) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToContainer);
+    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToCollection));
 
     if (schema.type != 'collection')
       throw new Error(`Method "getCollection" supports only collection type.`);
@@ -74,7 +73,7 @@ export default class State {
     return new Promise((resolve, reject) => {
       this._startDriverQuery({
         method: 'filter',
-        fullPath: pathToContainer,
+        fullPath: pathToCollection,
       }).then((resp) => {
         var pathTo = resp.request.pathToDocument || resp.request.fullPath;
         this._composition.update(pathTo, resp.coocked);
@@ -106,7 +105,7 @@ export default class State {
   setSilent(pathToContainer, containerValue) {
     // TODO: не нужно
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToContainer);
+    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToContainer));
 
     if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
       throw new Error(`You can't do request for a primitive! Only containers are support.`);
@@ -132,7 +131,7 @@ export default class State {
 
     // It rise an error if path doesn't consist with schema
     // TODO: наверное конвертировать путь в schemaPath
-    var schema = this._main.schemaManager.get(pathToContainer);
+    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToContainer));
 
     if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
       throw new Error(`You can't do request for a primitive! Only containers are support.`);
@@ -146,7 +145,7 @@ export default class State {
   addMold(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
     // TODO: наверное конвертировать путь в schemaPath
-    var schema = this._main.schemaManager.get(pathToCollection);
+    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToCollection));
 
     if (schema.type !== 'collection')
       throw new Error(`Only collection type has "add" method.`);
@@ -170,7 +169,7 @@ export default class State {
   removeMold(pathToCollection, itemToRemove) {
     // It rise an error if path doesn't consist with schema
     // TODO: наверное конвертировать путь в schemaPath
-    var schema = this._main.schemaManager.get(pathToCollection);
+    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToCollection));
 
     if (schema.type !== 'collection')
       throw new Error(`Only collection type has "add" method.`);
@@ -193,7 +192,7 @@ export default class State {
 
     var pathToContainer;
 
-    if (this._main.schemaManager.get(pathToContainerOrPrimitive).type) {
+    if (this._main.schemaManager.get(convertToSchemaPath(pathToContainerOrPrimitive)).type) {
       // If it isn't container, get container upper on path
       let split = splitLastParamPath(pathToContainerOrPrimitive);
 
@@ -202,7 +201,7 @@ export default class State {
         throw new Error(`Something wrong with your schema. Root of primitive must be a container.`);
 
       pathToContainer = split.basePath;
-      if (this._main.schemaManager.get(pathToContainer).type) {
+      if (this._main.schemaManager.get(convertToSchemaPath(pathToContainer)).type) {
         // TODO: это должно проверяться ещё на стадии валидации схемы.
         throw new Error(`Something wrong with your schema. Primitive must be placed in container.`);
       }
@@ -232,7 +231,7 @@ export default class State {
     // TODO: rise an event - saved
 
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToCollection);
+    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToCollection));
 
     var primaryKeyName = findPrimary(schema.item);
 

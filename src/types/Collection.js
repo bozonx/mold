@@ -70,10 +70,13 @@ export default class Collection {
       return this._main.state.getCollection(path);
     }
     else if (_.isNumber(noneOrIdOrPath)) {
-      // TODO: !!! primary id
+      path = `${this._root}.${noneOrIdOrPath}`;
+      return this._main.state.getValue(path);
     }
     else if (_.isString(noneOrIdOrPath)) {
-      // TODO: !!! внетренний путь
+      // TODO: do it and test it
+      // path = `${this._root}.${noneOrIdOrPath}`;
+      // return this._main.state.getValue(path);
     }
     else {
       throw new Error(`You must pass only number or string or undefined!`);

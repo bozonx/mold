@@ -63,11 +63,11 @@ export default class Composition {
   /**
    * Update value. It use _.defaultsDeep method.
    * This method deeply mutates existent object or arrays.
-   * @param path
+   * @param driverPath
    * @param value
      */
-  update(path, value) {
-    var compPath = convertToCompositionPath(path);
+  update(driverPath, value) {
+    var compPath = convertToCompositionPath(driverPath);
     var itemCallBack = (leafPath, newValue, oldValue, action) => {
       // TODO: здесь так же вызываются leafPath == '_id' || leafPath == '_rev'
 
@@ -101,14 +101,28 @@ export default class Composition {
 
 
 
-      if (!path) {
+      if (!driverPath) {
         // Update whore storage
         recursiveMutate(this._storage, value, itemCallBack, '');
       }
       else {
         // Update part of storage
-        // TODO: лучше передавать path
-        recursiveMutate(_.get(this._storage, compPath), value, itemCallBack, '');
+        // TODO: правильно ли это???
+        var containerOnPath = _.get(this._storage, compPath);
+        if (!containerOnPath) {
+          containerOnPath = {};
+
+          // TODO: как быть если коллекция вложенна в коллекцию - надо в родительской коллекции тоже создать контейнер
+          _.set(this._storage, compPath, containerOnPath);
+
+        }
+
+        recursiveMutate(containerOnPath, value, itemCallBack, '');
+
+        var matchResult = compPath.match(/(.+)\[\d+]$/);
+        if (matchResult) {
+          this._updateIndexes(matchResult[1]);
+        }
       }
     }
     else if (_.isArray(value)) {
@@ -132,7 +146,7 @@ export default class Composition {
       _.set(this._storage, compPath, value);
       // Rise an event
       // TODO: может добавить newValue, oldValue в событие
-      this._main.events.emit('mold.composition.update', {path: path, action: 'update'});
+      this._main.events.emit('mold.composition.update', {path: compPath, action: 'update'});
     }
   }
 
@@ -181,6 +195,8 @@ export default class Composition {
     _.each(collection, (value, index) => {
       value.$index = index;
     });
+
+    console.log(3333, pathToCollection, collection)
   }
 
 }

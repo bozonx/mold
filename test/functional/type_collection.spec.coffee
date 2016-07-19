@@ -52,19 +52,36 @@ describe 'Functional. Collection type.', ->
 
   it 'get() - check promise', ->
     this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
-
     expect(this.collectionParam.get()).to.eventually
     .property('coocked').deep.equal([testValues[0]])
 
   it 'get() - check mold', (done) ->
     this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
-
     expect(this.collectionParam.get()).to.eventually.notify =>
       expect(Promise.resolve(this.collectionParam.mold)).to.eventually
       .deep.equal([
         {id: 0, name: 'name1', $index: 0},
       ])
       .notify(done)
+
+  it 'get(0) - check promise', ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
+    expect(this.collectionParam.get(0)).to.eventually
+    .property('coocked').deep.equal(testValues[0])
+
+  it 'get(0) - check mold', (done) ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
+    expect(this.collectionParam.get(0)).to.eventually.notify =>
+      expect(Promise.resolve(this.collectionParam.mold)).to.eventually
+      .deep.equal([{id: 0, name: 'name1', $index: 0}])
+      .notify(done)
+
+  # TODO: do it!
+#  it 'get("0.name") - check promise', ->
+#    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
+#    expect(this.collectionParam.get('0.name')).to.eventually
+#    .property('coocked').deep.equal(testValues[0].name)
+
 
   it 'addMold() - check mold', ->
     newItem = {name: 'name3'}

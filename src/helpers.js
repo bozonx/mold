@@ -155,12 +155,12 @@ export function findPrimary(schema) {
 
 
 export function convertToSchemaPath(path) {
-  return path.replace(/(\[\d+])|(\{\d+})/, '.item');
+  return path.replace(/(\[\d+])|(\.\d+)/, '.item');
 }
 
 export function convertToCompositionPath(moldPath) {
   var compositionPath = _.trim(moldPath.replace(/\{([a-zA-Z\_\$]+)}/g, '.\$1'), '.');
-  compositionPath = compositionPath.replace(/\{(\d+)}/g, '[\$1]');
+  compositionPath = compositionPath.replace(/\.(\d+)/g, '[\$1]');
   return compositionPath;
 }
 
