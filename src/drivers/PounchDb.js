@@ -25,11 +25,6 @@ class LocalPounchDb {
       throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
 
     return this._db.get(request.pathToDocument)
-      // .then((resp) => {
-      //   return this._resolveHandler(request, resp)
-      // }, (err) => {
-      //   return this._rejectHandler(request, err)
-      // });
       .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
   }
 
@@ -45,7 +40,6 @@ class LocalPounchDb {
 
     return this._db.allDocs(getAllQuery)
       .then((resp) => {
-        console.log(13123123, resp)
         return {
           coocked: _.map(resp.rows, (value) => {
             return value.doc;
@@ -53,10 +47,7 @@ class LocalPounchDb {
           successResponse: resp,
           request,
         }
-      }, (err) => {
-        return this._rejectHandler(request, err)
-      });
-    //.then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
+      }, this._rejectHandler.bind(this, request));
   }
 
   set(request) {
@@ -123,26 +114,17 @@ class LocalPounchDb {
       startkey: request.pathToDocument,
     };
 
-    //console.log(111111, request)
-
-
     return new Promise((resolve, reject) => {
       this._db.allDocs(getAllQuery).then((getAllResp) => {
         var primaryId = 0;
 
-        //console.log(2222, getAllResp)
-
         if (!_.isEmpty(getAllResp.rows)) {
-          //console.log(33333, _.last(getAllResp.rows))
           primaryId = _.last(getAllResp.rows).doc[request.primaryKeyName] + 1;
         }
-
-        //console.log(7777, primaryId)
 
         this._db.put({
             ...request.payload,
             [request.primaryKeyName]: primaryId,
-            // TODO: какой должен быть формат .0. или {0} ?
             _id: `${request.pathToDocument}.${primaryId}`,
           })
           .then((resp) => {
@@ -170,7 +152,6 @@ class LocalPounchDb {
     if (!request.pathToDocument)
       throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
 
-    // TODO: какой должен быть формат .0. или {0} ?
     var docId = `${request.pathToDocument}.${request.payload[request.primaryKeyName]}`;
 
     return new Promise((resolve, reject) => {

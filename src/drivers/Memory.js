@@ -36,24 +36,9 @@ class LocalMemory {
     });
   }
 
-  
+
   filter(request) {
-    return new Promise((resolve, reject) => {
-      var resp = _.get(this._db, request.fullPath);
-      if (!_.isUndefined(resp)) {
-        resolve({
-          coocked: resp,
-          successResponse: resp,
-          request,
-        });
-      }
-      else {
-        reject({
-          error: 'not found',
-          request,
-        });
-      }
-    });
+    return this.get(request);
   }
 
   set(request) {
@@ -72,18 +57,21 @@ class LocalMemory {
     return new Promise((resolve) => {
       var collection = _.get(this._db, request.fullPath);
       var primary = 0;
+
+      // create new collection if need
       if (_.isUndefined(collection)) {
         collection = [];
         _.set(this._db, request.fullPath, collection);
       }
 
+      // increment primary id if it isn't first element in collection
       if (!_.isEmpty(collection)) {
         primary = _.last(collection)[request.primaryKeyName] + 1;
       }
 
       var newValue = {
         [request.primaryKeyName]: primary,
-        ..._.omit(request.payload, '__isNew'),
+        ...request.payload,
       };
 
       // add item to existent collection
@@ -108,7 +96,7 @@ class LocalMemory {
         return;
       }
 
-      var item = _.find(collection, {[[request.primaryKeyName]]: request.payload[[request.primaryKeyName]]});
+      var item = _.find(collection, {[request.primaryKeyName]: request.payload[request.primaryKeyName]});
       if (!item || !_.isNumber(item[request.primaryKeyName])) {
         reject({
           error: 'Item not found',
