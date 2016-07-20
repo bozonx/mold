@@ -181,22 +181,11 @@ export default class Composition {
     this._updateIndexes(pathToCollection);
   }
 
-  // find(pathToCollection, params) {
-  //   // TODO: !!!!
-  // }
-  //
-  // filter(pathToCollection, params) {
-  //   // TODO: !!!!
-  // }
-
-
   _updateIndexes(pathToCollection) {
     var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
     _.each(collection, (value, index) => {
       value.$index = index;
     });
-
-    console.log(3333, pathToCollection, collection)
   }
 
 }

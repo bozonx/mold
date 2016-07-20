@@ -62,7 +62,10 @@ export function recursiveMutate(sourceData, newData, cb, root) {
 
   function updateArray(sourceData, newData, cb) {
     _.each(newData, function (value, index) {
-      if (!sourceData[index]) sourceData[index] = {};
+      if (!sourceData[index]) {
+        // It's like push but rise event
+        sourceData.splice(sourceData.length + 1, 1, {})
+      }
       recursiveMutate(sourceData[index], value, cb, makePath(root, index));
     });
   }
