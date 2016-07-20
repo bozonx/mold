@@ -174,7 +174,9 @@ export default class Composition {
   remove(pathToCollection, $index) {
     var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
 
-    _.remove(collection, function(value) {return value.$index === $index});
+    //_.remove(collection, function(value) {return value.$index === $index});
+
+    collection.splice($index, 1);
 
     // Rise an event
     this._main.events.emit('mold.composition.update', {path: pathToCollection});
