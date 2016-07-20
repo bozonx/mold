@@ -39,15 +39,18 @@ export default class Collection {
 
   /**
    * Get child by primary id.
-   * @param {number|string} primaryId - In this version it supports only primary id, not path.
+   * @param {number|string} primaryId
    * @returns {object} - instance of child
    */
   child(primaryId) {
-    // TODO: пересмотреть - должна возвращать контейнер
-    if (_.isUndefined(primaryId))
+    if (_.isUndefined(primaryId)) {
       throw new Error(`You must pass a path argument.`);
+    }
+    else if (!_.isNumber(primaryId)) {
+      throw new Error(`In this version it supports only primary id, not path.`);
+    }
 
-    var fullPath = `${this._root}{${primaryId}}`;
+    var fullPath = `${this._root}.${primaryId}`;
     // get container instance
     var instance = this._main.schemaManager.getInstance(fullPath);
     // reinit container instance with correct path

@@ -44,11 +44,9 @@ describe 'Functional. Collection type.', ->
 #    assert.deepEqual(this.container.mold.collectionParam, testValues)
 #    assert.deepEqual(this.collectionParam.mold, testValues)
 
-#  it 'child()', (done) ->
-#    expect(this.collectionParam.add(testValues[0])).notify =>
-#      expect(this.collectionParam.add(testValues[1])).notify =>
-#        assert.equal(this.collectionParam.child(2).mold.name, 'name2')
-#        done()
+  it 'child(0)', ->
+    this.collectionParam.addMold({name: 'name0'})
+    assert.equal(this.collectionParam.child(0).mold.name, 'name0')
 
   it 'get() - check promise', ->
     this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
