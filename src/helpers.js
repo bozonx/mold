@@ -64,6 +64,7 @@ export function recursiveMutate(sourceData, newData, cb, root) {
     _.each(newData, function (value, index) {
       if (!sourceData[index]) {
         // It's rise event like push, but we can set item to its index
+        // TODO: проверить можно ли устанавливать на любой индекс не по порядку
         sourceData.splice(sourceData.length + 1, 1, {})
       }
       recursiveMutate(sourceData[index], value, cb, makePath(root, index));

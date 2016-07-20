@@ -130,7 +130,6 @@ export default class State {
     // TODO: тут не обязательно устанавливать в контейнер, можно прямо в primitive
 
     // It rise an error if path doesn't consist with schema
-    // TODO: наверное конвертировать путь в schemaPath
     var schema = this._main.schemaManager.get(convertToSchemaPath(pathToContainer));
 
     if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
@@ -144,7 +143,6 @@ export default class State {
 
   addMold(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
-    // TODO: наверное конвертировать путь в schemaPath
     var schema = this._main.schemaManager.get(convertToSchemaPath(pathToCollection));
 
     if (schema.type !== 'collection')
@@ -152,8 +150,9 @@ export default class State {
 
     var preparedItem = {
       ...newItem,
-      __isNew: true,
+      $isNew: true,
     };
+
 
     // Check all nodes
     this._checkNode(schema, pathToCollection, preparedItem);
@@ -163,12 +162,11 @@ export default class State {
     if (!this._addedUnsavedItems[pathToCollection])
       this._addedUnsavedItems[pathToCollection] = [];
 
-    this._addedUnsavedItems[pathToCollection].push(newItem);
+    this._addedUnsavedItems[pathToCollection].push(preparedItem);
   }
 
   removeMold(pathToCollection, itemToRemove) {
     // It rise an error if path doesn't consist with schema
-    // TODO: наверное конвертировать путь в schemaPath
     var schema = this._main.schemaManager.get(convertToSchemaPath(pathToCollection));
 
     if (schema.type !== 'collection')
@@ -252,9 +250,9 @@ export default class State {
   _saveUnsaved(unsavedList, pathToCollection, rawQuery, successCb) {
     var promises = [];
     _.each(unsavedList[pathToCollection], (unsavedItem) => {
-      var payload = _.omit(_.cloneDeep(unsavedItem), '$index');
-      // TODO: проверить в реальных условиях - не должно быть __isNew
-      //payload = _.omit(payload, '__isNew');
+      var payload = _.omit(_.cloneDeep(unsavedItem), '$index', '$isNew', '$unsaved');
+      // TODO: проверить в реальных условиях - не должно быть $isNew
+      //payload = _.omit(payload, '$isNew');
 
       // remove item from unsaved list
       _.remove(unsavedList[pathToCollection], unsavedItem);
@@ -267,6 +265,9 @@ export default class State {
           payload: payload,
         }).then((resp) => {
           if (successCb) successCb(unsavedItem, resp);
+
+          unsavedItem.$isNew = undefined;
+
           resolve({
             path: pathToCollection,
             isOk: true,

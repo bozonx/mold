@@ -87,7 +87,7 @@ describe 'Functional. Collection type.', ->
     newItem = {name: 'name3'}
     this.collectionParam.addMold(newItem)
     assert.deepEqual(this.collectionParam.mold, [
-      {name: 'name3', __isNew: true, $index: 0},
+      {name: 'name3', $isNew: true, $index: 0},
     ])
 
   it 'addMold() - after get', (done) ->
@@ -98,7 +98,7 @@ describe 'Functional. Collection type.', ->
       this.collectionParam.addMold(newItem)
       expect(Promise.resolve(this.collectionParam.mold)).to.eventually
       .deep.equal([
-        {name: 'name3', __isNew: true, $index: 0},
+        {name: 'name3', $isNew: true, $index: 0},
         {id: 0, name: 'name1', $index: 1},
       ])
       .notify(done)
