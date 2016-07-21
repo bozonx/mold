@@ -4,8 +4,12 @@ import _ from 'lodash';
 
 //import { findPrimary } from '../helpers';
 
-export default class Collection {
+import _TypeBase from './_TypeBase';
+
+export default class Collection extends _TypeBase {
   constructor(main) {
+    super(main);
+    
     this._main = main;
 
     this._main.events.on('mold.composition.update', (data) => {
@@ -19,27 +23,11 @@ export default class Collection {
     this._root = root;
     this.schema = schema;
     // mold is just a link to the composition
-    this.mold = this._main.state.getComposition(this._root);
+    this.mold = {};
+    this.updateMold();
     //this._initComposition();
     //this.updateMold();
     this._isDocument = !!this._main.schemaManager.getDocument(this._root);
-  }
-
-  isDocument() {
-    return this._isDocument;
-  }
-
-  /**
-   * Get instance root
-   * @returns {string}
-   */
-  getRoot() {
-    return '' + this._root;
-  }
-
-  onMoldUpdate(cb) {
-    // TODO: test it
-    this._main.events.on('mold.type.event::' + this._root, cb);
   }
 
   /**
