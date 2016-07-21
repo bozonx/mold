@@ -153,7 +153,6 @@ export default class State {
       $isNew: true,
     };
 
-
     // Check all nodes
     this._checkNode(schema, pathToCollection, preparedItem);
 
@@ -171,7 +170,6 @@ export default class State {
 
     if (schema.type !== 'collection')
       throw new Error(`Only collection type has "add" method.`);
-
     if (!_.isNumber(itemToRemove.$index))
       throw new Error(`Deleted item must has an $index param.`);
 

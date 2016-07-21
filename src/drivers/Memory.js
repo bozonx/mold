@@ -56,7 +56,7 @@ class LocalMemory {
   add(request) {
     return new Promise((resolve) => {
       var collection = _.get(this._db, request.fullPath);
-      var primary = 0;
+      var primaryId = 0;
 
       // create new collection if need
       if (_.isUndefined(collection)) {
@@ -64,18 +64,22 @@ class LocalMemory {
         _.set(this._db, request.fullPath, collection);
       }
 
-      // increment primary id if it isn't first element in collection
+      if (_.isNumber(request.payload[request.primaryKeyName])) {
+        // use id from payload
+        primaryId = request.payload[request.primaryKeyName];
+      }
       if (!_.isEmpty(collection)) {
-        primary = _.last(collection)[request.primaryKeyName] + 1;
+        // increment primary id if it isn't first element in collection
+        primaryId = _.last(collection)[request.primaryKeyName] + 1;
       }
 
       var newValue = {
-        [request.primaryKeyName]: primary,
         ...request.payload,
+        [request.primaryKeyName]: primaryId,
       };
 
       // add item to existent collection
-      collection[primary] = newValue;
+      collection[primaryId] = newValue;
 
       resolve({
         coocked: newValue,

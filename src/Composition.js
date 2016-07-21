@@ -186,6 +186,9 @@ export default class Composition {
   _updateIndexes(pathToCollection) {
     var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
     _.each(collection, (value, index) => {
+      // TODO: нужно всетаки поддерживать такие коллекции - [,,,,{}] ?
+      // skip empty items. Because indexes are primary ids.
+      if (!value) return;
       value.$index = index;
     });
   }

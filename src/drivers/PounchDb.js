@@ -24,7 +24,8 @@ class LocalPounchDb {
       // TODO: проверять documentParams
       throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
 
-    return this._db.get(request.pathToDocument)
+    // TODO: надо искать по pathToDocument + innerPath (0, 0.param)
+    return this._db.get(request.fullPath)
       .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
   }
 
@@ -118,7 +119,12 @@ class LocalPounchDb {
       this._db.allDocs(getAllQuery).then((getAllResp) => {
         var primaryId = 0;
 
-        if (!_.isEmpty(getAllResp.rows)) {
+        if (_.isNumber(request.payload[request.primaryKeyName])) {
+          // use id from payload
+          primaryId = request.payload[request.primaryKeyName];
+        }
+        else if (!_.isEmpty(getAllResp.rows)) {
+          // increment id
           primaryId = _.last(getAllResp.rows).doc[request.primaryKeyName] + 1;
         }
 
