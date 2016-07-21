@@ -24,17 +24,17 @@ export default class Mold {
    *    initState(path, value) - pass values to path
    * It silently setup a state.
    */
-  initState(param1, param2) {
-    // TODO: !!!!! не нужно !!!! это делается через memory
-    
-    var path = param1;
-    var value = param2;
-    if (!param2) {
-      path = '';
-      value = param1;
-    }
-    return this.state.setSilent(path, value);
-  }
+  // initState(param1, param2) {
+  //   // TODO: !!!!! не нужно !!!! это делается через memory
+  //  
+  //   var path = param1;
+  //   var value = param2;
+  //   if (!param2) {
+  //     path = '';
+  //     value = param1;
+  //   }
+  //   return this.state.setSilent(path, value);
+  // }
 
   // /**
   //  * Is param exists on a path

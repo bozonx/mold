@@ -45,22 +45,22 @@ describe 'Functional. Container type.', ->
       assert.equal(arrayInstance.getRoot(), 'memoryBranch.inMemory.arrayParam')
       assert.deepEqual(arrayInstance.schema, this.testSchema.memoryBranch.inMemory.arrayParam)
 
-    it 'Set to child and check child mold', (done) ->
-      expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
-        expect(Promise.resolve(this.container.child('stringParam').mold)).to.eventually.equal('new value').notify(done)
-
-    # TODO: вернуть
-#    it 'set({...}) and get("")', (done) ->
-#      expect(this.container.set({stringParam: 'new value'})).to.eventually.notify =>
-#        expect(this.container.get('')).to.eventually.property('coocked').deep.equal({stringParam: 'new value'}).notify(done)
-
-    it 'get(subpath)', (done) ->
-      expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
-        expect(this.container.get('stringParam')).to.eventually.property('coocked').equal('new value').notify(done)
-
-    it 'set(subpath, newValue): Set to primitive via container', (done) ->
-      expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
-        expect(Promise.resolve(this.container.mold.stringParam)).to.eventually.equal('new value').notify(done)
+#    it 'Set to child and check child mold', (done) ->
+#      expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
+#        expect(Promise.resolve(this.container.child('stringParam').mold)).to.eventually.equal('new value').notify(done)
+#
+#    # TODO: вернуть
+##    it 'set({...}) and get("")', (done) ->
+##      expect(this.container.set({stringParam: 'new value'})).to.eventually.notify =>
+##        expect(this.container.get('')).to.eventually.property('coocked').deep.equal({stringParam: 'new value'}).notify(done)
+#
+#    it 'get(subpath)', (done) ->
+#      expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
+#        expect(this.container.get('stringParam')).to.eventually.property('coocked').equal('new value').notify(done)
+#
+#    it 'set(subpath, newValue): Set to primitive via container', (done) ->
+#      expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
+#        expect(Promise.resolve(this.container.mold.stringParam)).to.eventually.equal('new value').notify(done)
 
   describe 'setMold and save', ->
     beforeEach ->

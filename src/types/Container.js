@@ -78,43 +78,6 @@ export default class Container {
     });
   }
 
-  /**
-   * Set child value for child or for all children.
-   * If you pass path = '' or undefined, it means set data for the all children of this container
-   * There are 2 ways to use this methods:
-   * * set({param: value})
-   * * set('param', value)
-   * @returns {Promise}
-   */
-  set(pathOrValue, valueOrNothing) {
-    // TODO: just run setMold and save
-
-    var path = pathOrValue;
-    var value = valueOrNothing;
-
-    if (_.isPlainObject(pathOrValue)) {
-      path = '';
-      value = pathOrValue;
-    }
-
-    if (path) {
-      let payload = _.set({}, path, value);
-      return new Promise((resolve, reject) => {
-        this._main.state.setValue(this._root, payload).then((resp) => {
-          resolve({
-            ...resp,
-            // TODO: где-то здесь косяк - отдается не полный container а только изменившейся параметр
-            coocked: _.get(resp.coocked, path),
-            // TODO: может добавить pathToParam???
-          });
-        }, reject);
-      });
-    }
-
-    // set whole container
-    return this._main.state.setValue(this._root, value);
-  }
-
   setMold(pathOrValue, valueOrNothing) {
     var path = pathOrValue;
     var value = valueOrNothing;

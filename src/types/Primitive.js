@@ -68,29 +68,6 @@ export default class Primitive {
     //return this._main.state.getContainer(this._root);
   }
 
-  /**
-   * Set value
-   * @param {string|number|boolean} value
-   * @returns {Promise}
-   */
-  set(value) {
-    // TODO: пуределать - вызывать setMold and save
-    let payload = _.set({}, this.paramPath, value);
-
-    return new Promise((resolve, reject) => {
-      this._main.state.setValue(this.basePath, payload).then((resp) => {
-        resolve({
-          ...resp,
-          coocked: resp.coocked[this.paramPath],
-          // TODO: может добавить pathToParam???
-        });
-        this._updateMold();
-      }, reject);
-    });
-
-    //return this._main.state.setValue(this._root, value);
-  }
-
   setMold(value) {
     this.parent.setMold(this.paramPath, value);
   }

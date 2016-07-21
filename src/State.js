@@ -82,50 +82,6 @@ export default class State {
     });
   }
 
-  /**
-   * Set new value to state and rise an event.
-   * It sends request to driver and returns its promise.
-   * @param {string} path - absolute path
-   * @param {*} value
-   * @returns {Promise}
-   */
-  setValue(path, value) {
-    // TODO: не нужно
-    // TODO: rise an event
-    return this.setSilent(path, value);
-  }
-
-  /**
-   * Check and set a new value to state without rising an event.
-   * You can set only to container
-   * @param {string} pathToContainer - absolute path to container
-   * @param {*} containerValue
-   * @returns {Promise}
-   */
-  setSilent(pathToContainer, containerValue) {
-    // TODO: не нужно
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToContainer));
-
-    if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
-      throw new Error(`You can't do request for a primitive! Only containers are support.`);
-
-    // Check all nodes
-    this._checkNode(schema, pathToContainer, containerValue);
-
-    return new Promise((resolve, reject) => {
-      this._startDriverQuery({
-        method: 'set',
-        fullPath: pathToContainer,
-        payload: containerValue,
-      }).then((resp) => {
-        var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-        this._composition.update(pathTo, resp.coocked);
-        resolve(resp);
-      }, reject);
-    });
-  }
-
   setMold(pathToContainer, containerValue) {
     // TODO: тут не обязательно устанавливать в контейнер, можно прямо в primitive
 
