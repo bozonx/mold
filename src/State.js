@@ -100,10 +100,7 @@ export default class State {
 
     this._composition.addToBeginning(pathToCollection, preparedItem);
 
-    if (!this._addedUnsavedItems[pathToCollection])
-      this._addedUnsavedItems[pathToCollection] = [];
-
-    this._addedUnsavedItems[pathToCollection].push(preparedItem);
+    this._addToUnsavedList(this._addedUnsavedItems, pathToCollection, preparedItem);
   }
 
   removeMold(pathToCollection, itemToRemove) {
@@ -119,11 +116,9 @@ export default class State {
 
     this._composition.remove(pathToCollection, itemToRemove.$index);
 
-    if (!this._removedUnsavedItems[pathToCollection])
-      this._removedUnsavedItems[pathToCollection] = [];
-
-    this._removedUnsavedItems[pathToCollection].push(realItem);
+    this._addToUnsavedList(this._removedUnsavedItems, pathToCollection, realItem);
   }
+
 
   saveContainerOrPrimitive(pathToContainerOrPrimitive) {
     // TODO: rise an event - saved
@@ -230,6 +225,13 @@ export default class State {
     return promises;
   }
 
+  _addToUnsavedList(listWithUnsavedItems, pathToCollection, item) {
+    if (!listWithUnsavedItems[pathToCollection])
+      listWithUnsavedItems[pathToCollection] = [];
+
+    listWithUnsavedItems[pathToCollection].push(item);
+  }
+
   /**
    * Check for node. It isn't work with container.
    * It rises an error on invalid value or node.
@@ -240,7 +242,7 @@ export default class State {
    */
   _checkNode(path, value, schema) {
     schema = schema || this._main.schemaManager.get(path);
-    
+
     // TODO: переделать!!!
 
     var _checkRecursively = function(path, value, childPath, childSchema) {

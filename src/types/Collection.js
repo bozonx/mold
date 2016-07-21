@@ -25,8 +25,6 @@ export default class Collection extends _TypeBase {
     // mold is just a link to the composition
     this.mold = {};
     this.updateMold();
-    //this._initComposition();
-    //this.updateMold();
     this._isDocument = !!this._main.schemaManager.getDocument(this._root);
   }
 

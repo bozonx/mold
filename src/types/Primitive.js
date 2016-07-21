@@ -37,7 +37,6 @@ export default class Primitive extends _TypeBase{
    * @returns {Promise}
    */
   get() {
-    // TODO: ???? переделать, вызывать метод родительского контейнера
     return new Promise((resolve, reject) => {
       this._main.state.getContainer(this.basePath).then((resp) => {
         resolve({
