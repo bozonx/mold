@@ -10,9 +10,10 @@ export default class State {
     this._main = main;
     this._composition = composition;
     this._request = new Request(this._main);
-    this._initComposition();
     this._addedUnsavedItems = {};
     this._removedUnsavedItems = {};
+    
+    this._initComposition();
   }
 
   /**

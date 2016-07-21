@@ -6,9 +6,13 @@ export default class Container {
 
     this._main.events.on('mold.composition.update', (data) => {
       if (data.path.indexOf(this._root) === 0) {
+        // TODO: not need
+        this.mold = this._main.state.getComposition(this._root);
+
         this._main.events.emit('mold.type.event::' + this._root);
       }
     });
+
   }
 
   init(root, schema) {
@@ -67,9 +71,11 @@ export default class Container {
       });
     }
 
-    return this._main.state.getValue(this._root);
-
-    //return this._main.state.getValue((path) ? this._fullPath(path) : this._root);
+    //return this._main.state.getValue(this._root);
+    return this._main.state.getValue(this._root).then(() => {
+      // TODO: not need
+      this.mold = this._main.state.getComposition(this._root);
+    });
   }
 
   /**
