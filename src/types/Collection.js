@@ -37,6 +37,11 @@ export default class Collection {
     return '' + this._root;
   }
 
+  onMoldUpdate(cb) {
+    // TODO: test it
+    this._main.events.on('mold.type.event::' + this._root, cb);
+  }
+
   /**
    * Get child by primary id.
    * @param {number|string} primaryId
