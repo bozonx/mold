@@ -49,7 +49,7 @@ export default class PrimitiveArray {
    */
   get() {
     return new Promise((resolve, reject) => {
-      this._main.state.getValue(this.basePath).then((resp) => {
+      this._main.state.getContainer(this.basePath).then((resp) => {
         resolve({
           ...resp,
           coocked: _.get(resp.coocked, this.paramPath),
@@ -59,7 +59,7 @@ export default class PrimitiveArray {
       }, reject);
     });
 
-    //return this._main.state.getValue(this._root);
+    //return this._main.state.getContainer(this._root);
   }
 
   /**

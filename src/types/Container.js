@@ -61,7 +61,7 @@ export default class Container {
   get(path) {
     if (path) {
       return new Promise((resolve, reject) => {
-        this._main.state.getValue(this._root).then((resp) => {
+        this._main.state.getContainer(this._root).then((resp) => {
           resolve({
             ...resp,
             coocked: _.get(resp.coocked, path),
@@ -71,8 +71,8 @@ export default class Container {
       });
     }
 
-    //return this._main.state.getValue(this._root);
-    return this._main.state.getValue(this._root).then(() => {
+    //return this._main.state.getContainer(this._root);
+    return this._main.state.getContainer(this._root).then(() => {
       // TODO: not need
       this.mold = this._main.state.getComposition(this._root);
     });

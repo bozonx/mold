@@ -1,6 +1,6 @@
 # State
 
-### getValue
+### getContainer
 
 * it can get only containers, not primitives
 * it returns a promise with container data and update composition with this data

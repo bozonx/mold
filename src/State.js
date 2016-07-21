@@ -12,7 +12,7 @@ export default class State {
     this._request = new Request(this._main);
     this._addedUnsavedItems = {};
     this._removedUnsavedItems = {};
-    
+
     this._initComposition();
   }
 
@@ -42,13 +42,12 @@ export default class State {
    * @param {string} pathToContainer - absolute path
    * @returns {Promise}
    */
-  getValue(pathToContainer) {
-    // TODO: rename to getContainer
+  getContainer(pathToContainer) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(convertToSchemaPath(pathToContainer));
 
     if (schema.type)
-      throw new Error(`Method "getValue" supports only container type.`);
+      throw new Error(`Method "getContainer" supports only container type.`);
 
     return new Promise((resolve, reject) => {
       this._startDriverQuery({
