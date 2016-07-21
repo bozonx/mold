@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { recursively, convertToCompositionPath, recursiveMutate } from './helpers';
+import { convertToCompositionPath, recursiveMutate } from './helpers';
 
 export default class Composition {
   constructor(main) {

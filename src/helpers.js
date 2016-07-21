@@ -1,23 +1,23 @@
 import _ from 'lodash';
 
-export function recursively(root, item, cb) {
-  if (!_.isPlainObject(item) && !_.isArray(item)) {
-    cb(root);
-    return;
-  }
-
-  _.each(item, function (value, name) {
-    console.log(999999, root, name)
-    // TODO: !!!!! ошибка с путем
-    var childPath = _.trim(`${root}.${name}`, '.');
-
-    var isGoDeeper = cb(childPath, value, name);
-    if (_.isString(isGoDeeper)) {
-      recursively(childPath, value[isGoDeeper], cb);
-    }
-    else if (isGoDeeper) recursively(childPath, value, cb);
-  });
-}
+// export function recursively(root, item, cb) {
+//   if (!_.isPlainObject(item) && !_.isArray(item)) {
+//     cb(root);
+//     return;
+//   }
+//
+//   _.each(item, function (value, name) {
+//     console.log(999999, root, name)
+//     // TODO: !!!!! ошибка с путем
+//     var childPath = _.trim(`${root}.${name}`, '.');
+//
+//     var isGoDeeper = cb(childPath, value, name);
+//     if (_.isString(isGoDeeper)) {
+//       recursively(childPath, value[isGoDeeper], cb);
+//     }
+//     else if (isGoDeeper) recursively(childPath, value, cb);
+//   });
+// }
 
 export function recursiveSchema(root, schema, cb) {
   _.each(schema, function (childSchema, childName) {

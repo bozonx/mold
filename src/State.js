@@ -1,15 +1,12 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import Request from './Request';
-
 import { recursiveSchema, findPrimary, splitLastParamPath } from './helpers';
 
 export default class State {
   init(main, composition) {
     this._main = main;
     this._composition = composition;
-    this._request = new Request(this._main);
     this._addedUnsavedItems = {};
     this._removedUnsavedItems = {};
 
@@ -318,7 +315,12 @@ export default class State {
     if (!driver)
       throw new Error(`No-one driver did found!!!`);
 
-    var req = this._request.generate(params);
+    var req = _.clone(params);
+    var documentParams = this._main.schemaManager.getDocument(params.fullPath);
+    if (documentParams) {
+      req['documentParams'] = documentParams;
+      req['pathToDocument'] = documentParams.pathToDocument;
+    }
 
     return driver.requestHandler(req);
   }
