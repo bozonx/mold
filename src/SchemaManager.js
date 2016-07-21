@@ -16,9 +16,10 @@ export default class SchemaManager {
   init(schema, main) {
     this._rawSchema = schema;
     this._main = main;
+    this.$defaultMemoryDb = {};
 
     var memoryDriver = new Memory({
-      db: {},
+      db: this.$defaultMemoryDb,
     });
     this.mainMemoryDriver = memoryDriver.schema({}, {}).driver;
 

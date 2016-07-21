@@ -4,13 +4,10 @@ testSchema = () ->
   inMemory:
     boolParam:
       type: 'boolean'
-      default: false
     stringParam:
       type: 'string'
-      default: 'defaultStringValue'
     numberParam:
       type: 'number'
-      default: 5
 
 describe 'Functional. Primitive type.', ->
   beforeEach () ->
@@ -22,30 +19,37 @@ describe 'Functional. Primitive type.', ->
     assert.isNull(this.container.child('stringParam').mold)
     assert.isNull(this.container.child('numberParam').mold)
 
-#  it 'Set boolean value and check mold', (done) ->
-#    primitive = this.container.child('boolParam')
-#    expect(primitive.set(true)).to.eventually.notify =>
-#      expect(Promise.resolve(primitive.mold)).to.eventually.equal(true).notify(done)
-#
-#  it 'Set number value and check mold', (done) ->
-#    primitive = this.container.child('numberParam')
-#    expect(primitive.set(11)).to.eventually.notify =>
-#      expect(Promise.resolve(primitive.mold)).to.eventually.equal(11).notify(done)
-#
-#  it 'Set string value and check mold', (done) ->
-#    primitive = this.container.child('stringParam')
-#    expect(primitive.set('new value')).to.eventually.notify =>
-#      expect(Promise.resolve(primitive.mold)).to.eventually.equal('new value').notify(done)
-#
-#  it 'Set and get string value', (done) ->
-#    primitive = this.container.child('stringParam')
-#    expect(primitive.set('new value')).to.eventually.notify =>
-#      expect(primitive.get()).to.eventually.property('coocked').equal('new value').notify(done)
-#
-#  it 'setMold and save', ->
-#    primitive = this.container.child('stringParam')
-#    primitive.setMold('new value')
-#
-#    assert.equal(primitive.mold, 'new value')
-#    expect(primitive.save()).to.eventually
-#    .property('coocked').deep.equal('new value')
+  it 'get() and check response', ->
+    _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.stringParam', 'new value')
+    primitive = this.container.child('stringParam')
+    expect(primitive.get()).to.eventually.property('coocked').equal('new value')
+
+  it 'get() and check mold', (done) ->
+    _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.stringParam', 'new value')
+    primitive = this.container.child('stringParam')
+    expect(primitive.get()).to.eventually.notify =>
+      expect(Promise.resolve(primitive.mold)).to.eventually
+      .equal('new value')
+      .notify(done)
+    
+  it 'set via conatiner', ->
+    this.container.setMold('stringParam', 'new value')
+
+    assert.equal(this.container.child('stringParam').mold, 'new value')
+
+  it 'set string, boolean, number', ->
+    this.container.child('boolParam').setMold(true)
+    this.container.child('stringParam').setMold('new value')
+    this.container.child('numberParam').setMold(5)
+
+    assert.equal(this.container.child('boolParam').mold, true)
+    assert.equal(this.container.child('stringParam').mold, 'new value')
+    assert.equal(this.container.child('numberParam').mold, 5)
+
+  it 'setMold and save', ->
+    primitive = this.container.child('stringParam')
+    primitive.setMold('new value')
+
+    assert.equal(primitive.mold, 'new value')
+    expect(primitive.save()).to.eventually
+    .property('coocked').deep.equal('new value')
