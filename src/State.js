@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import Request from './Request';
 
-import { recursiveSchema, findPrimary, splitLastParamPath, convertToSchemaPath } from './helpers';
+import { recursiveSchema, findPrimary, splitLastParamPath } from './helpers';
 
 export default class State {
   init(main, composition) {
@@ -44,7 +44,7 @@ export default class State {
    */
   getContainer(pathToContainer) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToContainer));
+    var schema = this._main.schemaManager.get(pathToContainer);
 
     if (schema.type)
       throw new Error(`Method "getContainer" supports only container type.`);
@@ -65,7 +65,7 @@ export default class State {
 
   getCollection(pathToCollection) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToCollection));
+    var schema = this._main.schemaManager.get(pathToCollection);
 
     if (schema.type != 'collection')
       throw new Error(`Method "getCollection" supports only collection type.`);
@@ -86,7 +86,7 @@ export default class State {
     // TODO: тут не обязательно устанавливать в контейнер, можно прямо в primitive
 
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToContainer));
+    var schema = this._main.schemaManager.get(pathToContainer);
 
     if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
       throw new Error(`You can't do request for a primitive! Only containers are support.`);
@@ -99,7 +99,7 @@ export default class State {
 
   addMold(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToCollection));
+    var schema = this._main.schemaManager.get(pathToCollection);
 
     if (schema.type !== 'collection')
       throw new Error(`Only collection type has "add" method.`);
@@ -122,7 +122,7 @@ export default class State {
 
   removeMold(pathToCollection, itemToRemove) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToCollection));
+    var schema = this._main.schemaManager.get(pathToCollection);
 
     if (schema.type !== 'collection')
       throw new Error(`Only collection type has "add" method.`);
@@ -144,7 +144,7 @@ export default class State {
 
     var pathToContainer;
 
-    if (this._main.schemaManager.get(convertToSchemaPath(pathToContainerOrPrimitive)).type) {
+    if (this._main.schemaManager.get(pathToContainerOrPrimitive).type) {
       // If it isn't container, get container upper on path
       let split = splitLastParamPath(pathToContainerOrPrimitive);
 
@@ -153,7 +153,7 @@ export default class State {
         throw new Error(`Something wrong with your schema. Root of primitive must be a container.`);
 
       pathToContainer = split.basePath;
-      if (this._main.schemaManager.get(convertToSchemaPath(pathToContainer)).type) {
+      if (this._main.schemaManager.get(pathToContainer).type) {
         // TODO: это должно проверяться ещё на стадии валидации схемы.
         throw new Error(`Something wrong with your schema. Primitive must be placed in container.`);
       }
@@ -183,7 +183,7 @@ export default class State {
     // TODO: rise an event - saved
 
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(convertToSchemaPath(pathToCollection));
+    var schema = this._main.schemaManager.get(pathToCollection);
 
     var primaryKeyName = findPrimary(schema.item);
 
@@ -245,17 +245,6 @@ export default class State {
   }
 
   /**
-   * Validate value using validate settings by path
-   * @param {string} path - absolute path
-   * @param {*} value
-   * @returns {boolean}
-   */
-  _validateValue(path, value) {
-    // TODO: сделать
-    return true;
-  }
-
-  /**
    * Check for node. It isn't work with container.
    * It rises an error on invalid value or node.
    * @param {object} schema - schema for path
@@ -301,9 +290,8 @@ export default class State {
     }
     else if (schema.type) {
       // For primitive
-      if (this._validateValue(path, value)) {
-        return true;
-      }
+      // TODO: validate it!!!
+      return true;
     }
     else if (!schema.type) {
       // It's a container - check values for all children
