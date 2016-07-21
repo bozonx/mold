@@ -11,14 +11,6 @@ testSchema = (memory) ->
       }
     }
   })
-#  inMemory: memory({}, {
-#    collectionParam:
-#      type: 'collection'
-#      item: {
-#        id: {type: 'number', primary: true}
-#        name: {type: 'string'}
-#      }
-#  })
 
 testValues = [
   {
@@ -39,6 +31,7 @@ describe 'Functional. Collection type.', ->
     this.container = this.mold.instance('inMemory')
     this.collectionParam = this.mold.instance('inMemory.collectionParam')
 
+# TODO: do it
 #  it 'init via container', ->
 #    this.container.setSilent('collectionParam', testValues)
 #    assert.deepEqual(this.container.mold.collectionParam, testValues)
@@ -47,6 +40,31 @@ describe 'Functional. Collection type.', ->
   it 'child(0)', ->
     this.collectionParam.addMold({name: 'name0'})
     assert.equal(this.collectionParam.child(0).mold.name, 'name0')
+
+  it 'child(0).child("name") after add', ->
+    this.collectionParam.addMold({name: 'name0'})
+    collectionItem = this.collectionParam.child(0)
+    primitiveOfName = collectionItem.child('name')
+    assert.equal(primitiveOfName.mold, 'name0')
+
+  it 'child(0).child("name") after get collection', (done) ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
+    expect(this.collectionParam.get()).to.eventually.notify =>
+      collectionItem = this.collectionParam.child(0)
+      primitiveOfName = collectionItem.child('name')
+      expect(Promise.resolve(primitiveOfName.mold)).to.eventually
+      .equal('name1')
+      .notify(done)
+
+  it 'child(0).child("name") after get item', (done) ->
+    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
+    collectionItem = this.collectionParam.child(0)
+
+    expect(collectionItem.get()).to.eventually.notify =>
+      primitiveOfName = collectionItem.child('name')
+      expect(Promise.resolve(primitiveOfName.mold)).to.eventually
+      .equal('name1')
+      .notify(done)
 
   it 'get() - check promise', ->
     this.memoryDb.inMemory = {collectionParam: [testValues[0]]}

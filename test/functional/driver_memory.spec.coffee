@@ -49,36 +49,5 @@ describe 'Functional. Memory driver.', ->
     it 'collection_remove', (done) ->
       driverHelpers.collection_remove(this.mold, 'commonBranch.inMemory.collection', done)
 
-
-
-#  describe 'Collection.', ->
-#    beforeEach ->
-#      memory = new Memory({});
-#      this.testSchema = testSchema(memory)
-#      this.mold = mold.initSchema( {}, this.testSchema )
-#      this.container = this.mold.instance('commonBranch.inMemory')
-#      this.collection = this.mold.instance('commonBranch.inMemory.collection')
-#
-##    it 'add', ->
-##      promise = this.collection.add({name: 'name3'})
-##      expect(promise).to.eventually.property('payload').deep.equal({ name: 'name3', id: 0, $index:0 })
-#
-#    it 'add and find', ->
-#      # TODO: !!!
-##      promise = this.collection.add({name: 'name3'})
-##      expect(promise).notify =>
-##        expect(this.collection.find('arrayParam')).to.eventually.property('payload').deep.equal(value).notify(done)
-#
-#
-#    it 'remove', ->
-#      # TODO: !!!
-#
-#    it 'find', ->
-#      # TODO: !!!
-#
-#    it 'filter', ->
-#      # TODO: !!!
-#
-
-
-
+    it 'collection_get_item_and_get_primitive', (done) ->
+      driverHelpers.collection_get_item_and_get_primitive(this.mold, 'commonBranch.inMemory.collection', done)

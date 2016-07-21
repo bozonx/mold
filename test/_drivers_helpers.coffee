@@ -179,6 +179,26 @@ module.exports =
             done()
           )
 
-#          expect(driverInstance.requestHandler(driverRequest)).to.eventually
-#          .property('coocked').deep.equal([{id: 1, name: 'name2'}])
-#          .notify(done)
+  collection_get_item_and_get_primitive: (mold, pathToDoc, done) ->
+    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+    collection = mold.instance(pathToDoc)
+
+    requestBase = {
+      fullPath: pathToDoc
+      pathToDocument: pathToDoc
+      primaryKeyName: 'id'
+    }
+
+    # add one
+    driverRequest = _.defaults({
+      method: 'add'
+      payload: {name: 'name1'}
+    }, requestBase)
+    expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+      collectionItem = collection.child(0)
+
+      expect(collectionItem.get()).to.eventually.notify =>
+        primitiveOfName = collectionItem.child('name')
+        expect(Promise.resolve(primitiveOfName.mold)).to.eventually
+        .equal('name1')
+        .notify(done)
