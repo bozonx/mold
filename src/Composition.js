@@ -40,27 +40,6 @@ export default class Composition {
   }
 
   /**
-   * Set value to composition
-   * It hopes a path and a value are correct.
-   * It create or update value on the path.
-   * To set to root you can pass '' or undefined to a path
-   * WARNING: it replace object or error but doesn't replace existent them.
-   * @param {string} path - absolute path or ''
-   * @param {*} value - new value
-   */
-  set(path, value) {
-    if (!path)
-      return this._storage = value;
-
-    // TODO: какое назначение этой ф-и теперь???? и должна ли она поднимать событие на по томков???
-
-    _.set(this._storage, convertToCompositionPath(path), value);
-
-    // Rise an event
-    this._main.events.emit('mold.composition.update', {path: path});
-  }
-
-  /**
    * Update value. It use _.defaultsDeep method.
    * This method deeply mutates existent object or arrays.
    * @param driverPath
@@ -151,11 +130,11 @@ export default class Composition {
   }
 
   /**
-   * Add to collection
-   * @param {string} pathToCollection
+   * Add to beginning of collection
+   * @param {string} pathToCollection - it must be a path to array in composition
    * @param {object} newItem
    */
-  add(pathToCollection, newItem) {
+  addToBeginning(pathToCollection, newItem) {
     var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
     // add to beginning
     collection.unshift(newItem);
@@ -163,7 +142,6 @@ export default class Composition {
     this._main.events.emit('mold.composition.update', {path: pathToCollection});
     this._updateIndexes(pathToCollection);
   }
-
 
   /**
    * Remove item from collection by its primary id.
@@ -174,8 +152,7 @@ export default class Composition {
   remove(pathToCollection, $index) {
     var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
 
-    //_.remove(collection, function(value) {return value.$index === $index});
-
+    // remove with rising an change event on array of collection
     collection.splice($index, 1);
 
     // Rise an event
@@ -186,8 +163,7 @@ export default class Composition {
   _updateIndexes(pathToCollection) {
     var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
     _.each(collection, (value, index) => {
-      // TODO: нужно всетаки поддерживать такие коллекции - [,,,,{}] ?
-      // skip empty items. Because indexes are primary ids.
+      // skip empty items. Because indexes are primary ids. In collection may be empty items before real item
       if (!value) return;
       value.$index = index;
     });

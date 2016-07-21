@@ -157,7 +157,6 @@ export function findPrimary(schema) {
   return primary;
 }
 
-
 export function convertToSchemaPath(path) {
   return path.replace(/(\[\d+])|(\.\d+)/, '.item');
 }
@@ -199,24 +198,3 @@ export function getTheBestMatchPath(sourcePath, pathsList) {
   }
   // Else return undefined
 }
-
-// export function splitPath(path) {
-//   // TODO: not need
-//   // It gets path like this: "one.two[1].three[2].four"
-//   // and makes something like this: "one.two.1.three.2.four"
-//   var replaced = path.replace(/\{(\d+)}/g, ".\$1");
-//   replaced = _.trim(replaced, '.');
-//
-//   return replaced.split('.');
-// }
-
-// export function parseCollectionPath(path) {
-//   // TODO: not need
-//   var parsed = path.match(/(.*)\{(\d+)}([^{]*)$/);
-//   return {
-//     collectionPath: parsed[1],
-//     itemPrimary: parseInt(parsed[2]),
-//     collectionItemPath: _.trim(parsed[3], '.'),
-//   };
-// }
-

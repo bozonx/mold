@@ -79,25 +79,14 @@ export default class State {
     });
   }
 
-  setMold(pathToContainer, containerValue) {
-    // TODO: тут не обязательно устанавливать в контейнер, можно прямо в primitive
-
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToContainer);
-
-    if (_.includes(['boolean', 'string', 'number', 'array'], schema.type))
-      throw new Error(`You can't do request for a primitive! Only containers are support.`);
-
-    // Check all nodes
-    this._checkNode(schema, pathToContainer, containerValue);
-
-    this._composition.update(pathToContainer, containerValue);
+  setMold(path, value) {
+    this._checkNode(path, value);
+    this._composition.update(path, value);
   }
 
   addMold(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToCollection);
-
     if (schema.type !== 'collection')
       throw new Error(`Only collection type has "add" method.`);
 
@@ -107,9 +96,9 @@ export default class State {
     };
 
     // Check all nodes
-    this._checkNode(schema, pathToCollection, preparedItem);
+    this._checkNode(pathToCollection, preparedItem);
 
-    this._composition.add(pathToCollection, preparedItem);
+    this._composition.addToBeginning(pathToCollection, preparedItem);
 
     if (!this._addedUnsavedItems[pathToCollection])
       this._addedUnsavedItems[pathToCollection] = [];
@@ -244,13 +233,14 @@ export default class State {
   /**
    * Check for node. It isn't work with container.
    * It rises an error on invalid value or node.
-   * @param {object} schema - schema for path
    * @param {string} path - path to a param. (Not to container)
    * @param {*} value - value to set. (Not undefined and not an object)
    * @returns {boolean}
    * @private
    */
-  _checkNode(schema, path, value) {
+  _checkNode(path, value, schema) {
+    schema = schema || this._main.schemaManager.get(path);
+    
     // TODO: переделать!!!
 
     var _checkRecursively = function(path, value, childPath, childSchema) {
@@ -265,7 +255,7 @@ export default class State {
         if (_.isUndefined(childValue)) return false;
 
         // It rises an error on invalid value
-        this._checkNode(childSchema, childPath, childValue);
+        this._checkNode(childPath, childValue, childSchema);
 
         return false;
       }

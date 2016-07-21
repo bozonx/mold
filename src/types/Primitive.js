@@ -61,7 +61,6 @@ export default class Primitive {
           coocked: _.get(resp.coocked, this.paramPath),
           // TODO: может добавить pathToParam???
         });
-        //this._updateMold();
       }, reject);
     });
 
@@ -69,7 +68,8 @@ export default class Primitive {
   }
 
   setMold(value) {
-    this.parent.setMold(this.paramPath, value);
+    //this.parent.setMold(this.paramPath, value);
+    this._main.state.setMold(this._root, value);
   }
 
   save() {
