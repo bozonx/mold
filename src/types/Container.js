@@ -49,6 +49,7 @@ export default class Container extends _TypeBase{
    */
   get(path) {
     if (path) {
+      // TODO: не нужно если getContainer будет поддерживать примитивы
       return new Promise((resolve, reject) => {
         this._main.state.getContainer(this._root).then((resp) => {
           resolve({

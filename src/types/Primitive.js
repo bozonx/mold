@@ -53,15 +53,7 @@ export default class Primitive extends _TypeBase{
   }
 
   save() {
-    // TODO: не правильно вызывать метод контейнера, дергаем напрямую State
-    return new Promise((resolve, reject) => {
-      this.parent.save(this.paramPath).then((resp) => {
-        resolve({
-          ...resp,
-          coocked: resp.coocked[this.paramPath],
-        });
-      }, reject);
-    });
+    return this._main.state.saveContainerOrPrimitive(this._root);
   }
 
 }

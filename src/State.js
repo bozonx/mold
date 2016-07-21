@@ -40,6 +40,8 @@ export default class State {
    * @returns {Promise}
    */
   getContainer(pathToContainer) {
+    // TODO: наверное лучше сделать поддержку примитивов - как в save методе
+    // TODO: Можно впринципе объединить с коллекцией, хотя зачем усложнять
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToContainer);
 
@@ -121,13 +123,18 @@ export default class State {
 
 
   saveContainerOrPrimitive(pathToContainerOrPrimitive) {
+    // TODO: refactor
     // TODO: rise an event - saved
+    var isPrimitive = false;
+    var paramPath;
 
     var pathToContainer;
 
     if (this._main.schemaManager.get(pathToContainerOrPrimitive).type) {
-      // If it isn't container, get container upper on path
+      isPrimitive = true;
+      // If it is a primitive, get container upper on path
       let split = splitLastParamPath(pathToContainerOrPrimitive);
+      paramPath = split.paramPath;
 
       if (_.isUndefined(split.paramPath))
       // TODO: это должно проверяться ещё на стадии валидации схемы.
@@ -140,6 +147,7 @@ export default class State {
       }
     }
     else {
+      // It is a container
       pathToContainer = pathToContainerOrPrimitive;
     }
 
@@ -151,10 +159,22 @@ export default class State {
         fullPath: pathToContainer,
         payload: payload,
       }).then((resp) => {
-        var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-        // update composition with server response
-        this._composition.update(pathTo, resp.coocked);
-        resolve(resp);
+        if (isPrimitive) {
+          // update composition with server response
+          let preparedResp = {
+            ...resp,
+            coocked: resp.coocked[paramPath],
+          };
+          console.log(paramPath, resp)
+          this._composition.update(pathToContainerOrPrimitive, preparedResp.coocked);
+          resolve(preparedResp);
+        }
+        else {
+          let pathTo = resp.request.pathToDocument || resp.request.fullPath;
+          // update composition with server response
+          this._composition.update(pathTo, resp.coocked);
+          resolve(resp);
+        }
       }, reject);
     });
   }

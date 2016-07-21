@@ -102,10 +102,7 @@ describe 'Functional. Container type.', ->
         numberParam: null
       })
       expect(this.simpleContainer.save('stringParam')).to.eventually
-      .property('coocked').deep.equal({
-        stringParam: 'new value'
-        numberParam: null
-      })
+      .property('coocked').equal('new value')
 
     it 'to nested container', ->
       this.nestedContainer.setMold('nested', {nestedStringParam: 'new value'})
@@ -129,6 +126,4 @@ describe 'Functional. Container type.', ->
         }
       })
       expect(this.nestedContainer.save('nested.nestedStringParam')).to.eventually
-      .property('coocked').deep.equal({
-        nestedStringParam: 'new value'
-      })
+      .property('coocked').deep.equal('new value')
