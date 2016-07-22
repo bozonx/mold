@@ -198,3 +198,10 @@ export function getTheBestMatchPath(sourcePath, pathsList) {
   }
   // Else return undefined
 }
+
+export function concatPath(root, relativePath) {
+  //   if (_.startsWith(relativePath, '['))
+  //     return `${this._root}${relativePath}`;
+  //
+  return `${root}.${relativePath}`;
+}

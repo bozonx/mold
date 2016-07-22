@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import { concatPath } from '../helpers';
 import _TypeBase from './_TypeBase';
 
 
@@ -38,7 +39,7 @@ export default class Container extends _TypeBase{
     if (!path)
       throw new Error(`You must pass a path argument.`);
 
-    return this._main.schemaManager.getInstance(this._fullPath(path));
+    return this._main.schemaManager.getInstance(concatPath(this._root, path));
   }
 
   /**
@@ -49,7 +50,7 @@ export default class Container extends _TypeBase{
    * @returns {Promise}
    */
   get(path) {
-    return this._main.state.load((path) ? this._fullPath(path) : this._root);
+    return this._main.state.load((path) ? concatPath(this._root, path) : this._root);
   }
 
   setMold(pathOrValue, valueOrNothing) {
@@ -76,7 +77,7 @@ export default class Container extends _TypeBase{
   save(pathOrNothing) {
     var path;
     if (pathOrNothing) {
-      path = this._fullPath(pathOrNothing);
+      path = concatPath(this._root, pathOrNothing);
     }
     else {
       path = this._root;
@@ -85,8 +86,4 @@ export default class Container extends _TypeBase{
     return this._main.state.saveContainerOrPrimitive(path);
   }
 
-  _fullPath(relativePath) {
-    // TODO: перенести в helpers
-    return `${this._root}.${relativePath}`;
-  }
 }

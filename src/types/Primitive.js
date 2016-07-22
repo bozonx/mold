@@ -1,7 +1,5 @@
 // Primitives like boolean, string and number.
 
-import _ from 'lodash';
-
 import _TypeBase from './_TypeBase';
 
 export default class Primitive extends _TypeBase{

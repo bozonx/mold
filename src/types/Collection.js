@@ -2,8 +2,7 @@
 
 import _ from 'lodash';
 
-//import { findPrimary } from '../helpers';
-
+import { concatPath } from '../helpers';
 import _TypeBase from './_TypeBase';
 
 export default class Collection extends _TypeBase {
@@ -41,7 +40,7 @@ export default class Collection extends _TypeBase {
       throw new Error(`In this version it supports only primary id, not path.`);
     }
 
-    var fullPath = `${this._root}.${primaryId}`;
+    var fullPath = concatPath(this._root, primaryId);
     // get container instance
     var instance = this._main.schemaManager.getInstance(fullPath);
     // reinit container instance with correct path
@@ -64,7 +63,7 @@ export default class Collection extends _TypeBase {
       return this._main.state.load(path);
     }
     else if (_.isNumber(noneOrIdOrPath)) {
-      path = `${this._root}.${noneOrIdOrPath}`;
+      path = concatPath(this._root, noneOrIdOrPath);
       return this._main.state.load(path);
     }
     else if (_.isString(noneOrIdOrPath)) {
@@ -100,13 +99,5 @@ export default class Collection extends _TypeBase {
   save() {
     return this._main.state.saveCollection(this._root);
   }
-
-  // _fullPath(relativePath) {
-  //   if (_.startsWith(relativePath, '['))
-  //     // TODO: without dot
-  //     return `${this._root}${relativePath}`;
-  //
-  //   return `${this._root}.${relativePath}`;
-  // }
 
 }

@@ -1,7 +1,5 @@
 // Array type.
 
-import _ from 'lodash';
-
 import _TypeBase from './_TypeBase';
 
 // TODO: сделать валидацию типа дочерних элементов - itemsType
