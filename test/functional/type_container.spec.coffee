@@ -64,8 +64,14 @@ describe 'Functional. Container type.', ->
         numberParam: 5,
         arrayParam: ['value1'],
       }
-    # TODO: get bool and num
-    # TODO: test initial values
+
+    it 'initial values', ->
+      assert.deepEqual(this.container.mold, {
+        boolParam: null,
+        stringParam: null,
+        numberParam: null,
+        arrayParam: [],
+      })
 
     it 'get() and check mold', (done) ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory', this.containerValues)
@@ -107,9 +113,9 @@ describe 'Functional. Container type.', ->
                 type: 'string'
 
       this.mold = mold.initSchema( {}, this.testSchema )
-      this.rootInstance = this.mold.instance('memoryBranch')
-      this.simpleContainer = this.rootInstance.child('simpleContainer')
-      this.nestedContainer = this.rootInstance.child('nestedContainer')
+      rootInstance = this.mold.instance('memoryBranch')
+      this.simpleContainer = rootInstance.child('simpleContainer')
+      this.nestedContainer = rootInstance.child('nestedContainer')
 
     it 'to root', ->
       this.simpleContainer.setMold({stringParam: 'new value'})
