@@ -65,6 +65,21 @@ describe 'Functional. Collection type.', ->
         .equal('name0')
         .notify(done)
 
+    it 'child("0.name") after add', ->
+      this.collectionParam.addMold({name: 'name0'})
+      primitive = this.collectionParam.child('0.name')
+      assert.equal(primitive.mold, 'name0')
+
+    # TODO: do it - тот самый баг - похоже не обновляется mold после load
+#    it 'child("0.name") after get', (done) ->
+#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
+#      primitive = this.collectionParam.child('0.name')
+#
+#      expect(primitive.get()).to.eventually.notify =>
+#        expect(Promise.resolve(primitive.mold)).to.eventually
+#        .equal('name0')
+#        .notify(done)
+
   describe 'get(), get(num), get(subpath)', ->
     beforeEach () ->
       this.mold = mold.initSchema( {}, testSchema() )
@@ -96,11 +111,10 @@ describe 'Functional. Collection type.', ->
         .deep.equal([{id: 0, name: 'name0', $index: 0}])
         .notify(done)
 
-    # TODO: do it!
-  #  it 'get("0.name") - check promise', ->
-  #    this.memoryDb.inMemory = {collectionParam: [testValues[0]]}
-  #    expect(this.collectionParam.get('0.name')).to.eventually
-  #    .property('coocked').deep.equal(testValues[0].name)
+    it 'get("0.name") - check promise', ->
+      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
+      expect(this.collectionParam.get('0.name')).to.eventually
+      .property('coocked').deep.equal(testValues[0].name)
 
   describe 'addMold({...}), removeMold({...})', ->
     beforeEach () ->

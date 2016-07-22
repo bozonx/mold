@@ -29,18 +29,18 @@ export default class Collection extends _TypeBase {
 
   /**
    * Get child by primary id.
-   * @param {number|string} primaryId
+   * @param {number|string} primaryIdOrPath
    * @returns {object} - instance of child
    */
-  child(primaryId) {
-    if (_.isUndefined(primaryId)) {
+  child(primaryIdOrPath) {
+    if (_.isUndefined(primaryIdOrPath))
       throw new Error(`You must pass a path argument.`);
-    }
-    else if (!_.isNumber(primaryId)) {
-      throw new Error(`In this version it supports only primary id, not path.`);
-    }
 
-    var fullPath = concatPath(this._root, primaryId);
+    // else if (!_.isNumber(primaryId)) {
+    //   throw new Error(`In this version it supports only primary id, not path.`);
+    // }
+
+    var fullPath = concatPath(this._root, primaryIdOrPath);
     // get container instance
     var instance = this._main.schemaManager.getInstance(fullPath);
     // reinit container instance with correct path
@@ -67,9 +67,8 @@ export default class Collection extends _TypeBase {
       return this._main.state.load(path);
     }
     else if (_.isString(noneOrIdOrPath)) {
-      // TODO: do it and test it
-      // path = `${this._root}.${noneOrIdOrPath}`;
-      // return this._main.state.load(path);
+      path = concatPath(this._root, noneOrIdOrPath);
+      return this._main.state.load(path);
     }
     else {
       throw new Error(`You must pass only number or string or undefined!`);
