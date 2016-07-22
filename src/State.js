@@ -33,121 +33,13 @@ export default class State {
   // }
 
   /**
-   * Get data from driver, update mold with new data and return primise
-   * @param fullPath
-   * @returns {Promise}
+   * Set primitive, container or collection to mold
+   * @param {string} fullPath
+   * @param {*} value - valid value
    */
-  load(fullPath) {
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(fullPath);
-
-    if (schema.type == 'collection') {
-      // get collection
-      return new Promise((resolve, reject) => {
-        this._startDriverQuery({
-          method: 'filter',
-          fullPath: fullPath,
-        }).then((resp) => {
-          var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-          this._composition.update(pathTo, resp.coocked);
-          resolve(resp);
-        }, reject);
-      });
-    }
-    else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      // get primitive
-      return new Promise((resolve, reject) => {
-        var splits = splitLastParamPath(fullPath);
-        var basePath = splits.basePath;
-        var paramPath = splits.paramPath;
-
-        this._startDriverQuery({
-          method: 'get',
-          fullPath: basePath,
-        }).then((resp) => {
-          // TODO: пересмотреть
-
-          var preparedResponse = {
-            ...resp,
-            coocked: _.get(resp.coocked, paramPath)
-          };
-
-          this._composition.update(fullPath, preparedResponse.coocked);
-          resolve(preparedResponse);
-        }, reject);
-      });
-    }
-    else if (!schema.type) {
-      // get container
-      return new Promise((resolve, reject) => {
-        this._startDriverQuery({
-          method: 'get',
-          fullPath: fullPath,
-        }).then((resp) => {
-          //var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-          // TODO: формировать путь pathToDocument + путь внутненнего параметра
-          var pathTo = resp.request.fullPath;
-          this._composition.update(pathTo, resp.coocked);
-          resolve(resp);
-        }, reject);
-      });
-    }
-
-    throw new Error(`Unknown type!`);
-  }
-
-  /**
-   * Get data by a path.
-   * It sends request to applicable driver.
-   * After it sets a value from response to composition and return promise with this value.
-   * @param {string} pathToContainer - absolute path
-   * @returns {Promise}
-   */
-  // getContainer(pathToContainer) {
-  //   // TODO: наверное лучше сделать поддержку примитивов - как в save методе
-  //   // TODO: Можно впринципе объединить с коллекцией, хотя зачем усложнять
-  //   // It rise an error if path doesn't consist with schema
-  //   var schema = this._main.schemaManager.get(pathToContainer);
-  //
-  //   if (schema.type)
-  //     throw new Error(`Method "getContainer" supports only container type.`);
-  //
-  //   return new Promise((resolve, reject) => {
-  //     this._startDriverQuery({
-  //       method: 'get',
-  //       fullPath: pathToContainer,
-  //     }).then((resp) => {
-  //       //var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-  //       // TODO: формировать путь pathToDocument + путь внутненнего параметра
-  //       var pathTo = resp.request.fullPath;
-  //       this._composition.update(pathTo, resp.coocked);
-  //       resolve(resp);
-  //     }, reject);
-  //   });
-  // }
-
-  // getCollection(pathToCollection) {
-  //   // It rise an error if path doesn't consist with schema
-  //   var schema = this._main.schemaManager.get(pathToCollection);
-  //
-  //   if (schema.type != 'collection')
-  //     throw new Error(`Method "getCollection" supports only collection type.`);
-  //
-  //   return new Promise((resolve, reject) => {
-  //     this._startDriverQuery({
-  //       method: 'filter',
-  //       fullPath: pathToCollection,
-  //     }).then((resp) => {
-  //       var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-  //       this._composition.update(pathTo, resp.coocked);
-  //       resolve(resp);
-  //     }, reject);
-  //   });
-  // }
-
-  setMold(path, value) {
-    this._checkNode(path, value);
-    this._composition.update(path, value);
+  setMold(fullPath, value) {
+    this._checkNode(fullPath, value);
+    this._composition.update(fullPath, value);
   }
 
   addMold(pathToCollection, newItem) {
@@ -161,11 +53,8 @@ export default class State {
       $isNew: true,
     };
 
-    // Check all nodes
     this._checkNode(pathToCollection, preparedItem);
-
     this._composition.addToBeginning(pathToCollection, preparedItem);
-
     this._addToUnsavedList(this._addedUnsavedItems, pathToCollection, preparedItem);
   }
 
@@ -179,12 +68,70 @@ export default class State {
       throw new Error(`Deleted item must has an $index param.`);
 
     var realItem = _.find(this.getComposition(pathToCollection), itemToRemove);
+    // do nothing if item isn't exist
+    if (!realItem) return;
 
-    this._composition.remove(pathToCollection, itemToRemove.$index);
-
+    this._composition.remove(pathToCollection, realItem.$index);
     this._addToUnsavedList(this._removedUnsavedItems, pathToCollection, realItem);
   }
 
+  /**
+   * Get data from driver, update mold with new data and return primise
+   * @param fullPath
+   * @returns {Promise}
+   */
+  load(fullPath) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(fullPath);
+
+    if (schema.type == 'collection') {
+      // get collection
+      return new Promise((resolve, reject) => {
+        this._startDriverQuery({ method: 'filter', fullPath: fullPath }).then((resp) => {
+          // TODO: пересмотреть пути
+          var pathTo = resp.request.pathToDocument || resp.request.fullPath;
+          this._composition.update(pathTo, resp.coocked);
+          resolve(resp);
+        }, reject);
+      });
+    }
+    else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
+      // get primitive
+      return new Promise((resolve, reject) => {
+        var splits = splitLastParamPath(fullPath);
+        var basePath = splits.basePath;
+        var paramPath = splits.paramPath;
+
+        this._startDriverQuery({ method: 'get', fullPath: basePath }).then((resp) => {
+          // TODO: пересмотреть пути
+
+          // unwrap primitive value from container
+          var preparedResponse = {
+            ...resp,
+            coocked: _.get(resp.coocked, paramPath)
+          };
+
+          this._composition.update(fullPath, preparedResponse.coocked);
+          resolve(preparedResponse);
+        }, reject);
+      });
+    }
+    else if (!schema.type) {
+      // get container
+      return new Promise((resolve, reject) => {
+        this._startDriverQuery({ method: 'get', fullPath: fullPath, }).then((resp) => {
+          // TODO: пересмотреть пути
+          //var pathTo = resp.request.pathToDocument || resp.request.fullPath;
+          // TODO: формировать путь pathToDocument + путь внутненнего параметра
+          var pathTo = resp.request.fullPath;
+          this._composition.update(pathTo, resp.coocked);
+          resolve(resp);
+        }, reject);
+      });
+    }
+
+    throw new Error(`Unknown type!`);
+  }
 
   saveContainerOrPrimitive(pathToContainerOrPrimitive) {
     // TODO: refactor
@@ -377,21 +324,22 @@ export default class State {
 
   /**
    * Send query to driver for data.
-   * @param {{method: string, fullPath: string, payload: *}} params
-   *     * method is one of: get, set, add, remove
+   * @param {{method: string, fullPath: string, payload: *}} rawRequest
+   *     * method is one of: get, set, filter, add, remove
    *     * fullPath: full path in mold
    *     * payload: for "set" and "add" methods - value to set
    * @returns {Promise}
    * @private
    */
-  _startDriverQuery(params) {
-    var driver = this._main.schemaManager.getDriver(params.fullPath);
+  _startDriverQuery(rawRequest) {
+    var driver = this._main.schemaManager.getDriver(rawRequest.fullPath);
 
     if (!driver)
       throw new Error(`No-one driver did found!!!`);
 
-    var req = _.clone(params);
-    var documentParams = this._main.schemaManager.getDocument(params.fullPath);
+    // TODO: разобраться с путями
+    var req = _.clone(rawRequest);
+    var documentParams = this._main.schemaManager.getDocument(rawRequest.fullPath);
     if (documentParams) {
       req['documentParams'] = documentParams;
       req['pathToDocument'] = documentParams.pathToDocument;
@@ -421,7 +369,7 @@ export default class State {
         // Go deeper
         return false;
       }
-      else if (value.type == 'boolean' || value.type == 'string' || value.type == 'number') {
+      else if (_.includes(['boolean', 'string', 'number'], value.type)) {
         // primitive
         _.set(compositionValues, newPath, null);
 

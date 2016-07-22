@@ -4,6 +4,7 @@ import { convertToCompositionPath, recursiveMutate } from './helpers';
 
 export default class Composition {
   constructor(main) {
+    // TODO: нужен только events. Composition ничего не должен знать о схеме и других сущностях
     this._main = main;
     this._storage = {};
   }
