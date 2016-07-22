@@ -12,11 +12,11 @@ testSchema = () ->
 testValues = [
   {
     id: 0
-    name: 'name1'
+    name: 'name0'
   },
   {
     id: 1
-    name: 'name2'
+    name: 'name1'
   },
 ]
 
@@ -52,7 +52,7 @@ describe 'Functional. Collection type.', ->
         collectionItem = this.collectionParam.child(0)
         primitiveOfName = collectionItem.child('name')
         expect(Promise.resolve(primitiveOfName.mold)).to.eventually
-        .equal('name1')
+        .equal('name0')
         .notify(done)
 
     it 'child(0).child("name") after get item', (done) ->
@@ -62,7 +62,7 @@ describe 'Functional. Collection type.', ->
       expect(collectionItem.get()).to.eventually.notify =>
         primitiveOfName = collectionItem.child('name')
         expect(Promise.resolve(primitiveOfName.mold)).to.eventually
-        .equal('name1')
+        .equal('name0')
         .notify(done)
 
   describe 'get(), get(num), get(subpath)', ->
@@ -80,7 +80,7 @@ describe 'Functional. Collection type.', ->
       expect(this.collectionParam.get()).to.eventually.notify =>
         expect(Promise.resolve(this.collectionParam.mold)).to.eventually
         .deep.equal([
-          {id: 0, name: 'name1', $index: 0},
+          {id: 0, name: 'name0', $index: 0},
         ])
         .notify(done)
 
@@ -93,7 +93,7 @@ describe 'Functional. Collection type.', ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
       expect(this.collectionParam.get(0)).to.eventually.notify =>
         expect(Promise.resolve(this.collectionParam.mold)).to.eventually
-        .deep.equal([{id: 0, name: 'name1', $index: 0}])
+        .deep.equal([{id: 0, name: 'name0', $index: 0}])
         .notify(done)
 
     # TODO: do it!
@@ -123,7 +123,7 @@ describe 'Functional. Collection type.', ->
         expect(Promise.resolve(this.collectionParam.mold)).to.eventually
         .deep.equal([
           {name: 'name3', $isNew: true, $index: 0},
-          {id: 0, name: 'name1', $index: 1},
+          {id: 0, name: 'name0', $index: 1},
         ])
         .notify(done)
 
@@ -134,7 +134,7 @@ describe 'Functional. Collection type.', ->
         this.collectionParam.removeMold({$index: 0})
         expect(Promise.resolve(this.collectionParam.mold)).to.eventually
         .deep.equal([
-          {id: 1, name: 'name2', $index: 0},
+          {id: 1, name: 'name1', $index: 0},
         ])
         .notify(done)
 
@@ -192,23 +192,63 @@ describe 'Functional. Collection type.', ->
           .deep.equal({})
           .notify(done)
 
-#  it 'Many manupulations with collection', (done) ->
-#    newItem = {id: 3, name: 'name3'}
-#    expect(this.collectionParam.add(testValues[0])).notify =>
-#      expect(this.collectionParam.add(testValues[1])).notify =>
-#        expect(this.collectionParam.add(newItem)).notify =>
-#          expect(this.collectionParam.remove({id: 2})).notify =>
-#            #this.collectionParam.child(1).set('name', 'new name');
-#            assert.deepEqual _.compact(this.collectionParam.mold), [
-#              {
-#                id: 1
-#                name: 'name1'
-#                $index: 1
-#              }
-#              {
-#                id: 3
-#                name: 'name3'
-#                $index: 3
-#              }
-#            ]
-#            done()
+  describe 'complex', ->
+    beforeEach () ->
+      this.mold = mold.initSchema( {}, testSchema() )
+      this.collectionParam = this.mold.instance('inMemory.collectionParam')
+
+    it 'Many manupulations with collection', (done) ->
+      this.collectionParam.addMold({name: 'name0'})
+      this.collectionParam.addMold({name: 'name1'})
+      this.collectionParam.addMold({name: 'name2'})
+
+      assert.deepEqual _.compact(this.collectionParam.mold), [
+        {
+          name: 'name2'
+          $index: 0
+          $isNew: true
+        }
+        {
+          name: 'name1'
+          $index: 1
+          $isNew: true
+        }
+        {
+          name: 'name0'
+          $index: 2
+          $isNew: true
+        }
+      ]
+
+      this.collectionParam.removeMold(this.collectionParam.mold[1])
+      this.collectionParam.child(1).setMold('name', 'new name')
+      assert.deepEqual _.compact(this.collectionParam.mold), [
+        {
+          name: 'name2'
+          $index: 0
+          $isNew: true
+        }
+        {
+          name: 'new name'
+          $index: 1
+          $isNew: true
+        }
+      ]
+
+      expect(this.collectionParam.save()).to.eventually.notify =>
+        expect(Promise.resolve(this.collectionParam.mold)).to.eventually
+        .deep.equal([
+          {
+            id: 0
+            name: 'name2'
+            $index: 0
+          }
+          {
+            id: 1
+            name: 'new name'
+            $index: 1
+          }
+        ])
+        .notify(done)
+
+      # TODO: проверить - удаленный элемент не должен сохраняться, так как он новосозданный

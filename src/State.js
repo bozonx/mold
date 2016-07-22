@@ -214,10 +214,11 @@ export default class State {
 
   _saveUnsaved(unsavedList, pathToCollection, rawQuery, successCb) {
     var promises = [];
-    _.each(unsavedList[pathToCollection], (unsavedItem) => {
+    _.each(_.reverse(unsavedList[pathToCollection]), (unsavedItem) => {
+      // skip empty
+      if (_.isUndefined(unsavedItem)) return;
+
       var payload = _.omit(_.cloneDeep(unsavedItem), '$index', '$isNew', '$unsaved');
-      // TODO: проверить в реальных условиях - не должно быть $isNew
-      //payload = _.omit(payload, '$isNew');
 
       // remove item from unsaved list
       _.remove(unsavedList[pathToCollection], unsavedItem);
@@ -231,7 +232,7 @@ export default class State {
         }).then((resp) => {
           if (successCb) successCb(unsavedItem, resp);
 
-          unsavedItem.$isNew = undefined;
+          delete unsavedItem.$isNew;
 
           resolve({
             path: pathToCollection,

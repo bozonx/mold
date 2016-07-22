@@ -77,7 +77,7 @@ export default class Collection extends _TypeBase {
   }
 
   /**
-   * Add item to list
+   * Add item to beginning of list
    * @param item
    */
   addMold(item) {
