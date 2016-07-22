@@ -1,8 +1,6 @@
-// Array type. It can contain only primitive types or other array
+// Array type.
 
 import _ from 'lodash';
-
-import { splitLastParamPath } from '../helpers';
 
 import _TypeBase from './_TypeBase';
 
@@ -28,33 +26,30 @@ export default class PrimitiveArray extends _TypeBase{
     // mold is just a link to the composition
     this.mold = {};
     this.updateMold();
-
-    var splits = splitLastParamPath(this._root);
-    this.basePath = splits.basePath;
-    this.paramPath = splits.paramPath;
   }
 
   /**
-   * Get all
+   * Load data to mold.
    * @returns {Promise}
    */
   get() {
-    return new Promise((resolve, reject) => {
-      this._main.state.getContainer(this.basePath).then((resp) => {
-        resolve({
-          ...resp,
-          coocked: _.get(resp.coocked, this.paramPath),
-          // TODO: может добавить pathToParam???
-        });
-        this.updateMold();
-      }, reject);
-    });
-
-    //return this._main.state.getContainer(this._root);
+    return this._main.state.load(this._root);
   }
 
-  // TODO: сделать как в primitive
+  /**
+   * Set param to mold and mark it as unsaved.
+   * @param {array|null} value
+   */
+  setMold(value) {
+    this._main.state.setMold(this._root, value);
+  }
 
-
+  /**
+   * Save to driver if param is unsaved.
+   * @returns {Promise}
+   */
+  save() {
+    return this._main.state.saveContainerOrPrimitive(this._root);
+  }
 
 }

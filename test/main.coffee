@@ -17,9 +17,3 @@ global.expect = chai.expect
 global.sinon = sinon
 
 global._ = require('lodash')
-
-
-#chaiAsPromised.transformAsserterArgs = (args) ->
-#  console.log(args)
-#  return args;
-

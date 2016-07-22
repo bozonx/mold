@@ -9,7 +9,7 @@ import _TypeBase from './_TypeBase';
 export default class Collection extends _TypeBase {
   constructor(main) {
     super(main);
-    
+
     this._main = main;
 
     this._main.events.on('mold.composition.update', (data) => {
@@ -61,16 +61,16 @@ export default class Collection extends _TypeBase {
     var path;
     if (_.isUndefined(noneOrIdOrPath)) {
       path = this._root;
-      return this._main.state.getCollection(path);
+      return this._main.state.load(path);
     }
     else if (_.isNumber(noneOrIdOrPath)) {
       path = `${this._root}.${noneOrIdOrPath}`;
-      return this._main.state.getContainer(path);
+      return this._main.state.load(path);
     }
     else if (_.isString(noneOrIdOrPath)) {
       // TODO: do it and test it
       // path = `${this._root}.${noneOrIdOrPath}`;
-      // return this._main.state.getContainer(path);
+      // return this._main.state.load(path);
     }
     else {
       throw new Error(`You must pass only number or string or undefined!`);

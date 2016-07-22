@@ -48,24 +48,27 @@ export default class Container extends _TypeBase{
    * @returns {Promise}
    */
   get(path) {
-    if (path) {
-      // TODO: не нужно если getContainer будет поддерживать примитивы
-      return new Promise((resolve, reject) => {
-        this._main.state.getContainer(this._root).then((resp) => {
-          resolve({
-            ...resp,
-            coocked: _.get(resp.coocked, path),
-            // TODO: может добавить pathToParam???
-          });
-        }, reject);
-      });
-    }
+    return this._main.state.load((path) ? this._fullPath(path) : this._root);
 
-    //return this._main.state.getContainer(this._root);
-    return this._main.state.getContainer(this._root).then(() => {
-      // TODO: not need
-      this.mold = this._main.state.getComposition(this._root);
-    });
+    // if (path) {
+    //
+    //   // TODO: переделать на load
+    //   return new Promise((resolve, reject) => {
+    //     this._main.state.load(this._root).then((resp) => {
+    //       resolve({
+    //         ...resp,
+    //         coocked: _.get(resp.coocked, path),
+    //         // TODO: может добавить pathToParam???
+    //       });
+    //     }, reject);
+    //   });
+    // }
+    //
+    // //return this._main.state.getContainer(this._root);
+    // return this._main.state.load(this._root).then(() => {
+    //   // TODO: not need
+    //   this.mold = this._main.state.getComposition(this._root);
+    // });
   }
 
   setMold(pathOrValue, valueOrNothing) {
