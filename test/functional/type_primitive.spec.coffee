@@ -31,7 +31,7 @@ describe 'Functional. Primitive type.', ->
       expect(Promise.resolve(primitive.mold)).to.eventually
       .equal('new value')
       .notify(done)
-    
+
   it 'set via conatiner', ->
     this.container.setMold('stringParam', 'new value')
 
@@ -52,4 +52,4 @@ describe 'Functional. Primitive type.', ->
 
     assert.equal(primitive.mold, 'new value')
     expect(primitive.save()).to.eventually
-    .property('coocked').deep.equal('new value')
+    .property('coocked').equal('new value')

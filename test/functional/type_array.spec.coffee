@@ -9,16 +9,37 @@ testSchema = () ->
 describe 'Functional. Array Type.', ->
   beforeEach () ->
     this.mold = mold.initSchema( {}, testSchema() )
-    this.arrayParam = this.mold.instance('inMemory.arrayParam')
+    this.container = this.mold.instance('inMemory')
     this.arrayValues = ['value1', 'value2']
 
   it 'After init it\'s an empty []', () ->
-    assert.deepEqual(this.arrayParam.mold, [])
+    primitive = this.container.child('arrayParam')
+    assert.deepEqual(primitive.mold, [])
 
-#  it 'Set array and check mold', (done) ->
-#    expect(this.arrayParam.set(this.arrayValues)).to.eventually.notify =>
-#      expect(Promise.resolve(this.arrayParam.mold)).to.eventually.deep.equal(this.arrayValues).notify(done)
+# TODO: расскомментировать когда будет поддержка массивов в composition.update
+    
+#  it 'get() and check response', ->
+#    _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.arrayParam', this.arrayValues)
+#    primitive = this.container.child('arrayParam')
+#    expect(primitive.get()).to.eventually.property('coocked').deep.equal(this.arrayValues)
 #
-#  it 'Set and get array', () ->
-#    expect(this.arrayParam.set(this.arrayValues)).to.eventually.notify =>
-#      expect(this.arrayParam.get()).to.eventually.property('coocked').deep.equal(this.arrayValues).notify(done)
+#  it 'get() and check mold', (done) ->
+#    _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.arrayParam', this.arrayValues)
+#    primitive = this.container.child('arrayParam')
+#    expect(primitive.get()).to.eventually.notify =>
+#      expect(Promise.resolve(primitive.mold)).to.eventually
+#      .deep.equal(this.arrayValues)
+#      .notify(done)
+
+  it 'set via conatiner', ->
+    this.container.setMold('arrayParam', this.arrayValues)
+
+    assert.deepEqual(this.container.child('arrayParam').mold, this.arrayValues)
+
+#  it 'setMold and save', ->
+#    primitive = this.container.child('arrayParam')
+#    primitive.setMold(this.arrayValues)
+#
+#    assert.deepEqual(primitive.mold, this.arrayValues)
+#    expect(primitive.save()).to.eventually
+#    .property('coocked').deep.equal(this.arrayValues)

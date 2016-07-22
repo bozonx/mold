@@ -42,33 +42,14 @@ export default class Container extends _TypeBase{
   }
 
   /**
-   * Request for data.
+   * Load data.
    * If you pass path = '' or undefined, it means get data for this container
+   * You can pass subpath to get data for nested items
    * @param {string} path - path relative to this instance root
    * @returns {Promise}
    */
   get(path) {
     return this._main.state.load((path) ? this._fullPath(path) : this._root);
-
-    // if (path) {
-    //
-    //   // TODO: переделать на load
-    //   return new Promise((resolve, reject) => {
-    //     this._main.state.load(this._root).then((resp) => {
-    //       resolve({
-    //         ...resp,
-    //         coocked: _.get(resp.coocked, path),
-    //         // TODO: может добавить pathToParam???
-    //       });
-    //     }, reject);
-    //   });
-    // }
-    //
-    // //return this._main.state.getContainer(this._root);
-    // return this._main.state.load(this._root).then(() => {
-    //   // TODO: not need
-    //   this.mold = this._main.state.getComposition(this._root);
-    // });
   }
 
   setMold(pathOrValue, valueOrNothing) {
@@ -105,6 +86,7 @@ export default class Container extends _TypeBase{
   }
 
   _fullPath(relativePath) {
+    // TODO: перенести в helpers
     return `${this._root}.${relativePath}`;
   }
 }

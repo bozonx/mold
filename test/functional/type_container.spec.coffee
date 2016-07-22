@@ -1,7 +1,7 @@
 mold = require('../../src/index')
 
 describe 'Functional. Container type.', ->
-  describe 'common usage', ->
+  describe 'child(subpath)', ->
     beforeEach () ->
       testSchema = () ->
         memoryBranch:
@@ -17,10 +17,6 @@ describe 'Functional. Container type.', ->
               default: 5
             arrayParam:
               type: 'array'
-              item: {
-                id: {type: 'number'}
-                name: {type: 'string'}
-              }
             nested:
               nestedStringParam:
                 type: 'string'
@@ -45,22 +41,54 @@ describe 'Functional. Container type.', ->
       assert.equal(arrayInstance.getRoot(), 'memoryBranch.inMemory.arrayParam')
       assert.deepEqual(arrayInstance.schema, this.testSchema.memoryBranch.inMemory.arrayParam)
 
-#    it 'Set to child and check child mold', (done) ->
-#      expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
-#        expect(Promise.resolve(this.container.child('stringParam').mold)).to.eventually.equal('new value').notify(done)
-#
-#    # TODO: вернуть
-##    it 'set({...}) and get("")', (done) ->
-##      expect(this.container.set({stringParam: 'new value'})).to.eventually.notify =>
-##        expect(this.container.get('')).to.eventually.property('coocked').deep.equal({stringParam: 'new value'}).notify(done)
-#
-#    it 'get(subpath)', (done) ->
-#      expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
-#        expect(this.container.get('stringParam')).to.eventually.property('coocked').equal('new value').notify(done)
-#
-#    it 'set(subpath, newValue): Set to primitive via container', (done) ->
-#      expect(this.container.set('stringParam', 'new value')).to.eventually.notify =>
-#        expect(Promise.resolve(this.container.mold.stringParam)).to.eventually.equal('new value').notify(done)
+  describe 'get() and get(subpath)', ->
+    beforeEach () ->
+      testSchema = () ->
+        inMemory:
+          boolParam:
+            type: 'boolean'
+          stringParam:
+            type: 'string'
+          numberParam:
+            type: 'number'
+          arrayParam:
+            type: 'array'
+
+      this.testSchema = testSchema()
+      this.mold = mold.initSchema( {}, this.testSchema )
+      this.container = this.mold.instance('inMemory')
+
+      this.containerValues = {
+        boolParam: true,
+        stringParam: 'new value',
+        numberParam: 5,
+        arrayParam: ['value1'],
+      }
+    # TODO: get bool and num
+    # TODO: test initial values
+
+    it 'get() and check mold', (done) ->
+      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory', this.containerValues)
+      expect(this.container.get()).to.eventually.notify =>
+        expect(Promise.resolve(this.container.mold)).to.eventually
+        .deep.equal(this.containerValues)
+        .notify(done)
+
+    it 'get() and check response', ->
+      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory', this.containerValues)
+      expect(this.container.get()).to.eventually.property('coocked').deep.equal(this.containerValues)
+
+    it 'get(subpath) and check mold', (done) ->
+      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.stringParam', 'new value')
+      expect(this.container.get('stringParam')).to.eventually.notify =>
+        expect(Promise.resolve(this.container.mold.stringParam)).to.eventually
+        .equal('new value')
+        .notify(done)
+
+    it 'get(subpath) and check response', ->
+      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.stringParam', 'new value')
+      expect(this.container.get('stringParam')).to.eventually.property('coocked').equal('new value')
+
 
   describe 'setMold and save', ->
     beforeEach ->
