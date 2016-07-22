@@ -3,7 +3,7 @@ import SchemaManager from './SchemaManager';
 import State from './State';
 import Config from './Config';
 
-export default class Mold {
+export default class Main {
   constructor(config, schema) {
     this._composition = new Composition(this);
 

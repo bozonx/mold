@@ -10,7 +10,7 @@ class LocalMemory {
   /**
    * It runs on schema init.
    * @param {string} root - absolute root in main schema
-   * @param {MoldInstance} main
+   * @param {Main} main
    */
   init(root, main) {
     this._root = root;

@@ -1,7 +1,7 @@
-import MainInstance from './Mold';
+import Main from './Main';
 
 // TODO: переделать на export default
 
 export function initSchema(config, schema) {
-  return new MainInstance(config, schema);
+  return new Main(config, schema);
 }
