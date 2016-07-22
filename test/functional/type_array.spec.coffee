@@ -36,6 +36,8 @@ describe 'Functional. Array Type.', ->
 
     assert.deepEqual(this.container.child('arrayParam').mold, this.arrayValues)
 
+# TODO: расскомментировать когда будет поддержка массивов в composition.update
+
 #  it 'setMold and save', ->
 #    primitive = this.container.child('arrayParam')
 #    primitive.setMold(this.arrayValues)
