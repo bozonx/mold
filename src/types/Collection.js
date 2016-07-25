@@ -96,7 +96,7 @@ export default class Collection extends _TypeBase {
    * @returns {Promise}
    */
   save() {
-    return this._main.state.saveCollection(this._root);
+    return this._main.state.save(this._root);
   }
 
 }

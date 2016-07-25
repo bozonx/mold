@@ -1,12 +1,14 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { recursiveSchema, findPrimary, splitLastParamPath } from './helpers';
+import { recursiveSchema, splitLastParamPath } from './helpers';
+import Request from './Request';
 
 export default class State {
   init(main, composition) {
     this._main = main;
     this._composition = composition;
+    this._request = new Request(this._main);
     this._addedUnsavedItems = {};
     this._removedUnsavedItems = {};
 
@@ -75,48 +77,38 @@ export default class State {
 
     if (schema.type == 'collection') {
       // get collection
-      return new Promise((resolve, reject) => {
-        this._startDriverQuery({ method: 'filter', fullPath: fullPath }).then((resp) => {
-          // TODO: пересмотреть пути
-          var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-          this._composition.update(pathTo, resp.coocked);
-          resolve(resp);
-        }, reject);
+      return this._request.loadCollection(fullPath, (pathTo, resp) => {
+        this._composition.update(pathTo, resp.coocked);
       });
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      // get primitive
-      return new Promise((resolve, reject) => {
-        var splits = splitLastParamPath(fullPath);
-        var basePath = splits.basePath;
-        var paramPath = splits.paramPath;
-
-        this._startDriverQuery({ method: 'get', fullPath: basePath }).then((resp) => {
-          // TODO: пересмотреть пути
-
-          // unwrap primitive value from container
-          var preparedResponse = {
-            ...resp,
-            coocked: _.get(resp.coocked, paramPath)
-          };
-
-          this._composition.update(fullPath, preparedResponse.coocked);
-          resolve(preparedResponse);
-        }, reject);
+      return this._request.loadPrimitive(fullPath, (pathTo, resp) => {
+        this._composition.update(pathTo, resp.coocked);
       });
     }
     else if (!schema.type) {
-      // get container
-      return new Promise((resolve, reject) => {
-        this._startDriverQuery({ method: 'get', fullPath: fullPath, }).then((resp) => {
-          // TODO: пересмотреть пути
-          //var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-          // TODO: формировать путь pathToDocument + путь внутненнего параметра
-          var pathTo = resp.request.fullPath;
-          this._composition.update(pathTo, resp.coocked);
-          resolve(resp);
-        }, reject);
+      return this._request.loadContainer(fullPath, (pathTo, resp) => {
+        this._composition.update(pathTo, resp.coocked);
       });
+    }
+
+    throw new Error(`Unknown type!`);
+  }
+
+  save(fullPath) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(fullPath);
+
+    if (schema.type == 'collection') {
+      // get collection
+      // TODO: плохо передавать списки несохраненных
+      return this._request.saveCollection(fullPath, this._addedUnsavedItems, this._removedUnsavedItems);
+    }
+    else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
+      return this._request.savePrimitive(fullPath);
+    }
+    else if (!schema.type) {
+      return this._request.saveContainer(fullPath);
     }
 
     throw new Error(`Unknown type!`);
@@ -178,72 +170,6 @@ export default class State {
     });
   }
 
-
-  saveCollection(pathToCollection) {
-    // TODO: rise an event - saved
-
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToCollection);
-
-    var primaryKeyName = findPrimary(schema.item);
-
-    return new Promise((mainResolve) => {
-      var promises = [
-        ...this._saveUnsaved(this._addedUnsavedItems, pathToCollection, {method: 'add', primaryKeyName}, (unsavedItem, resp) => {
-          _.extend(unsavedItem, resp.coocked);
-        }),
-        ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, {method: 'remove', primaryKeyName}),
-      ];
-
-      Promise.all(promises).then(results => {
-        mainResolve(results);
-      });
-    });
-  }
-
-  _saveUnsaved(unsavedList, pathToCollection, rawQuery, successCb) {
-    var promises = [];
-    _.each(_.reverse(unsavedList[pathToCollection]), (unsavedItem) => {
-      // skip empty
-      if (_.isUndefined(unsavedItem)) return;
-
-      var payload = _.omit(_.cloneDeep(unsavedItem), '$index', '$isNew', '$unsaved');
-
-      // remove item from unsaved list
-      _.remove(unsavedList[pathToCollection], unsavedItem);
-      if (_.isEmpty(unsavedList[pathToCollection])) delete unsavedList[pathToCollection];
-
-      promises.push(new Promise((resolve) => {
-        this._startDriverQuery({
-          ...rawQuery,
-          fullPath: pathToCollection,
-          payload: payload,
-        }).then((resp) => {
-          if (successCb) successCb(unsavedItem, resp);
-
-          delete unsavedItem.$isNew;
-
-          resolve({
-            path: pathToCollection,
-            isOk: true,
-            resp,
-          });
-        }, (error) => {
-          // on error make item unsaved again
-          if (_.isUndefined(unsavedList[pathToCollection])) unsavedList[pathToCollection] = [];
-          unsavedList[pathToCollection].push(unsavedItem);
-
-          resolve({
-            path: pathToCollection,
-            isOk: false,
-            error,
-          });
-        });
-      }));
-    });
-
-    return promises;
-  }
 
   _addToUnsavedList(listWithUnsavedItems, pathToCollection, item) {
     if (!listWithUnsavedItems[pathToCollection])
@@ -322,6 +248,7 @@ export default class State {
    * @private
    */
   _startDriverQuery(rawRequest) {
+    // TODO: убрать от сюда
     var driver = this._main.schemaManager.getDriver(rawRequest.fullPath);
 
     if (!driver)
