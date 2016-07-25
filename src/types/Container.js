@@ -13,7 +13,7 @@ export default class Container extends _TypeBase{
     this._main.events.on('mold.composition.update', (data) => {
       if (data.path.indexOf(this._root) === 0) {
         // TODO: not need
-        this.mold = this._main.state.getComposition(this._root);
+        //this.updateMold();
 
         this._main.events.emit('mold.type.event::' + this._root);
       }

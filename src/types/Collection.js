@@ -71,7 +71,7 @@ export default class Collection extends _TypeBase {
       return this._main.state.load(path);
     }
     else {
-      throw new Error(`You must pass only number or string or undefined!`);
+      throw new Error(`You must pass only number, string or undefined!`);
     }
   }
 

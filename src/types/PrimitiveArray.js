@@ -1,53 +1,11 @@
 // Array type.
 
-import _TypeBase from './_TypeBase';
+import Primitive from './Primitive';
 
 // TODO: сделать валидацию типа дочерних элементов - itemsType
 
-export default class PrimitiveArray extends _TypeBase{
+export default class PrimitiveArray extends Primitive{
   constructor(main) {
     super(main);
-
-    this._main = main;
-
-    this._main.events.on('mold.composition.update', (data) => {
-      if (data.path.indexOf(this._root) === 0) {
-        this.updateMold();
-        this._main.events.emit('mold.type.event::' + this._root);
-      }
-    });
   }
-
-  init(root, schema) {
-    this._root = root;
-    this.schema = schema;
-    // mold is just a link to the composition
-    this.mold = {};
-    this.updateMold();
-  }
-
-  /**
-   * Load data to mold.
-   * @returns {Promise}
-   */
-  get() {
-    return this._main.state.load(this._root);
-  }
-
-  /**
-   * Set param to mold and mark it as unsaved.
-   * @param {array|null} value
-   */
-  setMold(value) {
-    this._main.state.setMold(this._root, value);
-  }
-
-  /**
-   * Save to driver if param is unsaved.
-   * @returns {Promise}
-   */
-  save() {
-    return this._main.state.saveContainerOrPrimitive(this._root);
-  }
-
 }

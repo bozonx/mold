@@ -6,7 +6,7 @@ testSchema = () ->
       type: 'array'
       itemsType: 'string',
 
-describe 'Functional. Array Type.', ->
+describe 'Functional. Primitive array Type.', ->
   beforeEach () ->
     this.mold = mold.initSchema( {}, testSchema() )
     this.container = this.mold.instance('inMemory')

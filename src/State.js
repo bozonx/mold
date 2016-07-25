@@ -14,23 +14,12 @@ export default class State {
   }
 
   /**
-   * Get value directly
-   * @param path
+   * Get mold by path
+   * @param {string} path
    */
-  getComposition(path) {
-    // TODO: Does it really need?
+  getMold(path) {
     return this._composition.get(path);
   }
-
-  /**
-   * Set directly
-   * @param path
-   * @param value
-   */
-  // setComposition(path, value) {
-  //   // TODO: Does it really need?
-  //   this._composition.set(path, value);
-  // }
 
   /**
    * Set primitive, container or collection to mold
@@ -67,7 +56,7 @@ export default class State {
     if (!_.isNumber(itemToRemove.$index))
       throw new Error(`Deleted item must has an $index param.`);
 
-    var realItem = _.find(this.getComposition(pathToCollection), itemToRemove);
+    var realItem = _.find(this._composition.get(pathToCollection), itemToRemove);
     // do nothing if item isn't exist
     if (!realItem) return;
 
@@ -162,7 +151,7 @@ export default class State {
       pathToContainer = pathToContainerOrPrimitive;
     }
 
-    var payload = this.getComposition(pathToContainer);
+    var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
       this._startDriverQuery({

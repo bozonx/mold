@@ -26,6 +26,6 @@ export default class _TypeBase {
   }
 
   updateMold() {
-    this.mold = this._main.state.getComposition(this._root);
+    this.mold = this._main.state.getMold(this._root);
   }
 }
