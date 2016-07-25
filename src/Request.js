@@ -4,13 +4,13 @@ import _ from 'lodash';
 import { findPrimary, splitLastParamPath } from './helpers';
 
 export default class Request {
-  constructor(main) {
+  constructor(main, composition) {
     this._main = main;
+    // TODO: поидее класс ничего не должен знать о composition
+    this._composition = composition;
 
     // this._addedUnsavedItems = {};
     // this._removedUnsavedItems = {};
-    //
-    // this._initComposition();
   }
 
   loadPrimitive(pathToPrimitive, cb) {
@@ -63,12 +63,85 @@ export default class Request {
     });
   }
 
-  savePrimitive() {
+  savePrimitive(pathToPrimitive) {
+    // TODO: rise an event - saved
+    var isPrimitive = false;
+    var paramPath;
 
+    var pathToContainer;
+
+    isPrimitive = true;
+    // If it is a primitive, get container upper on path
+    let split = splitLastParamPath(pathToPrimitive);
+    paramPath = split.paramPath;
+
+    if (_.isUndefined(split.paramPath))
+    // TODO: это должно проверяться ещё на стадии валидации схемы.
+      throw new Error(`Something wrong with your schema. Root of primitive must be a container.`);
+
+    pathToContainer = split.basePath;
+    if (this._main.schemaManager.get(pathToContainer).type) {
+      // TODO: это должно проверяться ещё на стадии валидации схемы.
+      throw new Error(`Something wrong with your schema. Primitive must be placed in container.`);
+    }
+
+    var payload = this._composition.get(pathToContainer);
+
+    return new Promise((resolve, reject) => {
+      this._startDriverRequest({
+        method: 'set',
+        fullPath: pathToContainer,
+        payload: payload,
+      }).then((resp) => {
+        if (isPrimitive) {
+          // update composition with server response
+          let preparedResp = {
+            ...resp,
+            coocked: resp.coocked[paramPath],
+          };
+          this._composition.update(pathToPrimitive, preparedResp.coocked);
+          resolve(preparedResp);
+        }
+        else {
+          let pathTo = resp.request.pathToDocument || resp.request.fullPath;
+          // update composition with server response
+          this._composition.update(pathTo, resp.coocked);
+          resolve(resp);
+        }
+      }, reject);
+    });
   }
 
-  saveContainer() {
+  saveContainer(pathToContainer) {
+    // TODO: rise an event - saved
+    var isPrimitive = false;
+    var paramPath;
 
+    var payload = this._composition.get(pathToContainer);
+
+    return new Promise((resolve, reject) => {
+      this._startDriverRequest({
+        method: 'set',
+        fullPath: pathToContainer,
+        payload: payload,
+      }).then((resp) => {
+        if (isPrimitive) {
+          // update composition with server response
+          let preparedResp = {
+            ...resp,
+            coocked: resp.coocked[paramPath],
+          };
+          this._composition.update(pathToContainer, preparedResp.coocked);
+          resolve(preparedResp);
+        }
+        else {
+          let pathTo = resp.request.pathToDocument || resp.request.fullPath;
+          // update composition with server response
+          this._composition.update(pathTo, resp.coocked);
+          resolve(resp);
+        }
+      }, reject);
+    });
   }
   
   saveCollection(pathToCollection, addedUnsavedItems, removedUnsavedItems) {

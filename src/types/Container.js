@@ -83,7 +83,7 @@ export default class Container extends _TypeBase{
       path = this._root;
     }
 
-    return this._main.state.saveContainerOrPrimitive(path);
+    return this._main.state.save(path);
   }
 
 }

@@ -45,7 +45,7 @@ export default class Primitive extends _TypeBase{
    * @returns {Promise}
    */
   save() {
-    return this._main.state.saveContainerOrPrimitive(this._root);
+    return this._main.state.save(this._root);
   }
 
 }
