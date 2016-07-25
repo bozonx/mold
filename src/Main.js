@@ -5,12 +5,11 @@ import Config from './Config';
 
 export default class Main {
   constructor(config, schema) {
-    this._composition = new Composition(this);
-
     var configInstance = new Config(config);
     this.config = configInstance.get();
     this.events = this.config.eventEmitter;
 
+    this._composition = new Composition(this.events);
     this.schemaManager = new SchemaManager();
     this.state = new State();
 

@@ -3,9 +3,8 @@ import _ from 'lodash';
 import { convertToCompositionPath, recursiveMutate } from './helpers';
 
 export default class Composition {
-  constructor(main) {
-    // TODO: нужен только events. Composition ничего не должен знать о схеме и других сущностях
-    this._main = main;
+  constructor(events) {
+    this._events = events;
     this._storage = {};
   }
 
@@ -28,17 +27,17 @@ export default class Composition {
     return _.get(this._storage, convertToCompositionPath(path));
   }
 
-  /**
-   * Checks for storage has a value
-   * If you pass '' to a path, it means root and returns true
-   * @param {string} path - absolute path
-   * @returns {boolean}
-   */
-  has(path) {
-    if (path === '') return true;
-
-    return _.has(this._storage, convertToCompositionPath(path));
-  }
+  // /**
+  //  * Checks for storage has a value
+  //  * If you pass '' to a path, it means root and returns true
+  //  * @param {string} path - absolute path
+  //  * @returns {boolean}
+  //  */
+  // has(path) {
+  //   if (path === '') return true;
+  //
+  //   return _.has(this._storage, convertToCompositionPath(path));
+  // }
 
   /**
    * Update value. It use _.defaultsDeep method.
@@ -70,7 +69,7 @@ export default class Composition {
       }
 
       // TODO: может добавить newValue, oldValue в событие
-      this._main.events.emit('mold.composition.update', {
+      this._events.emit('mold.composition.update', {
         path: _.trim(`${compPath}.${leafPath}`, '.'),
         action: action,
       });
@@ -126,7 +125,7 @@ export default class Composition {
       _.set(this._storage, compPath, value);
       // Rise an event
       // TODO: может добавить newValue, oldValue в событие
-      this._main.events.emit('mold.composition.update', {path: compPath, action: 'update'});
+      this._events.emit('mold.composition.update', {path: compPath, action: 'update'});
     }
   }
 
@@ -140,7 +139,7 @@ export default class Composition {
     // add to beginning
     collection.unshift(newItem);
     // Rise an event
-    this._main.events.emit('mold.composition.update', {path: pathToCollection});
+    this._events.emit('mold.composition.update', {path: pathToCollection});
     this._updateIndexes(pathToCollection);
   }
 
@@ -157,7 +156,7 @@ export default class Composition {
     collection.splice($index, 1);
 
     // Rise an event
-    this._main.events.emit('mold.composition.update', {path: pathToCollection});
+    this._events.emit('mold.composition.update', {path: pathToCollection});
     this._updateIndexes(pathToCollection);
   }
 

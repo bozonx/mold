@@ -3,12 +3,10 @@ Composition = require('../../src/Composition').default
 describe 'Unit. Composition.', ->
   beforeEach ->
     this.emitSpy = sinon.spy();
-    this.mainMock = {
-      events: {
-        emit: this.emitSpy
-      }
+    this.eventsMock = {
+      emit: this.emitSpy
     }
-    this.composition = new Composition(this.mainMock)
+    this.composition = new Composition(this.eventsMock)
 
   describe 'update.', ->
     it 'update primitive', ->
