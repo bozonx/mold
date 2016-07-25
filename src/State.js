@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { recursiveSchema, splitLastParamPath } from './helpers';
+import { recursiveSchema } from './helpers';
 import Request from './Request';
 
 export default class State {
@@ -9,8 +9,6 @@ export default class State {
     this._main = main;
     this._composition = composition;
     this._request = new Request(this._main, composition);
-    this._addedUnsavedItems = {};
-    this._removedUnsavedItems = {};
 
     this._initComposition();
   }
@@ -46,7 +44,7 @@ export default class State {
 
     this._checkNode(pathToCollection, preparedItem);
     this._composition.addToBeginning(pathToCollection, preparedItem);
-    this._addToUnsavedList(this._addedUnsavedItems, pathToCollection, preparedItem);
+    this._request.addUnsavedAddedItem(pathToCollection, preparedItem);
   }
 
   removeMold(pathToCollection, itemToRemove) {
@@ -63,7 +61,7 @@ export default class State {
     if (!realItem) return;
 
     this._composition.remove(pathToCollection, realItem.$index);
-    this._addToUnsavedList(this._removedUnsavedItems, pathToCollection, realItem);
+    this._request.addUnsavedRemovedItem(pathToCollection, realItem);
   }
 
   /**
@@ -76,20 +74,13 @@ export default class State {
     var schema = this._main.schemaManager.get(fullPath);
 
     if (schema.type == 'collection') {
-      // get collection
-      return this._request.loadCollection(fullPath, (pathTo, resp) => {
-        this._composition.update(pathTo, resp.coocked);
-      });
+      return this._request.loadCollection(fullPath);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      return this._request.loadPrimitive(fullPath, (pathTo, resp) => {
-        this._composition.update(pathTo, resp.coocked);
-      });
+      return this._request.loadPrimitive(fullPath);
     }
     else if (!schema.type) {
-      return this._request.loadContainer(fullPath, (pathTo, resp) => {
-        this._composition.update(pathTo, resp.coocked);
-      });
+      return this._request.loadContainer(fullPath);
     }
 
     throw new Error(`Unknown type!`);
@@ -100,9 +91,7 @@ export default class State {
     var schema = this._main.schemaManager.get(fullPath);
 
     if (schema.type == 'collection') {
-      // get collection
-      // TODO: плохо передавать списки несохраненных
-      return this._request.saveCollection(fullPath, this._addedUnsavedItems, this._removedUnsavedItems);
+      return this._request.saveCollection(fullPath);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
       return this._request.savePrimitive(fullPath);
@@ -112,14 +101,6 @@ export default class State {
     }
 
     throw new Error(`Unknown type!`);
-  }
-
-
-  _addToUnsavedList(listWithUnsavedItems, pathToCollection, item) {
-    if (!listWithUnsavedItems[pathToCollection])
-      listWithUnsavedItems[pathToCollection] = [];
-
-    listWithUnsavedItems[pathToCollection].push(item);
   }
 
   /**

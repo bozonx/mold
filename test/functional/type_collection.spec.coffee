@@ -182,7 +182,7 @@ describe 'Functional. Collection type.', ->
 
       expect(this.collectionParam.save()).to.eventually.notify =>
         expect(Promise.resolve(this.mold.schemaManager.$defaultMemoryDb)).to.eventually.notify =>
-          expect(Promise.resolve(this.collectionParam._main.state._addedUnsavedItems)).to.eventually
+          expect(Promise.resolve(this.collectionParam._main.state._request._addedUnsavedItems)).to.eventually
           .deep.equal({})
           .notify(done)
 
@@ -202,7 +202,7 @@ describe 'Functional. Collection type.', ->
         this.collectionParam.removeMold(this.collectionParam.mold[0])
 
         expect(this.collectionParam.save()).to.eventually.notify =>
-          expect(Promise.resolve(this.collectionParam._main.state._removedUnsavedItems)).to.eventually
+          expect(Promise.resolve(this.collectionParam._main.state._request._removedUnsavedItems)).to.eventually
           .deep.equal({})
           .notify(done)
 

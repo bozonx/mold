@@ -9,11 +9,25 @@ export default class Request {
     // TODO: поидее класс ничего не должен знать о composition
     this._composition = composition;
 
-    // this._addedUnsavedItems = {};
-    // this._removedUnsavedItems = {};
+    this._addedUnsavedItems = {};
+    this._removedUnsavedItems = {};
   }
 
-  loadPrimitive(pathToPrimitive, cb) {
+  addUnsavedAddedItem(pathToCollection, item) {
+    if (!this._addedUnsavedItems[pathToCollection])
+      this._addedUnsavedItems[pathToCollection] = [];
+
+    this._addedUnsavedItems[pathToCollection].push(item);
+  }
+
+  addUnsavedRemovedItem(pathToCollection, item) {
+    if (!this._removedUnsavedItems[pathToCollection])
+      this._removedUnsavedItems[pathToCollection] = [];
+
+    this._removedUnsavedItems[pathToCollection].push(item);
+  }
+
+  loadPrimitive(pathToPrimitive) {
     return new Promise((resolve, reject) => {
       var splits = splitLastParamPath(pathToPrimitive);
       var basePath = splits.basePath;
@@ -28,14 +42,14 @@ export default class Request {
           coocked: _.get(resp.coocked, paramPath)
         };
 
-        cb(pathToPrimitive, preparedResponse);
+        this._composition.update(pathToPrimitive, preparedResponse.coocked);
 
         resolve(preparedResponse);
       }, reject);
     });
   }
 
-  loadContainer(pathToContainer, cb) {
+  loadContainer(pathToContainer) {
     return new Promise((resolve, reject) => {
       this._startDriverRequest({ method: 'get', fullPath: pathToContainer, }).then((resp) => {
         // TODO: пересмотреть пути
@@ -43,20 +57,20 @@ export default class Request {
         // TODO: формировать путь pathToDocument + путь внутненнего параметра
         var pathTo = resp.request.fullPath;
 
-        cb(pathTo, resp);
+        this._composition.update(pathTo, resp.coocked);
 
         resolve(resp);
       }, reject);
     });
   }
 
-  loadCollection(pathToCollection, cb) {
+  loadCollection(pathToCollection) {
     return new Promise((resolve, reject) => {
       this._startDriverRequest({ method: 'filter', fullPath: pathToCollection }).then((resp) => {
         // TODO: пересмотреть пути
         var pathTo = resp.request.pathToDocument || resp.request.fullPath;
 
-        cb(pathTo, resp);
+        this._composition.update(pathTo, resp.coocked);
 
         resolve(resp);
       }, reject);
@@ -143,8 +157,8 @@ export default class Request {
       }, reject);
     });
   }
-  
-  saveCollection(pathToCollection, addedUnsavedItems, removedUnsavedItems) {
+
+  saveCollection(pathToCollection) {
 
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToCollection);
@@ -153,10 +167,10 @@ export default class Request {
 
     return new Promise((mainResolve) => {
       var promises = [
-        ...this._saveUnsaved(addedUnsavedItems, pathToCollection, {method: 'add', primaryKeyName}, (unsavedItem, resp) => {
+        ...this._saveUnsaved(this._addedUnsavedItems, pathToCollection, {method: 'add', primaryKeyName}, (unsavedItem, resp) => {
           _.extend(unsavedItem, resp.coocked);
         }),
-        ...this._saveUnsaved(removedUnsavedItems, pathToCollection, {method: 'remove', primaryKeyName}),
+        ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, {method: 'remove', primaryKeyName}),
       ];
 
       Promise.all(promises).then(results => {
