@@ -6,7 +6,6 @@ import { findPrimary, splitLastParamPath } from './helpers';
 export default class Request {
   constructor(main, composition) {
     this._main = main;
-    // TODO: поидее класс ничего не должен знать о composition
     this._composition = composition;
 
     this._addedUnsavedItems = {};
@@ -40,6 +39,7 @@ export default class Request {
           coocked: _.get(resp.coocked, paramPath)
         };
 
+        // update mold with server response data
         this._composition.update(pathToPrimitive, preparedResponse.coocked);
 
         resolve(preparedResponse);
@@ -50,6 +50,7 @@ export default class Request {
   loadContainer(pathToContainer) {
     return new Promise((resolve, reject) => {
       this._startDriverRequest('get', pathToContainer).then((resp) => {
+        // update mold with server response data
          this._composition.update(pathToContainer, resp.coocked);
         resolve(resp);
       }, reject);
@@ -59,11 +60,8 @@ export default class Request {
   loadCollection(pathToCollection) {
     return new Promise((resolve, reject) => {
       this._startDriverRequest('filter', pathToCollection).then((resp) => {
-
-        // TODO: пересмотреть пути
-        var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-
-        this._composition.update(pathTo, resp.coocked);
+        // update mold with server response data
+        this._composition.update(pathToCollection, resp.coocked);
         resolve(resp);
       }, reject);
     });
@@ -71,73 +69,46 @@ export default class Request {
 
   savePrimitive(pathToPrimitive) {
     // TODO: rise an event - saved
-    var isPrimitive = false;
-    var paramPath;
 
-    var pathToContainer;
-
-    isPrimitive = true;
     // If it is a primitive, get container upper on path
-    let split = splitLastParamPath(pathToPrimitive);
-    paramPath = split.paramPath;
-
-    if (_.isUndefined(split.paramPath))
-    // TODO: это должно проверяться ещё на стадии валидации схемы.
+    var splits = splitLastParamPath(pathToPrimitive);
+    var pathToContainer = splits.basePath;
+    var subPath = splits.paramPath;
+    
+    if (_.isUndefined(splits.paramPath))
+      // TODO: это должно проверяться ещё на стадии валидации схемы.
       throw new Error(`Something wrong with your schema. Root of primitive must be a container.`);
 
-    pathToContainer = split.basePath;
-    if (this._main.schemaManager.get(pathToContainer).type) {
+    if (this._main.schemaManager.get(pathToContainer).type)
       // TODO: это должно проверяться ещё на стадии валидации схемы.
       throw new Error(`Something wrong with your schema. Primitive must be placed in container.`);
-    }
 
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
       this._startDriverRequest('set', pathToContainer, payload).then((resp) => {
-        if (isPrimitive) {
-          // update composition with server response
-          let preparedResp = {
-            ...resp,
-            coocked: resp.coocked[paramPath],
-          };
-          this._composition.update(pathToPrimitive, preparedResp.coocked);
-          resolve(preparedResp);
-        }
-        else {
-          let pathTo = resp.request.pathToDocument || resp.request.fullPath;
-          // update composition with server response
-          this._composition.update(pathTo, resp.coocked);
-          resolve(resp);
-        }
+        // update composition with server response
+        let preparedResp = {
+          ...resp,
+          coocked: resp.coocked[subPath],
+        };
+        // update mold with server response data
+        this._composition.update(pathToPrimitive, preparedResp.coocked);
+        resolve(preparedResp);
       }, reject);
     });
   }
 
   saveContainer(pathToContainer) {
     // TODO: rise an event - saved
-    var isPrimitive = false;
-    var paramPath;
 
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
       this._startDriverRequest('set', pathToContainer, payload).then((resp) => {
-        if (isPrimitive) {
-          // update composition with server response
-          let preparedResp = {
-            ...resp,
-            coocked: resp.coocked[paramPath],
-          };
-          this._composition.update(pathToContainer, preparedResp.coocked);
-          resolve(preparedResp);
-        }
-        else {
-          let pathTo = resp.request.pathToDocument || resp.request.fullPath;
-          // update composition with server response
-          this._composition.update(pathTo, resp.coocked);
-          resolve(resp);
-        }
+        // update mold with server response data
+        this._composition.update(pathToContainer, resp.coocked);
+        resolve(resp);
       }, reject);
     });
   }
@@ -146,6 +117,7 @@ export default class Request {
     return new Promise((mainResolve) => {
       var promises = [
         ...this._saveUnsaved(this._addedUnsavedItems, pathToCollection, 'add', (unsavedItem, resp) => {
+          // update item from mold with server response data
           _.extend(unsavedItem, resp.coocked);
         }),
         ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, 'remove'),
@@ -157,21 +129,18 @@ export default class Request {
     });
   }
 
-
   _saveUnsaved(unsavedList, pathToCollection, method, successCb) {
     var promises = [];
     _.each(_.reverse(unsavedList[pathToCollection]), (unsavedItem) => {
       // skip empty
       if (_.isUndefined(unsavedItem)) return;
 
-      var payload = _.omit(_.cloneDeep(unsavedItem), '$index', '$isNew', '$unsaved');
-
       // remove item from unsaved list
       _.remove(unsavedList[pathToCollection], unsavedItem);
       if (_.isEmpty(unsavedList[pathToCollection])) delete unsavedList[pathToCollection];
 
       promises.push(new Promise((resolve) => {
-        this._startDriverRequest(method, pathToCollection, payload).then((resp) => {
+        this._startDriverRequest(method, pathToCollection, unsavedItem).then((resp) => {
           if (successCb) successCb(unsavedItem, resp);
 
           delete unsavedItem.$isNew;
@@ -211,6 +180,8 @@ export default class Request {
 
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
+    
+    var clearPayload = _.omit(_.cloneDeep(payload), '$index', '$isNew', '$unsaved');
 
     if (!driver)
       throw new Error(`No-one driver did found!!!`);
@@ -222,11 +193,11 @@ export default class Request {
 
     var req = {
       method,
-      payload,
+      payload: clearPayload,
       primaryKeyName: schema.item && findPrimary(schema.item),
       // TODO: add schemaBaseType
       //schemaBaseType
-      
+
       // moldPath,
       // document: documentParams && {
       //   path: documentParams.pathToDocument,
@@ -249,7 +220,7 @@ export default class Request {
     if (!payload) delete req.payload;
     if (!req.primaryKeyName) delete req.primaryKeyName;
 
-    console.log(12312312, req)
+    //console.log(12312312, req)
 
     return driver.requestHandler(req);
   }

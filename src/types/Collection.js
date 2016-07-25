@@ -40,11 +40,11 @@ export default class Collection extends _TypeBase {
     //   throw new Error(`In this version it supports only primary id, not path.`);
     // }
 
-    var fullPath = concatPath(this._root, primaryIdOrPath);
+    var pathToChild = concatPath(this._root, primaryIdOrPath);
     // get container instance
-    var instance = this._main.schemaManager.getInstance(fullPath);
+    var instance = this._main.schemaManager.getInstance(pathToChild);
     // reinit container instance with correct path
-    instance.init(fullPath, instance.schema);
+    instance.init(pathToChild, instance.schema);
 
     return instance;
   }

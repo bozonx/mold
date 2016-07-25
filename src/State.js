@@ -23,12 +23,12 @@ export default class State {
 
   /**
    * Set primitive, container or collection to mold
-   * @param {string} fullPath
+   * @param {string} moldPath
    * @param {*} value - valid value
    */
-  setMold(fullPath, value) {
-    this._checkNode(fullPath, value);
-    this._composition.update(fullPath, value);
+  setMold(moldPath, value) {
+    this._checkNode(moldPath, value);
+    this._composition.update(moldPath, value);
   }
 
   addMold(pathToCollection, newItem) {
@@ -66,38 +66,38 @@ export default class State {
 
   /**
    * Get data from driver, update mold with new data and return primise
-   * @param fullPath
+   * @param moldPath
    * @returns {Promise}
    */
-  load(fullPath) {
+  load(moldPath) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(fullPath);
+    var schema = this._main.schemaManager.get(moldPath);
 
     if (schema.type == 'collection') {
-      return this._request.loadCollection(fullPath);
+      return this._request.loadCollection(moldPath);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      return this._request.loadPrimitive(fullPath);
+      return this._request.loadPrimitive(moldPath);
     }
     else if (!schema.type) {
-      return this._request.loadContainer(fullPath);
+      return this._request.loadContainer(moldPath);
     }
 
     throw new Error(`Unknown type!`);
   }
 
-  save(fullPath) {
+  save(moldPath) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(fullPath);
+    var schema = this._main.schemaManager.get(moldPath);
 
     if (schema.type == 'collection') {
-      return this._request.saveCollection(fullPath);
+      return this._request.saveCollection(moldPath);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      return this._request.savePrimitive(fullPath);
+      return this._request.savePrimitive(moldPath);
     }
     else if (!schema.type) {
-      return this._request.saveContainer(fullPath);
+      return this._request.saveContainer(moldPath);
     }
 
     throw new Error(`Unknown type!`);
