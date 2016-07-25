@@ -39,7 +39,6 @@ export default class SchemaManager {
 
     var schemaPath = convertToSchemaPath(path);
 
-    // TODO: ??? do it immutable
     var schema = _.get(this._schema, schemaPath);
     if (_.isUndefined(schema)) throw new Error(`Schema on path "${schemaPath}" doesn't exists`);
 
@@ -53,6 +52,7 @@ export default class SchemaManager {
    * @returns {boolean} If path = '' it means root and return true
    */
   has(path) {
+    // TODO: test it or remove
     if (path === '') return true;
 
     var schemaPath = convertToSchemaPath(path);
@@ -65,7 +65,6 @@ export default class SchemaManager {
    * @returns {object} schema
    */
   getFullSchema() {
-    // TODO: do it immutable
     return this._schema;
   }
 

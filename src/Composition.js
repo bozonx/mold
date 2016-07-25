@@ -20,8 +20,6 @@ export default class Composition {
    * @returns {*} - value by path
    */
   get(path) {
-    // TODO: maybe return immutable?
-
     if (!path) return this._storage;
 
     return _.get(this._storage, convertToCompositionPath(path));

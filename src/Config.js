@@ -8,7 +8,6 @@ export default class Config {
   }
 
   get() {
-    // TODO: immutable????
     return this._config;
   }
 
