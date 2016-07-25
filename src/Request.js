@@ -33,9 +33,7 @@ export default class Request {
       var basePath = splits.basePath;
       var paramPath = splits.paramPath;
 
-      this._startDriverRequest({ method: 'get', fullPath: basePath }).then((resp) => {
-        // TODO: пересмотреть пути
-
+      this._startDriverRequest('get', basePath).then((resp) => {
         // unwrap primitive value from container
         var preparedResponse = {
           ...resp,
@@ -51,14 +49,8 @@ export default class Request {
 
   loadContainer(pathToContainer) {
     return new Promise((resolve, reject) => {
-      this._startDriverRequest({ method: 'get', fullPath: pathToContainer, }).then((resp) => {
-        // TODO: пересмотреть пути
-        //var pathTo = resp.request.pathToDocument || resp.request.fullPath;
-        // TODO: формировать путь pathToDocument + путь внутненнего параметра
-        var pathTo = resp.request.fullPath;
-
-        this._composition.update(pathTo, resp.coocked);
-
+      this._startDriverRequest('get', pathToContainer).then((resp) => {
+         this._composition.update(pathToContainer, resp.coocked);
         resolve(resp);
       }, reject);
     });
@@ -66,12 +58,12 @@ export default class Request {
 
   loadCollection(pathToCollection) {
     return new Promise((resolve, reject) => {
-      this._startDriverRequest({ method: 'filter', fullPath: pathToCollection }).then((resp) => {
+      this._startDriverRequest('filter', pathToCollection).then((resp) => {
+
         // TODO: пересмотреть пути
         var pathTo = resp.request.pathToDocument || resp.request.fullPath;
 
         this._composition.update(pathTo, resp.coocked);
-
         resolve(resp);
       }, reject);
     });
@@ -102,11 +94,7 @@ export default class Request {
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
-      this._startDriverRequest({
-        method: 'set',
-        fullPath: pathToContainer,
-        payload: payload,
-      }).then((resp) => {
+      this._startDriverRequest('set', pathToContainer, payload).then((resp) => {
         if (isPrimitive) {
           // update composition with server response
           let preparedResp = {
@@ -134,11 +122,7 @@ export default class Request {
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
-      this._startDriverRequest({
-        method: 'set',
-        fullPath: pathToContainer,
-        payload: payload,
-      }).then((resp) => {
+      this._startDriverRequest('set', pathToContainer, payload).then((resp) => {
         if (isPrimitive) {
           // update composition with server response
           let preparedResp = {
@@ -159,18 +143,12 @@ export default class Request {
   }
 
   saveCollection(pathToCollection) {
-
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToCollection);
-
-    var primaryKeyName = findPrimary(schema.item);
-
     return new Promise((mainResolve) => {
       var promises = [
-        ...this._saveUnsaved(this._addedUnsavedItems, pathToCollection, {method: 'add', primaryKeyName}, (unsavedItem, resp) => {
+        ...this._saveUnsaved(this._addedUnsavedItems, pathToCollection, 'add', (unsavedItem, resp) => {
           _.extend(unsavedItem, resp.coocked);
         }),
-        ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, {method: 'remove', primaryKeyName}),
+        ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, 'remove'),
       ];
 
       Promise.all(promises).then(results => {
@@ -180,7 +158,7 @@ export default class Request {
   }
 
 
-  _saveUnsaved(unsavedList, pathToCollection, rawQuery, successCb) {
+  _saveUnsaved(unsavedList, pathToCollection, method, successCb) {
     var promises = [];
     _.each(_.reverse(unsavedList[pathToCollection]), (unsavedItem) => {
       // skip empty
@@ -193,11 +171,7 @@ export default class Request {
       if (_.isEmpty(unsavedList[pathToCollection])) delete unsavedList[pathToCollection];
 
       promises.push(new Promise((resolve) => {
-        this._startDriverRequest({
-          ...rawQuery,
-          fullPath: pathToCollection,
-          payload: payload,
-        }).then((resp) => {
+        this._startDriverRequest(method, pathToCollection, payload).then((resp) => {
           if (successCb) successCb(unsavedItem, resp);
 
           delete unsavedItem.$isNew;
@@ -226,29 +200,58 @@ export default class Request {
 
   /**
    * Send query to driver for data.
-   * @param {{method: string, fullPath: string, payload: *}} rawRequest
-   *     * method is one of: get, set, filter, add, remove
-   *     * fullPath: full path in mold
-   *     * payload: for "set" and "add" methods - value to set
+   * @param {string} method - one of: get, set, filter, add, remove
+   * @param {string} moldPath - path in mold or schena
+   * @param {*} [payload] - data to save
    * @returns {Promise}
    * @private
    */
-  _startDriverRequest(rawRequest) {
-    var driver = this._main.schemaManager.getDriver(rawRequest.fullPath);
+  _startDriverRequest(method, moldPath, payload) {
+    var driver = this._main.schemaManager.getDriver(moldPath);
+
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(moldPath);
 
     if (!driver)
       throw new Error(`No-one driver did found!!!`);
 
-    // TODO: разобраться с путями
-    var req = _.clone(rawRequest);
-    var documentParams = this._main.schemaManager.getDocument(rawRequest.fullPath);
+    var documentParams = this._main.schemaManager.getDocument(moldPath);
+    var splits;
+    if (documentParams && documentParams.pathToDocument)
+      splits = splitLastParamPath(documentParams.pathToDocument);
+
+    var req = {
+      method,
+      payload,
+      primaryKeyName: schema.item && findPrimary(schema.item),
+      // TODO: add schemaBaseType
+      //schemaBaseType
+      
+      // moldPath,
+      // document: documentParams && {
+      //   path: documentParams.pathToDocument,
+      //   params: _.omit(documentParams, 'pathToDocument'),
+      // },
+      // driverPath: {
+      //   full: moldPath,
+      //   base: splits && splits.basePath,
+      //   sub: splits && splits.paramPath,
+      // },
+    };
+
+    // TODO: old!
+    var documentParams = this._main.schemaManager.getDocument(moldPath);
     if (documentParams) {
       req['documentParams'] = documentParams;
       req['pathToDocument'] = documentParams.pathToDocument;
     }
+    req['fullPath'] = moldPath;
+    if (!payload) delete req.payload;
+    if (!req.primaryKeyName) delete req.primaryKeyName;
+
+    console.log(12312312, req)
 
     return driver.requestHandler(req);
   }
-
 
 }

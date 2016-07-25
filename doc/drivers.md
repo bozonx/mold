@@ -43,7 +43,7 @@ State manager generate request like:
            It will be unefined, if document isn't defined in schema.
   * params - parameters of document from schema
 * driverPath
-  * full - full request path: base + sub
+  * full - full request path: base + sub. Usually it's like moldPath
   * base - path to container or collection. Usually it's path to document.
   * sub - path to container or collection child
 

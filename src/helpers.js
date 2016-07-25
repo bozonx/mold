@@ -147,7 +147,7 @@ export function recursiveMutate(sourceData, newData, cb, root) {
 }
 
 export function findPrimary(schema) {
-  var primary = '';
+  var primary;
   _.find(schema, (value, name) => {
     if (_.isPlainObject(value) && value.primary) {
       primary = name;
