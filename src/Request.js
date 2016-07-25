@@ -19,7 +19,7 @@ export default class Request {
       var basePath = splits.basePath;
       var paramPath = splits.paramPath;
 
-      this._startDriverQuery({ method: 'get', fullPath: basePath }).then((resp) => {
+      this._startDriverRequest({ method: 'get', fullPath: basePath }).then((resp) => {
         // TODO: пересмотреть пути
 
         // unwrap primitive value from container
@@ -37,7 +37,7 @@ export default class Request {
 
   loadContainer(pathToContainer, cb) {
     return new Promise((resolve, reject) => {
-      this._startDriverQuery({ method: 'get', fullPath: pathToContainer, }).then((resp) => {
+      this._startDriverRequest({ method: 'get', fullPath: pathToContainer, }).then((resp) => {
         // TODO: пересмотреть пути
         //var pathTo = resp.request.pathToDocument || resp.request.fullPath;
         // TODO: формировать путь pathToDocument + путь внутненнего параметра
@@ -52,7 +52,7 @@ export default class Request {
 
   loadCollection(pathToCollection, cb) {
     return new Promise((resolve, reject) => {
-      this._startDriverQuery({ method: 'filter', fullPath: pathToCollection }).then((resp) => {
+      this._startDriverRequest({ method: 'filter', fullPath: pathToCollection }).then((resp) => {
         // TODO: пересмотреть пути
         var pathTo = resp.request.pathToDocument || resp.request.fullPath;
 
@@ -106,7 +106,7 @@ export default class Request {
       if (_.isEmpty(unsavedList[pathToCollection])) delete unsavedList[pathToCollection];
 
       promises.push(new Promise((resolve) => {
-        this._startDriverQuery({
+        this._startDriverRequest({
           ...rawQuery,
           fullPath: pathToCollection,
           payload: payload,
@@ -146,7 +146,7 @@ export default class Request {
    * @returns {Promise}
    * @private
    */
-  _startDriverQuery(rawRequest) {
+  _startDriverRequest(rawRequest) {
     var driver = this._main.schemaManager.getDriver(rawRequest.fullPath);
 
     if (!driver)
