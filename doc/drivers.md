@@ -34,18 +34,29 @@ returns
 ## Request format
 State manager generate request like:
 
-* method - one of: get, set, add, remove
-* payload - There is different data for different methods
-* fullPath - fullPath to requested param
-* documentParams - parameters of document from schema if document uses in schema
-* pathToDocument - It's part of fullPath to document container or collection.
-                   If in schema doesn't use document, it will be unefined.
-* ?????pathToField - It's part of fullPath to item or field in document/
-                If in schema doesn't use document, it will be unefined.
+* method - one of: get, set, filter, add, remove
+* payload - Data to save. There is different data for different methods
+* schemaBaseType - primitive|container|collection
+* moldPath - path in state and schema
+* document
+  * path - It's path to document defined in schema.
+           It will be unefined, if document isn't defined in schema.
+  * params - parameters of document from schema
+* driverPath
+  * full - full request path: base + sub
+  * base - path to container or collection. Usually it's path to document.
+  * sub - path to container or collection child
+
+Driver path example:
+
+* full - path.to.collection.0.primitive
+* base - path.to.collection
+* sub - 0.primitive
+
 
 ## Response format
 
-* coocked - It's prepared data to insert to composition
-* successResponse - It's raw data from server
-* error - It's raw error from server
-* request - there is link to request
+* request - It's a request parameters.
+* worked - It's worked data for inserting to mold
+* driverResponse - It's raw data from server
+* driverError - It's raw error from server
