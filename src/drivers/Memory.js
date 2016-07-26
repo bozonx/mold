@@ -23,13 +23,13 @@ class LocalMemory {
       if (!_.isUndefined(resp)) {
         resolve({
           coocked: resp,
-          successResponse: resp,
+          driverResponse: resp,
           request,
         });
       }
       else {
         reject({
-          error: 'not found',
+          driverError: 'not found',
           request,
         });
       }
@@ -46,7 +46,7 @@ class LocalMemory {
       _.set(this._db, request.driverPath.full, request.payload);
       resolve({
         coocked: request.payload,
-        successResponse: request.payload,
+        driverResponse: request.payload,
         request,
       });
     });
@@ -83,7 +83,7 @@ class LocalMemory {
 
       resolve({
         coocked: newValue,
-        successResponse: newValue,
+        driverResponse: newValue,
         request,
       });
     });
@@ -95,7 +95,7 @@ class LocalMemory {
 
       if (!collection) {
         reject({
-          error: 'Collection not found',
+          driverError: 'Collection not found',
         });
         return;
       }
@@ -103,7 +103,7 @@ class LocalMemory {
       var item = _.find(collection, {[request.primaryKeyName]: request.payload[request.primaryKeyName]});
       if (!item || !_.isNumber(item[request.primaryKeyName])) {
         reject({
-          error: 'Item not found',
+          driverError: 'Item not found',
           request,
         });
         return;
@@ -113,13 +113,13 @@ class LocalMemory {
 
       resolve({
         coocked: item,
-        successResponse: item,
+        driverResponse: item,
         request,
       });
     });
   }
 
-  requestHandler(request) {
+  startRequest(request) {
     return this[request.method](request);
   }
 

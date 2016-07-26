@@ -19,7 +19,7 @@ class LocalTestDriver
     this.root = root;
     this._main = main;
 
-  requestHandler: (request) ->
+  startRequest: (request) ->
     return new Promise (resolve, reject) =>
       _.set(this.__storage, request.moldPath, request.payload);
       resolve({
@@ -64,7 +64,7 @@ describe 'Functional. Driver usage.', ->
     assert.equal(driverFromDeep.constructor.name, 'LocalTestDriver')
     assert.equal(driverFromDeep.root, 'commonBranch.inTestDriver')
 
-#  it 'set data via driver requestHandler by running state.setSilent()', ->
+#  it 'set data via driver startRequest by running state.setSilent()', ->
 #    this.mold.state.setSilent('commonBranch.inTestDriver.param1', 'new value')
 #    driver = this.mold.schemaManager.getDriver('commonBranch.inTestDriver')
 #

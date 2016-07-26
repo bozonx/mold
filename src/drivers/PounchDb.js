@@ -26,8 +26,6 @@ class LocalPounchDb {
     // TODO: надо искать по pathToDocument + innerPath (0, 0.param)
     // TODO: !!!!! надо искать по document
 
-    console.log(2423234234243, request.document.path)
-    
     //return this._db.get(request.document.path)
     return this._db.get(request.driverPath.full)
       .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
@@ -48,7 +46,7 @@ class LocalPounchDb {
           coocked: _.map(resp.rows, (value) => {
             return value.doc;
           }),
-          successResponse: resp,
+          driverResponse: resp,
           request,
         }
       }, this._rejectHandler.bind(this, request));
@@ -74,7 +72,7 @@ class LocalPounchDb {
                 _id: resp.id,
                 _rev: resp.rev,
               },
-              successResponse: resp,
+              driverResponse: resp,
               request,
             });
           }, (err) => {
@@ -98,7 +96,7 @@ class LocalPounchDb {
                 _id: resp.id,
                 _rev: resp.rev,
               },
-              successResponse: resp,
+              driverResponse: resp,
               request,
             });
           }, (err) => {
@@ -143,7 +141,7 @@ class LocalPounchDb {
                 _rev: resp.rev,
                 id: primaryId,
               },
-              successResponse: resp,
+              driverResponse: resp,
               request,
             });
           }, (err) => {
@@ -167,12 +165,12 @@ class LocalPounchDb {
         this._db.remove(getResp).then((resp) => {
           resolve({
             coocked: _.omit(getResp, '_id', '_rev'),
-            successResponse: resp,
+            driverResponse: resp,
             request,
           });
         }).catch(function (err) {
           reject({
-            error: err,
+            driverError: err,
             request,
           });
         });
@@ -182,14 +180,14 @@ class LocalPounchDb {
     });
   }
 
-  requestHandler(request) {
+  startRequest(request) {
     return this[request.method](request);
   }
 
   _resolveHandler(request, resp) {
     return {
       coocked: resp,
-      successResponse: resp,
+      driverResponse: resp,
       request,
     };
   }
@@ -198,12 +196,12 @@ class LocalPounchDb {
     // Return undefined if data hasn't found.
     if (err.status == 404)
       return {
-        error: err,
+        driverError: err,
         request,
       };
 
     throw {
-      error: err,
+      driverError: err,
       request,
     };
   }

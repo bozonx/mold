@@ -36,10 +36,6 @@ export default class Collection extends _TypeBase {
     if (_.isUndefined(primaryIdOrPath))
       throw new Error(`You must pass a path argument.`);
 
-    // else if (!_.isNumber(primaryId)) {
-    //   throw new Error(`In this version it supports only primary id, not path.`);
-    // }
-
     var pathToChild = concatPath(this._root, primaryIdOrPath);
     // get container instance
     var instance = this._main.schemaManager.getInstance(pathToChild);
@@ -59,14 +55,12 @@ export default class Collection extends _TypeBase {
   get(noneOrIdOrPath) {
     var path;
     if (_.isUndefined(noneOrIdOrPath)) {
+      // load whore collection
       path = this._root;
       return this._main.state.load(path);
     }
-    else if (_.isNumber(noneOrIdOrPath)) {
-      path = concatPath(this._root, noneOrIdOrPath);
-      return this._main.state.load(path);
-    }
-    else if (_.isString(noneOrIdOrPath)) {
+    else if (_.isNumber(noneOrIdOrPath) || _.isString(noneOrIdOrPath)) {
+      // load collection child
       path = concatPath(this._root, noneOrIdOrPath);
       return this._main.state.load(path);
     }

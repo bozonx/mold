@@ -23,7 +23,7 @@ module.exports =
         base: splits.basePath
         sub: splits.paramPath
     }
-    expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+    expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
       expect(docContainer.get('stringParam')).to.eventually.notify =>
         expect(Promise.resolve(docContainer.mold)).to.eventually.property('stringParam').equal(value).notify(done)
 
@@ -52,7 +52,7 @@ module.exports =
         schemaBaseType: 'container'
         driverPath:
           full: pathToDoc
-      successResponse:
+      driverResponse:
         stringParam: value
     }
 
@@ -62,12 +62,12 @@ module.exports =
       }
       response.request.driverPath.document = pathToDoc
 
-    expect(driverInstance.requestHandler(driverSetRequest)).to.eventually.notify =>
+    expect(driverInstance.startRequest(driverSetRequest)).to.eventually.notify =>
       promise = docContainer.get('stringParam')
       expect(Promise.all([
         expect(promise).to.eventually.have.property('coocked', response.coocked),
         expect(promise).to.eventually.property('request').deep.equal(response.request),
-        expect(promise).to.eventually.property('successResponse').have.property('stringParam', response.successResponse.stringParam),
+        expect(promise).to.eventually.property('driverResponse').have.property('stringParam', response.driverResponse.stringParam),
       ])).to.eventually.notify(done)
 
 
@@ -86,7 +86,7 @@ module.exports =
 
     value = 'new value'
 
-    # don't check successResponse because it can be any for each type of driver
+    # don't check driverResponse because it can be any for each type of driver
 
     splits = helpers.splitLastParamPath(pathToDoc)
 
@@ -133,7 +133,7 @@ module.exports =
       payload: {arrayParam: value}
       document: { pathToDocument: pathToDoc }
     }
-    expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+    expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
       expect(docContainer.get('arrayParam')).to.eventually.notify =>
         expect(Promise.resolve(docContainer.mold)).to.eventually.property('arrayParam').deep.equal(value).notify(done)
 
@@ -163,7 +163,7 @@ module.exports =
       payload: {name: 'name1'}
     }
 
-    driverInstance.requestHandler(driverRequest).then((resp) ->
+    driverInstance.startRequest(driverRequest).then((resp) ->
       assert.deepEqual(_.omit(resp.coocked, '_id', '_rev'), {id: 0, name: 'name1'})
       done()
     , (err) ->
@@ -192,24 +192,24 @@ module.exports =
       method: 'add'
       payload: {name: 'name1'}
     }, requestBase)
-    expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+    expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
       # add two
       driverRequest = _.defaults({
         method: 'add'
         payload: {name: 'name2'}
       }, requestBase)
-      expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+      expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
         # remove first
         driverRequest = _.defaults({
           method: 'remove'
           payload: {id: 0}
         }, requestBase)
-        expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+        expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
           # get all
           driverRequest = _.defaults({
             method: 'filter'
           }, requestBase)
-          driverInstance.requestHandler(driverRequest).then((resp) =>
+          driverInstance.startRequest(driverRequest).then((resp) =>
             clearValue = _.map(resp.coocked, (value) => _.omit(value, '_id', '_rev'))
             assert.deepEqual(clearValue, [{id: 1, name: 'name2'}])
             done()
@@ -240,7 +240,7 @@ module.exports =
       method: 'add'
       payload: {id: 2, name: 'name1'}
     }, requestBase)
-    expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
+    expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
       collectionItem = collection.child(2)
 
       expect(collectionItem.get()).to.eventually.notify =>

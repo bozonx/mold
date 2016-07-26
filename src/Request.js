@@ -76,9 +76,7 @@ export default class Request {
   }
 
   savePrimitive(pathToPrimitive) {
-    // TODO: rise an event - saved
-
-    // If it is a primitive, get container upper on path
+    // For primitive, get container upper on path
     var splits = splitLastParamPath(pathToPrimitive);
     var pathToContainer = splits.basePath;
     var subPath = splits.paramPath;
@@ -108,8 +106,6 @@ export default class Request {
   }
 
   saveContainer(pathToContainer) {
-    // TODO: rise an event - saved
-
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
@@ -122,6 +118,7 @@ export default class Request {
   }
 
   saveCollection(pathToCollection) {
+    // Save all unsaved added or removed items
     return new Promise((mainResolve) => {
       var promises = [
         ...this._saveUnsaved(this._addedUnsavedItems, pathToCollection, 'add', (unsavedItem, resp) => {
@@ -158,7 +155,7 @@ export default class Request {
             isOk: true,
             resp,
           });
-        }, (error) => {
+        }, (driverError) => {
           // on error make item unsaved again
           if (_.isUndefined(unsavedList[pathToCollection])) unsavedList[pathToCollection] = [];
           unsavedList[pathToCollection].push(unsavedItem);
@@ -166,7 +163,7 @@ export default class Request {
           resolve({
             path: pathToCollection,
             isOk: false,
-            error,
+            driverError,
           });
         });
       }));
@@ -214,7 +211,7 @@ export default class Request {
       }),
     });
 
-    return driver.requestHandler(req);
+    return driver.startRequest(req);
   }
 
 }
