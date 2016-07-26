@@ -43,12 +43,6 @@ describe 'Functional. PounchDb driver.', ->
     it 'container_set', (done) ->
       driverHelpers.container_set(this.mold, 'commonBranch.inPounch.docContainer', done)
 
-#    it 'get array', (done) ->
-#      driverHelpers.get_array(this.mold, 'commonBranch.inPounch.docContainer', done)
-#
-#    it 'set array', (done) ->
-#      driverHelpers.set_array(this.mold, 'commonBranch.inPounch.docContainer', done)
-
   describe 'Collection.', ->
     it 'collection_add', (done) ->
       this.init('add')

@@ -34,12 +34,6 @@ describe 'Functional. Memory driver.', ->
     it 'container_set', (done) ->
       driverHelpers.container_set(this.mold, 'commonBranch.inMemory.container', done)
 
-#    it 'get array', (done) ->
-#      driverHelpers.get_array(this.mold, 'commonBranch.inMemory', done)
-#
-#    it 'set array', (done) ->
-#      driverHelpers.set_array(this.mold, 'commonBranch.inMemory', done)
-
   describe 'Collection.', ->
     it 'collection_add', (done) ->
       driverHelpers.collection_add(this.mold, 'commonBranch.inMemory.collection', done)

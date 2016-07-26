@@ -1,107 +1,60 @@
 _ = require('lodash')
 helpers = require('../src/helpers')
 
+generateRequest = (pathToDoc, method, payload) ->
+  {
+    moldPath: pathToDoc
+    driverPath:
+      document: pathToDoc
+      full: pathToDoc
+    document: { pathToDocument: pathToDoc }
+    method: method
+    payload: payload
+  }
+
 module.exports =
   container_get: (mold, pathToDoc, done) ->
-    docContainer = mold.instance(pathToDoc)
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
-    # TODO: test another primitives
+    setRequest = generateRequest(pathToDoc, 'set', {
+      booleanParam: true,
+      stringParam: 'new value',
+      numberParam: 5,
+      arrayParam: ['value1'],
+    })
 
-    value = 'new value'
-    driverSetRequest = {
-      method: 'set'
-      moldPath: pathToDoc
-      driverPath:
-        document: pathToDoc
-        full: pathToDoc
-      payload: {stringParam: value}
-      document: { pathToDocument: pathToDoc }
-    }
+    getRequest = generateRequest(pathToDoc, 'get')
 
-    response = {
-      coocked: value
-      request:
-        method: 'get'
-        moldPath: pathToDoc
-        schemaBaseType: 'container'
-        driverPath:
-          full: pathToDoc
-      driverResponse:
-        stringParam: value
-    }
-
-    if (docContainer.isDocument())
-      _.assignIn response.request, {
-        document: { pathToDocument: pathToDoc }
-      }
-      response.request.driverPath.document = pathToDoc
-
-    expect(driverInstance.startRequest(driverSetRequest)).to.eventually.notify =>
-      promise = docContainer.get('stringParam')
+    expect(driverInstance.startRequest(setRequest)).to.eventually.notify =>
+      promise = driverInstance.startRequest(getRequest).then (resp) ->
+        _.defaults({
+          coocked: _.omit(resp.coocked, '_id', '_rev')
+        }, resp)
+  
       expect(Promise.all([
-        expect(promise).to.eventually.property('coocked').equal(response.coocked),
-        expect(promise).to.eventually.property('request').deep.equal(response.request),
-        expect(promise).to.eventually.property('driverResponse').have.property('stringParam', response.driverResponse.stringParam),
+        expect(promise).to.eventually.property('coocked').deep.equal(setRequest.payload),
+        expect(promise).to.eventually.property('request').deep.equal(getRequest),
       ])).to.eventually.notify(done)
 
   container_set: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
-    driverRequest = {
-      moldPath: pathToDoc
-      driverPath:
-        document: pathToDoc
-        full: pathToDoc
-      document: { pathToDocument: pathToDoc }
-      primaryKeyName: 'id'
-      method: 'set'
-      payload: {
-        stringParam: 'new value',
-        arrayParam: ['value1'],
-      }
-    }
+    setRequest = generateRequest(pathToDoc, 'set', {
+      booleanParam: true,
+      stringParam: 'new value',
+      numberParam: 5,
+      arrayParam: ['value1'],
+    })
 
-    promise = driverInstance.startRequest(driverRequest).then (resp) ->
+    promise = driverInstance.startRequest(setRequest).then (resp) ->
       _.defaults({
         coocked: _.omit(resp.coocked, '_id', '_rev')
       }, resp)
 
     expect(Promise.all([
-      expect(promise).to.eventually.property('coocked').deep.equal(driverRequest.payload),
-      expect(promise).to.eventually.property('request').deep.equal(driverRequest),
+      expect(promise).to.eventually.property('coocked').deep.equal(setRequest.payload),
+      expect(promise).to.eventually.property('request').deep.equal(setRequest),
     ])).to.eventually.notify(done)
-
-
-  get_array: (mold, pathToDoc, done) ->
-    docContainer = mold.instance(pathToDoc)
-    driverInstance = mold.schemaManager.getDriver(pathToDoc)
-
-    splits = helpers.splitLastParamPath(pathToDoc)
-
-    value = [1,2,3]
-    driverRequest = {
-      method: 'set'
-      moldPath: pathToDoc
-      driverPath:
-        document: pathToDoc
-        full: pathToDoc
-        base: splits.basePath
-        sub: splits.paramPath
-      payload: {arrayParam: value}
-      document: { pathToDocument: pathToDoc }
-    }
-    expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
-      expect(docContainer.get('arrayParam')).to.eventually.notify =>
-        expect(Promise.resolve(docContainer.mold)).to.eventually.property('arrayParam').deep.equal(value).notify(done)
-
-
-  set_array: (mold, pathToDoc, done) ->
-    docContainer = mold.instance(pathToDoc)
-
-    value = [1,2,3]
-    expect(docContainer.set('arrayParam', value)).to.eventually.notify =>
-      expect(Promise.resolve(docContainer.mold)).to.eventually.property('arrayParam').deep.equal(value).notify(done)
 
   collection_add: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
