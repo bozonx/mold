@@ -228,7 +228,6 @@ export default class Request {
     // TODO: old!
     var documentParams = this._main.schemaManager.getDocument(moldPath);
     if (documentParams) {
-      req['documentParams'] = documentParams;
       req['pathToDocument'] = documentParams.pathToDocument;
     }
 

@@ -59,8 +59,6 @@ module.exports =
       _.assignIn response.request, {
         document: { path: pathToDoc }
         pathToDocument: pathToDoc
-        documentParams:
-          pathToDocument: pathToDoc
       }
 
     expect(driverInstance.requestHandler(driverSetRequest)).to.eventually.notify =>
@@ -107,8 +105,6 @@ module.exports =
       _.assignIn response.request, {
         document: { path: pathToDoc }
         pathToDocument: pathToDoc
-        documentParams:
-          pathToDocument: pathToDoc
       }
 
     promise = docContainer.set('stringParam', value)
