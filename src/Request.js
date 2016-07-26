@@ -202,16 +202,12 @@ export default class Request {
 
     var req = _.pickBy({
       method,
+      moldPath,
       payload: !_.isEmpty(clearPayload) && clearPayload,
       primaryKeyName: schema.item && findPrimary(schema.item),
       // TODO: add schemaBaseType
       //schemaBaseType
-
-      moldPath,
-      document: documentParams && _.pickBy({
-        path: documentParams.pathToDocument,
-        params: (param => !_.isEmpty(param) && param)(_.omit(documentParams, 'pathToDocument')),
-      }),
+      document: documentParams,
       driverPath: _.pickBy({
         document: documentParams && documentParams.pathToDocument,
         full: moldPath,

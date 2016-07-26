@@ -39,9 +39,9 @@ State manager generate request like:
 * schemaBaseType - primitive|container|collection
 * moldPath - path in state and schema
 * document
-  * path - It's path to document defined in schema.
+  * pathToDocument - It's path to document defined in schema.
            It will be unefined, if document isn't defined in schema.
-  * params - parameters of document from schema
+  * ... - parameters of document from schema
 * driverPath
   * document - path to document in schema
   * full - full request path: base + sub. Usually it's like moldPath

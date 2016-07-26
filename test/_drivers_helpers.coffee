@@ -16,7 +16,7 @@ module.exports =
       method: 'set'
       moldPath: pathToDoc
       payload: {stringParam: value}
-      document: { path: pathToDoc }
+      document: { pathToDocument: pathToDoc }
       driverPath:
         document: pathToDoc
         full: pathToDoc
@@ -41,7 +41,7 @@ module.exports =
         document: pathToDoc
         full: pathToDoc
       payload: {stringParam: value}
-      document: { path: pathToDoc }
+      document: { pathToDocument: pathToDoc }
     }
 
     response = {
@@ -57,7 +57,7 @@ module.exports =
 
     if (docContainer.isDocument())
       _.assignIn response.request, {
-        document: { path: pathToDoc }
+        document: { pathToDocument: pathToDoc }
       }
       response.request.driverPath.document = pathToDoc
 
@@ -103,7 +103,7 @@ module.exports =
 
     if (docContainer.isDocument())
       _.assignIn response.request, {
-        document: { path: pathToDoc }
+        document: { pathToDocument: pathToDoc }
       }
       response.request.driverPath.document = pathToDoc
 
@@ -130,7 +130,7 @@ module.exports =
         base: splits.basePath
         sub: splits.paramPath
       payload: {arrayParam: value}
-      document: { path: pathToDoc }
+      document: { pathToDocument: pathToDoc }
     }
     expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
       expect(docContainer.get('arrayParam')).to.eventually.notify =>
@@ -156,7 +156,7 @@ module.exports =
         full: pathToDoc
         base: splits.basePath
         sub: splits.paramPath
-      document: { path: pathToDoc }
+      document: { pathToDocument: pathToDoc }
       primaryKeyName: 'id'
       method: 'add'
       payload: {name: 'name1'}
@@ -182,7 +182,7 @@ module.exports =
         full: pathToDoc
         base: splits.basePath
         sub: splits.paramPath
-      document: { path: pathToDoc }
+      document: { pathToDocument: pathToDoc }
       primaryKeyName: 'id'
     }
 
@@ -230,7 +230,7 @@ module.exports =
         full: pathToDoc
 #        base: splits.basePath
 #        sub: splits.paramPath
-      document: { path: pathToDoc }
+      document: { pathToDocument: pathToDoc }
       primaryKeyName: 'id'
     }
 
@@ -246,7 +246,7 @@ module.exports =
         expect(Promise.resolve(collectionItem.mold)).to.eventually
         .deep.equal({})
         .notify(done)
-      
+
 #      expect(collectionItem.get()).to.eventually.notify =>
 #        primitiveOfName = collectionItem.child('name')
 #        expect(Promise.resolve(primitiveOfName.mold)).to.eventually
