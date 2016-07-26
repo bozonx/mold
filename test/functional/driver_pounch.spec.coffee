@@ -37,17 +37,11 @@ describe 'Functional. PounchDb driver.', ->
     beforeEach ->
       this.init('container')
 
-    it 'get_primitive_check_responce', (done) ->
-      driverHelpers.get_primitive_check_responce(this.mold, 'commonBranch.inPounch.docContainer', done)
-
-#    it 'get_primitive_check_mold', (done) ->
-#      driverHelpers.get_primitive_check_mold(this.mold, 'commonBranch.inPounch.docContainer', done)
+    it 'container_get', (done) ->
+      driverHelpers.container_get(this.mold, 'commonBranch.inPounch.docContainer', done)
 
     it 'container_set', (done) ->
       driverHelpers.container_set(this.mold, 'commonBranch.inPounch.docContainer', done)
-
-#    it 'container_set_check_mold', (done) ->
-#      driverHelpers.container_set_check_mold(this.mold, 'commonBranch.inPounch.docContainer', done)
 
 #    it 'get array', (done) ->
 #      driverHelpers.get_array(this.mold, 'commonBranch.inPounch.docContainer', done)

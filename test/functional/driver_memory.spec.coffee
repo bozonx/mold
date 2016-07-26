@@ -28,17 +28,11 @@ describe 'Functional. Memory driver.', ->
     this.container = this.mold.instance('commonBranch.inMemory.container')
 
   describe 'Primitives and array.', ->
-    it 'get_primitive_check_responce', (done) ->
-      driverHelpers.get_primitive_check_responce(this.mold, 'commonBranch.inMemory.container', done)
-
-#    it 'get_primitive_check_mold', (done) ->
-#      driverHelpers.get_primitive_check_mold(this.mold, 'commonBranch.inMemory', done)
+    it 'container_get', (done) ->
+      driverHelpers.container_get(this.mold, 'commonBranch.inMemory.container', done)
 
     it 'container_set', (done) ->
       driverHelpers.container_set(this.mold, 'commonBranch.inMemory.container', done)
-
-#    it 'container_set_check_mold', (done) ->
-#      driverHelpers.container_set_check_mold(this.mold, 'commonBranch.inMemory', done)
 
 #    it 'get array', (done) ->
 #      driverHelpers.get_array(this.mold, 'commonBranch.inMemory', done)

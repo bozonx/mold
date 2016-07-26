@@ -2,32 +2,7 @@ _ = require('lodash')
 helpers = require('../src/helpers')
 
 module.exports =
-
-#  get_primitive_check_mold: (mold, pathToDoc, done) ->
-#    docContainer = mold.instance(pathToDoc)
-#    driverInstance = mold.schemaManager.getDriver(pathToDoc)
-#
-#    # TODO: test another primitives
-#
-#    splits = helpers.splitLastParamPath(pathToDoc)
-#
-#    value = 'new value'
-#    driverRequest = {
-#      method: 'set'
-#      moldPath: pathToDoc
-#      payload: {stringParam: value}
-#      document: { pathToDocument: pathToDoc }
-#      driverPath:
-#        document: pathToDoc
-#        full: pathToDoc
-#        base: splits.basePath
-#        sub: splits.paramPath
-#    }
-#    expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
-#      expect(docContainer.get('stringParam')).to.eventually.notify =>
-#        expect(Promise.resolve(docContainer.mold)).to.eventually.property('stringParam').equal(value).notify(done)
-
-  get_primitive_check_responce: (mold, pathToDoc, done) ->
+  container_get: (mold, pathToDoc, done) ->
     docContainer = mold.instance(pathToDoc)
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
@@ -69,18 +44,6 @@ module.exports =
         expect(promise).to.eventually.property('request').deep.equal(response.request),
         expect(promise).to.eventually.property('driverResponse').have.property('stringParam', response.driverResponse.stringParam),
       ])).to.eventually.notify(done)
-
-
-#  container_set_check_mold: (mold, pathToDoc, done) ->
-#    docContainer = mold.instance(pathToDoc)
-#    docContainer.setMold('stringParam', 'new value')
-#
-#    # TODO: ??? test another primitives in container
-#
-#    expect(docContainer.save()).to.eventually.notify =>
-#      expect(Promise.resolve(docContainer.mold)).to.eventually
-#      .property('stringParam').equal('new value')
-#      .notify(done)
 
   container_set: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
