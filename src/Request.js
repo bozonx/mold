@@ -190,7 +190,7 @@ export default class Request {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
 
-    var clearPayload = _.omit(_.cloneDeep(payload), '$index', '$isNew', '$unsaved');
+    var clearPayload = (_.isPlainObject(payload)) ? _.omit(_.cloneDeep(payload), '$index', '$isNew', '$unsaved') : payload;
 
     if (!driver)
       throw new Error(`No-one driver did found!!!`);
