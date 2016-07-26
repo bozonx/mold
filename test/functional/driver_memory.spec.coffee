@@ -49,5 +49,5 @@ describe 'Functional. Memory driver.', ->
     it 'collection_remove', (done) ->
       driverHelpers.collection_remove(this.mold, 'commonBranch.inMemory.collection', done)
 
-    it 'collection_get_item_and_get_primitive', (done) ->
-      driverHelpers.collection_get_item_and_get_primitive(this.mold, 'commonBranch.inMemory.collection', done)
+#    it 'collection_get_item_and_get_primitive', (done) ->
+#      driverHelpers.collection_get_item_and_get_primitive(this.mold, 'commonBranch.inMemory.collection', done)

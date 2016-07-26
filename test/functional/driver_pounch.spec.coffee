@@ -62,9 +62,9 @@ describe 'Functional. PounchDb driver.', ->
       this.init('remove')
       driverHelpers.collection_remove(this.mold, 'commonBranch.inPounch.docColl', done)
 
-    it 'collection_get_item_and_get_primitive', (done) ->
-      this.init('getItem')
-      driverHelpers.collection_get_item_and_get_primitive(this.mold, 'commonBranch.inPounch.docColl', done)
+#    it 'collection_get_item_and_get_primitive', (done) ->
+#      this.init('getItem')
+#      driverHelpers.collection_get_item_and_get_primitive(this.mold, 'commonBranch.inPounch.docColl', done)
 
 
   # TODO: config

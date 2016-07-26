@@ -231,14 +231,8 @@ export default class Request {
       req['documentParams'] = documentParams;
       req['pathToDocument'] = documentParams.pathToDocument;
     }
-    //req['fullPath'] = moldPath;
-    if (!payload) delete req.payload;
-    if (!req.primaryKeyName) delete req.primaryKeyName;
-
-    console.log(12312312, req)
 
     return driver.requestHandler(_.pickBy(req));
   }
 
 }
-
