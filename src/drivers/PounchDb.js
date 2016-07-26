@@ -23,11 +23,7 @@ class LocalPounchDb {
     if (!request.document)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
-    // TODO: надо искать по pathToDocument + innerPath (0, 0.param)
-    // TODO: !!!!! надо искать по document
-
-    //return this._db.get(request.document.path)
-    return this._db.get(request.driverPath.full)
+    return this._db.get(request.driverPath.document)
       .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
   }
 
