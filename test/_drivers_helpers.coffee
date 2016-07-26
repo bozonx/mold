@@ -56,6 +56,8 @@ module.exports =
       expect(promise).to.eventually.property('request').deep.equal(setRequest),
     ])).to.eventually.notify(done)
 
+  # TODO: filter
+    
   collection_add: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 

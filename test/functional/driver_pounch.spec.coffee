@@ -33,24 +33,21 @@ describe 'Functional. PounchDb driver.', ->
       this.testSchema = testSchema(pounch)
       this.mold = mold.initSchema( {}, this.testSchema )
 
-  describe 'Common usage.', ->
-    beforeEach ->
-      this.init('container')
+  it 'container_get', (done) ->
+    this.init('container_get')
+    driverHelpers.container_get(this.mold, 'commonBranch.inPounch.docContainer', done)
 
-    it 'container_get', (done) ->
-      driverHelpers.container_get(this.mold, 'commonBranch.inPounch.docContainer', done)
+  it 'container_set', (done) ->
+    this.init('container_set')
+    driverHelpers.container_set(this.mold, 'commonBranch.inPounch.docContainer', done)
 
-    it 'container_set', (done) ->
-      driverHelpers.container_set(this.mold, 'commonBranch.inPounch.docContainer', done)
+  it 'collection_add', (done) ->
+    this.init('add')
+    driverHelpers.collection_add(this.mold, 'commonBranch.inPounch.docCollection', done)
 
-  describe 'Collection.', ->
-    it 'collection_add', (done) ->
-      this.init('add')
-      driverHelpers.collection_add(this.mold, 'commonBranch.inPounch.docCollection', done)
-
-    it 'collection_remove', (done) ->
-      this.init('remove')
-      driverHelpers.collection_remove(this.mold, 'commonBranch.inPounch.docCollection', done)
+  it 'collection_remove', (done) ->
+    this.init('remove')
+    driverHelpers.collection_remove(this.mold, 'commonBranch.inPounch.docCollection', done)
 
 #    it 'collection_get_item_and_get_primitive', (done) ->
 #      this.init('getItem')

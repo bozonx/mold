@@ -27,19 +27,17 @@ describe 'Functional. Memory driver.', ->
     this.mold = mold.initSchema( {}, this.testSchema )
     this.container = this.mold.instance('commonBranch.inMemory.container')
 
-  describe 'Primitives and array.', ->
-    it 'container_get', (done) ->
-      driverHelpers.container_get(this.mold, 'commonBranch.inMemory.container', done)
+  it 'container_get', (done) ->
+    driverHelpers.container_get(this.mold, 'commonBranch.inMemory.container', done)
 
-    it 'container_set', (done) ->
-      driverHelpers.container_set(this.mold, 'commonBranch.inMemory.container', done)
+  it 'container_set', (done) ->
+    driverHelpers.container_set(this.mold, 'commonBranch.inMemory.container', done)
 
-  describe 'Collection.', ->
-    it 'collection_add', (done) ->
-      driverHelpers.collection_add(this.mold, 'commonBranch.inMemory.collection', done)
+  it 'collection_add', (done) ->
+    driverHelpers.collection_add(this.mold, 'commonBranch.inMemory.collection', done)
 
-    it 'collection_remove', (done) ->
-      driverHelpers.collection_remove(this.mold, 'commonBranch.inMemory.collection', done)
+  it 'collection_remove', (done) ->
+    driverHelpers.collection_remove(this.mold, 'commonBranch.inMemory.collection', done)
 
 #    it 'collection_get_item_and_get_primitive', (done) ->
 #      driverHelpers.collection_get_item_and_get_primitive(this.mold, 'commonBranch.inMemory.collection', done)
