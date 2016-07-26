@@ -49,6 +49,7 @@ module.exports =
       request:
         method: 'get'
         moldPath: pathToDoc
+        schemaBaseType: 'container'
         driverPath:
           full: pathToDoc
       successResponse:

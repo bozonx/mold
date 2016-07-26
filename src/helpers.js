@@ -207,3 +207,15 @@ export function concatPath(root, relativePath) {
   //
   return `${root}.${relativePath}`;
 }
+
+export function getSchemaBaseType(schemaType) {
+  if (schemaType == 'collection') {
+    return 'collection';
+  }
+  else if(!schemaType) {
+    return 'container';
+  }
+  else {
+    return 'primitive';
+  }
+}

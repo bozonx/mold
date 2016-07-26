@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { findPrimary, splitLastParamPath } from './helpers';
+import { findPrimary, splitLastParamPath, getSchemaBaseType } from './helpers';
 
 export default class Request {
   constructor(main, composition) {
@@ -50,7 +50,6 @@ export default class Request {
   loadContainer(pathToContainer) {
     return new Promise((resolve, reject) => {
       this._startDriverRequest('get', pathToContainer).then((resp) => {
-        console.log(44444444, resp)
         // update mold with server response data
 
         // TODO: так не должно быть
@@ -205,8 +204,7 @@ export default class Request {
       moldPath,
       payload: !_.isEmpty(clearPayload) && clearPayload,
       primaryKeyName: schema.item && findPrimary(schema.item),
-      // TODO: add schemaBaseType
-      //schemaBaseType
+      schemaBaseType: getSchemaBaseType(schema.type),
       document: documentParams,
       driverPath: _.pickBy({
         document: documentParams && documentParams.pathToDocument,
