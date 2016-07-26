@@ -36,13 +36,12 @@ class LocalMemory {
     });
   }
 
-
   filter(request) {
     return this.get(request);
   }
 
   set(request) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       _.set(this._db, request.driverPath.full, request.payload);
       resolve({
         coocked: request.payload,
@@ -50,7 +49,6 @@ class LocalMemory {
         request,
       });
     });
-
   }
 
   add(request) {

@@ -3,29 +3,29 @@ helpers = require('../src/helpers')
 
 module.exports =
 
-  get_primitive_check_mold: (mold, pathToDoc, done) ->
-    docContainer = mold.instance(pathToDoc)
-    driverInstance = mold.schemaManager.getDriver(pathToDoc)
-
-    # TODO: test another primitives
-
-    splits = helpers.splitLastParamPath(pathToDoc)
-
-    value = 'new value'
-    driverRequest = {
-      method: 'set'
-      moldPath: pathToDoc
-      payload: {stringParam: value}
-      document: { pathToDocument: pathToDoc }
-      driverPath:
-        document: pathToDoc
-        full: pathToDoc
-        base: splits.basePath
-        sub: splits.paramPath
-    }
-    expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
-      expect(docContainer.get('stringParam')).to.eventually.notify =>
-        expect(Promise.resolve(docContainer.mold)).to.eventually.property('stringParam').equal(value).notify(done)
+#  get_primitive_check_mold: (mold, pathToDoc, done) ->
+#    docContainer = mold.instance(pathToDoc)
+#    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+#
+#    # TODO: test another primitives
+#
+#    splits = helpers.splitLastParamPath(pathToDoc)
+#
+#    value = 'new value'
+#    driverRequest = {
+#      method: 'set'
+#      moldPath: pathToDoc
+#      payload: {stringParam: value}
+#      document: { pathToDocument: pathToDoc }
+#      driverPath:
+#        document: pathToDoc
+#        full: pathToDoc
+#        base: splits.basePath
+#        sub: splits.paramPath
+#    }
+#    expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
+#      expect(docContainer.get('stringParam')).to.eventually.notify =>
+#        expect(Promise.resolve(docContainer.mold)).to.eventually.property('stringParam').equal(value).notify(done)
 
   get_primitive_check_responce: (mold, pathToDoc, done) ->
     docContainer = mold.instance(pathToDoc)
@@ -65,53 +65,48 @@ module.exports =
     expect(driverInstance.startRequest(driverSetRequest)).to.eventually.notify =>
       promise = docContainer.get('stringParam')
       expect(Promise.all([
-        expect(promise).to.eventually.have.property('coocked', response.coocked),
+        expect(promise).to.eventually.property('coocked').equal(response.coocked),
         expect(promise).to.eventually.property('request').deep.equal(response.request),
         expect(promise).to.eventually.property('driverResponse').have.property('stringParam', response.driverResponse.stringParam),
       ])).to.eventually.notify(done)
 
 
-  set_primitive_check_mold: (mold, pathToDoc, done) ->
-    docContainer = mold.instance(pathToDoc)
+#  container_set_check_mold: (mold, pathToDoc, done) ->
+#    docContainer = mold.instance(pathToDoc)
+#    docContainer.setMold('stringParam', 'new value')
+#
+#    # TODO: ??? test another primitives in container
+#
+#    expect(docContainer.save()).to.eventually.notify =>
+#      expect(Promise.resolve(docContainer.mold)).to.eventually
+#      .property('stringParam').equal('new value')
+#      .notify(done)
 
-    # TODO: test another primitives
+  container_set: (mold, pathToDoc, done) ->
+    driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
-    expect(docContainer.set('stringParam', 'new value')).to.eventually.notify =>
-      expect(Promise.resolve(docContainer.mold)).to.eventually.property('stringParam').equal('new value').notify(done)
-
-  set_primitive_check_response: (mold, pathToDoc, done) ->
-    docContainer = mold.instance(pathToDoc)
-
-    # TODO: test another primitives
-
-    value = 'new value'
-
-    # don't check driverResponse because it can be any for each type of driver
-
-    splits = helpers.splitLastParamPath(pathToDoc)
-
-    response = {
-      coocked: value
-      request:
-        method: 'set'
-        moldPath: pathToDoc
-        driverPath:
-          full: pathToDoc
-          base: splits.basePath
-          sub: splits.paramPath
-        payload: {stringParam: value}
+    driverRequest = {
+      moldPath: pathToDoc
+      driverPath:
+        document: pathToDoc
+        full: pathToDoc
+      document: { pathToDocument: pathToDoc }
+      primaryKeyName: 'id'
+      method: 'set'
+      payload: {
+        stringParam: 'new value',
+        arrayParam: ['value1'],
+      }
     }
 
-    if (docContainer.isDocument())
-      _.assignIn response.request, {
-        document: { pathToDocument: pathToDoc }
-      }
-      response.request.driverPath.document = pathToDoc
+    promise = driverInstance.startRequest(driverRequest).then (resp) ->
+      _.defaults({
+        coocked: _.omit(resp.coocked, '_id', '_rev')
+      }, resp)
 
-    promise = docContainer.set('stringParam', value)
     expect(Promise.all([
-      expect(promise).to.eventually.have.property('coocked', response.coocked),
-      expect(promise).to.eventually.property('request').deep.equal(response.request),
+      expect(promise).to.eventually.property('coocked').deep.equal(driverRequest.payload),
+      expect(promise).to.eventually.property('request').deep.equal(driverRequest),
     ])).to.eventually.notify(done)
 
 

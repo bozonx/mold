@@ -8,11 +8,13 @@ driverHelpers = require('../_drivers_helpers.coffee')
 testSchema = (pounch) ->
   commonBranch:
     inPounch: pounch.schema({}, {
-      doc1: {document: {}, schema: {
+      docContainer: {document: {}, schema: {
+        booleanParam: {type: 'boolean'}
         stringParam: {type: 'string'}
+        numberParam: {type: 'number'}
         arrayParam: {type: 'array'}
       }}
-      docColl: {document: {}, schema: {
+      docCollection: {document: {}, schema: {
         type: 'collection'
         item: {
           id: {type: 'number', primary: true}
@@ -36,31 +38,31 @@ describe 'Functional. PounchDb driver.', ->
       this.init('container')
 
     it 'get_primitive_check_responce', (done) ->
-      driverHelpers.get_primitive_check_responce(this.mold, 'commonBranch.inPounch.doc1', done)
+      driverHelpers.get_primitive_check_responce(this.mold, 'commonBranch.inPounch.docContainer', done)
 
-    it 'get_primitive_check_mold', (done) ->
-      driverHelpers.get_primitive_check_mold(this.mold, 'commonBranch.inPounch.doc1', done)
+#    it 'get_primitive_check_mold', (done) ->
+#      driverHelpers.get_primitive_check_mold(this.mold, 'commonBranch.inPounch.docContainer', done)
 
-#    it 'set_primitive_check_response', (done) ->
-#      driverHelpers.set_primitive_check_response(this.mold, 'commonBranch.inPounch.doc1', done)
-#
-#    it 'set_primitive_check_mold', (done) ->
-#      driverHelpers.set_primitive_check_mold(this.mold, 'commonBranch.inPounch.doc1', done)
-#
+    it 'container_set', (done) ->
+      driverHelpers.container_set(this.mold, 'commonBranch.inPounch.docContainer', done)
+
+#    it 'container_set_check_mold', (done) ->
+#      driverHelpers.container_set_check_mold(this.mold, 'commonBranch.inPounch.docContainer', done)
+
 #    it 'get array', (done) ->
-#      driverHelpers.get_array(this.mold, 'commonBranch.inPounch.doc1', done)
+#      driverHelpers.get_array(this.mold, 'commonBranch.inPounch.docContainer', done)
 #
 #    it 'set array', (done) ->
-#      driverHelpers.set_array(this.mold, 'commonBranch.inPounch.doc1', done)
+#      driverHelpers.set_array(this.mold, 'commonBranch.inPounch.docContainer', done)
 
   describe 'Collection.', ->
     it 'collection_add', (done) ->
       this.init('add')
-      driverHelpers.collection_add(this.mold, 'commonBranch.inPounch.docColl', done)
+      driverHelpers.collection_add(this.mold, 'commonBranch.inPounch.docCollection', done)
 
     it 'collection_remove', (done) ->
       this.init('remove')
-      driverHelpers.collection_remove(this.mold, 'commonBranch.inPounch.docColl', done)
+      driverHelpers.collection_remove(this.mold, 'commonBranch.inPounch.docCollection', done)
 
 #    it 'collection_get_item_and_get_primitive', (done) ->
 #      this.init('getItem')
