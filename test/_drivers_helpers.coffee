@@ -58,7 +58,27 @@ module.exports =
       expect(promise).to.eventually.property('request').deep.equal(setRequest),
     ])).to.eventually.notify(done)
 
-  # TODO: filter
+  collection_filter: (mold, pathToDoc, done) ->
+    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+
+    # add one
+    addOneRequest = generateRequest(pathToDoc, 'add', {
+      payload:
+        name: 'name1'
+    })
+
+    expect(driverInstance.startRequest(addOneRequest)).to.eventually.notify =>
+      # get all
+      filterRequest = generateRequest(pathToDoc, 'filter')
+      promise = driverInstance.startRequest(filterRequest).then (resp) ->
+        _.defaults({
+          coocked: _.map(resp.coocked, (value) => _.omit(value, '_id', '_rev'))
+        }, resp)
+
+      expect(Promise.all([
+        expect(promise).to.eventually.property('coocked').deep.equal([{id: 0, name: 'name1'}]),
+        expect(promise).to.eventually.property('request').deep.equal(filterRequest),
+      ])).to.eventually.notify(done)
 
   collection_add: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
@@ -68,13 +88,15 @@ module.exports =
         name: 'name1'
     })
 
-    driverInstance.startRequest(addRequest).then((resp) ->
-      assert.deepEqual(_.omit(resp.coocked, '_id', '_rev'), {id: 0, name: 'name1'})
-      done()
-    , (err) ->
-      assert.equal(1, err)
-      done()
-    )
+    promise = driverInstance.startRequest(addRequest).then (resp) ->
+      _.defaults({
+        coocked: _.omit(resp.coocked, '_id', '_rev')
+      }, resp)
+
+    expect(Promise.all([
+      expect(promise).to.eventually.property('coocked').deep.equal({id: 0, name: 'name1'}),
+      expect(promise).to.eventually.property('request').deep.equal(addRequest),
+    ])).to.eventually.notify(done)
 
   collection_remove: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
@@ -99,49 +121,12 @@ module.exports =
         expect(driverInstance.startRequest(removeRequest)).to.eventually.notify =>
           # get all
           filterRequest = generateRequest(pathToDoc, 'filter')
-          driverInstance.startRequest(filterRequest).then((resp) =>
-            clearValue = _.map(resp.coocked, (value) => _.omit(value, '_id', '_rev'))
-            assert.deepEqual(clearValue, [{id: 1, name: 'name2'}])
-            done()
-          , (err) =>
-            assert.equal(1, err)
-            done()
-          )
+          promise = driverInstance.startRequest(filterRequest).then (resp) ->
+            _.defaults({
+              coocked: _.map(resp.coocked, (value) => _.omit(value, '_id', '_rev'))
+            }, resp)
 
-  collection_get_item_and_get_primitive: (mold, pathToDoc, done) ->
-    driverInstance = mold.schemaManager.getDriver(pathToDoc)
-    collection = mold.instance(pathToDoc)
-
-    #splits = helpers.splitLastParamPath(pathToDoc)
-    #    splits = helpers.splitLastParamPath(pathToDoc)
-
-
-    requestBase = {
-      moldPath: pathToDoc
-      driverPath:
-        document: pathToDoc
-        full: pathToDoc
-#        base: splits.basePath
-#        sub: splits.paramPath
-      document: { pathToDocument: pathToDoc }
-      primaryKeyName: 'id'
-    }
-
-    # add one
-    driverRequest = _.defaults({
-      method: 'add'
-      payload: {id: 2, name: 'name1'}
-    }, requestBase)
-    expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
-      collectionItem = collection.child(2)
-
-      expect(collectionItem.get()).to.eventually.notify =>
-        expect(Promise.resolve(collectionItem.mold)).to.eventually
-        .deep.equal({})
-        .notify(done)
-
-#      expect(collectionItem.get()).to.eventually.notify =>
-#        primitiveOfName = collectionItem.child('name')
-#        expect(Promise.resolve(primitiveOfName.mold)).to.eventually
-#        .equal('name1')
-#        .notify(done)
+          expect(Promise.all([
+            expect(promise).to.eventually.property('coocked').deep.equal([{id: 1, name: 'name2'}]),
+            expect(promise).to.eventually.property('request').deep.equal(filterRequest),
+          ])).to.eventually.notify(done)
