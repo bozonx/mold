@@ -200,7 +200,7 @@ export default class Request {
     if (documentParams && documentParams.pathToDocument && documentParams.pathToDocument != moldPath)
       splits = splitLastParamPath(documentParams.pathToDocument);
 
-    var req = {
+    var req = _.pickBy({
       method,
       payload: !_.isEmpty(clearPayload) && clearPayload,
       primaryKeyName: schema.item && findPrimary(schema.item),
@@ -208,25 +208,19 @@ export default class Request {
       //schemaBaseType
 
       moldPath,
-      document: documentParams && (() => {
-        // TODO: refactor
-        var params = _.omit(documentParams, 'pathToDocument');
-        var doc = {
-          path: documentParams.pathToDocument,
-        };
-        if (!_.isEmpty(params)) doc.params = params;
-        return doc;
-      })(),
+      document: documentParams && _.pickBy({
+        path: documentParams.pathToDocument,
+        params: (param => !_.isEmpty(param) && param)(_.omit(documentParams, 'pathToDocument')),
+      }),
       driverPath: _.pickBy({
         document: documentParams && documentParams.pathToDocument,
         full: moldPath,
-        // TODO: add "document"
         base: splits && splits.basePath,
         sub: splits && splits.paramPath,
       }),
-    };
+    });
 
-    return driver.requestHandler(_.pickBy(req));
+    return driver.requestHandler(req);
   }
 
 }
