@@ -218,18 +218,13 @@ export default class Request {
         return doc;
       })(),
       driverPath: _.pickBy({
+        document: documentParams && documentParams.pathToDocument,
         full: moldPath,
         // TODO: add "document"
         base: splits && splits.basePath,
         sub: splits && splits.paramPath,
       }),
     };
-
-    // TODO: old!
-    var documentParams = this._main.schemaManager.getDocument(moldPath);
-    if (documentParams) {
-      req['pathToDocument'] = documentParams.pathToDocument;
-    }
 
     return driver.requestHandler(_.pickBy(req));
   }

@@ -16,9 +16,9 @@ module.exports =
       method: 'set'
       moldPath: pathToDoc
       payload: {stringParam: value}
-      pathToDocument: pathToDoc
       document: { path: pathToDoc }
       driverPath:
+        document: pathToDoc
         full: pathToDoc
         base: splits.basePath
         sub: splits.paramPath
@@ -38,9 +38,9 @@ module.exports =
       method: 'set'
       moldPath: pathToDoc
       driverPath:
+        document: pathToDoc
         full: pathToDoc
       payload: {stringParam: value}
-      pathToDocument: pathToDoc
       document: { path: pathToDoc }
     }
 
@@ -58,8 +58,8 @@ module.exports =
     if (docContainer.isDocument())
       _.assignIn response.request, {
         document: { path: pathToDoc }
-        pathToDocument: pathToDoc
       }
+      response.request.driverPath.document = pathToDoc
 
     expect(driverInstance.requestHandler(driverSetRequest)).to.eventually.notify =>
       promise = docContainer.get('stringParam')
@@ -104,8 +104,8 @@ module.exports =
     if (docContainer.isDocument())
       _.assignIn response.request, {
         document: { path: pathToDoc }
-        pathToDocument: pathToDoc
       }
+      response.request.driverPath.document = pathToDoc
 
     promise = docContainer.set('stringParam', value)
     expect(Promise.all([
@@ -125,12 +125,12 @@ module.exports =
       method: 'set'
       moldPath: pathToDoc
       driverPath:
+        document: pathToDoc
         full: pathToDoc
         base: splits.basePath
         sub: splits.paramPath
       payload: {arrayParam: value}
       document: { path: pathToDoc }
-      pathToDocument: pathToDoc
     }
     expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
       expect(docContainer.get('arrayParam')).to.eventually.notify =>
@@ -152,11 +152,11 @@ module.exports =
     driverRequest = {
       moldPath: pathToDoc
       driverPath:
+        document: pathToDoc
         full: pathToDoc
         base: splits.basePath
         sub: splits.paramPath
       document: { path: pathToDoc }
-      pathToDocument: pathToDoc
       primaryKeyName: 'id'
       method: 'add'
       payload: {name: 'name1'}
@@ -178,11 +178,11 @@ module.exports =
     requestBase = {
       moldPath: pathToDoc
       driverPath:
+        document: pathToDoc
         full: pathToDoc
         base: splits.basePath
         sub: splits.paramPath
       document: { path: pathToDoc }
-      pathToDocument: pathToDoc
       primaryKeyName: 'id'
     }
 
@@ -226,11 +226,11 @@ module.exports =
     requestBase = {
       moldPath: pathToDoc
       driverPath:
+        document: pathToDoc
         full: pathToDoc
 #        base: splits.basePath
 #        sub: splits.paramPath
       document: { path: pathToDoc }
-      pathToDocument: pathToDoc
       primaryKeyName: 'id'
     }
 
