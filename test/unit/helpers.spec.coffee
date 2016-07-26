@@ -172,11 +172,11 @@ describe 'Unit. helpers.', ->
         basePath: 'dir1.dir2'
         paramPath: 'file'
       })
-
+      
     it 'dir1.dir2.file.0', ->
       assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0'), {
         basePath: 'dir1.dir2.file'
-        paramPath: '0'
+        paramPath: 0
       })
     
     it 'dir1.dir2.file.0.name', ->
@@ -184,13 +184,13 @@ describe 'Unit. helpers.', ->
         basePath: 'dir1.dir2.file.0'
         paramPath: 'name'
       })
-
+    
     it 'dir1.dir2.file.0.param.1', ->
       assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0.param.1'), {
         basePath: 'dir1.dir2.file.0.param'
-        paramPath: '1'
+        paramPath: 1
       })
-
+    
     it 'dir1.dir2.file.0.param.1.name', ->
       assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0.param.1.name'), {
         basePath: 'dir1.dir2.file.0.param.1'

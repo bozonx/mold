@@ -175,6 +175,8 @@ export function splitLastParamPath(path) {
   };
 
   var paramPath = splits.pop();
+  var toNum = _.toNumber(paramPath);
+  if (!_.isNaN(toNum)) paramPath = toNum;
 
   return {
     basePath: splits.join('.'),
