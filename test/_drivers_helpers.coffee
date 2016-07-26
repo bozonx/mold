@@ -1,26 +1,27 @@
 _ = require('lodash')
 helpers = require('../src/helpers')
 
-generateRequest = (pathToDoc, method, payload) ->
-  {
+generateRequest = (pathToDoc, method, toExtend) ->
+  _.defaultsDeep(toExtend, {
     moldPath: pathToDoc
     driverPath:
       document: pathToDoc
       full: pathToDoc
     document: { pathToDocument: pathToDoc }
     method: method
-    payload: payload
-  }
+    primaryKeyName: 'id'
+  })
 
 module.exports =
   container_get: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
     setRequest = generateRequest(pathToDoc, 'set', {
-      booleanParam: true,
-      stringParam: 'new value',
-      numberParam: 5,
-      arrayParam: ['value1'],
+      payload:
+        booleanParam: true
+        stringParam: 'new value'
+        numberParam: 5
+        arrayParam: ['value1']
     })
 
     getRequest = generateRequest(pathToDoc, 'get')
@@ -30,7 +31,7 @@ module.exports =
         _.defaults({
           coocked: _.omit(resp.coocked, '_id', '_rev')
         }, resp)
-  
+
       expect(Promise.all([
         expect(promise).to.eventually.property('coocked').deep.equal(setRequest.payload),
         expect(promise).to.eventually.property('request').deep.equal(getRequest),
@@ -40,10 +41,11 @@ module.exports =
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
     setRequest = generateRequest(pathToDoc, 'set', {
-      booleanParam: true,
-      stringParam: 'new value',
-      numberParam: 5,
-      arrayParam: ['value1'],
+      payload:
+        booleanParam: true
+        stringParam: 'new value'
+        numberParam: 5
+        arrayParam: ['value1']
     })
 
     promise = driverInstance.startRequest(setRequest).then (resp) ->
@@ -57,26 +59,16 @@ module.exports =
     ])).to.eventually.notify(done)
 
   # TODO: filter
-    
+
   collection_add: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
-    splits = helpers.splitLastParamPath(pathToDoc)
+    addRequest = generateRequest(pathToDoc, 'add', {
+      payload:
+        name: 'name1'
+    })
 
-    driverRequest = {
-      moldPath: pathToDoc
-      driverPath:
-        document: pathToDoc
-        full: pathToDoc
-        base: splits.basePath
-        sub: splits.paramPath
-      document: { pathToDocument: pathToDoc }
-      primaryKeyName: 'id'
-      method: 'add'
-      payload: {name: 'name1'}
-    }
-
-    driverInstance.startRequest(driverRequest).then((resp) ->
+    driverInstance.startRequest(addRequest).then((resp) ->
       assert.deepEqual(_.omit(resp.coocked, '_id', '_rev'), {id: 0, name: 'name1'})
       done()
     , (err) ->
@@ -87,42 +79,27 @@ module.exports =
   collection_remove: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
-    splits = helpers.splitLastParamPath(pathToDoc)
-
-    requestBase = {
-      moldPath: pathToDoc
-      driverPath:
-        document: pathToDoc
-        full: pathToDoc
-        base: splits.basePath
-        sub: splits.paramPath
-      document: { pathToDocument: pathToDoc }
-      primaryKeyName: 'id'
-    }
-
     # add one
-    driverRequest = _.defaults({
-      method: 'add'
-      payload: {name: 'name1'}
-    }, requestBase)
-    expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
+    addOneRequest = generateRequest(pathToDoc, 'add', {
+      payload:
+        name: 'name1'
+    })
+    expect(driverInstance.startRequest(addOneRequest)).to.eventually.notify =>
       # add two
-      driverRequest = _.defaults({
-        method: 'add'
-        payload: {name: 'name2'}
-      }, requestBase)
-      expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
+      addTwoRequest = generateRequest(pathToDoc, 'add', {
+        payload:
+          name: 'name2'
+      })
+      expect(driverInstance.startRequest(addTwoRequest)).to.eventually.notify =>
         # remove first
-        driverRequest = _.defaults({
-          method: 'remove'
-          payload: {id: 0}
-        }, requestBase)
-        expect(driverInstance.startRequest(driverRequest)).to.eventually.notify =>
+        removeRequest = generateRequest(pathToDoc, 'remove', {
+          payload:
+            id: 0
+        })
+        expect(driverInstance.startRequest(removeRequest)).to.eventually.notify =>
           # get all
-          driverRequest = _.defaults({
-            method: 'filter'
-          }, requestBase)
-          driverInstance.startRequest(driverRequest).then((resp) =>
+          filterRequest = generateRequest(pathToDoc, 'filter')
+          driverInstance.startRequest(filterRequest).then((resp) =>
             clearValue = _.map(resp.coocked, (value) => _.omit(value, '_id', '_rev'))
             assert.deepEqual(clearValue, [{id: 1, name: 'name2'}])
             done()
@@ -136,6 +113,8 @@ module.exports =
     collection = mold.instance(pathToDoc)
 
     #splits = helpers.splitLastParamPath(pathToDoc)
+    #    splits = helpers.splitLastParamPath(pathToDoc)
+
 
     requestBase = {
       moldPath: pathToDoc
