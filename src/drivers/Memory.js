@@ -19,7 +19,7 @@ class LocalMemory {
 
   get(request) {
     return new Promise((resolve, reject) => {
-      var resp = _.get(this._db, request.fullPath);
+      var resp = _.get(this._db, request.driverPath.full);
       if (!_.isUndefined(resp)) {
         resolve({
           coocked: resp,
@@ -43,7 +43,7 @@ class LocalMemory {
 
   set(request) {
     return new Promise((resolve, reject) => {
-      _.set(this._db, request.fullPath, request.payload);
+      _.set(this._db, request.driverPath.full, request.payload);
       resolve({
         coocked: request.payload,
         successResponse: request.payload,
@@ -55,13 +55,13 @@ class LocalMemory {
 
   add(request) {
     return new Promise((resolve) => {
-      var collection = _.get(this._db, request.fullPath);
+      var collection = _.get(this._db, request.driverPath.full);
       var primaryId = 0;
 
       // create new collection if need
       if (_.isUndefined(collection)) {
         collection = [];
-        _.set(this._db, request.fullPath, collection);
+        _.set(this._db, request.driverPath.full, collection);
       }
 
       if (_.isNumber(request.payload[request.primaryKeyName])) {
@@ -91,7 +91,7 @@ class LocalMemory {
 
   remove(request) {
     return new Promise((resolve, reject) => {
-      var collection = _.get(this._db, request.fullPath);
+      var collection = _.get(this._db, request.driverPath.full);
 
       if (!collection) {
         reject({

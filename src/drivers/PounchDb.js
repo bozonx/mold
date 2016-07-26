@@ -20,19 +20,22 @@ class LocalPounchDb {
   }
 
   get(request) {
-    if (!request.pathToDocument)
-      // TODO: проверять documentParams
-      throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
+    if (!request.document)
+      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     // TODO: надо искать по pathToDocument + innerPath (0, 0.param)
-    return this._db.get(request.fullPath)
+    // TODO: !!!!! надо искать по document
+
+    console.log(2423234234243, request.document.path)
+    
+    //return this._db.get(request.document.path)
+    return this._db.get(request.driverPath.full)
       .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
   }
 
   filter(request) {
-    if (!request.pathToDocument)
-    // TODO: проверять documentParams
-      throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
+    if (!request.document)
+      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     var getAllQuery = {
       include_docs: true,
@@ -52,9 +55,8 @@ class LocalPounchDb {
   }
 
   set(request) {
-    if (!request.pathToDocument)
-    // TODO: проверять documentParams
-      throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
+    if (!request.document)
+      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     return new Promise((resolve, reject) => {
       this._db.get(request.pathToDocument).then((resp) => {
@@ -107,8 +109,8 @@ class LocalPounchDb {
   }
 
   add(request) {
-    if (!request.pathToDocument)
-      throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
+    if (!request.document)
+      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     var getAllQuery = {
       include_docs: true,
@@ -155,8 +157,8 @@ class LocalPounchDb {
   }
 
   remove(request) {
-    if (!request.pathToDocument)
-      throw new Error(`PounchDb can't work without specified "pathToDocument" in your schema!`);
+    if (!request.document)
+      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     var docId = `${request.pathToDocument}.${request.payload[request.primaryKeyName]}`;
 

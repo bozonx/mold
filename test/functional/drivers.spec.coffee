@@ -21,7 +21,7 @@ class LocalTestDriver
 
   requestHandler: (request) ->
     return new Promise (resolve, reject) =>
-      _.set(this.__storage, request.fullPath, request.payload);
+      _.set(this.__storage, request.moldPath, request.payload);
       resolve({
         status: 'ok'
       });

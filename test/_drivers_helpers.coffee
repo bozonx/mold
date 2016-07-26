@@ -1,4 +1,5 @@
 _ = require('lodash')
+helpers = require('../src/helpers')
 
 module.exports =
 
@@ -8,12 +9,19 @@ module.exports =
 
     # TODO: test another primitives
 
+    splits = helpers.splitLastParamPath(pathToDoc)
+
     value = 'new value'
     driverRequest = {
       method: 'set'
-      fullPath: pathToDoc
+      moldPath: pathToDoc
       payload: {stringParam: value}
       pathToDocument: pathToDoc
+      document: { path: pathToDoc }
+      driverPath:
+        full: pathToDoc
+        base: splits.basePath
+        sub: splits.paramPath
     }
     expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
       expect(docContainer.get('stringParam')).to.eventually.notify =>
@@ -28,22 +36,28 @@ module.exports =
     value = 'new value'
     driverSetRequest = {
       method: 'set'
-      fullPath: pathToDoc
+      moldPath: pathToDoc
+      driverPath:
+        full: pathToDoc
       payload: {stringParam: value}
       pathToDocument: pathToDoc
+      document: { path: pathToDoc }
     }
 
     response = {
       coocked: value
       request:
         method: 'get'
-        fullPath: pathToDoc
+        moldPath: pathToDoc
+        driverPath:
+          full: pathToDoc
       successResponse:
         stringParam: value
     }
 
     if (docContainer.isDocument())
       _.assignIn response.request, {
+        document: { path: pathToDoc }
         pathToDocument: pathToDoc
         documentParams:
           pathToDocument: pathToDoc
@@ -75,16 +89,23 @@ module.exports =
 
     # don't check successResponse because it can be any for each type of driver
 
+    splits = helpers.splitLastParamPath(pathToDoc)
+
     response = {
       coocked: value
       request:
         method: 'set'
-        fullPath: pathToDoc
+        moldPath: pathToDoc
+        driverPath:
+          full: pathToDoc
+          base: splits.basePath
+          sub: splits.paramPath
         payload: {stringParam: value}
     }
 
     if (docContainer.isDocument())
       _.assignIn response.request, {
+        document: { path: pathToDoc }
         pathToDocument: pathToDoc
         documentParams:
           pathToDocument: pathToDoc
@@ -101,11 +122,18 @@ module.exports =
     docContainer = mold.instance(pathToDoc)
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
+    splits = helpers.splitLastParamPath(pathToDoc)
+
     value = [1,2,3]
     driverRequest = {
       method: 'set'
-      fullPath: pathToDoc
+      moldPath: pathToDoc
+      driverPath:
+        full: pathToDoc
+        base: splits.basePath
+        sub: splits.paramPath
       payload: {arrayParam: value}
+      document: { path: pathToDoc }
       pathToDocument: pathToDoc
     }
     expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
@@ -123,8 +151,15 @@ module.exports =
   collection_add: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
+    splits = helpers.splitLastParamPath(pathToDoc)
+
     driverRequest = {
-      fullPath: pathToDoc
+      moldPath: pathToDoc
+      driverPath:
+        full: pathToDoc
+        base: splits.basePath
+        sub: splits.paramPath
+      document: { path: pathToDoc }
       pathToDocument: pathToDoc
       primaryKeyName: 'id'
       method: 'add'
@@ -142,8 +177,15 @@ module.exports =
   collection_remove: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
 
+    splits = helpers.splitLastParamPath(pathToDoc)
+
     requestBase = {
-      fullPath: pathToDoc
+      moldPath: pathToDoc
+      driverPath:
+        full: pathToDoc
+        base: splits.basePath
+        sub: splits.paramPath
+      document: { path: pathToDoc }
       pathToDocument: pathToDoc
       primaryKeyName: 'id'
     }
@@ -182,9 +224,16 @@ module.exports =
   collection_get_item_and_get_primitive: (mold, pathToDoc, done) ->
     driverInstance = mold.schemaManager.getDriver(pathToDoc)
     collection = mold.instance(pathToDoc)
- 
+
+    #splits = helpers.splitLastParamPath(pathToDoc)
+
     requestBase = {
-      fullPath: pathToDoc
+      moldPath: pathToDoc
+      driverPath:
+        full: pathToDoc
+#        base: splits.basePath
+#        sub: splits.paramPath
+      document: { path: pathToDoc }
       pathToDocument: pathToDoc
       primaryKeyName: 'id'
     }
@@ -196,9 +245,14 @@ module.exports =
     }, requestBase)
     expect(driverInstance.requestHandler(driverRequest)).to.eventually.notify =>
       collectionItem = collection.child(2)
-      
+
       expect(collectionItem.get()).to.eventually.notify =>
-        primitiveOfName = collectionItem.child('name')
-        expect(Promise.resolve(primitiveOfName.mold)).to.eventually
-        .equal('name1')
+        expect(Promise.resolve(collectionItem.mold)).to.eventually
+        .deep.equal({})
         .notify(done)
+      
+#      expect(collectionItem.get()).to.eventually.notify =>
+#        primitiveOfName = collectionItem.child('name')
+#        expect(Promise.resolve(primitiveOfName.mold)).to.eventually
+#        .equal('name1')
+#        .notify(done)

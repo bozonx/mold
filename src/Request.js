@@ -50,8 +50,13 @@ export default class Request {
   loadContainer(pathToContainer) {
     return new Promise((resolve, reject) => {
       this._startDriverRequest('get', pathToContainer).then((resp) => {
+        console.log(44444444, resp)
         // update mold with server response data
-         this._composition.update(pathToContainer, resp.coocked);
+
+        // TODO: так не должно быть
+        var pathTo = (resp.request.document && resp.request.document.path) || resp.request.driverPath.full;
+
+         this._composition.update(pathTo, resp.coocked);
         resolve(resp);
       }, reject);
     });
@@ -61,7 +66,11 @@ export default class Request {
     return new Promise((resolve, reject) => {
       this._startDriverRequest('filter', pathToCollection).then((resp) => {
         // update mold with server response data
-        this._composition.update(pathToCollection, resp.coocked);
+
+        // TODO: так не должно быть
+        var pathTo = (resp.request.document && resp.request.document.path) || resp.request.driverPath.full;
+
+        this._composition.update(pathTo, resp.coocked);
         resolve(resp);
       }, reject);
     });
@@ -74,7 +83,7 @@ export default class Request {
     var splits = splitLastParamPath(pathToPrimitive);
     var pathToContainer = splits.basePath;
     var subPath = splits.paramPath;
-    
+
     if (_.isUndefined(splits.paramPath))
       // TODO: это должно проверяться ещё на стадии валидации схемы.
       throw new Error(`Something wrong with your schema. Root of primitive must be a container.`);
@@ -180,7 +189,7 @@ export default class Request {
 
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
-    
+
     var clearPayload = _.omit(_.cloneDeep(payload), '$index', '$isNew', '$unsaved');
 
     if (!driver)
@@ -188,26 +197,32 @@ export default class Request {
 
     var documentParams = this._main.schemaManager.getDocument(moldPath);
     var splits;
-    if (documentParams && documentParams.pathToDocument)
+    if (documentParams && documentParams.pathToDocument && documentParams.pathToDocument != moldPath)
       splits = splitLastParamPath(documentParams.pathToDocument);
 
     var req = {
       method,
-      payload: clearPayload,
+      payload: !_.isEmpty(clearPayload) && clearPayload,
       primaryKeyName: schema.item && findPrimary(schema.item),
       // TODO: add schemaBaseType
       //schemaBaseType
 
-      // moldPath,
-      // document: documentParams && {
-      //   path: documentParams.pathToDocument,
-      //   params: _.omit(documentParams, 'pathToDocument'),
-      // },
-      // driverPath: {
-      //   full: moldPath,
-      //   base: splits && splits.basePath,
-      //   sub: splits && splits.paramPath,
-      // },
+      moldPath,
+      document: documentParams && (() => {
+        // TODO: refactor
+        var params = _.omit(documentParams, 'pathToDocument');
+        var doc = {
+          path: documentParams.pathToDocument,
+        };
+        if (!_.isEmpty(params)) doc.params = params;
+        return doc;
+      })(),
+      driverPath: _.pickBy({
+        full: moldPath,
+        // TODO: add "document"
+        base: splits && splits.basePath,
+        sub: splits && splits.paramPath,
+      }),
     };
 
     // TODO: old!
@@ -216,13 +231,14 @@ export default class Request {
       req['documentParams'] = documentParams;
       req['pathToDocument'] = documentParams.pathToDocument;
     }
-    req['fullPath'] = moldPath;
+    //req['fullPath'] = moldPath;
     if (!payload) delete req.payload;
     if (!req.primaryKeyName) delete req.primaryKeyName;
 
-    //console.log(12312312, req)
+    console.log(12312312, req)
 
-    return driver.requestHandler(req);
+    return driver.requestHandler(_.pickBy(req));
   }
 
 }
+
