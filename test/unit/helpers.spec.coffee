@@ -165,3 +165,34 @@ describe 'Unit. helpers.', ->
       assert.equal(helpers.getTheBestMatchPath('one.two.other', paths), 'one.two')
       assert.equal(helpers.getTheBestMatchPath('one.two.three.other', paths), 'one.two.three')
       assert.equal(helpers.getTheBestMatchPath('one.two.three.four.other', paths), 'one.two.three.four')
+
+  describe 'splitLastParamPath.', ->
+    it 'dir1.dir2.file', ->
+      assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file'), {
+        basePath: 'dir1.dir2'
+        paramPath: 'file'
+      })
+
+    it 'dir1.dir2.file.0', ->
+      assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0'), {
+        basePath: 'dir1.dir2.file'
+        paramPath: '0'
+      })
+    
+    it 'dir1.dir2.file.0.name', ->
+      assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0.name'), {
+        basePath: 'dir1.dir2.file.0'
+        paramPath: 'name'
+      })
+
+    it 'dir1.dir2.file.0.param.1', ->
+      assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0.param.1'), {
+        basePath: 'dir1.dir2.file.0.param'
+        paramPath: '1'
+      })
+
+    it 'dir1.dir2.file.0.param.1.name', ->
+      assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0.param.1.name'), {
+        basePath: 'dir1.dir2.file.0.param.1'
+        paramPath: 'name'
+      })
