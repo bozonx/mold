@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import { convertToCompositionPath, recursiveMutate } from './helpers';
+import mutate from './mutate';
 
 export default class Composition {
   constructor(events) {
@@ -40,11 +41,36 @@ export default class Composition {
   /**
    * Update value. It use _.defaultsDeep method.
    * This method deeply mutates existent object or arrays.
-   * @param driverPath
+   * @param moldPath
    * @param value
      */
-  update(driverPath, value) {
-    var compPath = convertToCompositionPath(driverPath);
+  update2(moldPath, value) {
+    // TODO: обновляем на новое состояние
+    // TODO: проходимся по новому состоянию и поднимаем события там где изменилось
+
+    var compPath = convertToCompositionPath(moldPath);
+    var oldValue = _.cloneDeep(this.get(moldPath));
+
+    // Update whore storage if moldPath isn't defined
+    if (!moldPath)
+      mutate(this._storage, '', value);
+
+    mutate(this._storage, compPath, value);
+  }
+
+
+  /**
+   * Update value. It use _.defaultsDeep method.
+   * This method deeply mutates existent object or arrays.
+   * @param moldPath
+   * @param value
+   */
+  update(moldPath, value) {
+    // TODO: обновляем на новое состояние
+    // TODO: проходимся по новому состоянию и поднимаем события там где изменилось
+
+    var compPath = convertToCompositionPath(moldPath);
+
     var itemCallBack = (leafPath, newValue, oldValue, action) => {
       // TODO: здесь так же вызываются leafPath == '_id' || leafPath == '_rev'
 
@@ -78,7 +104,7 @@ export default class Composition {
 
 
 
-      if (!driverPath) {
+      if (!moldPath) {
         // Update whore storage
         recursiveMutate(this._storage, value, itemCallBack, '');
       }

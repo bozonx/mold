@@ -34,7 +34,7 @@ export function recursiveSchema(root, schema, cb) {
 }
 
 
-
+// TODO: remove
 /**
  * Mutate object or array.
  * @param {object|array} sourceData - This will be mutate
