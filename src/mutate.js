@@ -1,48 +1,52 @@
 import _ from 'lodash';
 
+import { convertFromLodashToMoldPath, convertToLodashPath } from './helpers';
+
 class Mutate {
-  constructor(storage, onUpdate) {
+  constructor(storage) {
     this.storage = storage;
-    this.onUpdate = onUpdate;
-    this._updates = [];
+    this.updates = [];
   }
 
   mutate(root, newData) {
     // TODO: зачем '' ?
     root = root || '';
 
-    this._сrossroads(root, newData);
+    var isChanged = this._crossroads(convertFromLodashToMoldPath(root), newData);
 
-    if (_.isEmpty(this._updates)) {
-      this._updates.push([root, 'unchanged']);
-    }
-    else {
-      this._updates.push([root, 'changed']);
-    }
-
-    // TODO: run all handlers
+    if (isChanged) this.updates.push([convertToLodashPath(root), newData, 'changed']);
+    else this.updates.push([convertToLodashPath(root), newData, 'unchanged']);
   }
 
-  _сrossroads(root, newData) {
+  _crossroads(root, newData) {
     if (_.isPlainObject(newData)) {
-      this.updateContainer(root, newData);
+      return this.updateContainer(root, newData);
     }
     else if (_.isArray(newData) && newData.length > 0 && _.isPlainObject(_.head(newData))) {
-      this.updateCollection(root, newData);
+      return this.updateCollection(root, newData);
     }
     else {
       // It's primitive
-      this.updatePrimitive(root, newData);
+      return this.updatePrimitive(root, newData);
     }
   }
 
   updateContainer(root, newData) {
+    var isChanged;
+    // TODO: refactor - use reduce
     _.each(newData, (value, name) => {
-      this._сrossroads(this._makePath(root, name), value);
+      var isItemChanged = this._crossroads(this._makePath(root, name), value);
+      if (!isChanged) isChanged = isItemChanged;
     });
+
+    if (isChanged) this.updates.push([convertToLodashPath(root), newData, 'changed']);
+    else this.updates.push([convertToLodashPath(root), newData, 'unchanged']);
+
+    return isChanged;
   }
 
   updateCollection(root, newData) {
+    var isChanged;
     // remove whore source collection if new collection is empty
     if (newData.length === 0)
       return _.remove(_.get(this.storage, root));
@@ -55,6 +59,7 @@ class Mutate {
 
       if (!newData[name]) {
         delete oldCollection[name];
+        isChanged = true;
       }
     });
 
@@ -64,19 +69,34 @@ class Mutate {
 
       if (oldCollection[index]) {
         // update existent item
-        this.updateContainer(this._makePath(root, index), value);
+        var isItemChanged = this.updateContainer(this._makePath(root, index), value);
+        if (!isChanged) isChanged = isItemChanged;
       }
       else {
         // add new item if it doesn't exist
         // It's rise event like push, but we can set item to its index
         // TODO: проверить можно ли устанавливать на любой индекс не по порядку
         oldCollection.splice(oldCollection.length + 1, 1, value)
+        isChanged = true;
       }
     });
+
+    if (isChanged) this.updates.push([convertToLodashPath(root), newData, 'changed']);
+    else this.updates.push([convertToLodashPath(root), newData, 'unchanged']);
+
+    return isChanged;
   }
 
   updatePrimitive(root, newData) {
+    var oldValue = _.get(this.storage, root);
     _.set(this.storage, root, newData);
+
+    var isChanged = oldValue !== newData;
+
+    if (isChanged) this.updates.push([convertToLodashPath(root), newData, 'changed']);
+    else this.updates.push([convertToLodashPath(root), newData, 'unchanged']);
+
+    return isChanged;
   }
 
   _makePath(root, child) {
@@ -99,6 +119,7 @@ class Mutate {
  */
 export default function(storage, root, newData, onUpdate) {
   //mutate(storage, root, newData);
-  var mutate = new Mutate(storage, onUpdate);
-  mutate.mutate(root, newData);
+  var mutate = new Mutate(storage);
+  mutate.mutate(root, newData, onUpdate);
+  return mutate.updates;
 }

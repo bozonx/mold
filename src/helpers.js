@@ -161,10 +161,16 @@ export function convertToSchemaPath(path) {
   return path.replace(/(\[\d+])|(\.\d+)/, '.item');
 }
 
-export function convertToCompositionPath(moldPath) {
-  var compositionPath = _.trim(moldPath.replace(/\{([a-zA-Z\_\$]+)}/g, '.\$1'), '.');
-  compositionPath = compositionPath.replace(/\.(\d+)/g, '[\$1]');
-  return compositionPath;
+export function convertToLodashPath(moldPath) {
+  //var compositionPath = _.trim(moldPath.replace(/\{([a-zA-Z\_\$]+)}/g, '.\$1'), '.');
+  // compositionPath = compositionPath.replace(/\.(\d+)/g, '[\$1]');
+  // return compositionPath;
+
+  return moldPath.replace(/\.(\d+)/g, '[\$1]');
+}
+
+export function convertFromLodashToMoldPath(moldPath) {
+  return moldPath.replace(/\[(\d+)]/g, '.\$1');
 }
 
 export function splitLastParamPath(path) {

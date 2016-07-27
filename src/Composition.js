@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { convertToCompositionPath, recursiveMutate } from './helpers';
+import { convertToLodashPath, recursiveMutate } from './helpers';
 import mutate from './mutate';
 
 export default class Composition {
@@ -23,7 +23,7 @@ export default class Composition {
   get(path) {
     if (!path) return this._storage;
 
-    return _.get(this._storage, convertToCompositionPath(path));
+    return _.get(this._storage, convertToLodashPath(path));
   }
 
   // /**
@@ -48,7 +48,7 @@ export default class Composition {
     // TODO: обновляем на новое состояние
     // TODO: проходимся по новому состоянию и поднимаем события там где изменилось
 
-    var compPath = convertToCompositionPath(moldPath);
+    var compPath = convertToLodashPath(moldPath);
     var oldValue = _.cloneDeep(this.get(moldPath));
 
     // Update whore storage if moldPath isn't defined
@@ -60,15 +60,13 @@ export default class Composition {
     // TODO: run _updateIndexes(pathToCollection) on each collection
   }
   
-  _updateHandler(root, newValue, action) {
-    // TODO: преобразовать путь в moldPath
-    var moldPath = root;
+  _updateHandler(moldPath, newValue, action) {
+    if (_.isArray(newValue)) this._updateIndexes(moldPath);
     this._events.emit('mold.composition.update', {
       path: moldPath,
       action: action,
     });
   }
-
 
   /**
    * Update value. It use _.defaultsDeep method.
@@ -80,7 +78,7 @@ export default class Composition {
     // TODO: обновляем на новое состояние
     // TODO: проходимся по новому состоянию и поднимаем события там где изменилось
 
-    var compPath = convertToCompositionPath(moldPath);
+    var compPath = convertToLodashPath(moldPath);
 
     var itemCallBack = (leafPath, newValue, oldValue, action) => {
       // TODO: здесь так же вызываются leafPath == '_id' || leafPath == '_rev'
@@ -170,7 +168,7 @@ export default class Composition {
    * @param {object} newItem
    */
   addToBeginning(pathToCollection, newItem) {
-    var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
+    var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
     // add to beginning
     collection.unshift(newItem);
     // Rise an event
@@ -185,7 +183,7 @@ export default class Composition {
    * @param {number} $index
    */
   remove(pathToCollection, $index) {
-    var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
+    var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
 
     // remove with rising an change event on array of collection
     collection.splice($index, 1);
@@ -196,7 +194,7 @@ export default class Composition {
   }
 
   _updateIndexes(pathToCollection) {
-    var collection = _.get(this._storage, convertToCompositionPath(pathToCollection));
+    var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
     _.each(collection, (value, index) => {
       // skip empty items. Because indexes are primary ids. In collection may be empty items before real item
       if (!value) return;
