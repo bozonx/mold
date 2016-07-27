@@ -53,11 +53,20 @@ export default class Composition {
 
     // Update whore storage if moldPath isn't defined
     if (!moldPath)
-      mutate(this._storage, '', value);
+      mutate(this._storage, '', value, this._updateHandler.bind(this));
 
-    mutate(this._storage, compPath, value);
+    mutate(this._storage, compPath, value, this._updateHandler.bind(this));
 
     // TODO: run _updateIndexes(pathToCollection) on each collection
+  }
+  
+  _updateHandler(root, newValue, action) {
+    // TODO: преобразовать путь в moldPath
+    var moldPath = root;
+    this._events.emit('mold.composition.update', {
+      path: moldPath,
+      action: action,
+    });
   }
 
 

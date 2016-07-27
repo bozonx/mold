@@ -1,14 +1,29 @@
 import _ from 'lodash';
 
 class Mutate {
-  constructor(storage) {
+  constructor(storage, onUpdate) {
     this.storage = storage;
+    this.onUpdate = onUpdate;
+    this._updates = [];
   }
 
   mutate(root, newData) {
     // TODO: зачем '' ?
     root = root || '';
 
+    this._сrossroads(root, newData);
+
+    if (_.isEmpty(this._updates)) {
+      this._updates.push([root, 'unchanged']);
+    }
+    else {
+      this._updates.push([root, 'changed']);
+    }
+
+    // TODO: run all handlers
+  }
+
+  _сrossroads(root, newData) {
     if (_.isPlainObject(newData)) {
       this.updateContainer(root, newData);
     }
@@ -23,7 +38,7 @@ class Mutate {
 
   updateContainer(root, newData) {
     _.each(newData, (value, name) => {
-      this.mutate(this._makePath(root, name), value);
+      this._сrossroads(this._makePath(root, name), value);
     });
   }
 
@@ -80,9 +95,10 @@ class Mutate {
  * @param {string} root - It's path like "path.to[0].any[1].child".
  *                        It uses lodash path format form functions _.get(), _.set() etc.
  * @param {object|array} newData - This is new data
+ * @param {function} onUpdate - update handler
  */
-export default function(storage, root, newData) {
+export default function(storage, root, newData, onUpdate) {
   //mutate(storage, root, newData);
-  var mutate = new Mutate(storage);
+  var mutate = new Mutate(storage, onUpdate);
   mutate.mutate(root, newData);
 }
