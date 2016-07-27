@@ -32,7 +32,7 @@ class Mutate {
   }
 
   updateContainer(root, newData) {
-    var isChanged;
+    var isChanged = false;
     // TODO: refactor - use reduce
     _.each(newData, (value, name) => {
       var isItemChanged = this._crossroads(this._makePath(root, name), value);
@@ -46,7 +46,7 @@ class Mutate {
   }
 
   updateCollection(root, newData) {
-    var isChanged;
+    var isChanged = false;
     // remove whore source collection if new collection is empty
     if (newData.length === 0)
       return _.remove(_.get(this.storage, root));
@@ -54,11 +54,12 @@ class Mutate {
     var oldCollection = _.get(this.storage, root);
 
     // remove useless items
-    _.each(oldCollection, (value, name) => {
+    _.each(oldCollection, (value, index) => {
       if (_.isNil(value)) return;
 
-      if (!newData[name]) {
-        delete oldCollection[name];
+      if (!newData[index]) {
+        delete oldCollection[index];
+        this.updates.push([convertToLodashPath(this._makePath(root, index)), value, 'deleted']);
         isChanged = true;
       }
     });
@@ -76,7 +77,10 @@ class Mutate {
         // add new item if it doesn't exist
         // It's rise event like push, but we can set item to its index
         // TODO: проверить можно ли устанавливать на любой индекс не по порядку
-        oldCollection.splice(oldCollection.length + 1, 1, value)
+        oldCollection.splice(oldCollection.length + 1, 1, value);
+        // TODO: надо устанавливать согласно primary key
+        //oldCollection.splice(value.id, 1, value);
+        this.updates.push([convertToLodashPath(this._makePath(root, index)), value, 'added']);
         isChanged = true;
       }
     });

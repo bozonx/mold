@@ -66,6 +66,8 @@ export default class Composition {
    * @param value
    */
   update(moldPath, value) {
+    //return this.update2(moldPath, value);
+    
     // TODO: обновляем на новое состояние
     // TODO: проходимся по новому состоянию и поднимаем события там где изменилось
 
@@ -186,8 +188,8 @@ export default class Composition {
     this._updateIndexes(pathToCollection);
   }
 
-  _updateHandler(moldPath, newValue, action) {
-    if (_.isArray(newValue)) this._updateIndexes(moldPath);
+  _updateHandler(moldPath, value, action) {
+    if (_.isArray(value)) this._updateIndexes(moldPath);
 
     // Don't rise an event if value haven't been changed
     if (action == 'unchanged') return;
@@ -195,7 +197,7 @@ export default class Composition {
     this._events.emit('mold.composition.update', {
       path: moldPath,
       action,
-      newValue,
+      value,
     });
   }
 
