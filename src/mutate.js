@@ -1,23 +1,23 @@
 import _ from 'lodash';
 
 class Mutate {
-  constructor(storage, root, newData) {
+  constructor(storage) {
     this.storage = storage;
-    // TODO: зачем '' ?
-    this.root = root || '';
-    this.newData = newData;
   }
 
-  mutate() {
-    if (_.isPlainObject(this.newData)) {
-      this.updateContainer(this.root, this.newData);
+  mutate(root, newData) {
+    // TODO: зачем '' ?
+    root = root || '';
+
+    if (_.isPlainObject(newData)) {
+      this.updateContainer(root, newData);
     }
-    else if (_.isArray(this.newData) && this.newData.length > 0 && _.isPlainObject(_.head(this.newData))) {
-      this.updateCollection(this.root, this.newData);
+    else if (_.isArray(newData) && newData.length > 0 && _.isPlainObject(_.head(newData))) {
+      this.updateCollection(root, newData);
     }
     else {
       // It's primitive
-      this.updatePrimitive(this.root, this.newData);
+      this.updatePrimitive(root, newData);
     }
   }
 
@@ -93,8 +93,8 @@ class Mutate {
  */
 export default function(storage, root, newData) {
   //mutate(storage, root, newData);
-  var mutate = new Mutate(storage, root, newData);
-  mutate.mutate();
+  var mutate = new Mutate(storage);
+  mutate.mutate(root, newData);
 }
 
 function mutate(storage, root, newData) {
