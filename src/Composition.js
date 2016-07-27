@@ -54,7 +54,7 @@ export default class Composition {
     updates = mutate(this._storage, moldPath, value, this._updateHandler.bind(this));
 
     _.each(updates, (value) => {
-      //this._updateHandler(...value);
+      this._updateHandler(...value);
     });
   }
 
@@ -188,10 +188,10 @@ export default class Composition {
   }
 
   _updateHandler(moldPath, value, action) {
-    if (_.isArray(value)) this._updateIndexes(moldPath);
-
     // Don't rise an event if value haven't been changed
     if (action == 'unchanged') return;
+    
+    if (_.isArray(value)) this._updateIndexes(moldPath);
 
     this._events.emit('mold.composition.update', {
       path: moldPath,

@@ -80,13 +80,16 @@ class Mutate {
         // add new item if it doesn't exist
         // It's rise event like push, but we can set item to its index
         // TODO: проверить можно ли устанавливать на любой индекс не по порядку
-        oldCollection.splice(oldCollection.length + 1, 1, value);
-        // TODO: надо устанавливать согласно primary key
-        //oldCollection.splice(value.id, 1, value);
+        //oldCollection.splice(oldCollection.length + 1, 1, value);
+        oldCollection.splice(index, 1, value);
         this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'added']);
         isChanged = true;
       }
     });
+
+    // remove empty values like undefined, null, etc.
+    // TODO: после этой операции не отработают вотчеры массива
+    _.remove(oldCollection, (value) => !_.isPlainObject(value));
 
     if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'changed']);
     else this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'unchanged']);
