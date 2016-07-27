@@ -45,26 +45,17 @@ export default class Composition {
    * @param value
      */
   update2(moldPath, value) {
-    // TODO: обновляем на новое состояние
-    // TODO: проходимся по новому состоянию и поднимаем события там где изменилось
-
     var compPath = convertToLodashPath(moldPath);
-    var oldValue = _.cloneDeep(this.get(moldPath));
+    var updates;
 
     // Update whore storage if moldPath isn't defined
     if (!moldPath)
-      mutate(this._storage, '', value, this._updateHandler.bind(this));
+      updates = mutate(this._storage, '', value, this._updateHandler.bind(this));
 
-    mutate(this._storage, compPath, value, this._updateHandler.bind(this));
+    updates = mutate(this._storage, compPath, value, this._updateHandler.bind(this));
 
-    // TODO: run _updateIndexes(pathToCollection) on each collection
-  }
-  
-  _updateHandler(moldPath, newValue, action) {
-    if (_.isArray(newValue)) this._updateIndexes(moldPath);
-    this._events.emit('mold.composition.update', {
-      path: moldPath,
-      action: action,
+    _.each(updates, (value) => {
+      this._updateHandler(...value);
     });
   }
 
@@ -161,6 +152,8 @@ export default class Composition {
       this._events.emit('mold.composition.update', {path: compPath, action: 'update'});
     }
   }
+  
+  
 
   /**
    * Add to beginning of collection
@@ -191,6 +184,19 @@ export default class Composition {
     // Rise an event
     this._events.emit('mold.composition.update', {path: pathToCollection});
     this._updateIndexes(pathToCollection);
+  }
+
+  _updateHandler(moldPath, newValue, action) {
+    if (_.isArray(newValue)) this._updateIndexes(moldPath);
+
+    // Don't rise an event if value haven't been changed
+    if (action == 'unchanged') return;
+
+    this._events.emit('mold.composition.update', {
+      path: moldPath,
+      action,
+      newValue,
+    });
   }
 
   _updateIndexes(pathToCollection) {
