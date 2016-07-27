@@ -10,28 +10,28 @@ class Mutate {
 
   mutate() {
     if (_.isPlainObject(this.newData)) {
-      this.updateContainer(this.storage, this.root, this.newData);
+      this.updateContainer(this.root, this.newData);
     }
     else if (_.isArray(this.newData) && this.newData.length > 0 && _.isPlainObject(_.head(this.newData))) {
-      this.updateCollection(this.storage, this.root, this.newData);
+      this.updateCollection(this.root, this.newData);
     }
     else {
       // It's primitive
-      this.updatePrimitive(this.storage, this.root, this.newData);
+      this.updatePrimitive(this.root, this.newData);
     }
   }
 
-  updateContainer(storage, root, newData) {
+  updateContainer(root, newData) {
     _.each(newData, (value, name) => {
       if (_.isPlainObject(value)) {
-        this.updateContainer(storage, this.makePath(root, name), value);
+        this.updateContainer(this._makePath(root, name), value);
       }
       else if (_.isArray(newData) && newData.length > 0 && _.isPlainObject(_.head(newData))) {
-        this.updateCollection(storage, this.makePath(root, name), value);
+        this.updateCollection(this._makePath(root, name), value);
       }
       else {
         // Primitive
-        this.updatePrimitive(storage, this.makePath(root, name), value);
+        this.updatePrimitive(this._makePath(root, name), value);
       }
     });
 
@@ -40,28 +40,28 @@ class Mutate {
     //removeUnused(storage, newData);
   }
 
-  updateCollection(storage, root, newData) {
+  updateCollection(root, newData) {
     // remove whore source collection if new collection is empty
     if (newData.length === 0)
-      return _.remove(_.get(storage, root));
+      return _.remove(_.get(this.storage, root));
 
     // TODO: наверное по primary, так как индекс может не совпадать
 
     // remove useless items
-    _.each(storage, (value, name) => {
-      if (!newData[name]) {
-        delete storage[name];
-        if (cb) cb(this.makePath(root, name), undefined, storage[name], 'delete');
-      }
-    });
+    // _.each(storage, (value, name) => {
+    //   if (!newData[name]) {
+    //     delete storage[name];
+    //     if (cb) cb(this.makePath(root, name), undefined, storage[name], 'delete');
+    //   }
+    // });
 
-    var oldCollection = _.get(storage, root);
+    var oldCollection = _.get(this.storage, root);
 
     // updateArray
     _.each(newData, (value, index) => {
       if (oldCollection[index]) {
         // update existent item
-        this.updateContainer(storage, value, cb, this.makePath(root, index));
+        this.updateContainer(storage, value, cb, this._makePath(root, index));
       }
       else {
         // add new item if it doesn't exist
@@ -72,12 +72,12 @@ class Mutate {
     });
   }
 
-  updatePrimitive(storage, root, newData) {
-    _.set(storage, root, newData);
+  updatePrimitive(root, newData) {
+    _.set(this.storage, root, newData);
   }
 
 
-  makePath(root, child) {
+  _makePath(root, child) {
     // TODO: поддержка массивов
     return _.trim(`${root}.${child}`, '.');
   }
