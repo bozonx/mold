@@ -1,11 +1,86 @@
 import _ from 'lodash';
 
 class Mutate {
-  constructor(storage) {
+  constructor(storage, root, newData) {
     this.storage = storage;
+    // TODO: зачем '' ?
+    this.root = root || '';
+    this.newData = newData;
   }
 
-  
+  mutate() {
+    if (_.isPlainObject(this.newData)) {
+      this.updateContainer(this.storage, this.root, this.newData);
+    }
+    else if (_.isArray(this.newData) && this.newData.length > 0 && _.isPlainObject(_.head(this.newData))) {
+      this.updateCollection(this.storage, this.root, this.newData);
+    }
+    else {
+      // It's primitive
+      this.updatePrimitive(this.storage, this.root, this.newData);
+    }
+  }
+
+  updateContainer(storage, root, newData) {
+    _.each(newData, (value, name) => {
+      if (_.isPlainObject(value)) {
+        this.updateContainer(storage, this.makePath(root, name), value);
+      }
+      else if (_.isArray(newData) && newData.length > 0 && _.isPlainObject(_.head(newData))) {
+        this.updateCollection(storage, this.makePath(root, name), value);
+      }
+      else {
+        // Primitive
+        this.updatePrimitive(storage, this.makePath(root, name), value);
+      }
+    });
+
+    // remove useless items
+    // TODO: продумать
+    //removeUnused(storage, newData);
+  }
+
+  updateCollection(storage, root, newData) {
+    // remove whore source collection if new collection is empty
+    if (newData.length === 0)
+      return _.remove(_.get(storage, root));
+
+    // TODO: наверное по primary, так как индекс может не совпадать
+
+    // remove useless items
+    _.each(storage, (value, name) => {
+      if (!newData[name]) {
+        delete storage[name];
+        if (cb) cb(this.makePath(root, name), undefined, storage[name], 'delete');
+      }
+    });
+
+    var oldCollection = _.get(storage, root);
+
+    // updateArray
+    _.each(newData, (value, index) => {
+      if (oldCollection[index]) {
+        // update existent item
+        this.updateContainer(storage, value, cb, this.makePath(root, index));
+      }
+      else {
+        // add new item if it doesn't exist
+        // It's rise event like push, but we can set item to its index
+        // TODO: проверить можно ли устанавливать на любой индекс не по порядку
+        oldCollection.splice(oldCollection.length + 1, 1, value)
+      }
+    });
+  }
+
+  updatePrimitive(storage, root, newData) {
+    _.set(storage, root, newData);
+  }
+
+
+  makePath(root, child) {
+    // TODO: поддержка массивов
+    return _.trim(`${root}.${child}`, '.');
+  }
 }
 
 
@@ -17,7 +92,9 @@ class Mutate {
  * @param {object|array} newData - This is new data
  */
 export default function(storage, root, newData) {
-  mutate(storage, root, newData);
+  //mutate(storage, root, newData);
+  var mutate = new Mutate(storage, root, newData);
+  mutate.mutate();
 }
 
 function mutate(storage, root, newData) {
@@ -37,10 +114,7 @@ function mutate(storage, root, newData) {
 }
 
 
-function makePath(root, child) {
-  // TODO: поддержка массивов
-  return _.trim(`${root}.${child}`, '.');
-}
+
 
 function removeUnused(storage, newData, cb) {
   _.each(storage, function (value, name) {
@@ -62,60 +136,3 @@ function updateArray(storage, newData, cb) {
   });
 }
 
-
-
-
-function updatePrimitive(storage, root, newData) {
-  _.set(storage, root, newData);
-}
-
-function updateContainer(storage, root, newData) {
-  _.each(newData, function (value, name) {
-    if (_.isPlainObject(value)) {
-      updateContainer(storage, makePath(root, name), value);
-    }
-    else if (_.isArray(newData) && newData.length > 0 && _.isPlainObject(_.head(newData))) {
-      updateCollection(storage, makePath(root, name), value);
-    }
-    else {
-      // Primitive
-      updatePrimitive(storage, makePath(root, name), value)
-    }
-  });
-
-  // remove useless items
-  // TODO: продумать
-  //removeUnused(storage, newData);
-}
-
-function updateCollection(storage, root, newData) {
-  // remove whore source collection if new collection is empty
-  if (newData.length === 0)
-    return _.remove(_.get(storage, root));
-
-  // TODO: наверное по primary, так как индекс может не совпадать
-
-  // remove useless items
-  _.each(storage, function (value, name) {
-    if (!newData[name]) {
-      delete storage[name];
-      if (cb) cb(makePath(root, name), undefined, storage[name], 'delete');
-    }
-  });
-
-  var oldCollection = _.get(storage, root);
-
-  // updateArray
-  _.each(newData, function (value, index) {
-    if (oldCollection[index]) {
-      // update existent item
-      updateContainer(storage, value, cb, makePath(root, index));
-    }
-    else {
-      // add new item if it doesn't exist
-      // It's rise event like push, but we can set item to its index
-      // TODO: проверить можно ли устанавливать на любой индекс не по порядку
-      oldCollection.splice(oldCollection.length + 1, 1, value)
-    }
-  });
-}
