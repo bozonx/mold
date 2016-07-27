@@ -45,14 +45,13 @@ export default class Composition {
    * @param value
      */
   update2(moldPath, value) {
-    var compPath = convertToLodashPath(moldPath);
     var updates;
 
     // Update whore storage if moldPath isn't defined
     if (!moldPath)
       updates = mutate(this._storage, '', value, this._updateHandler.bind(this));
 
-    updates = mutate(this._storage, compPath, value, this._updateHandler.bind(this));
+    updates = mutate(this._storage, moldPath, value, this._updateHandler.bind(this));
 
     _.each(updates, (value) => {
       this._updateHandler(...value);

@@ -8,14 +8,15 @@ class Mutate {
     this.updates = [];
   }
 
-  mutate(root, newData) {
+  mutate(rootMold, newData) {
     // TODO: зачем '' ?
-    root = root || '';
+    rootMold = rootMold || '';
+    var rootLodash = convertToLodashPath(rootMold);
 
-    var isChanged = this._crossroads(convertFromLodashToMoldPath(root), newData);
+    var isChanged = this._crossroads(rootMold, newData);
 
-    if (isChanged) this.updates.push([convertToLodashPath(root), newData, 'changed']);
-    else this.updates.push([convertToLodashPath(root), newData, 'unchanged']);
+    if (isChanged) this.updates.push([rootLodash, newData, 'changed']);
+    else this.updates.push([rootLodash, newData, 'unchanged']);
   }
 
   _crossroads(root, newData) {
