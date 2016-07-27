@@ -54,7 +54,7 @@ export default class Composition {
     updates = mutate(this._storage, moldPath, value, this._updateHandler.bind(this));
 
     _.each(updates, (value) => {
-      this._updateHandler(...value);
+      //this._updateHandler(...value);
     });
   }
 
@@ -66,7 +66,7 @@ export default class Composition {
    */
   update(moldPath, value) {
     //return this.update2(moldPath, value);
-    
+
     // TODO: обновляем на новое состояние
     // TODO: проходимся по новому состоянию и поднимаем события там где изменилось
 
@@ -153,8 +153,8 @@ export default class Composition {
       this._events.emit('mold.composition.update', {path: compPath, action: 'update'});
     }
   }
-  
-  
+
+
 
   /**
    * Add to beginning of collection

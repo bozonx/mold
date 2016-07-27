@@ -5,6 +5,8 @@ import { convertFromLodashToMoldPath, convertToLodashPath } from './helpers';
 class Mutate {
   constructor(storage) {
     this.storage = storage;
+    // it's list of all updates, like [moldPath, value, action]
+    //     Action one of: changed, unchanged, deleted, added.
     this.updates = [];
   }
 
@@ -13,46 +15,46 @@ class Mutate {
     rootMold = rootMold || '';
     var rootLodash = convertToLodashPath(rootMold);
 
-    var isChanged = this._crossroads(rootMold, newData);
+    var isChanged = this._crossroads(rootLodash, newData);
 
-    if (isChanged) this.updates.push([rootLodash, newData, 'changed']);
-    else this.updates.push([rootLodash, newData, 'unchanged']);
+    if (isChanged) this.updates.push([rootMold, newData, 'changed']);
+    else this.updates.push([rootMold, newData, 'unchanged']);
   }
 
-  _crossroads(root, newData) {
+  _crossroads(rootLodash, newData) {
     if (_.isPlainObject(newData)) {
-      return this.updateContainer(root, newData);
+      return this._updateContainer(rootLodash, newData);
     }
     else if (_.isArray(newData) && newData.length > 0 && _.isPlainObject(_.head(newData))) {
-      return this.updateCollection(root, newData);
+      return this._updateCollection(rootLodash, newData);
     }
     else {
       // It's primitive
-      return this.updatePrimitive(root, newData);
+      return this._updatePrimitive(rootLodash, newData);
     }
   }
 
-  updateContainer(root, newData) {
+  _updateContainer(rootLodash, newData) {
     var isChanged = false;
     // TODO: refactor - use reduce
     _.each(newData, (value, name) => {
-      var isItemChanged = this._crossroads(this._makePath(root, name), value);
+      var isItemChanged = this._crossroads(this._makePath(rootLodash, name), value);
       if (!isChanged) isChanged = isItemChanged;
     });
 
-    if (isChanged) this.updates.push([convertToLodashPath(root), newData, 'changed']);
-    else this.updates.push([convertToLodashPath(root), newData, 'unchanged']);
+    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'changed']);
+    else this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'unchanged']);
 
     return isChanged;
   }
 
-  updateCollection(root, newData) {
+  _updateCollection(rootLodash, newData) {
     var isChanged = false;
     // remove whore source collection if new collection is empty
     if (newData.length === 0)
-      return _.remove(_.get(this.storage, root));
+      return _.remove(_.get(this.storage, rootLodash));
 
-    var oldCollection = _.get(this.storage, root);
+    var oldCollection = _.get(this.storage, rootLodash);
 
     // remove useless items
     _.each(oldCollection, (value, index) => {
@@ -60,7 +62,7 @@ class Mutate {
 
       if (!newData[index]) {
         delete oldCollection[index];
-        this.updates.push([convertToLodashPath(this._makePath(root, index)), value, 'deleted']);
+        this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'deleted']);
         isChanged = true;
       }
     });
@@ -71,7 +73,7 @@ class Mutate {
 
       if (oldCollection[index]) {
         // update existent item
-        var isItemChanged = this.updateContainer(this._makePath(root, index), value);
+        var isItemChanged = this._updateContainer(this._makePath(rootLodash, index), value);
         if (!isChanged) isChanged = isItemChanged;
       }
       else {
@@ -81,50 +83,48 @@ class Mutate {
         oldCollection.splice(oldCollection.length + 1, 1, value);
         // TODO: надо устанавливать согласно primary key
         //oldCollection.splice(value.id, 1, value);
-        this.updates.push([convertToLodashPath(this._makePath(root, index)), value, 'added']);
+        this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'added']);
         isChanged = true;
       }
     });
 
-    if (isChanged) this.updates.push([convertToLodashPath(root), newData, 'changed']);
-    else this.updates.push([convertToLodashPath(root), newData, 'unchanged']);
+    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'changed']);
+    else this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'unchanged']);
 
     return isChanged;
   }
 
-  updatePrimitive(root, newData) {
-    var oldValue = _.get(this.storage, root);
-    _.set(this.storage, root, newData);
+  _updatePrimitive(rootLodash, newData) {
+    var oldValue = _.get(this.storage, rootLodash);
+    _.set(this.storage, rootLodash, newData);
 
     var isChanged = oldValue !== newData;
 
-    if (isChanged) this.updates.push([convertToLodashPath(root), newData, 'changed']);
-    else this.updates.push([convertToLodashPath(root), newData, 'unchanged']);
+    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'changed']);
+    else this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'unchanged']);
 
     return isChanged;
   }
 
-  _makePath(root, child) {
+  _makePath(rootLodash, child) {
     if (_.isNumber(child)) {
       // Path form collection item
-      return `${root}[${child}]`;
+      return `${rootLodash}[${child}]`;
     }
     // Path for containers and primitives
-    return _.trim(`${root}.${child}`, '.');
+    return _.trim(`${rootLodash}.${child}`, '.');
   }
 }
 
 /**
  * Mutate object or array.
  * @param {object|array} storage - This will be mutate
- * @param {string} root - It's path like "path.to[0].any[1].child".
- *                        It uses lodash path format form functions _.get(), _.set() etc.
+ * @param {string} rootMold - It's root path in mold format like 'path.to.0.item'
  * @param {object|array} newData - This is new data
  * @param {function} onUpdate - update handler
  */
-export default function(storage, root, newData, onUpdate) {
-  //mutate(storage, root, newData);
+export default function(storage, rootMold, newData, onUpdate) {
   var mutate = new Mutate(storage);
-  mutate.mutate(root, newData, onUpdate);
+  mutate.mutate(rootMold, newData, onUpdate);
   return mutate.updates;
 }
