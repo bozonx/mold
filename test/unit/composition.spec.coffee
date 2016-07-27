@@ -9,17 +9,6 @@ describe 'Unit. Composition.', ->
     this.composition = new Composition(this.eventsMock)
 
   describe 'update.', ->
-    # TODO: обновить примитив - массив
-    # TODO: коллекция - установка c нуля
-    # TODO: коллекция - обновление всей коллекции
-    # TODO: коллекция - при обновлении коллекции - удалять лишние
-    # TODO: коллекция - обновление элемента коллекции - как контейнера
-    # TODO: коллекция - обновление элемента коллекции и его примитива
-    # TODO: коллекция - коллекция вложенная в коллекцию
-    # TODO: полный - установка всего mold
-    # TODO: подъем событий
-
-
     it 'update primitive', ->
       this.composition._storage = {
         container:
@@ -39,23 +28,81 @@ describe 'Unit. Composition.', ->
         arrayParam: ['value1']
       })
 
-    it 'update container with new params', ->
+    it 'update complex container', ->
       this.composition._storage = {
         container:
           stringParam: null
           $index: 1
+          nested: {
+            nestedParam: null
+          }
       }
       this.composition.update2('container', {
         stringParam: 'new value',
         _id: 'new'
+        nested: {
+          nestedParam: 'new nested value'
+        }
       });
       assert.deepEqual(this.composition.get('container'), {
         stringParam: 'new value'
         _id: 'new'
         $index: 1
+        nested: {
+          nestedParam: 'new nested value'
+        }
       })
 
+    it 'update complex collection', ->
+      this.composition._storage = {
+        collection: [
+          {
+            id: 0,
+            $index: 0,
+            name: 'name0',
+          }
+          undefined,
+          undefined,
+          {
+            id: 3,
+            $index: 3,
+            name: 'name3',
+          }
+        ]
+      }
+      this.composition.update2('collection', [
+        {
+          id: 0,
+          name: 'new name0',
+        }
+        {
+          id: 2,
+          name: 'new name2',
+        }
+      ]);
+      
+      assert.deepEqual(this.composition.get('collection'), [
+        {
+          id: 0,
+          $index: 0,
+          name: 'new name0',
+        }
+        {
+          id: 2,
+          $index: 1,
+          name: 'new name2',
+        }
+      ])
+      
 
+# TODO: коллекция - установка c нуля
+# TODO: коллекция - обновление элемента коллекции - как контейнера
+# TODO: коллекция - обновление элемента коллекции и его примитива
+# TODO: коллекция - коллекция вложенная в коллекцию
+# TODO: полный - установка всего mold - контейнер с коллекцией
+# TODO: подъем событий
+
+      
 #    it 'update primitive', ->
 #      this.composition._storage = {
 #        container:
@@ -97,19 +144,3 @@ describe 'Unit. Composition.', ->
 #      this.composition.update('container', {stringParam: 'new value'})
 #      assert.equal(this.composition._storage.container.stringParam, 'new value')
 #      expect(this.emitSpy).to.have.been.callCount(0)
-
-#    # TODO: проверить установку всего storage
-#
-#    it 'update nested container', ->
-#      # TODO: !!! do it
-#
-#    it 'update array', ->
-#      # TODO: !!! do it
-#
-#      # TODO: событие не должно подниматься если элемент не изменился
-
-
-
-# TODO: !!! do it
-#    it 'update container with collection', ->
-#    it 'update container with collection with collection', ->

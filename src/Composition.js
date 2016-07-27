@@ -56,6 +56,8 @@ export default class Composition {
       mutate(this._storage, '', value);
 
     mutate(this._storage, compPath, value);
+
+    // TODO: run _updateIndexes(pathToCollection) on each collection
   }
 
 

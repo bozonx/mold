@@ -23,21 +23,8 @@ class Mutate {
 
   updateContainer(root, newData) {
     _.each(newData, (value, name) => {
-      if (_.isPlainObject(value)) {
-        this.updateContainer(this._makePath(root, name), value);
-      }
-      else if (_.isArray(newData) && newData.length > 0 && _.isPlainObject(_.head(newData))) {
-        this.updateCollection(this._makePath(root, name), value);
-      }
-      else {
-        // Primitive
-        this.updatePrimitive(this._makePath(root, name), value);
-      }
+      this.mutate(this._makePath(root, name), value);
     });
-
-    // remove useless items
-    // TODO: продумать
-    //removeUnused(storage, newData);
   }
 
   updateCollection(root, newData) {
@@ -45,23 +32,24 @@ class Mutate {
     if (newData.length === 0)
       return _.remove(_.get(this.storage, root));
 
-    // TODO: наверное по primary, так как индекс может не совпадать
+    var oldCollection = _.get(this.storage, root);
 
     // remove useless items
-    // _.each(storage, (value, name) => {
-    //   if (!newData[name]) {
-    //     delete storage[name];
-    //     if (cb) cb(this.makePath(root, name), undefined, storage[name], 'delete');
-    //   }
-    // });
+    _.each(oldCollection, (value, name) => {
+      if (_.isNil(value)) return;
 
-    var oldCollection = _.get(this.storage, root);
+      if (!newData[name]) {
+        delete oldCollection[name];
+      }
+    });
 
     // updateArray
     _.each(newData, (value, index) => {
+      if (_.isNil(value)) return;
+
       if (oldCollection[index]) {
         // update existent item
-        this.updateContainer(storage, value, cb, this._makePath(root, index));
+        this.updateContainer(this._makePath(root, index), value);
       }
       else {
         // add new item if it doesn't exist
@@ -76,13 +64,15 @@ class Mutate {
     _.set(this.storage, root, newData);
   }
 
-
   _makePath(root, child) {
-    // TODO: поддержка массивов
+    if (_.isNumber(child)) {
+      // Path form collection item
+      return `${root}[${child}]`;
+    }
+    // Path for containers and primitives
     return _.trim(`${root}.${child}`, '.');
   }
 }
-
 
 /**
  * Mutate object or array.
@@ -96,43 +86,3 @@ export default function(storage, root, newData) {
   var mutate = new Mutate(storage);
   mutate.mutate(root, newData);
 }
-
-function mutate(storage, root, newData) {
-  // TODO: зачем???
-  if (!root) root = '';
-
-  if (_.isPlainObject(newData)) {
-    updateContainer(storage, root, newData);
-  }
-  else if (_.isArray(newData) && newData.length > 0 && _.isPlainObject(_.head(newData))) {
-    updateCollection(storage, root, newData);
-  }
-  else {
-    // It's primitive
-    updatePrimitive(storage, root, newData);
-  }
-}
-
-
-
-
-function removeUnused(storage, newData, cb) {
-  _.each(storage, function (value, name) {
-    if (!newData[name]) {
-      delete storage[name];
-      if (cb) cb(makePath(root, name), undefined, storage[name], 'delete');
-    }
-  });
-}
-
-function updateArray(storage, newData, cb) {
-  _.each(newData, function (value, index) {
-    if (!storage[index]) {
-      // It's rise event like push, but we can set item to its index
-      // TODO: проверить можно ли устанавливать на любой индекс не по порядку
-      storage.splice(storage.length + 1, 1, {})
-    }
-    recursiveMutate(storage[index], value, cb, makePath(root, index));
-  });
-}
-
