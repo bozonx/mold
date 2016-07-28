@@ -80,7 +80,7 @@ describe 'Unit. Composition.', ->
           name: 'new name2',
         }
       ]);
-      
+
       assert.deepEqual(this.composition.get('collection'), [
         {
           id: 0,
@@ -93,7 +93,7 @@ describe 'Unit. Composition.', ->
           name: 'new name2',
         }
       ])
-      
+
 
 # TODO: коллекция - установка c нуля
 # TODO: коллекция - обновление элемента коллекции - как контейнера
@@ -101,46 +101,3 @@ describe 'Unit. Composition.', ->
 # TODO: коллекция - коллекция вложенная в коллекцию
 # TODO: полный - установка всего mold - контейнер с коллекцией
 # TODO: подъем событий
-
-      
-#    it 'update primitive', ->
-#      this.composition._storage = {
-#        container:
-#          stringParam: null
-#      }
-#      this.composition.update('container.stringParam', 'new value')
-#      assert.equal(this.composition._storage.container.stringParam, 'new value')
-#      expect(this.emitSpy).to.have.been.calledWith('mold.composition.update', {
-#        path: 'container.stringParam', action: 'update' })
-#      expect(this.emitSpy).to.have.been.calledOnce
-#
-#    it 'update primitive - same value - event doesn\'t rise', ->
-#      this.composition._storage = {
-#        container:
-#          stringParam: 'new value'
-#      }
-#      this.composition.update('container.stringParam', 'new value')
-#      assert.equal(this.composition._storage.container.stringParam, 'new value')
-#      expect(this.emitSpy).to.have.been.callCount(0)
-#
-#    it 'update simple container', ->
-#      this.composition._storage = {
-#        container:
-#          stringParam: null
-#      }
-#      this.composition.update('container', {stringParam: 'new value'})
-#      assert.equal(this.composition._storage.container.stringParam, 'new value')
-#      expect(this.emitSpy).to.have.been.calledWith('mold.composition.update', {
-#        path: 'container', action: 'update' })
-#      expect(this.emitSpy).to.have.been.calledWith('mold.composition.update', {
-#        path: 'container.stringParam', action: 'update' })
-#      expect(this.emitSpy).to.have.been.calledTwice
-#
-#    it 'update simple container - same value - event doesn\'t rise', ->
-#      this.composition._storage = {
-#        container:
-#          stringParam: 'new value'
-#      }
-#      this.composition.update('container', {stringParam: 'new value'})
-#      assert.equal(this.composition._storage.container.stringParam, 'new value')
-#      expect(this.emitSpy).to.have.been.callCount(0)
