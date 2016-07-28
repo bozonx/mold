@@ -44,7 +44,7 @@ export default class Composition {
    * @param moldPath
    * @param value
      */
-  update2(moldPath, value) {
+  update(moldPath, value) {
     var updates;
 
     // Update whore storage if moldPath isn't defined
@@ -64,7 +64,7 @@ export default class Composition {
    * @param moldPath
    * @param value
    */
-  update(moldPath, value) {
+  update3(moldPath, value) {
     //return this.update2(moldPath, value);
 
     // TODO: обновляем на новое состояние

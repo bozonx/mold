@@ -17,10 +17,10 @@ describe 'Unit. Composition.', ->
           numberParam: null
           arrayParam: []
       }
-      this.composition.update2('container.booleanParam', true)
-      this.composition.update2('container.stringParam', 'new value')
-      this.composition.update2('container.numberParam', 5)
-      this.composition.update2('container.arrayParam', ['value1'])
+      this.composition.update('container.booleanParam', true)
+      this.composition.update('container.stringParam', 'new value')
+      this.composition.update('container.numberParam', 5)
+      this.composition.update('container.arrayParam', ['value1'])
       assert.deepEqual(this.composition.get('container'), {
         booleanParam: true
         stringParam: 'new value'
@@ -37,7 +37,7 @@ describe 'Unit. Composition.', ->
             nestedParam: null
           }
       }
-      this.composition.update2('container', {
+      this.composition.update('container', {
         stringParam: 'new value',
         _id: 'new'
         nested: {
@@ -70,7 +70,7 @@ describe 'Unit. Composition.', ->
           }
         ]
       }
-      this.composition.update2('collection', [
+      this.composition.update('collection', [
         {
           id: 0,
           name: 'new name0',

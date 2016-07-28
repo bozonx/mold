@@ -263,13 +263,18 @@ describe 'Unit. mutate.', ->
 
     updates = mutate(storage, 'collection', newData)
 
-    assert.deepEqual(storage, { collection: newData })
+    assert.deepEqual(storage, { collection: [
+      {
+        $index: 0
+        id: 5
+        name: 'new item'
+      }
+    ] })
 
     assert.deepEqual updates, [
       [
         'collection.0'
         {
-          # TODO: uncomment
           $index: 0,
           id: 5
           name: 'new item'
@@ -280,7 +285,6 @@ describe 'Unit. mutate.', ->
         'collection'
         [
           {
-            # TODO: uncomment
             $index: 0,
             id: 5
             name: 'new item'
@@ -316,24 +320,33 @@ describe 'Unit. mutate.', ->
 #
 #    updates = mutate(storage, 'collection', newData)
 #
-#    assert.deepEqual(storage, { collection: newData })
+#    assert.deepEqual(storage, { collection: [
+#      {
+#        $index: 0,
+#        id: 6
+#        name: 'old item'
+#      }
+#      {
+#        $index: 1,
+#        id: 7
+#        name: 'new item'
+#      }
+#    ] })
 #
 #    assert.deepEqual updates, [
 #      [
 #        'collection.0'
 #        {
-#          # TODO: uncomment
-#          #$index: 0,
+#          $index: 0,
 #          id: 5
 #          name: 'to remove item'
 #        }
 #        'removed'
 #      ]
 #      [
-#        'collection.0'
+#        'collection.1'
 #        {
-#          # TODO: uncomment
-#          #$index: 1,
+#          $index: 1,
 #          id: 7
 #          name: 'new item'
 #        }
@@ -343,14 +356,12 @@ describe 'Unit. mutate.', ->
 #        'collection'
 #        [
 #          {
-#            # TODO: uncomment
-#            #$index: 0,
+#            $index: 0,
 #            id: 6
 #            name: 'old item'
 #          }
 #          {
-#            # TODO: uncomment
-#            #$index: 1,
+#            $index: 1,
 #            id: 7
 #            name: 'new item'
 #          }
