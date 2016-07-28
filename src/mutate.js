@@ -42,8 +42,10 @@ class Mutate {
       if (!isChanged) isChanged = isItemChanged;
     });
 
-    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'changed']);
-    else this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'unchanged']);
+    var moldPath = convertFromLodashToMoldPath(rootLodash);
+    var inStorage = _.get(this.storage, rootLodash);
+    if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
+    else this.updates.push([moldPath, inStorage, 'unchanged']);
 
     return isChanged;
   }
@@ -91,8 +93,10 @@ class Mutate {
     // TODO: после этой операции не отработают вотчеры массива
     _.remove(oldCollection, (value) => !_.isPlainObject(value));
 
-    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'changed']);
-    else this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'unchanged']);
+    var moldPath = convertFromLodashToMoldPath(rootLodash);
+    var inStorage = _.get(this.storage, rootLodash);
+    if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
+    else this.updates.push([moldPath, inStorage, 'unchanged']);
 
     return isChanged;
   }

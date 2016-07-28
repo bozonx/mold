@@ -8,7 +8,6 @@ describe 'Unit. mutate.', ->
         numberValue: 1
         boolValue: false
         arrayValue: ['val1']
-        useless: 'it is persistent'
 
     newData =
       stringValue: 'new value'
@@ -19,13 +18,7 @@ describe 'Unit. mutate.', ->
 
     updates = mutate(storage, 'container', newData)
 
-    assert.deepEqual storage, {
-      container: _.defaults {
-        useless: 'it is persistent'
-      }, newData
-    }
-
-    # TODO: useless - должен быть unchanged
+    assert.deepEqual storage, { container: newData }
 
     assert.deepEqual updates, [
       [
@@ -55,19 +48,102 @@ describe 'Unit. mutate.', ->
       ]
       [
         'container'
-        {
-          stringValue: 'new value'
-          numberValue: 5
-          boolValue: true
-          arrayValue: ['val1', 'val2']
-          newValue: 'new'
-        }
+        newData
         'changed'
       ]
     ]
 
+  it 'unchanged values - nothing to change', ->
+    storage =
+      container:
+        unchangedValue: 'old value'
+
+    newData =
+      unchangedValue: 'old value'
+
+    updates = mutate(storage, 'container', newData)
+
+    assert.deepEqual storage, { container: newData }
+
+    assert.deepEqual updates, [
+      [
+        'container.unchangedValue'
+        'old value'
+        'unchanged'
+      ]
+      [
+        'container'
+        newData
+        'unchanged'
+      ]
+    ]
+
+  it 'unchanged values - change partly', ->
+    storage =
+      container:
+        unchangedValue: 'old value'
+        changedValue: 'old value'
+
+    newData =
+      unchangedValue: 'old value'
+      changedValue: 'new value'
+
+    updates = mutate(storage, 'container', newData)
+
+    assert.deepEqual storage, { container: newData }
+
+    assert.deepEqual updates, [
+      [
+        'container.unchangedValue'
+        'old value'
+        'unchanged'
+      ]
+      [
+        'container.changedValue'
+        'new value'
+        'changed'
+      ]
+      [
+        'container'
+        newData
+        'changed'
+      ]
+    ]
+
+  it 'untouched value', ->
+    storage =
+      container:
+        untouchedValue: 'untouched value'
+        changedValue: 'old value'
+
+    newData =
+      changedValue: 'new value'
+
+    updates = mutate(storage, 'container', newData)
+
+    assert.deepEqual storage, {
+      container:
+        untouchedValue: 'untouched value'
+        changedValue: 'new value'
+    }
+
+    assert.deepEqual updates, [
+      [
+        'container.changedValue'
+        'new value'
+        'changed'
+      ]
+      [
+        'container'
+        {
+          untouchedValue: 'untouched value'
+          changedValue: 'new value'
+        }
+        'changed'
+      ]
+    ]
+    
   # TODO: test from server returns new value, like _id, _rev
-  # TODO: test unchanged
   # TODO: test $index
   # TODO: test update to root
 
@@ -85,9 +161,7 @@ describe 'Unit. mutate.', ->
 
     updates = mutate(storage, 'container', newData)
 
-    assert.deepEqual storage, {
-      container: newData
-    }
+    assert.deepEqual storage, { container: newData }
 
     assert.deepEqual updates, [
       [
@@ -109,11 +183,7 @@ describe 'Unit. mutate.', ->
       ]
       [
         'container'
-        {
-          stringValue: 'new value'
-          nested:
-            nestedString: 'new nested value'
-        }
+        newData
         'changed'
       ]
     ]
