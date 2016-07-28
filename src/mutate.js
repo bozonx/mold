@@ -11,7 +11,6 @@ class Mutate {
   }
 
   mutate(rootMold, newData) {
-    // TODO: зачем '' ?
     rootMold = rootMold || '';
     var rootLodash = convertToLodashPath(rootMold);
 
@@ -40,7 +39,7 @@ class Mutate {
     });
 
     var moldPath = convertFromLodashToMoldPath(rootLodash);
-    var inStorage = _.get(this.storage, rootLodash);
+    var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
     if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
     else this.updates.push([moldPath, inStorage, 'unchanged']);
 
@@ -91,7 +90,7 @@ class Mutate {
     _.remove(oldCollection, (value) => !_.isPlainObject(value));
 
     var moldPath = convertFromLodashToMoldPath(rootLodash);
-    var inStorage = _.get(this.storage, rootLodash);
+    var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
     if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
     else this.updates.push([moldPath, inStorage, 'unchanged']);
 

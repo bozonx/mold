@@ -18,7 +18,7 @@ describe 'Unit. mutate.', ->
 
     updates = mutate(storage, 'container', newData)
 
-    assert.deepEqual storage, { container: newData }
+    assert.deepEqual(storage, { container: newData })
 
     assert.deepEqual updates, [
       [
@@ -63,7 +63,7 @@ describe 'Unit. mutate.', ->
 
     updates = mutate(storage, 'container', newData)
 
-    assert.deepEqual storage, { container: newData }
+    assert.deepEqual(storage, { container: newData })
 
     assert.deepEqual updates, [
       [
@@ -90,7 +90,7 @@ describe 'Unit. mutate.', ->
 
     updates = mutate(storage, 'container', newData)
 
-    assert.deepEqual storage, { container: newData }
+    assert.deepEqual(storage, { container: newData })
 
     assert.deepEqual updates, [
       [
@@ -192,7 +192,7 @@ describe 'Unit. mutate.', ->
 
     updates = mutate(storage, 'container', newData)
 
-    assert.deepEqual storage, { container: newData }
+    assert.deepEqual(storage, { container: newData })
 
     assert.deepEqual updates, [
       [
@@ -219,7 +219,39 @@ describe 'Unit. mutate.', ->
       ]
     ]
 
-# TODO: test update to root
+  it 'update from root', ->
+    storage =
+      container:
+        stringValue: 'old value'
+
+    newData =
+      container:
+        stringValue: 'new value'
+
+    updates = mutate(storage, '', newData)
+
+    assert.deepEqual(storage, newData)
+
+    assert.deepEqual updates, [
+      [
+        'container.stringValue'
+        'new value'
+        'changed'
+      ]
+      [
+        'container'
+        newData.container
+        'changed'
+      ]
+      [
+        ''
+        newData
+        'changed'
+      ]
+    ]
+    
 # TODO: test collection init
 # TODO: test collection add
 # TODO: test collection remove
+# TODO: test collection item - change
+
