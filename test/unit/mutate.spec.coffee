@@ -295,47 +295,48 @@ describe 'Unit. mutate.', ->
     ]
 
 
-# TODO: test collection add and remove
+  it 'collection remove and add', ->
+    storage =
+      collection: [
+        {
+          $index: 0,
+          id: 5
+          name: 'to remove item'
+        }
+        {
+          $index: 1,
+          id: 6
+          name: 'old item'
+        }
+      ]
 
-#  it 'collection remove and add', ->
-#    storage =
-#      collection: [
-#        {
-#          id: 5
-#          name: 'to remove item'
-#        }
-#        {
-#          id: 6
-#          name: 'old item'
-#        }
-#      ]
-#
-#    newData = [
-#      {
-#        id: 6
-#        name: 'old item'
-#      }
-#      {
-#        id: 7
-#        name: 'new item'
-#      }
-#    ]
-#
-#    updates = mutate(storage, 'collection', newData)
-#
-#    assert.deepEqual(storage, { collection: [
-#      {
-#        $index: 0,
-#        id: 6
-#        name: 'old item'
-#      }
-#      {
-#        $index: 1,
-#        id: 7
-#        name: 'new item'
-#      }
-#    ] })
-#
+    newData = [
+      {
+        id: 6
+        name: 'old item'
+      }
+      {
+        id: 7
+        name: 'new item'
+      }
+    ]
+
+    updates = mutate(storage, 'collection', newData)
+
+    assert.deepEqual(storage, { collection: [
+      {
+        $index: 0,
+        id: 6
+        name: 'old item'
+      }
+      {
+        $index: 1,
+        id: 7
+        name: 'new item'
+      }
+    ] })
+
+    # TODO: check updates
 #    assert.deepEqual updates, [
 #      [
 #        'collection.0'
@@ -373,9 +374,139 @@ describe 'Unit. mutate.', ->
 #      ]
 #    ]
 
+  it 'collection item change on updating collection', ->
+    storage =
+      collection: [
+        {
+          $index: 0
+          id: 5
+          name: 'old item'
+        }
+      ]
 
-# TODO: test collection item - change
-# TODO: test collection  установка id с сервера
-# TODO: test collection $index
+    newData = [
+      {
+        id: 5
+        name: 'new item'
+      }
+    ]
 
+    updates = mutate(storage, 'collection', newData)
 
+    assert.deepEqual(storage, { collection: [
+      {
+        $index: 0
+        id: 5
+        name: 'new item'
+      }
+    ] })
+
+    assert.deepEqual updates, [
+      [
+        'collection.0.id'
+        5
+        'unchanged'
+      ]
+      [
+        'collection.0.name'
+        'new item'
+        'changed'
+      ]
+      [
+        'collection.0'
+        {
+          $index: 0,
+          id: 5
+          name: 'new item'
+        }
+        'changed'
+      ]
+      [
+        'collection'
+        [
+          {
+            $index: 0,
+            id: 5
+            name: 'new item'
+          }
+        ]
+        'changed'
+      ]
+    ]
+
+  it 'collection item change on updating item himself via container "collection.0"', ->
+    storage =
+      collection: [
+        {
+          $index: 0
+          id: 5
+          name: 'old item'
+        }
+      ]
+
+    newData = {
+      id: 5
+      name: 'new item'
+    }
+
+    updates = mutate(storage, 'collection.0', newData)
+
+    assert.deepEqual(storage, { collection: [
+      {
+        $index: 0
+        id: 5
+        name: 'new item'
+      }
+    ] })
+
+    assert.deepEqual updates, [
+      [
+        'collection.0.id'
+        5
+        'unchanged'
+      ]
+      [
+        'collection.0.name'
+        'new item'
+        'changed'
+      ]
+      [
+        'collection.0'
+        {
+          $index: 0,
+          id: 5
+          name: 'new item'
+        }
+        'changed'
+      ]
+    ]
+
+  it 'collection item change on updating item himself via primitive "collection.0.name"', ->
+    storage =
+      collection: [
+        {
+          $index: 0
+          id: 5
+          name: 'old item'
+        }
+      ]
+
+    newData = 'new item'
+
+    updates = mutate(storage, 'collection.0.name', newData)
+
+    assert.deepEqual(storage, { collection: [
+      {
+        $index: 0
+        id: 5
+        name: 'new item'
+      }
+    ] })
+
+    assert.deepEqual updates, [
+      [
+        'collection.0.name'
+        'new item'
+        'changed'
+      ]
+    ]
