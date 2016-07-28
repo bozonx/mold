@@ -47,114 +47,12 @@ export default class Composition {
   update(moldPath, value) {
     var updates;
 
-    // Update whore storage if moldPath isn't defined
-    if (!moldPath)
-      updates = mutate(this._storage, '', value);
-
-    updates = mutate(this._storage, moldPath, value);
+    updates = mutate(this._storage, moldPath || '', value);
 
     _.each(updates, (value) => {
       this._updateHandler(...value);
     });
   }
-
-  /**
-   * Update value. It use _.defaultsDeep method.
-   * This method deeply mutates existent object or arrays.
-   * @param moldPath
-   * @param value
-   */
-  update3(moldPath, value) {
-    //return this.update2(moldPath, value);
-
-    // TODO: обновляем на новое состояние
-    // TODO: проходимся по новому состоянию и поднимаем события там где изменилось
-
-    var compPath = convertToLodashPath(moldPath);
-
-    var itemCallBack = (leafPath, newValue, oldValue, action) => {
-      // TODO: здесь так же вызываются leafPath == '_id' || leafPath == '_rev'
-
-      // TODO: сравнивать ли oldValue???
-      if (_.isPlainObject(newValue)) {
-
-        // Containers
-        // Don't rise event if value unchanged
-        // TODO: из-за этого не отрисовывается форма при переходах по страницам
-        if (_.isEqual(newValue, oldValue)) return;
-      }
-      else if (_.isArray(newValue)) {
-        // TODO: !!!????
-      }
-      else {
-        // Primitive
-        // Don't rise event if value unchanged
-        // TODO: из-за этого не отрисовывается форма при переходах по страницам
-        if (newValue === oldValue) return;
-      }
-
-      // TODO: может добавить newValue, oldValue в событие
-      this._events.emit('mold.composition.update', {
-        path: _.trim(`${compPath}.${leafPath}`, '.'),
-        action: action,
-      });
-    };
-
-    if (_.isPlainObject(value)) {
-      // It's a container
-
-
-
-      if (!moldPath) {
-        // Update whore storage
-        recursiveMutate(this._storage, value, itemCallBack, '');
-      }
-      else {
-        // Update part of storage
-        // TODO: правильно ли это???
-        var containerOnPath = _.get(this._storage, compPath);
-        if (!containerOnPath) {
-          containerOnPath = {};
-
-          // TODO: как быть если коллекция вложенна в коллекцию - надо в родительской коллекции тоже создать контейнер
-          _.set(this._storage, compPath, containerOnPath);
-
-        }
-
-        recursiveMutate(containerOnPath, value, itemCallBack, '');
-
-        var matchResult = compPath.match(/(.+)\[\d+]$/);
-        if (matchResult) {
-          this._updateIndexes(matchResult[1]);
-        }
-      }
-    }
-    else if (_.isArray(value)) {
-      // It's a collection or primitive array or empty array
-      // TODO: в коллекциях формировать путь как положенно
-      // TODO: в примитивных массивах нужно поднимать событие только на сам массив, не на потомков
-      // TODO: если передан пустой массив и в старых данных это примитивный массив - то заменяем его и поднимаем событие
-      // TODO: если передан пустой массив и в старых данных это коллекция - то очищаем коллекцию, и поднимаем событие update-delete на каждом элементе
-      // TODO: поднимать событие только если элемен изменился
-
-      recursiveMutate(_.get(this._storage, compPath), value, itemCallBack, '');
-
-      // TODO: это работает с не вложенными коллекциями. Поидее нужно в колбеке обновлять индексы
-      this._updateIndexes(compPath);
-    }
-    else {
-      // It's a primitive or null|undefined
-      // Don't update if value doesn't change
-      if (_.get(this._storage, compPath) === value) return;
-
-      _.set(this._storage, compPath, value);
-      // Rise an event
-      // TODO: может добавить newValue, oldValue в событие
-      this._events.emit('mold.composition.update', {path: compPath, action: 'update'});
-    }
-  }
-
-
 
   /**
    * Add to beginning of collection
@@ -190,8 +88,6 @@ export default class Composition {
   _updateHandler(moldPath, value, action) {
     // Don't rise an event if value haven't been changed
     if (action == 'unchanged') return;
-
-    //if (_.isArray(value)) this._updateIndexes(moldPath);
 
     this._events.emit('mold.composition.update', {
       path: moldPath,

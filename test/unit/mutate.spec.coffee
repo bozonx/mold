@@ -294,6 +294,9 @@ describe 'Unit. mutate.', ->
       ]
     ]
 
+
+# TODO: test collection add and remove
+
 #  it 'collection remove and add', ->
 #    storage =
 #      collection: [
@@ -371,8 +374,6 @@ describe 'Unit. mutate.', ->
 #    ]
 
 
-# TODO: test collection add
-# TODO: test collection remove
 # TODO: test collection item - change
 # TODO: test collection  установка id с сервера
 # TODO: test collection $index
