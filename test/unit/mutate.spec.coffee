@@ -143,10 +143,6 @@ describe 'Unit. mutate.', ->
       ]
     ]
     
-  # TODO: test from server returns new value, like _id, _rev
-  # TODO: test $index
-  # TODO: test update to root
-
   it 'nested container', ->
     storage =
       container:
@@ -187,3 +183,10 @@ describe 'Unit. mutate.', ->
         'changed'
       ]
     ]
+
+# TODO: test from server returns new value, like _id, _rev
+# TODO: test $index
+# TODO: test update to root
+# TODO: test collection init
+# TODO: test collection add
+# TODO: test collection remove

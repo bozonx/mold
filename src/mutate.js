@@ -15,10 +15,7 @@ class Mutate {
     rootMold = rootMold || '';
     var rootLodash = convertToLodashPath(rootMold);
 
-    var isChanged = this._crossroads(rootLodash, newData);
-
-    // if (isChanged) this.updates.push([rootMold, newData, 'changed']);
-    // else this.updates.push([rootMold, newData, 'unchanged']);
+    return this._crossroads(rootLodash, newData);
   }
 
   _crossroads(rootLodash, newData) {
@@ -133,5 +130,6 @@ class Mutate {
 export default function(storage, rootMold, newData, onUpdate) {
   var mutate = new Mutate(storage);
   mutate.mutate(rootMold, newData, onUpdate);
+
   return mutate.updates;
 }
