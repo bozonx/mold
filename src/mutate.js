@@ -17,8 +17,8 @@ class Mutate {
 
     var isChanged = this._crossroads(rootLodash, newData);
 
-    if (isChanged) this.updates.push([rootMold, newData, 'changed']);
-    else this.updates.push([rootMold, newData, 'unchanged']);
+    // if (isChanged) this.updates.push([rootMold, newData, 'changed']);
+    // else this.updates.push([rootMold, newData, 'unchanged']);
   }
 
   _crossroads(rootLodash, newData) {
