@@ -142,7 +142,42 @@ describe 'Unit. mutate.', ->
         'changed'
       ]
     ]
-    
+
+  it 'server returns _id additionally', ->
+    storage =
+      container:
+        changedValue: 'old value'
+
+    newData =
+      changedValue: 'new value'
+      _id: 'container'
+
+    updates = mutate(storage, 'container', newData)
+
+    assert.deepEqual storage, {
+      container:
+        changedValue: 'new value'
+        _id: 'container'
+    }
+
+    assert.deepEqual updates, [
+      [
+        'container.changedValue'
+        'new value'
+        'changed'
+      ]
+      [
+        'container._id'
+        'container'
+        'changed'
+      ]
+      [
+        'container'
+        newData
+        'changed'
+      ]
+    ]
+
   it 'nested container', ->
     storage =
       container:
@@ -184,8 +219,6 @@ describe 'Unit. mutate.', ->
       ]
     ]
 
-# TODO: test from server returns new value, like _id, _rev
-# TODO: test $index
 # TODO: test update to root
 # TODO: test collection init
 # TODO: test collection add
