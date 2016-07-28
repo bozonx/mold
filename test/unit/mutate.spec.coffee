@@ -1,7 +1,7 @@
 mutate = require('../../src/mutate').default
 
 describe 'Unit. mutate.', ->
-  it 'primitive update', ->
+  it 'primitives', ->
     storage =
       container:
         stringValue: 'old value'
@@ -24,6 +24,8 @@ describe 'Unit. mutate.', ->
         useless: 'it is persistent'
       }, newData
     }
+
+    # TODO: useless - должен быть unchanged
 
     assert.deepEqual updates, [
       [
@@ -59,6 +61,58 @@ describe 'Unit. mutate.', ->
           boolValue: true
           arrayValue: ['val1', 'val2']
           newValue: 'new'
+        }
+        'changed'
+      ]
+    ]
+
+  # TODO: test from server returns new value, like _id, _rev
+  # TODO: test unchanged
+  # TODO: test $index
+  # TODO: test update to root
+
+  it 'nested container', ->
+    storage =
+      container:
+        stringValue: 'old value'
+        nested:
+          nestedString: 'old nested value'
+
+    newData =
+      stringValue: 'new value'
+      nested:
+        nestedString: 'new nested value'
+
+    updates = mutate(storage, 'container', newData)
+
+    assert.deepEqual storage, {
+      container: newData
+    }
+
+    assert.deepEqual updates, [
+      [
+        'container.stringValue'
+        'new value'
+        'changed'
+      ]
+      [
+        'container.nested.nestedString'
+        'new nested value'
+        'changed'
+      ]
+      [
+        'container.nested'
+        {
+          nestedString: 'new nested value'
+        }
+        'changed'
+      ]
+      [
+        'container'
+        {
+          stringValue: 'new value'
+          nested:
+            nestedString: 'new nested value'
         }
         'changed'
       ]
