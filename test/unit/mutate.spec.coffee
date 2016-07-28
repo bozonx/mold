@@ -249,9 +249,121 @@ describe 'Unit. mutate.', ->
         'changed'
       ]
     ]
-    
-# TODO: test collection init
+
+  it 'collection init (add from server)', ->
+    storage =
+      collection: []
+
+    newData = [
+      {
+        id: 5
+        name: 'new item'
+      }
+    ]
+
+    updates = mutate(storage, 'collection', newData)
+
+    assert.deepEqual(storage, { collection: newData })
+
+    assert.deepEqual updates, [
+      [
+        'collection.0'
+        {
+          # TODO: uncomment
+          $index: 0,
+          id: 5
+          name: 'new item'
+        }
+        'added'
+      ]
+      [
+        'collection'
+        [
+          {
+            # TODO: uncomment
+            $index: 0,
+            id: 5
+            name: 'new item'
+          }
+        ]
+        'changed'
+      ]
+    ]
+
+#  it 'collection remove and add', ->
+#    storage =
+#      collection: [
+#        {
+#          id: 5
+#          name: 'to remove item'
+#        }
+#        {
+#          id: 6
+#          name: 'old item'
+#        }
+#      ]
+#
+#    newData = [
+#      {
+#        id: 6
+#        name: 'old item'
+#      }
+#      {
+#        id: 7
+#        name: 'new item'
+#      }
+#    ]
+#
+#    updates = mutate(storage, 'collection', newData)
+#
+#    assert.deepEqual(storage, { collection: newData })
+#
+#    assert.deepEqual updates, [
+#      [
+#        'collection.0'
+#        {
+#          # TODO: uncomment
+#          #$index: 0,
+#          id: 5
+#          name: 'to remove item'
+#        }
+#        'removed'
+#      ]
+#      [
+#        'collection.0'
+#        {
+#          # TODO: uncomment
+#          #$index: 1,
+#          id: 7
+#          name: 'new item'
+#        }
+#        'added'
+#      ]
+#      [
+#        'collection'
+#        [
+#          {
+#            # TODO: uncomment
+#            #$index: 0,
+#            id: 6
+#            name: 'old item'
+#          }
+#          {
+#            # TODO: uncomment
+#            #$index: 1,
+#            id: 7
+#            name: 'new item'
+#          }
+#        ]
+#        'changed'
+#      ]
+#    ]
+
+
 # TODO: test collection add
 # TODO: test collection remove
 # TODO: test collection item - change
+# TODO: test collection  установка id с сервера
+# TODO: test collection $index
+
 

@@ -49,9 +49,9 @@ export default class Composition {
 
     // Update whore storage if moldPath isn't defined
     if (!moldPath)
-      updates = mutate(this._storage, '', value, this._updateHandler.bind(this));
+      updates = mutate(this._storage, '', value);
 
-    updates = mutate(this._storage, moldPath, value, this._updateHandler.bind(this));
+    updates = mutate(this._storage, moldPath, value);
 
     _.each(updates, (value) => {
       this._updateHandler(...value);
@@ -190,8 +190,8 @@ export default class Composition {
   _updateHandler(moldPath, value, action) {
     // Don't rise an event if value haven't been changed
     if (action == 'unchanged') return;
-    
-    if (_.isArray(value)) this._updateIndexes(moldPath);
+
+    //if (_.isArray(value)) this._updateIndexes(moldPath);
 
     this._events.emit('mold.composition.update', {
       path: moldPath,
@@ -201,6 +201,7 @@ export default class Composition {
   }
 
   _updateIndexes(pathToCollection) {
+    // TODO: unused
     var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
     _.each(collection, (value, index) => {
       // skip empty items. Because indexes are primary ids. In collection may be empty items before real item

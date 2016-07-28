@@ -86,8 +86,10 @@ class Mutate {
     });
 
     // remove empty values like undefined, null, etc.
-    // TODO: после этой операции не отработают вотчеры массива
+    // TODO: после этой операции не отработают вотчеры массива - use collection.splice($index, 1);
     _.remove(oldCollection, (value) => !_.isPlainObject(value));
+    
+    this._updateIndexes(oldCollection);
 
     var moldPath = convertFromLodashToMoldPath(rootLodash);
     var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
@@ -117,18 +119,26 @@ class Mutate {
     // Path for containers and primitives
     return _.trim(`${rootLodash}.${child}`, '.');
   }
+
+  _updateIndexes(ollectionInStorage) {
+    _.each(ollectionInStorage, (value, index) => {
+      // skip empty items. Because indexes are primary ids. In collection may be empty items before real item
+      //if (!value) return;
+      value.$index = index;
+    });
+  }
+  
 }
 
 /**
- * Mutate object or array.
+ * Mutate storage.
  * @param {object|array} storage - This will be mutate
  * @param {string} rootMold - It's root path in mold format like 'path.to.0.item'
  * @param {object|array} newData - This is new data
- * @param {function} onUpdate - update handler
  */
-export default function(storage, rootMold, newData, onUpdate) {
+export default function(storage, rootMold, newData) {
   var mutate = new Mutate(storage);
-  mutate.mutate(rootMold, newData, onUpdate);
+  mutate.mutate(rootMold, newData);
 
   return mutate.updates;
 }
