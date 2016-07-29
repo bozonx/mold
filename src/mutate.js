@@ -38,10 +38,10 @@ class Mutate {
       if (!isChanged) isChanged = isItemChanged;
     });
 
-    var moldPath = convertFromLodashToMoldPath(rootLodash);
-    var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
-    if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
-    else this.updates.push([moldPath, inStorage, 'unchanged']);
+    // var moldPath = convertFromLodashToMoldPath(rootLodash);
+    // var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
+    // if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
+    // else this.updates.push([moldPath, inStorage, 'unchanged']);
 
     return isChanged;
   }
@@ -60,7 +60,7 @@ class Mutate {
 
       if (!newData[index]) {
         delete oldCollection[index];
-        this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'deleted']);
+        this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'remove']);
         isChanged = true;
       }
     });
@@ -80,7 +80,7 @@ class Mutate {
         // TODO: проверить можно ли устанавливать на любой индекс не по порядку
         //oldCollection.splice(oldCollection.length + 1, 1, value);
         oldCollection.splice(index, 1, value);
-        this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'added']);
+        this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'add']);
         isChanged = true;
       }
     });
@@ -88,13 +88,13 @@ class Mutate {
     // remove empty values like undefined, null, etc.
     // TODO: после этой операции не отработают вотчеры массива - use collection.splice($index, 1);
     _.remove(oldCollection, (value) => !_.isPlainObject(value));
-    
+
     this._updateIndexes(oldCollection);
 
-    var moldPath = convertFromLodashToMoldPath(rootLodash);
-    var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
-    if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
-    else this.updates.push([moldPath, inStorage, 'unchanged']);
+    // var moldPath = convertFromLodashToMoldPath(rootLodash);
+    // var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
+    // if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
+    // else this.updates.push([moldPath, inStorage, 'unchanged']);
 
     return isChanged;
   }
@@ -105,7 +105,7 @@ class Mutate {
 
     var isChanged = oldValue !== newData;
 
-    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'changed']);
+    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'change']);
     else this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'unchanged']);
 
     return isChanged;
@@ -127,7 +127,7 @@ class Mutate {
       value.$index = index;
     });
   }
-  
+
 }
 
 /**

@@ -24,32 +24,27 @@ describe 'Unit. mutate.', ->
       [
         'container.stringValue'
         'new value'
-        'changed'
+        'change'
       ]
       [
         'container.numberValue'
         5
-        'changed'
+        'change'
       ]
       [
         'container.boolValue'
         true
-        'changed'
+        'change'
       ]
       [
         'container.arrayValue'
         ['val1', 'val2']
-        'changed'
+        'change'
       ]
       [
         'container.newValue'
         'new'
-        'changed'
-      ]
-      [
-        'container'
-        newData
-        'changed'
+        'change'
       ]
     ]
 
@@ -69,11 +64,6 @@ describe 'Unit. mutate.', ->
       [
         'container.unchangedValue'
         'old value'
-        'unchanged'
-      ]
-      [
-        'container'
-        newData
         'unchanged'
       ]
     ]
@@ -101,12 +91,7 @@ describe 'Unit. mutate.', ->
       [
         'container.changedValue'
         'new value'
-        'changed'
-      ]
-      [
-        'container'
-        newData
-        'changed'
+        'change'
       ]
     ]
 
@@ -131,15 +116,7 @@ describe 'Unit. mutate.', ->
       [
         'container.changedValue'
         'new value'
-        'changed'
-      ]
-      [
-        'container'
-        {
-          untouchedValue: 'untouched value'
-          changedValue: 'new value'
-        }
-        'changed'
+        'change'
       ]
     ]
 
@@ -164,17 +141,12 @@ describe 'Unit. mutate.', ->
       [
         'container.changedValue'
         'new value'
-        'changed'
+        'change'
       ]
       [
         'container._id'
         'container'
-        'changed'
-      ]
-      [
-        'container'
-        newData
-        'changed'
+        'change'
       ]
     ]
 
@@ -198,24 +170,12 @@ describe 'Unit. mutate.', ->
       [
         'container.stringValue'
         'new value'
-        'changed'
+        'change'
       ]
       [
         'container.nested.nestedString'
         'new nested value'
-        'changed'
-      ]
-      [
-        'container.nested'
-        {
-          nestedString: 'new nested value'
-        }
-        'changed'
-      ]
-      [
-        'container'
-        newData
-        'changed'
+        'change'
       ]
     ]
 
@@ -236,17 +196,7 @@ describe 'Unit. mutate.', ->
       [
         'container.stringValue'
         'new value'
-        'changed'
-      ]
-      [
-        'container'
-        newData.container
-        'changed'
-      ]
-      [
-        ''
-        newData
-        'changed'
+        'change'
       ]
     ]
 
@@ -279,18 +229,7 @@ describe 'Unit. mutate.', ->
           id: 5
           name: 'new item'
         }
-        'added'
-      ]
-      [
-        'collection'
-        [
-          {
-            $index: 0,
-            id: 5
-            name: 'new item'
-          }
-        ]
-        'changed'
+        'add'
       ]
     ]
 
@@ -410,27 +349,7 @@ describe 'Unit. mutate.', ->
       [
         'collection.0.name'
         'new item'
-        'changed'
-      ]
-      [
-        'collection.0'
-        {
-          $index: 0,
-          id: 5
-          name: 'new item'
-        }
-        'changed'
-      ]
-      [
-        'collection'
-        [
-          {
-            $index: 0,
-            id: 5
-            name: 'new item'
-          }
-        ]
-        'changed'
+        'change'
       ]
     ]
 
@@ -468,16 +387,7 @@ describe 'Unit. mutate.', ->
       [
         'collection.0.name'
         'new item'
-        'changed'
-      ]
-      [
-        'collection.0'
-        {
-          $index: 0,
-          id: 5
-          name: 'new item'
-        }
-        'changed'
+        'change'
       ]
     ]
 
@@ -507,6 +417,6 @@ describe 'Unit. mutate.', ->
       [
         'collection.0.name'
         'new item'
-        'changed'
+        'change'
       ]
     ]
