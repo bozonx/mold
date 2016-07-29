@@ -99,8 +99,12 @@ describe 'Unit. Composition.', ->
       this.composition._storage = {
         container:
           stringParam: null
+          unchanged: null
           nested: {
             nestedParam: null
+          }
+          nestedUnchanged: {
+            nestedUnchangedParam: null
           }
       }
       this.composition.update('container', {
@@ -111,10 +115,41 @@ describe 'Unit. Composition.', ->
         }
       });
 
-      expect(this.emitSpy).to.have.been.calledWith('mold.update', {
+      expect(this.emitSpy).to.have.been.calledWith('mold.update::container.stringParam', {
         path: 'container.stringParam'
+        isTarget: true
+        target: { action: 'change', path: 'container.stringParam', value: 'new value' }
       })
-      expect(this.emitSpy).to.have.been.calledOnce
+      expect(this.emitSpy).to.have.been.calledWith('mold.update::container._id', {
+        path: 'container._id'
+        isTarget: true
+        target: { action: 'change', path: 'container._id', value: 'container' }
+      })
+      expect(this.emitSpy).to.have.been.calledWith('mold.update::container.nested.nestedParam', {
+        path: 'container.nested.nestedParam'
+        isTarget: true
+        target: { action: 'change', path: 'container.nested.nestedParam', value: 'new nested value' }
+      })
+
+      # bubbles
+      expect(this.emitSpy).to.have.been.calledWith('mold.update::container.nested', {
+        path: 'container.nested'
+        isTarget: false
+        target: { action: 'change', path: 'container.nested.nestedParam', value: 'new nested value' }
+      })
+      expect(this.emitSpy).to.have.been.calledWith('mold.update::container', {
+        path: 'container'
+        isTarget: false
+        target: { action: 'change', path: 'container.stringParam', value: 'new value' }
+      })
+      # root
+      expect(this.emitSpy).to.have.been.calledWith('mold.update::', {
+        path: ''
+        isTarget: false
+        target: { action: 'change', path: 'container.stringParam', value: 'new value' }
+      })
+
+      #expect(this.emitSpy).to.have.been.callCount(6)
 
 
 # TODO: коллекция - установка c нуля
