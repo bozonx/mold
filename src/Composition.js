@@ -46,25 +46,10 @@ export default class Composition {
    * @param value
      */
   update(moldPath, value) {
+    // run mutates
     var changes = mutate(this._storage, moldPath || '', value);
-
+    // run events emiting
     bubbling(this._events, moldPath, 'mold.update', changes);
-
-    // TODO: remove
-    _.each(changes, (value) => {
-      this._updateHandler(...value);
-    });
-  }
-
-  _updateHandler(moldPath, value, action) {
-    // Don't rise an event if value haven't been changed
-    if (action == 'unchanged') return;
-
-    this._events.emit('mold.composition.update', {
-      path: moldPath,
-      action,
-      value,
-    });
   }
 
   /**
@@ -74,9 +59,14 @@ export default class Composition {
    */
   addToBeginning(pathToCollection, newItem) {
     var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
+    //collection = [].concat(collection);
+
     // add to beginning
     collection.unshift(newItem);
-    // Rise an event
+    
+    //this.update(pathToCollection, collection);
+
+    // // Rise an event
     this._events.emit('mold.composition.update', {path: pathToCollection});
     this._updateIndexes(pathToCollection);
   }
@@ -89,11 +79,15 @@ export default class Composition {
    */
   remove(pathToCollection, $index) {
     var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
+    //collection = [].concat(collection);
+
 
     // remove with rising an change event on array of collection
     collection.splice($index, 1);
 
-    // Rise an event
+    //this.update(pathToCollection, collection);
+    
+    // // Rise an event
     this._events.emit('mold.composition.update', {path: pathToCollection});
     this._updateIndexes(pathToCollection);
   }

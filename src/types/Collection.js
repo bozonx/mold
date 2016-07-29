@@ -11,11 +11,11 @@ export default class Collection extends _TypeBase {
 
     this._main = main;
 
-    this._main.events.on('mold.composition.update', (data) => {
-      if (data.path.indexOf(this._root) === 0) {
-        this._main.events.emit('mold.type.event::' + this._root);
-      }
-    });
+    // this._main.events.on('mold.composition.update', (data) => {
+    //   if (data.path.indexOf(this._root) === 0) {
+    //     this._main.events.emit('mold.type.event::' + this._root);
+    //   }
+    // });
   }
 
   init(root, schema) {

@@ -7,13 +7,6 @@ export default class Primitive extends _TypeBase{
     super(main);
 
     this._main = main;
-
-    this._main.events.on('mold.composition.update', (data) => {
-      if (data.path.indexOf(this._root) === 0) {
-        this.updateMold();
-        this._main.events.emit('mold.type.event::' + this._root);
-      }
-    });
   }
 
   init(root, schema) {
@@ -22,6 +15,14 @@ export default class Primitive extends _TypeBase{
     // mold is just a link to the composition
     this.mold = {};
     this.updateMold();
+
+    this._main.events.on('mold.update::' + this._root, () => {
+      this.updateMold();
+      // if (data.path.indexOf(this._root) === 0) {
+      //   this.updateMold();
+      //   this._main.events.emit('mold.type.event::' + this._root);
+      // }
+    });
   }
 
   /**
