@@ -94,6 +94,28 @@ describe 'Unit. Composition.', ->
         }
       ])
 
+  describe 'Update events', ->
+    it 'container bubbling', ->
+      this.composition._storage = {
+        container:
+          stringParam: null
+          nested: {
+            nestedParam: null
+          }
+      }
+      this.composition.update('container', {
+        stringParam: 'new value',
+        _id: 'container'
+        nested: {
+          nestedParam: 'new nested value'
+        }
+      });
+
+      expect(this.emitSpy).to.have.been.calledWith('mold.update', {
+        path: 'container.stringParam'
+      })
+      expect(this.emitSpy).to.have.been.calledOnce
+
 
 # TODO: коллекция - установка c нуля
 # TODO: коллекция - обновление элемента коллекции - как контейнера

@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
-import { convertToLodashPath, recursiveMutate } from './helpers';
+import { convertToLodashPath } from './helpers';
 import mutate from './mutate';
+import bubbling from './bubbling';
 
 export default class Composition {
   constructor(events) {
@@ -45,12 +46,24 @@ export default class Composition {
    * @param value
      */
   update(moldPath, value) {
-    var updates;
+    var changes = mutate(this._storage, moldPath || '', value);
 
-    updates = mutate(this._storage, moldPath || '', value);
+    bubbling(this._events, moldPath, 'mold.update', changes);
 
-    _.each(updates, (value) => {
+    // TODO: remove
+    _.each(changes, (value) => {
       this._updateHandler(...value);
+    });
+  }
+
+  _updateHandler(moldPath, value, action) {
+    // Don't rise an event if value haven't been changed
+    if (action == 'unchanged') return;
+
+    this._events.emit('mold.composition.update', {
+      path: moldPath,
+      action,
+      value,
     });
   }
 
@@ -85,16 +98,7 @@ export default class Composition {
     this._updateIndexes(pathToCollection);
   }
 
-  _updateHandler(moldPath, value, action) {
-    // Don't rise an event if value haven't been changed
-    if (action == 'unchanged') return;
 
-    this._events.emit('mold.composition.update', {
-      path: moldPath,
-      action,
-      value,
-    });
-  }
 
   _updateIndexes(pathToCollection) {
     // TODO: unused

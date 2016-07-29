@@ -275,7 +275,7 @@ describe 'Unit. mutate.', ->
       }
     ] })
 
-    # TODO: check updates
+    # TODO: check updates - наверное должно только добавлять и удалять, не обновлять
 #    assert.deepEqual updates, [
 #      [
 #        'collection.0'
@@ -285,31 +285,6 @@ describe 'Unit. mutate.', ->
 #          name: 'to remove item'
 #        }
 #        'removed'
-#      ]
-#      [
-#        'collection.1'
-#        {
-#          $index: 1,
-#          id: 7
-#          name: 'new item'
-#        }
-#        'added'
-#      ]
-#      [
-#        'collection'
-#        [
-#          {
-#            $index: 0,
-#            id: 6
-#            name: 'old item'
-#          }
-#          {
-#            $index: 1,
-#            id: 7
-#            name: 'new item'
-#          }
-#        ]
-#        'changed'
 #      ]
 #    ]
 
