@@ -37,6 +37,10 @@ class Bubbling {
       },
     });
   }
+  
+  _emitBubbles() {
+    
+  }
 
   _combineEventPath(moldPath) {
     return `${this.rootEvent}::${moldPath}`;
