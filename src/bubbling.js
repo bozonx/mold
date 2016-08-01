@@ -27,6 +27,17 @@ class Bubbling {
     // Don't rise an event if value haven't been changed
     if (action == 'unchanged') return;
 
+    console.log(345345, this._combineEventPath(moldPath), {
+      path: moldPath,
+      isTarget: true,
+      target: {
+        path: moldPath,
+        action,
+        value,
+      },
+    })
+
+
     this.events.emit(this._combineEventPath(moldPath), {
       path: moldPath,
       isTarget: true,
@@ -37,9 +48,9 @@ class Bubbling {
       },
     });
   }
-  
+
   _emitBubbles() {
-    
+
   }
 
   _combineEventPath(moldPath) {

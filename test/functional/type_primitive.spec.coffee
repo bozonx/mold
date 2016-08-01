@@ -14,7 +14,7 @@ describe 'Functional. Primitive type.', ->
     this.mold = mold.initSchema( {}, testSchema() )
     this.container = this.mold.instance('inMemory')
 
-  it 'After init all the values is null', () ->
+  it 'All the values is null, after init', () ->
     assert.isNull(this.container.child('boolParam').mold)
     assert.isNull(this.container.child('stringParam').mold)
     assert.isNull(this.container.child('numberParam').mold)

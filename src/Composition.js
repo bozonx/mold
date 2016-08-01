@@ -48,6 +48,7 @@ export default class Composition {
   update(moldPath, value) {
     // run mutates
     var changes = mutate(this._storage, moldPath || '', value);
+
     // run events emiting
     bubbling(this._events, moldPath, 'mold.update', changes);
   }
@@ -63,11 +64,11 @@ export default class Composition {
 
     // add to beginning
     collection.unshift(newItem);
-    
+
     //this.update(pathToCollection, collection);
 
     // // Rise an event
-    this._events.emit('mold.composition.update', {path: pathToCollection});
+    this._events.emit('mold.update', {path: pathToCollection});
     this._updateIndexes(pathToCollection);
   }
 
@@ -86,9 +87,9 @@ export default class Composition {
     collection.splice($index, 1);
 
     //this.update(pathToCollection, collection);
-    
+
     // // Rise an event
-    this._events.emit('mold.composition.update', {path: pathToCollection});
+    this._events.emit('mold.update', {path: pathToCollection});
     this._updateIndexes(pathToCollection);
   }
 

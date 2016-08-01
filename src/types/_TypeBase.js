@@ -14,15 +14,12 @@ export default class _TypeBase {
     return '' + this._root;
   }
 
-  onMoldUpdate(cb) {
-    // TODO: test it
-    this._main.events.on('mold.type.event::' + this._root, cb);
+  onMoldUpdate(handler) {
+    this._main.state.addListener(this._root, handler);
   }
 
-  offMoldUpdate(cb) {
-    // TODO: test it
-    // TODO: наверное лучше на собственный дестрой удалиь все листереры
-    this._main.events.removeListener('mold.type.event::' + this._root, cb);
+  offMoldUpdate(handler) {
+    this._main.state.removeListener(this._root, handler);
   }
 
   updateMold() {

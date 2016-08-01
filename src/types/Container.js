@@ -9,16 +9,6 @@ export default class Container extends _TypeBase{
     super(main);
 
     this._main = main;
-
-    // this._main.events.on('mold.composition.update', (data) => {
-    //   if (data.path.indexOf(this._root) === 0) {
-    //     // TODO: not need
-    //     //this.updateMold();
-    //
-    //     this._main.events.emit('mold.type.event::' + this._root);
-    //   }
-    // });
-
   }
 
   init(root, schema) {

@@ -9,6 +9,7 @@ export default class State {
     this._main = main;
     this._composition = composition;
     this._request = new Request(this._main, composition);
+    this._handlers = {};
 
     this._initComposition();
   }
@@ -101,6 +102,26 @@ export default class State {
     }
 
     throw new Error(`Unknown type!`);
+  }
+
+  addListener(moldPath, handler) {
+    // Save listener
+    if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
+    this._handlers[moldPath].push(handler);
+
+    // Add listener
+    this._main.events.on('mold.update::' + moldPath, handler);
+  }
+
+  removeListener(moldPath, handler) {
+    // Remove listener
+    if (!this._handlers[moldPath]) return;
+    var index = _.indexOf(this._handlers[moldPath], handler);
+    if (index < 0) return;
+    this._handlers[moldPath].splice(index, 1);
+
+    // Unbind listener
+    this._main.events.removeListener('mold.update::' + moldPath, handler);
   }
 
   /**
