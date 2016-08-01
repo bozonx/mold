@@ -124,6 +124,18 @@ export default class State {
     this._main.events.removeListener('mold.update::' + moldPath, handler);
   }
 
+  destroy(moldPath) {
+    // TODO: test it
+    if (this._handlers[moldPath]) {
+      _.each(this._handlers[moldPath], (handler) => {
+        this._main.events.removeListener('mold.update::' + moldPath, handler);
+      });
+      this._handlers[moldPath] = [];
+    }
+
+    // TODO: clear mold
+  }
+
   /**
    * Check for node. It isn't work with container.
    * It rises an error on invalid value or node.

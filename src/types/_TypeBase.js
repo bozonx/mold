@@ -22,6 +22,10 @@ export default class _TypeBase {
     this._main.state.removeListener(this._root, handler);
   }
 
+  destroy() {
+    this._main.state.destroy(this._root);
+  }
+
   updateMold() {
     this.mold = this._main.state.getMold(this._root);
   }

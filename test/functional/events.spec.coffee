@@ -33,7 +33,20 @@ describe 'Functional. Events.', ->
     assert.deepEqual(this.mold.state._handlers['inMemory.stringParam'], [])
     expect(this.handler).to.have.been.calledOnce
 
-    
+#  it 'destroy', () ->
+#    this.primitive.onMoldUpdate(this.handler)
+#    this.primitive.setMold('new value')
+#
+#    assert.equal(this.primitive.mold, 'new value')
+#
+#    this.primitive.destroy()
+#
+#    assert.deepEqual(this.mold.state._handlers['inMemory.stringParam'], [])
+#
+#    assert.equal(this.primitive.mold, null)
+
+
+
 # TODO: должен работать после того как сделаю bubble
 
 #  it 'container onMoldUpdate and offMoldUpdate', () ->
