@@ -3,6 +3,13 @@ export default class _TypeBase {
     this._main = main;
   }
 
+  $init(root, schema) {
+    this._root = root;
+    this.schema = schema;
+    // mold is just a link to the composition
+    this.updateMold();
+  }
+
   isDocument() {
     return this._isDocument;
   }

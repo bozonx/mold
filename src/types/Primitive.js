@@ -8,13 +8,9 @@ export default class Primitive extends _TypeBase{
   }
 
   init(root, schema) {
-    this._root = root;
-    this.schema = schema;
-    // mold is just a link to the composition
-    this.mold = {};
-    
+    super.$init(root, schema);
+
     // TODO: ?????
-    this.updateMold();
 
     this._main.events.on('mold.update::' + this._root, () => {
       this.updateMold();

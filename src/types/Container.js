@@ -10,11 +10,8 @@ export default class Container extends _TypeBase{
   }
 
   init(root, schema) {
-    this._root = root;
-    this.schema = schema;
-    // mold is just a link to the composition
-    this.mold = {};
-    this.updateMold();
+    super.$init(root, schema);
+    
     this._isDocument = !!this._main.schemaManager.getDocument(this._root);
   }
 
