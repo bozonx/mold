@@ -5,8 +5,6 @@ import _TypeBase from './_TypeBase';
 export default class Primitive extends _TypeBase{
   constructor(main) {
     super(main);
-
-    this._main = main;
   }
 
   init(root, schema) {
@@ -14,6 +12,8 @@ export default class Primitive extends _TypeBase{
     this.schema = schema;
     // mold is just a link to the composition
     this.mold = {};
+    
+    // TODO: ?????
     this.updateMold();
 
     this._main.events.on('mold.update::' + this._root, () => {

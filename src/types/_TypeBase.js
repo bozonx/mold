@@ -1,5 +1,6 @@
 export default class _TypeBase {
   constructor(main) {
+    this._main = main;
   }
 
   isDocument() {

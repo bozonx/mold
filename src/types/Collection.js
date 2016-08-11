@@ -8,8 +8,6 @@ import _TypeBase from './_TypeBase';
 export default class Collection extends _TypeBase {
   constructor(main) {
     super(main);
-
-    this._main = main;
   }
 
   init(root, schema) {

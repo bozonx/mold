@@ -7,8 +7,6 @@ import _TypeBase from './_TypeBase';
 export default class Container extends _TypeBase{
   constructor(main) {
     super(main);
-
-    this._main = main;
   }
 
   init(root, schema) {
@@ -42,6 +40,7 @@ export default class Container extends _TypeBase{
   get(path) {
     return this._main.state.load((path) ? concatPath(this._root, path) : this._root);
   }
+
 
   setMold(pathOrValue, valueOrNothing) {
     var path = pathOrValue;
