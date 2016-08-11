@@ -154,7 +154,6 @@ export default class State {
   }
 
   destroy(moldPath) {
-    // TODO: test it
     if (this._handlers[moldPath]) {
       _.each(this._handlers[moldPath], (handler) => {
         this._main.events.removeListener('mold.update::' + moldPath, handler);
@@ -162,7 +161,10 @@ export default class State {
       this._handlers[moldPath] = [];
     }
 
-    // TODO: clear mold
+    this._initComposition(moldPath);
+
+    // TODO: не очень хорошее решение, наверное нужно поднимать внутренние silent события без баблинга
+    this._main.events.emit('mold.update::' + moldPath, {});
   }
 
   /**
@@ -227,12 +229,13 @@ export default class State {
 
   /**
    * Set initial values (null|[]) to composition for all items from schema.
+   * @param {string} moldPath
    * @private
    */
-  _initComposition() {
+  _initComposition(moldPath) {
     var compositionValues = {};
 
-    recursiveSchema('', this._main.schemaManager.get(''), (newPath, value) => {
+    recursiveSchema(moldPath || '', this._main.schemaManager.get(moldPath || ''), (newPath, value) => {
       if (value.type == 'array') {
         // array
         _.set(compositionValues, newPath, []);
