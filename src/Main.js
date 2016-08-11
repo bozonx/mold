@@ -13,6 +13,7 @@ export default class Main {
     this.schemaManager = new SchemaManager();
     this.state = new State();
 
+    // initialize
     this.schemaManager.init(schema, this);
     this.state.init(this, this._composition);
   }

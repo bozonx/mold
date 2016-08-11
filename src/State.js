@@ -17,6 +17,7 @@ export default class State {
   /**
    * Get mold by path
    * @param {string} path
+   * @returns {*} - value from mold
    */
   getMold(path) {
     return this._composition.get(path);
@@ -32,6 +33,11 @@ export default class State {
     this._composition.update(moldPath, value);
   }
 
+  /**
+   * Add to collection in mold.
+   * @param {string} pathToCollection
+   * @param {object} newItem
+   */
   addMold(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToCollection);
@@ -45,9 +51,15 @@ export default class State {
 
     this._checkNode(pathToCollection, preparedItem);
     this._composition.addToBeginning(pathToCollection, preparedItem);
+    // add to collection of unsaved added items
     this._request.addUnsavedAddedItem(pathToCollection, preparedItem);
   }
 
+  /**
+   * Remove from collection.
+   * @param {string} pathToCollection
+   * @param {object} itemToRemove
+   */
   removeMold(pathToCollection, itemToRemove) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToCollection);
@@ -62,12 +74,13 @@ export default class State {
     if (!realItem) return;
 
     this._composition.remove(pathToCollection, realItem.$index);
+    // add to collection of unsaved removed items
     this._request.addUnsavedRemovedItem(pathToCollection, realItem);
   }
 
   /**
    * Get data from driver, update mold with new data and return primise
-   * @param moldPath
+   * @param {string} moldPath - full path in mold
    * @returns {Promise}
    */
   load(moldPath) {
@@ -81,12 +94,18 @@ export default class State {
       return this._request.loadPrimitive(moldPath);
     }
     else if (!schema.type) {
+      // It's container
       return this._request.loadContainer(moldPath);
     }
 
     throw new Error(`Unknown type!`);
   }
 
+  /**
+   * Save unsaved data to driver by path.
+   * @param {string} moldPath - full path in mold
+   * @returns {Promise}
+   */
   save(moldPath) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
@@ -104,6 +123,11 @@ export default class State {
     throw new Error(`Unknown type!`);
   }
 
+  /**
+   * Add change event handler on path.
+   * @param {string} moldPath - full path in mold
+   * @param {function} handler
+   */
   addListener(moldPath, handler) {
     // Save listener
     if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
@@ -113,6 +137,11 @@ export default class State {
     this._main.events.on('mold.update::' + moldPath, handler);
   }
 
+  /**
+   * Remove change event handler from path.
+   * @param {string} moldPath - full path in mold
+   * @param {function} handler
+   */
   removeListener(moldPath, handler) {
     // Remove listener
     if (!this._handlers[moldPath]) return;

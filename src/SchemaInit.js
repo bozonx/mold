@@ -2,6 +2,10 @@ import _ from 'lodash';
 
 import { recursiveSchema } from './helpers';
 
+/**
+ * It generate runtime schema from raw schema and extract drivers and documents.
+ * @class
+ */
 export default class SchemaInit {
   constructor(rawSchema, main) {
     this._main = main;
