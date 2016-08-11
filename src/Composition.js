@@ -93,7 +93,34 @@ export default class Composition {
     this._updateIndexes(pathToCollection);
   }
 
+  /**
+   * Clear storage on path
+   * @param moldPath
+   */
+  clear(moldPath) {
+    var contents = _.get(moldPath);
 
+    var clearRecursive = (value, localPath) => {
+      if (_.isArray(value)) {
+        _.delete(value);
+      }
+      else if (_.isPlainObject(value)) {
+        _.each(value, (containerItem, name) => {
+          clearRecursive(containerItem, localPath + '.' + name);
+        });
+      }
+      else {
+        if (localPath) {
+          _.set(contents, localPath, null);
+        }
+        else {
+          _.set(this._storage, moldPath, null);
+        }
+      }
+    };
+
+    clearRecursive(contents, '');
+  }
 
   _updateIndexes(pathToCollection) {
     // TODO: unused

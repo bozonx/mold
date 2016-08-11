@@ -161,7 +161,7 @@ export default class State {
       this._handlers[moldPath] = [];
     }
 
-    this._initComposition(moldPath);
+    this._composition.clear(moldPath);
 
     // TODO: не очень хорошее решение, наверное нужно поднимать внутренние silent события без баблинга
     this._main.events.emit('mold.update::' + moldPath, {});

@@ -1,14 +1,20 @@
 mold = require('../../src/index')
 
 testSchema = () ->
-  inMemory:
+  container:
     stringParam:
       type: 'string'
+  collection:
+    type: 'collection'
+    item:
+      id: {type: 'number', primary: true}
+      name: {type: 'string'}
 
 describe 'Functional. Events.', ->
   beforeEach () ->
     this.mold = mold.initSchema( {}, testSchema() )
-    this.container = this.mold.instance('inMemory')
+    this.container = this.mold.instance('container')
+    this.collection = this.mold.instance('collection')
     this.primitive = this.container.child('stringParam')
     this.handler = sinon.spy();
 
@@ -16,13 +22,13 @@ describe 'Functional. Events.', ->
     this.primitive.onMoldUpdate(this.handler)
     this.primitive.setMold('new value')
 
-    assert.deepEqual(this.mold.state._handlers['inMemory.stringParam'], [this.handler])
+    assert.deepEqual(this.mold.state._handlers['container.stringParam'], [this.handler])
     expect(this.handler).to.have.been.calledOnce
     expect(this.handler).to.have.been.calledWith({
-      path: 'inMemory.stringParam'
+      path: 'container.stringParam'
       isTarget: true
       target: {
-        path: 'inMemory.stringParam'
+        path: 'container.stringParam'
         action: 'change'
         value: 'new value'
       }
@@ -30,10 +36,10 @@ describe 'Functional. Events.', ->
 
     this.primitive.offMoldUpdate(this.handler)
     this.primitive.setMold('very new value')
-    assert.deepEqual(this.mold.state._handlers['inMemory.stringParam'], [])
+    assert.deepEqual(this.mold.state._handlers['container.stringParam'], [])
     expect(this.handler).to.have.been.calledOnce
 
-  it 'destroy', () ->
+  it 'destroy primitive', () ->
     this.primitive.onMoldUpdate(this.handler)
     this.primitive.setMold('new value')
 
@@ -41,11 +47,27 @@ describe 'Functional. Events.', ->
 
     this.primitive.destroy()
 
-    assert.deepEqual(this.mold.state._handlers['inMemory.stringParam'], [])
+    assert.deepEqual(this.mold.state._handlers['container.stringParam'], [])
 
     assert.equal(this.primitive.mold, null)
 
+  it 'destroy container - it must be clear', ->
+    this.container.setMold('stringParam', 'new value')
 
+    assert.deepEqual(this.container.mold, {stringParam: 'new value'})
+
+    this.container.destroy()
+
+    assert.deepEqual(this.container.mold, {stringParam: null})
+
+  it 'destroy collection - it must be clear', ->
+    this.collection.addMold({id:1 , name: 'value1'})
+
+    assert.deepEqual(this.collection.mold, [{id:1 , name: 'value1', $index: 0, $isNew: true}])
+
+    this.collection.destroy()
+
+    assert.deepEqual(this.collection.mold, [])
 
 # TODO: должен работать после того как сделаю bubble
 
