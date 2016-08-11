@@ -98,11 +98,11 @@ export default class Composition {
    * @param moldPath
    */
   clear(moldPath) {
-    var contents = _.get(moldPath);
+    var contents = _.get(this._storage, moldPath);
 
     var clearRecursive = (value, localPath) => {
       if (_.isArray(value)) {
-        _.delete(value);
+        _.remove(value);
       }
       else if (_.isPlainObject(value)) {
         _.each(value, (containerItem, name) => {
