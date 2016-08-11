@@ -1,4 +1,3 @@
-// It's runtime state manager
 import _ from 'lodash';
 
 import { findPrimary, splitLastParamPath, getSchemaBaseType } from './helpers';
@@ -12,6 +11,11 @@ export default class Request {
     this._removedUnsavedItems = {};
   }
 
+  /**
+   * Add item to collection of unsaved added items .
+   * @param {string} pathToCollection
+   * @param {object} item
+   */
   addUnsavedAddedItem(pathToCollection, item) {
     if (!this._addedUnsavedItems[pathToCollection])
       this._addedUnsavedItems[pathToCollection] = [];
@@ -19,6 +23,11 @@ export default class Request {
     this._addedUnsavedItems[pathToCollection].push(item);
   }
 
+  /**
+   * Add item to collection unsaved removed items.
+   * @param {string} pathToCollection
+   * @param {object} item
+   */
   addUnsavedRemovedItem(pathToCollection, item) {
     if (!this._removedUnsavedItems[pathToCollection])
       this._removedUnsavedItems[pathToCollection] = [];
@@ -26,6 +35,11 @@ export default class Request {
     this._removedUnsavedItems[pathToCollection].push(item);
   }
 
+  /**
+   * Load primitive from driver
+   * @param {string} pathToPrimitive
+   * @returns {Promise}
+   */
   loadPrimitive(pathToPrimitive) {
     return new Promise((resolve, reject) => {
       var splits = splitLastParamPath(pathToPrimitive);
@@ -47,6 +61,11 @@ export default class Request {
     });
   }
 
+  /**
+   * Load container and it's contents from driver.
+   * @param {string} pathToContainer
+   * @returns {Promise}
+   */
   loadContainer(pathToContainer) {
     return new Promise((resolve, reject) => {
       this._startDriverRequest('get', pathToContainer).then((resp) => {
@@ -61,6 +80,11 @@ export default class Request {
     });
   }
 
+  /**
+   * Load collection from driver.
+   * @param {string} pathToCollection
+   * @returns {Promise}
+   */
   loadCollection(pathToCollection) {
     return new Promise((resolve, reject) => {
       this._startDriverRequest('filter', pathToCollection).then((resp) => {
@@ -75,6 +99,11 @@ export default class Request {
     });
   }
 
+  /**
+   * Save primitive on path to driver.
+   * @param {string} pathToPrimitive
+   * @returns {Promise}
+   */
   savePrimitive(pathToPrimitive) {
     // For primitive, get container upper on path
     var splits = splitLastParamPath(pathToPrimitive);
@@ -105,6 +134,11 @@ export default class Request {
     });
   }
 
+  /**
+   * Save container and it's contents to driver.
+   * @param {string} pathToContainer
+   * @returns {Promise}
+   */
   saveContainer(pathToContainer) {
     var payload = this._composition.get(pathToContainer);
 
@@ -117,6 +151,11 @@ export default class Request {
     });
   }
 
+  /**
+   * Save unsaved removed or added items to driver.
+   * @param {string} pathToCollection
+   * @returns {Promise}
+   */
   saveCollection(pathToCollection) {
     // Save all unsaved added or removed items
     return new Promise((mainResolve) => {
