@@ -30,7 +30,7 @@ describe 'Functional. Events.', ->
       target: {
         path: 'container.stringParam'
         action: 'change'
-        value: 'new value'
+        #value: 'new value'
       }
     })
 
@@ -91,6 +91,24 @@ describe 'Functional. Events.', ->
 #    this.container.setMold('stringParam', 'very new value')
 #    assert.deepEqual(this.mold.state._handlers['inMemory'], [])
 #    expect(this.handler).to.have.been.calledOnce
+
+
+
+  it 'bubbling on primitive', () ->
+    containerHandler = sinon.spy();
+    this.primitive.onMoldUpdate(this.handler)
+    this.container.onMoldUpdate(containerHandler)
+
+    this.primitive.setMold('new value')
+
+    expect(this.handler).to.have.been.calledOnce
+    expect(containerHandler).to.have.been.calledOnce
+
+
+  it 'bubbling on container', () ->
+
+  it 'bubbling on collection', () ->
+
 
 # TODO: проверить что событие не поднимается если значение по факту не изменилось
 # TODO: проверить что у контейнера поднимится событие, если мы устанавливаем значение через примитив

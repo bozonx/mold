@@ -118,17 +118,29 @@ describe 'Unit. Composition.', ->
       expect(this.emitSpy).to.have.been.calledWith('mold.update::container.stringParam', {
         path: 'container.stringParam'
         isTarget: true
-        target: { action: 'change', path: 'container.stringParam', value: 'new value' }
+        target: {
+          action: 'change',
+          path: 'container.stringParam',
+          #value: 'new value'
+        }
       })
       expect(this.emitSpy).to.have.been.calledWith('mold.update::container._id', {
         path: 'container._id'
         isTarget: true
-        target: { action: 'change', path: 'container._id', value: 'container' }
+        target: {
+          action: 'change',
+          path: 'container._id',
+          #value: 'container'
+        }
       })
       expect(this.emitSpy).to.have.been.calledWith('mold.update::container.nested.nestedParam', {
         path: 'container.nested.nestedParam'
         isTarget: true
-        target: { action: 'change', path: 'container.nested.nestedParam', value: 'new nested value' }
+        target: {
+          action: 'change',
+          path: 'container.nested.nestedParam',
+          #value: 'new nested value'
+        }
       })
 
       # bubbles

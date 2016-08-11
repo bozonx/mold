@@ -108,3 +108,18 @@ export function getSchemaBaseType(schemaType) {
     return 'primitive';
   }
 }
+
+export function getUniqPartOfPaths(paths) {
+  if(_.isArray(paths) && paths.length == 1) {
+    return paths[0];
+  }
+  else if (_.isArray(paths) && paths.length > 1) {
+    // It ins't need for more difficult logic
+    var intersection = _.intersection(paths[0], paths[1]);
+    return intersection.join('.');
+  }
+  else {
+    // if string or other
+    return paths;
+  }
+}
