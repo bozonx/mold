@@ -48,6 +48,8 @@ class Bubbling {
     // rise event on container endpoint or single endpoint
     this._handleEndPoint(target.path, null, target.action);
 
+    // TODO: не поднимать баблы если есть хоть один action: unchanged
+
     var rawBubblePath = splitLastParamPath(uniqPath);
     if (!rawBubblePath.basePath) return;
 
@@ -61,17 +63,6 @@ class Bubbling {
     // Don't rise an event if value haven't been changed
     if (action == 'unchanged') return;
 
-    // console.log(345345, this._combineEventPath(moldPath), {
-    //   path: moldPath,
-    //   isTarget: true,
-    //   target: {
-    //     path: moldPath,
-    //     action,
-    //     value,
-    //   },
-    // })
-
-
     this.events.emit(this._combineEventPath(moldPath), {
       path: moldPath,
       isTarget: true,
@@ -83,8 +74,18 @@ class Bubbling {
     });
   }
 
-  _emitBubbles() {
+  _emitBubbles(path, target) {
+    var splits = path.split('.');
 
+    _.each(path.split('.'), (value, index) => {
+      var currentPath = splits.slice(0, index + 1).join('.');
+
+      this.events.emit(this._combineEventPath(currentPath), {
+        path: currentPath,
+        isTarget: false,
+        target: target,
+      });
+    });
   }
 
   _combineEventPath(moldPath) {

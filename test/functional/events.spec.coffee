@@ -4,6 +4,12 @@ testSchema = () ->
   container:
     stringParam:
       type: 'string'
+  nested:
+    container:
+      stringParam:
+        type: 'string'
+      numberParam:
+        type: 'number'
   collection:
     type: 'collection'
     item:
@@ -104,8 +110,73 @@ describe 'Functional. Events.', ->
     expect(this.handler).to.have.been.calledOnce
     expect(containerHandler).to.have.been.calledOnce
 
+    expect(this.handler).to.have.been.calledWith({
+      path: 'container.stringParam'
+      isTarget: true
+      target: {
+        path: 'container.stringParam'
+        action: 'change'
+      }
+    })
+    expect(containerHandler).to.have.been.calledWith({
+      path: 'container'
+      isTarget: false
+      target: {
+        path: 'container.stringParam'
+        action: 'change'
+      }
+    })
 
   it 'bubbling on container', () ->
+    nested = this.mold.instance('nested')
+    nestedContainer = this.mold.instance('nested.container')
+    stringPrimitive = nestedContainer.child('stringParam')
+    numberPrimitive = nestedContainer.child('numberParam')
+
+    nestedHandler = sinon.spy();
+    containerHandler = sinon.spy();
+    stringHandler = sinon.spy();
+    numberHandler = sinon.spy();
+
+    nested.onMoldUpdate(nestedHandler)
+    nestedContainer.onMoldUpdate(containerHandler)
+    stringPrimitive.onMoldUpdate(stringHandler)
+    numberPrimitive.onMoldUpdate(numberHandler)
+
+    nestedContainer.setMold({
+      stringParam: 'new value'
+      numberParam: 5
+    })
+
+    #expect(nestedHandler).to.have.been.calledOnce
+    #expect(containerHandler).to.have.been.calledOnce
+    expect(stringHandler).to.have.been.calledOnce
+    expect(numberHandler).to.have.been.calledOnce
+
+#    expect(containerHandler).to.have.been.calledWith({
+#      path: 'nested.container'
+#      isTarget: false
+#      target: {
+#        path: 'nested.container.stringParam'
+#        action: 'change'
+#      }
+#    })
+    expect(stringHandler).to.have.been.calledWith({
+      path: 'nested.container.stringParam'
+      isTarget: true
+      target: {
+        path: 'nested.container.stringParam'
+        action: 'change'
+      }
+    })
+    expect(numberHandler).to.have.been.calledWith({
+      path: 'nested.container.numberParam'
+      isTarget: true
+      target: {
+        path: 'nested.container.numberParam'
+        action: 'change'
+      }
+    })
 
   it 'bubbling on collection', () ->
 
