@@ -22,6 +22,10 @@ export default class _TypeBase {
     return '' + this._root;
   }
 
+  onChange(handler) {
+    this._main.state.addListener(this._root, handler);
+  }
+  
   onMoldUpdate(handler) {
     this._main.state.addListener(this._root, handler);
   }

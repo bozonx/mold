@@ -24,8 +24,24 @@ describe 'Functional. Events.', ->
     this.primitive = this.container.child('stringParam')
     this.handler = sinon.spy();
 
-  it 'primitive onMoldUpdate and offMoldUpdate', () ->
-    this.primitive.onMoldUpdate(this.handler)
+
+  describe 'mold.update', ->
+    beforeEach () ->
+      this.mold = mold.initSchema( {}, testSchema() )
+      this.container = this.mold.instance('container')
+      this.collection = this.mold.instance('collection')
+      this.primitive = this.container.child('stringParam')
+      this.handler = sinon.spy();
+
+    it 'mold.update - on setMold', ->
+      this.primitive.onMoldUpdate(this.handler)
+      this.primitive.setMold('new value')
+
+      expect(this.handler).to.have.been.calledOnce
+
+
+  it 'primitive onChange and offMoldUpdate', () ->
+    this.primitive.onChange(this.handler)
     this.primitive.setMold('new value')
 
     assert.deepEqual(this.mold.state._handlers['container.stringParam'], [this.handler])
@@ -46,7 +62,7 @@ describe 'Functional. Events.', ->
     expect(this.handler).to.have.been.calledOnce
 
   it 'destroy primitive', () ->
-    this.primitive.onMoldUpdate(this.handler)
+    this.primitive.onChange(this.handler)
     this.primitive.setMold('new value')
 
     assert.equal(this.primitive.mold, 'new value')
@@ -77,8 +93,8 @@ describe 'Functional. Events.', ->
 
 # TODO: должен работать после того как сделаю bubble
 
-#  it 'container onMoldUpdate and offMoldUpdate', () ->
-#    this.container.onMoldUpdate(this.handler)
+#  it 'container onChange and offMoldUpdate', () ->
+#    this.container.onChange(this.handler)
 #    this.container.setMold('stringParam', 'new value')
 #
 #    assert.deepEqual(this.mold.state._handlers['inMemory'], [this.handler])
@@ -102,8 +118,8 @@ describe 'Functional. Events.', ->
 
   it 'bubbling on primitive', () ->
     containerHandler = sinon.spy();
-    this.primitive.onMoldUpdate(this.handler)
-    this.container.onMoldUpdate(containerHandler)
+    this.primitive.onChange(this.handler)
+    this.container.onChange(containerHandler)
 
     this.primitive.setMold('new value')
 
@@ -138,10 +154,10 @@ describe 'Functional. Events.', ->
     stringHandler = sinon.spy();
     numberHandler = sinon.spy();
 
-    nested.onMoldUpdate(nestedHandler)
-    nestedContainer.onMoldUpdate(containerHandler)
-    stringPrimitive.onMoldUpdate(stringHandler)
-    numberPrimitive.onMoldUpdate(numberHandler)
+    nested.onChange(nestedHandler)
+    nestedContainer.onChange(containerHandler)
+    stringPrimitive.onChange(stringHandler)
+    numberPrimitive.onChange(numberHandler)
 
     nestedContainer.setMold({
       stringParam: 'new value'
