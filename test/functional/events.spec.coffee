@@ -34,13 +34,22 @@ describe 'Functional. Events.', ->
       this.handler = sinon.spy();
 
     it 'mold.update - on setMold', ->
-      this.primitive.onMoldUpdate(this.handler)
+      this.mold.state.onMoldUpdate(this.handler)
       this.primitive.setMold('new value')
 
       expect(this.handler).to.have.been.calledOnce
+#      expect(this.handler).to.have.been.calledWith({
+#        path: 'container.stringParam'
+#        isTarget: true
+#        target: {
+#          path: 'container.stringParam'
+#          action: 'change'
+#  #value: 'new value'
+#        }
+#      })
 
 
-  it 'primitive onChange and offMoldUpdate', () ->
+  it 'primitive onChange and offChange', () ->
     this.primitive.onChange(this.handler)
     this.primitive.setMold('new value')
 
@@ -56,7 +65,7 @@ describe 'Functional. Events.', ->
       }
     })
 
-    this.primitive.offMoldUpdate(this.handler)
+    this.primitive.offChange(this.handler)
     this.primitive.setMold('very new value')
     assert.deepEqual(this.mold.state._handlers['container.stringParam'], [])
     expect(this.handler).to.have.been.calledOnce
@@ -93,7 +102,7 @@ describe 'Functional. Events.', ->
 
 # TODO: должен работать после того как сделаю bubble
 
-#  it 'container onChange and offMoldUpdate', () ->
+#  it 'container onChange and offChange', () ->
 #    this.container.onChange(this.handler)
 #    this.container.setMold('stringParam', 'new value')
 #
@@ -109,7 +118,7 @@ describe 'Functional. Events.', ->
 #      }
 #    })
 #
-#    this.container.offMoldUpdate(this.handler)
+#    this.container.offChange(this.handler)
 #    this.container.setMold('stringParam', 'very new value')
 #    assert.deepEqual(this.mold.state._handlers['inMemory'], [])
 #    expect(this.handler).to.have.been.calledOnce

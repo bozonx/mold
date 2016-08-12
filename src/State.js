@@ -33,6 +33,14 @@ export default class State {
     this._composition.update(moldPath, value);
   }
 
+  onMoldUpdate(handler) {
+    this._main.events.on('mold.update', handler);
+  }
+
+  offMoldUpdate(handler) {
+    this._main.events.on('mold.update', handler);
+  }
+
   /**
    * Add to collection in mold.
    * @param {string} pathToCollection
