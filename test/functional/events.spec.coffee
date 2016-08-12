@@ -38,15 +38,31 @@ describe 'Functional. Events.', ->
       this.primitive.setMold('new value')
 
       expect(this.handler).to.have.been.calledOnce
-#      expect(this.handler).to.have.been.calledWith({
-#        path: 'container.stringParam'
-#        isTarget: true
-#        target: {
-#          path: 'container.stringParam'
-#          action: 'change'
-#  #value: 'new value'
-#        }
-#      })
+      expect(this.handler).to.have.been.calledWith({
+        path: 'container.stringParam'
+        action: 'change'
+      })
+
+    it 'mold.update - on addMold and removeMold', ->
+      this.mold.state.onMoldUpdate(this.handler)
+      this.collection.addMold({id:1, name: 'value1'})
+
+      expect(this.handler).to.have.been.calledWith({
+        path: 'collection'
+        action: 'add'
+      })
+
+      this.collection.removeMold({id:1, name: 'value1', $index: 0})
+
+      expect(this.handler).to.have.been.calledWith({
+        path: 'collection'
+        action: 'remove'
+      })
+
+      expect(this.handler).to.have.been.calledTwice
+
+    # TODO: test events after load and after unchanged value and after change 2 values
+
 
 
   it 'primitive onChange and offChange', () ->

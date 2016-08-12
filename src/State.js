@@ -38,7 +38,8 @@ export default class State {
   }
 
   offMoldUpdate(handler) {
-    this._main.events.on('mold.update', handler);
+    // TODO: test it
+    this._main.events.off('mold.update', handler);
   }
 
   /**

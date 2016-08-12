@@ -8,6 +8,12 @@ export default class Composition {
   constructor(events) {
     this._events = events;
     this._storage = {};
+
+    // this._events.on('mold.update', (event) => {
+    //   this._events.emit('mold.change::' + event.path, {
+    //
+    //   })
+    // });
   }
 
   $initAll(values) {
@@ -49,6 +55,14 @@ export default class Composition {
     // run mutates
     var changes = mutate(this._storage, moldPath || '', value);
 
+    // run raw events
+    _.each(changes, (change) => {
+      this._events.emit('mold.update', {
+        path: change[0],
+        action: change[2],
+      });
+    });
+
     // run events emiting
     bubbling(this._events, moldPath, 'mold.update', changes);
   }
@@ -68,7 +82,10 @@ export default class Composition {
     //this.update(pathToCollection, collection);
 
     // // Rise an event
-    this._events.emit('mold.update', {path: pathToCollection});
+    this._events.emit('mold.update', {
+      path: pathToCollection,
+      action: 'add',
+    });
     this._updateIndexes(pathToCollection);
   }
 
@@ -89,7 +106,10 @@ export default class Composition {
     //this.update(pathToCollection, collection);
 
     // // Rise an event
-    this._events.emit('mold.update', {path: pathToCollection});
+    this._events.emit('mold.update', {
+      path: pathToCollection,
+      action: 'remove',
+    });
     this._updateIndexes(pathToCollection);
   }
 
