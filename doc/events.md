@@ -16,8 +16,9 @@ Event has next params:
 * "watch" is watching for changes and run callback on each.
 * it watches deeply. For watch only changing of collection size, use "watchOnly" method of collection
 
-watch callback accept next parameters: "newValue", and other params, like:
+watch callback accept next parameters:
 
+* newValue
 * oldValue
 * action
 * path
