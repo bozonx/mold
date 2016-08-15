@@ -94,79 +94,80 @@ describe 'Unit. Composition.', ->
         }
       ])
 
-  describe 'Update events', ->
-    it 'container bubbling', ->
-      this.composition._storage = {
-        container:
-          stringParam: null
-          unchanged: null
-          nested: {
-            nestedParam: null
-          }
-          nestedUnchanged: {
-            nestedUnchangedParam: null
-          }
-      }
-      this.composition.update('container', {
-        stringParam: 'new value',
-        _id: 'container'
-        nested: {
-          nestedParam: 'new nested value'
-        }
-      });
-
-      expect(this.emitSpy).to.have.been.calledWith('mold.update::container.stringParam', {
-        path: 'container.stringParam'
-        isTarget: true
-        target: {
-          action: 'change',
-          path: 'container.stringParam',
-          #value: 'new value'
-        }
-      })
-      expect(this.emitSpy).to.have.been.calledWith('mold.update::container._id', {
-        path: 'container._id'
-        isTarget: true
-        target: {
-          action: 'change',
-          path: 'container._id',
-          #value: 'container'
-        }
-      })
-      expect(this.emitSpy).to.have.been.calledWith('mold.update::container.nested.nestedParam', {
-        path: 'container.nested.nestedParam'
-        isTarget: true
-        target: {
-          action: 'change',
-          path: 'container.nested.nestedParam',
-          #value: 'new nested value'
-        }
-      })
-
-      # bubbles
-#      expect(this.emitSpy).to.have.been.calledWith('mold.update::container.nested', {
-#        path: 'container.nested'
-#        isTarget: false
-#        target: { action: 'change', path: 'container.nested.nestedParam', value: 'new nested value' }
+  # TODO: пересмотреть
+#  describe 'Update events', ->
+#    it 'container bubbling', ->
+#      this.composition._storage = {
+#        container:
+#          stringParam: null
+#          unchanged: null
+#          nested: {
+#            nestedParam: null
+#          }
+#          nestedUnchanged: {
+#            nestedUnchangedParam: null
+#          }
+#      }
+#      this.composition.update('container', {
+#        stringParam: 'new value',
+#        _id: 'container'
+#        nested: {
+#          nestedParam: 'new nested value'
+#        }
+#      });
+#
+#      expect(this.emitSpy).to.have.been.calledWith('mold.update::container.stringParam', {
+#        path: 'container.stringParam'
+#        isTarget: true
+#        target: {
+#          action: 'change',
+#          path: 'container.stringParam',
+#          #value: 'new value'
+#        }
 #      })
-#      expect(this.emitSpy).to.have.been.calledWith('mold.update::container', {
-#        path: 'container'
-#        isTarget: false
-#        target: { action: 'change', path: 'container.stringParam', value: 'new value' }
+#      expect(this.emitSpy).to.have.been.calledWith('mold.update::container._id', {
+#        path: 'container._id'
+#        isTarget: true
+#        target: {
+#          action: 'change',
+#          path: 'container._id',
+#          #value: 'container'
+#        }
 #      })
-#      # root
-#      expect(this.emitSpy).to.have.been.calledWith('mold.update::', {
-#        path: ''
-#        isTarget: false
-#        target: { action: 'change', path: 'container.stringParam', value: 'new value' }
+#      expect(this.emitSpy).to.have.been.calledWith('mold.update::container.nested.nestedParam', {
+#        path: 'container.nested.nestedParam'
+#        isTarget: true
+#        target: {
+#          action: 'change',
+#          path: 'container.nested.nestedParam',
+#          #value: 'new nested value'
+#        }
 #      })
-
-      #expect(this.emitSpy).to.have.been.callCount(6)
-
-
-# TODO: коллекция - установка c нуля
-# TODO: коллекция - обновление элемента коллекции - как контейнера
-# TODO: коллекция - обновление элемента коллекции и его примитива
-# TODO: коллекция - коллекция вложенная в коллекцию
-# TODO: полный - установка всего mold - контейнер с коллекцией
-# TODO: подъем событий
+#
+#      # bubbles
+##      expect(this.emitSpy).to.have.been.calledWith('mold.update::container.nested', {
+##        path: 'container.nested'
+##        isTarget: false
+##        target: { action: 'change', path: 'container.nested.nestedParam', value: 'new nested value' }
+##      })
+##      expect(this.emitSpy).to.have.been.calledWith('mold.update::container', {
+##        path: 'container'
+##        isTarget: false
+##        target: { action: 'change', path: 'container.stringParam', value: 'new value' }
+##      })
+##      # root
+##      expect(this.emitSpy).to.have.been.calledWith('mold.update::', {
+##        path: ''
+##        isTarget: false
+##        target: { action: 'change', path: 'container.stringParam', value: 'new value' }
+##      })
+#
+#      #expect(this.emitSpy).to.have.been.callCount(6)
+#
+#
+## TODO: коллекция - установка c нуля
+## TODO: коллекция - обновление элемента коллекции - как контейнера
+## TODO: коллекция - обновление элемента коллекции и его примитива
+## TODO: коллекция - коллекция вложенная в коллекцию
+## TODO: полный - установка всего mold - контейнер с коллекцией
+## TODO: подъем событий

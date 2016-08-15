@@ -9,15 +9,12 @@ export default class Primitive extends _TypeBase{
 
   init(root, schema) {
     super.$init(root, schema);
-
-    // TODO: ?????
-
-    this._main.events.on('mold.update::' + this._root, () => {
-      this.updateMold();
-      // if (data.path.indexOf(this._root) === 0) {
-      //   this.updateMold();
-      //   this._main.events.emit('mold.type.event::' + this._root);
-      // }
+    
+    // update mold manually on each value change 
+    this._main.onMoldUpdate((event) => {
+      if (event.path.indexOf(this._root) === 0) {
+        this.updateMold();
+      }
     });
   }
 
