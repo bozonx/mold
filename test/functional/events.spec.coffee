@@ -34,7 +34,7 @@ describe 'Functional. Events.', ->
       this.handler = sinon.spy();
 
     it 'mold.update - on setMold', ->
-      this.mold.state.onMoldUpdate(this.handler)
+      this.mold.onMoldUpdate(this.handler)
       this.primitive.setMold('new value')
 
       expect(this.handler).to.have.been.calledOnce
@@ -44,7 +44,7 @@ describe 'Functional. Events.', ->
       })
 
     it 'mold.update - on addMold and removeMold', ->
-      this.mold.state.onMoldUpdate(this.handler)
+      this.mold.onMoldUpdate(this.handler)
       this.collection.addMold({id:1, name: 'value1'})
 
       expect(this.handler).to.have.been.calledWith({

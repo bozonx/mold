@@ -26,4 +26,8 @@ export default class Main {
   instance(path) {
     return this.schemaManager.getInstance(path);
   }
+
+  onMoldUpdate(handler) {
+    this.state.onMoldUpdate(handler);
+  }
 }
