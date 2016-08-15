@@ -53,6 +53,8 @@ export default class Request {
           coocked: _.get(resp.coocked, paramPath)
         };
 
+        console.log('---> responce from driver: ', preparedResponse)
+
         // update mold with server response data
         this._composition.update(pathToPrimitive, preparedResponse.coocked);
 
@@ -70,6 +72,8 @@ export default class Request {
     return new Promise((resolve, reject) => {
       this._startDriverRequest('get', pathToContainer).then((resp) => {
         // update mold with server response data
+
+        console.log('---> responce from driver: ', resp)
 
         // TODO: так не должно быть
         var pathTo = (resp.request.document && resp.request.document.path) || resp.request.driverPath.full;
@@ -89,6 +93,8 @@ export default class Request {
     return new Promise((resolve, reject) => {
       this._startDriverRequest('filter', pathToCollection).then((resp) => {
         // update mold with server response data
+
+        console.log('---> responce from driver: ', resp)
 
         // TODO: так не должно быть
         var pathTo = (resp.request.document && resp.request.document.path) || resp.request.driverPath.full;
