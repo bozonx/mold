@@ -36,24 +36,25 @@ describe 'Functional. Events.', ->
 
     it 'mold.update - container', ->
       this.mold.onMoldUpdate(this.handler)
-      container = this.mold.instance('nested.container')
+      container = this.mold.instance('fullContainer')
       container.setMold({
         stringParam: 'new string'
         numberParam: 5
       })
 
-      # TODO: test events after unchanged value
-
-      expect(this.handler).to.have.been.calledTwice
+      expect(this.handler).to.have.been.calledThice
       expect(this.handler).to.have.been.calledWith({
-        path: 'nested.container.stringParam'
+        path: 'fullContainer.stringParam'
         action: 'change'
       })
       expect(this.handler).to.have.been.calledWith({
-        path: 'nested.container.numberParam'
+        path: 'fullContainer.numberParam'
         action: 'change'
       })
-
+      expect(this.handler).to.have.been.calledWith({
+        path: 'fullContainer.booleanParam'
+        action: 'unchanged'
+      })
 
     it 'mold.update - on addMold and removeMold', ->
       this.mold.onMoldUpdate(this.handler)
@@ -74,10 +75,34 @@ describe 'Functional. Events.', ->
 
       expect(this.handler).to.have.been.calledTwice
 
+    it 'mold.update - on load', (done) ->
+      container = this.mold.instance('fullContainer')
+      container.setMold({
+        numberParam: 5
+      })
 
-    it 'mold.update - on load', ->
+      _.set(this.mold.schemaManager.$defaultMemoryDb, 'fullContainer', {
+        stringParam: 'new value'
+        numberParam: 5
+        booleanParam: true
+      })
 
+      this.mold.onMoldUpdate(this.handler)
 
+      expect(container.get()).to.eventually.notify =>
+        expect(this.handler).to.have.been.calledWith({
+          path: 'fullContainer.stringParam'
+          action: 'change'
+        })
+        expect(this.handler).to.have.been.calledWith({
+          path: 'fullContainer.numberParam'
+          action: 'unchanged'
+        })
+        expect(this.handler).to.have.been.calledWith({
+          path: 'fullContainer.booleanParam'
+          action: 'change'
+        })
+        done()
 
   describe 'watch', ->
 #    beforeEach () ->

@@ -74,7 +74,7 @@ export default class Request {
         // TODO: так не должно быть
         var pathTo = (resp.request.document && resp.request.document.path) || resp.request.driverPath.full;
 
-         this._composition.update(pathTo, resp.coocked);
+        this._composition.update(pathTo, resp.coocked);
         resolve(resp);
       }, reject);
     });
