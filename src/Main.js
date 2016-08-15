@@ -30,4 +30,8 @@ export default class Main {
   onMoldUpdate(handler) {
     this.state.onMoldUpdate(handler);
   }
+
+  offMoldUpdate(handler) {
+    this.state.offMoldUpdate(handler);
+  }
 }
