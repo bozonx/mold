@@ -46,8 +46,6 @@ export default class Request {
       var basePath = splits.basePath;
       var paramPath = splits.paramPath;
 
-      console.log('---> start load primitive: ', basePath);
-
       this._startDriverRequest('get', basePath).then((resp) => {
         // unwrap primitive value from container
         var preparedResponse = {
@@ -73,8 +71,6 @@ export default class Request {
    */
   loadContainer(pathToContainer, sourcePathParam) {
     return new Promise((resolve, reject) => {
-      console.log('---> start load container: ', pathToContainer, sourcePathParam);
-
       this._startDriverRequest('get', pathToContainer, undefined, sourcePathParam).then((resp) => {
         // update mold with server response data
 
@@ -96,8 +92,6 @@ export default class Request {
    */
   loadCollection(pathToCollection) {
     return new Promise((resolve, reject) => {
-      console.log('---> start load collection: ', pathToCollection);
-
       this._startDriverRequest('filter', pathToCollection).then((resp) => {
         // update mold with server response data
 
@@ -134,8 +128,6 @@ export default class Request {
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
-      console.log('---> start save primitive: ', pathToContainer, payload);
-
       this._startDriverRequest('set', pathToContainer, payload).then((resp) => {
         // update composition with server response
         let preparedResp = {
@@ -155,15 +147,14 @@ export default class Request {
   /**
    * Save container and it's contents to driver.
    * @param {string} pathToContainer
+   * @param {string|number} sourcePathParam - dynamic part of source path
    * @returns {Promise}
    */
-  saveContainer(pathToContainer) {
+  saveContainer(pathToContainer, sourcePathParam) {
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
-      console.log('---> start save container: ', pathToContainer, payload);
-
-      this._startDriverRequest('set', pathToContainer, payload).then((resp) => {
+      this._startDriverRequest('set', pathToContainer, payload, sourcePathParam).then((resp) => {
         console.log('---> finish save container: ', resp);
 
         // update mold with server response data
@@ -188,8 +179,6 @@ export default class Request {
         }),
         ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, 'remove'),
       ];
-
-      console.log('---> start save collection: ', pathToCollection, this._addedUnsavedItems);
 
       Promise.all(promises).then(results => {
         console.log('---> finish save collection: ', results);
@@ -248,6 +237,8 @@ export default class Request {
   _startDriverRequest(method, moldPath, payload, sourcePathParam) {
     var driver = this._main.schemaManager.getDriver(moldPath);
 
+    console.log(343453454, method, moldPath, payload, sourcePathParam)
+
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
 
@@ -277,6 +268,8 @@ export default class Request {
         // sub: splits && splits.paramPath,
       }),
     });
+
+    console.log('---> start request: ', req);
 
     return driver.startRequest(req);
   }

@@ -12,6 +12,7 @@ export default class Container extends _TypeBase{
   init(root, schema) {
     super.$init(root, schema);
 
+    this.sourceParam = null;
     this._isDocument = !!this._main.schemaManager.getDocument(this._root);
   }
 
@@ -24,7 +25,12 @@ export default class Container extends _TypeBase{
     if (!_.isString(path) && !_.isNumber(path))
       throw new Error(`You must pass a path argument.`);
 
-    return this._main.schemaManager.getInstance(concatPath(this._root, path));
+    var child = this._main.schemaManager.getInstance(concatPath(this._root, path));
+    if (child.type == 'primitive') {
+      child.parent = this;
+    }
+
+    return child;
   }
 
   /**
@@ -39,10 +45,15 @@ export default class Container extends _TypeBase{
     return this._main.state.load((path) ? concatPath(this._root, path) : this._root);
   }
 
-  load(sourcePathParam) {
+  setSourceParam(param) {
+    // TODO: test it
+    this.sourceParam = param;
+  }
+
+  load() {
     // TODO: test it
     // TODO: удалить get(path)
-    return this._main.state.load(this._root, sourcePathParam);
+    return this._main.state.load(this._root, this.sourceParam);
   }
 
   setMold(pathOrValue, valueOrNothing) {
@@ -67,7 +78,6 @@ export default class Container extends _TypeBase{
   }
 
   save(pathOrNothing) {
-    console.log(2323423423, pathOrNothing)
     var path;
     if (pathOrNothing) {
       path = concatPath(this._root, pathOrNothing);
@@ -76,7 +86,7 @@ export default class Container extends _TypeBase{
       path = this._root;
     }
 
-    return this._main.state.save(path);
+    return this._main.state.save(path, this.sourceParam);
   }
 
 }

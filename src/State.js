@@ -114,9 +114,10 @@ export default class State {
   /**
    * Save unsaved data to driver by path.
    * @param {string} moldPath - full path in mold
+   * @param {string|number} sourcePathParam - dynamic part of source path
    * @returns {Promise}
    */
-  save(moldPath) {
+  save(moldPath, sourcePathParam) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
 
@@ -127,7 +128,7 @@ export default class State {
       return this._request.savePrimitive(moldPath);
     }
     else if (!schema.type) {
-      return this._request.saveContainer(moldPath);
+      return this._request.saveContainer(moldPath, sourcePathParam);
     }
 
     throw new Error(`Unknown type!`);
