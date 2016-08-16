@@ -11,7 +11,7 @@ export default class Container extends _TypeBase{
 
   init(root, schema) {
     super.$init(root, schema);
-    
+
     this._isDocument = !!this._main.schemaManager.getDocument(this._root);
   }
 
@@ -21,7 +21,7 @@ export default class Container extends _TypeBase{
    * @returns {object} - instance of param or list or container
    */
   child(path) {
-    if (!path)
+    if (!_.isString(path) && !_.isNumber(path))
       throw new Error(`You must pass a path argument.`);
 
     return this._main.schemaManager.getInstance(concatPath(this._root, path));
