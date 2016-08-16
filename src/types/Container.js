@@ -67,6 +67,7 @@ export default class Container extends _TypeBase{
   }
 
   save(pathOrNothing) {
+    console.log(2323423423, pathOrNothing)
     var path;
     if (pathOrNothing) {
       path = concatPath(this._root, pathOrNothing);

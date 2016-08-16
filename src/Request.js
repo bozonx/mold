@@ -46,6 +46,8 @@ export default class Request {
       var basePath = splits.basePath;
       var paramPath = splits.paramPath;
 
+      console.log('---> start load primitive: ', basePath);
+
       this._startDriverRequest('get', basePath).then((resp) => {
         // unwrap primitive value from container
         var preparedResponse = {
@@ -53,7 +55,7 @@ export default class Request {
           coocked: _.get(resp.coocked, paramPath)
         };
 
-        console.log('---> load primitive: ', preparedResponse);
+        console.log('---> finish load primitive: ', preparedResponse);
 
         // update mold with server response data
         this._composition.update(pathToPrimitive, preparedResponse.coocked);
@@ -71,10 +73,12 @@ export default class Request {
    */
   loadContainer(pathToContainer, sourcePathParam) {
     return new Promise((resolve, reject) => {
+      console.log('---> start load container: ', pathToContainer, sourcePathParam);
+
       this._startDriverRequest('get', pathToContainer, undefined, sourcePathParam).then((resp) => {
         // update mold with server response data
 
-        console.log('---> load container: ', resp);
+        console.log('---> finish load container: ', resp);
 
         // TODO: так не должно быть
         var pathTo = (resp.request.document && resp.request.document.path) || resp.request.moldPath;
@@ -92,10 +96,12 @@ export default class Request {
    */
   loadCollection(pathToCollection) {
     return new Promise((resolve, reject) => {
+      console.log('---> start load collection: ', pathToCollection);
+
       this._startDriverRequest('filter', pathToCollection).then((resp) => {
         // update mold with server response data
 
-        console.log('---> load collection: ', resp);
+        console.log('---> finish load collection: ', resp);
 
         // TODO: так не должно быть
         var pathTo = (resp.request.document && resp.request.document.path) || resp.request.moldPath;
@@ -128,6 +134,8 @@ export default class Request {
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
+      console.log('---> start save primitive: ', pathToContainer, payload);
+
       this._startDriverRequest('set', pathToContainer, payload).then((resp) => {
         // update composition with server response
         let preparedResp = {
@@ -135,7 +143,7 @@ export default class Request {
           coocked: resp.coocked[subPath],
         };
 
-        console.log('---> save primitive: ', preparedResp);
+        console.log('---> finish save primitive: ', preparedResp);
 
         // update mold with server response data
         this._composition.update(pathToPrimitive, preparedResp.coocked);
@@ -153,8 +161,10 @@ export default class Request {
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
+      console.log('---> start save container: ', pathToContainer, payload);
+
       this._startDriverRequest('set', pathToContainer, payload).then((resp) => {
-        console.log('---> save container: ', resp);
+        console.log('---> finish save container: ', resp);
 
         // update mold with server response data
         this._composition.update(pathToContainer, resp.coocked);
@@ -179,8 +189,10 @@ export default class Request {
         ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, 'remove'),
       ];
 
+      console.log('---> start save collection: ', pathToCollection, this._addedUnsavedItems);
+
       Promise.all(promises).then(results => {
-        console.log('---> save collection: ', results);
+        console.log('---> finish save collection: ', results);
         mainResolve(results);
       });
     });
