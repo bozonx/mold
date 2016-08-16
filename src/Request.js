@@ -53,7 +53,7 @@ export default class Request {
           coocked: _.get(resp.coocked, paramPath)
         };
 
-        console.log('---> responce from driver: ', preparedResponse)
+        console.log('---> load primitive: ', preparedResponse);
 
         // update mold with server response data
         this._composition.update(pathToPrimitive, preparedResponse.coocked);
@@ -74,7 +74,7 @@ export default class Request {
       this._startDriverRequest('get', pathToContainer, undefined, sourcePathParam).then((resp) => {
         // update mold with server response data
 
-        console.log('---> responce from driver: ', resp)
+        console.log('---> load container: ', resp);
 
         // TODO: так не должно быть
         var pathTo = (resp.request.document && resp.request.document.path) || resp.request.moldPath;
@@ -95,7 +95,7 @@ export default class Request {
       this._startDriverRequest('filter', pathToCollection).then((resp) => {
         // update mold with server response data
 
-        console.log('---> responce from driver: ', resp)
+        console.log('---> load collection: ', resp);
 
         // TODO: так не должно быть
         var pathTo = (resp.request.document && resp.request.document.path) || resp.request.moldPath;
@@ -134,6 +134,9 @@ export default class Request {
           ...resp,
           coocked: resp.coocked[subPath],
         };
+
+        console.log('---> save primitive: ', preparedResp);
+
         // update mold with server response data
         this._composition.update(pathToPrimitive, preparedResp.coocked);
         resolve(preparedResp);
@@ -151,6 +154,8 @@ export default class Request {
 
     return new Promise((resolve, reject) => {
       this._startDriverRequest('set', pathToContainer, payload).then((resp) => {
+        console.log('---> save container: ', resp);
+
         // update mold with server response data
         this._composition.update(pathToContainer, resp.coocked);
         resolve(resp);
@@ -175,6 +180,7 @@ export default class Request {
       ];
 
       Promise.all(promises).then(results => {
+        console.log('---> save collection: ', results);
         mainResolve(results);
       });
     });
