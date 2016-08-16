@@ -76,7 +76,7 @@ export default class Request {
         console.log('---> responce from driver: ', resp)
 
         // TODO: так не должно быть
-        var pathTo = (resp.request.document && resp.request.document.path) || resp.request.driverPath.full;
+        var pathTo = (resp.request.document && resp.request.document.path) || resp.request.moldPath;
 
         this._composition.update(pathTo, resp.coocked);
         resolve(resp);
@@ -97,7 +97,7 @@ export default class Request {
         console.log('---> responce from driver: ', resp)
 
         // TODO: так не должно быть
-        var pathTo = (resp.request.document && resp.request.document.path) || resp.request.driverPath.full;
+        var pathTo = (resp.request.document && resp.request.document.path) || resp.request.moldPath;
 
         this._composition.update(pathTo, resp.coocked);
         resolve(resp);
@@ -250,8 +250,8 @@ export default class Request {
       document: documentParams,
       driverPath: _.pickBy({
         // path to document
-        document: documentParams && documentParams.pathToDocument,
-        full: moldPath,
+        document: documentParams && this.convertToSource(documentParams.pathToDocument, documentParams.source),
+        full: (documentParams) ? this.convertToSource(moldPath, documentParams.source) : moldPath,
         // TODO: не правильно работает если брать элемент коллекции
         // base: splits && splits.basePath,
         // sub: splits && splits.paramPath,
@@ -259,6 +259,22 @@ export default class Request {
     });
 
     return driver.startRequest(req);
+  }
+
+  convertToSource(pathInSchema, realSource) {
+    // TODO: test it
+    if (!realSource) return pathInSchema;
+
+    let sourceSplit = splitLastParamPath(realSource);
+
+    // TODO: сделать поддержку вложенных коллекций
+    if (sourceSplit.paramPath == '$item') {
+      let pathSplits = splitLastParamPath(pathInSchema);
+      return `${sourceSplit.basePath}.${pathSplits.paramPath}`
+    }
+    else {
+      return realSource;
+    }
   }
 
 }
