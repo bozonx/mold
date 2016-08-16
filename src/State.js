@@ -90,9 +90,10 @@ export default class State {
   /**
    * Get data from driver, update mold with new data and return primise
    * @param {string} moldPath - full path in mold
+   * @param {string|number} sourcePathParam - dynamic part of source path
    * @returns {Promise}
    */
-  load(moldPath) {
+  load(moldPath, sourcePathParam) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
 
@@ -104,7 +105,7 @@ export default class State {
     }
     else if (!schema.type) {
       // It's container
-      return this._request.loadContainer(moldPath);
+      return this._request.loadContainer(moldPath, sourcePathParam);
     }
 
     throw new Error(`Unknown type!`);

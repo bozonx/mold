@@ -35,9 +35,15 @@ export default class Container extends _TypeBase{
    * @returns {Promise}
    */
   get(path) {
+    // TODO: path не нужен нафиг
     return this._main.state.load((path) ? concatPath(this._root, path) : this._root);
   }
 
+  load(sourcePathParam) {
+    // TODO: test it
+    // TODO: удалить get(path)
+    return this._main.state.load(this._root, sourcePathParam);
+  }
 
   setMold(pathOrValue, valueOrNothing) {
     var path = pathOrValue;

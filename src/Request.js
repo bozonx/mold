@@ -66,11 +66,12 @@ export default class Request {
   /**
    * Load container and it's contents from driver.
    * @param {string} pathToContainer
+   * @param {string|number} sourcePathParam - dynamic part of source path
    * @returns {Promise}
    */
-  loadContainer(pathToContainer) {
+  loadContainer(pathToContainer, sourcePathParam) {
     return new Promise((resolve, reject) => {
-      this._startDriverRequest('get', pathToContainer).then((resp) => {
+      this._startDriverRequest('get', pathToContainer, undefined, sourcePathParam).then((resp) => {
         // update mold with server response data
 
         console.log('---> responce from driver: ', resp)
@@ -222,10 +223,11 @@ export default class Request {
    * @param {string} method - one of: get, set, filter, add, remove
    * @param {string} moldPath - path in mold or schena
    * @param {*} [payload] - data to save
+   * @param {string|number} sourcePathParam - dynamic part of source path
    * @returns {Promise}
    * @private
    */
-  _startDriverRequest(method, moldPath, payload) {
+  _startDriverRequest(method, moldPath, payload, sourcePathParam) {
     var driver = this._main.schemaManager.getDriver(moldPath);
 
     // It rise an error if path doesn't consist with schema
@@ -250,8 +252,8 @@ export default class Request {
       document: documentParams,
       driverPath: _.pickBy({
         // path to document
-        document: documentParams && this.convertToSource(documentParams.pathToDocument, documentParams.source),
-        full: (documentParams) ? this.convertToSource(moldPath, documentParams.source) : moldPath,
+        document: documentParams && this.convertToSource(documentParams.pathToDocument, documentParams.source, sourcePathParam),
+        full: (documentParams) ? this.convertToSource(moldPath, documentParams.source, sourcePathParam) : moldPath,
         // TODO: не правильно работает если брать элемент коллекции
         // base: splits && splits.basePath,
         // sub: splits && splits.paramPath,
@@ -261,7 +263,7 @@ export default class Request {
     return driver.startRequest(req);
   }
 
-  convertToSource(pathInSchema, realSource) {
+  convertToSource(pathInSchema, realSource, sourcePathParam) {
     // TODO: test it
     if (!realSource) return pathInSchema;
 
@@ -270,7 +272,8 @@ export default class Request {
     // TODO: сделать поддержку вложенных коллекций
     if (sourceSplit.paramPath == '$item') {
       let pathSplits = splitLastParamPath(pathInSchema);
-      return `${sourceSplit.basePath}.${pathSplits.paramPath}`
+      // TODO: что если нет sourcePathParam???
+      return `${sourceSplit.basePath}.${sourcePathParam}`
     }
     else {
       return realSource;
