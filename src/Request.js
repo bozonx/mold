@@ -249,10 +249,12 @@ export default class Request {
       schemaBaseType: getSchemaBaseType(schema.type),
       document: documentParams,
       driverPath: _.pickBy({
+        // path to document
         document: documentParams && documentParams.pathToDocument,
         full: moldPath,
-        base: splits && splits.basePath,
-        sub: splits && splits.paramPath,
+        // TODO: не правильно работает если брать элемент коллекции
+        // base: splits && splits.basePath,
+        // sub: splits && splits.paramPath,
       }),
     });
 
