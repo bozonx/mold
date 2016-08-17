@@ -90,22 +90,22 @@ export default class State {
   /**
    * Get data from driver, update mold with new data and return primise
    * @param {string} moldPath - full path in mold
-   * @param {string|number} sourcePathParam - dynamic part of source path
+   * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  load(moldPath, sourcePathParam) {
+  load(moldPath, sourceParams) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
 
     if (schema.type == 'collection') {
-      return this._request.loadCollection(moldPath);
+      return this._request.loadCollection(moldPath, sourceParams);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      return this._request.loadPrimitive(moldPath);
+      return this._request.loadPrimitive(moldPath, sourceParams);
     }
     else if (!schema.type) {
       // It's container
-      return this._request.loadContainer(moldPath, sourcePathParam);
+      return this._request.loadContainer(moldPath, sourceParams);
     }
 
     throw new Error(`Unknown type!`);
@@ -114,21 +114,21 @@ export default class State {
   /**
    * Save unsaved data to driver by path.
    * @param {string} moldPath - full path in mold
-   * @param {string|number} sourcePathParam - dynamic part of source path
+   * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  save(moldPath, sourcePathParam) {
+  save(moldPath, sourceParams) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
 
     if (schema.type == 'collection') {
-      return this._request.saveCollection(moldPath);
+      return this._request.saveCollection(moldPath, sourceParams);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      return this._request.savePrimitive(moldPath);
+      return this._request.savePrimitive(moldPath, sourceParams);
     }
     else if (!schema.type) {
-      return this._request.saveContainer(moldPath, sourcePathParam);
+      return this._request.saveContainer(moldPath, sourceParams);
     }
 
     throw new Error(`Unknown type!`);

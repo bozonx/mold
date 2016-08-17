@@ -40,7 +40,7 @@ export default class Container extends _TypeBase{
     return this._main.state.load((path) ? concatPath(this._root, path) : this._root);
   }
 
-  setSourceParam(param) {
+  setSourceParams(param) {
     // TODO: test it
     this.sourceParam = param;
   }

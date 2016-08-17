@@ -38,15 +38,16 @@ export default class Request {
   /**
    * Load primitive from driver
    * @param {string} pathToPrimitive
+   * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  loadPrimitive(pathToPrimitive) {
+  loadPrimitive(pathToPrimitive, sourceParams) {
     return new Promise((resolve, reject) => {
       var splits = splitLastParamPath(pathToPrimitive);
       var basePath = splits.basePath;
       var paramPath = splits.paramPath;
 
-      this._startDriverRequest('get', basePath).then((resp) => {
+      this._startDriverRequest('get', basePath, undefined, sourceParams).then((resp) => {
         // unwrap primitive value from container
         var preparedResponse = {
           ...resp,
@@ -66,12 +67,12 @@ export default class Request {
   /**
    * Load container and it's contents from driver.
    * @param {string} pathToContainer
-   * @param {string|number} sourcePathParam - dynamic part of source path
+   * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  loadContainer(pathToContainer, sourcePathParam) {
+  loadContainer(pathToContainer, sourceParams) {
     return new Promise((resolve, reject) => {
-      this._startDriverRequest('get', pathToContainer, undefined, sourcePathParam).then((resp) => {
+      this._startDriverRequest('get', pathToContainer, undefined, sourceParams).then((resp) => {
         // update mold with server response data
 
         console.log('---> finish load container: ', resp);
@@ -88,11 +89,12 @@ export default class Request {
   /**
    * Load collection from driver.
    * @param {string} pathToCollection
+   * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  loadCollection(pathToCollection) {
+  loadCollection(pathToCollection, sourceParams) {
     return new Promise((resolve, reject) => {
-      this._startDriverRequest('filter', pathToCollection).then((resp) => {
+      this._startDriverRequest('filter', pathToCollection, undefined, sourceParams).then((resp) => {
         // update mold with server response data
 
         console.log('---> finish load collection: ', resp);
@@ -109,9 +111,10 @@ export default class Request {
   /**
    * Save primitive on path to driver.
    * @param {string} pathToPrimitive
+   * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  savePrimitive(pathToPrimitive) {
+  savePrimitive(pathToPrimitive, sourceParams) {
     // For primitive, get container upper on path
     var splits = splitLastParamPath(pathToPrimitive);
     var pathToContainer = splits.basePath;
@@ -128,7 +131,7 @@ export default class Request {
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
-      this._startDriverRequest('set', pathToContainer, payload).then((resp) => {
+      this._startDriverRequest('set', pathToContainer, payload, sourceParams).then((resp) => {
         // update composition with server response
         let preparedResp = {
           ...resp,
@@ -147,14 +150,14 @@ export default class Request {
   /**
    * Save container and it's contents to driver.
    * @param {string} pathToContainer
-   * @param {string|number} sourcePathParam - dynamic part of source path
+   * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  saveContainer(pathToContainer, sourcePathParam) {
+  saveContainer(pathToContainer, sourceParams) {
     var payload = this._composition.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
-      this._startDriverRequest('set', pathToContainer, payload, sourcePathParam).then((resp) => {
+      this._startDriverRequest('set', pathToContainer, payload, sourceParams).then((resp) => {
         console.log('---> finish save container: ', resp);
 
         // update mold with server response data
@@ -167,17 +170,18 @@ export default class Request {
   /**
    * Save unsaved removed or added items to driver.
    * @param {string} pathToCollection
+   * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  saveCollection(pathToCollection) {
+  saveCollection(pathToCollection, sourceParams) {
     // Save all unsaved added or removed items
     return new Promise((mainResolve) => {
       var promises = [
-        ...this._saveUnsaved(this._addedUnsavedItems, pathToCollection, 'add', (unsavedItem, resp) => {
+        ...this._saveUnsaved(this._addedUnsavedItems, pathToCollection, 'add', sourceParams, (unsavedItem, resp) => {
           // update item from mold with server response data
           _.extend(unsavedItem, resp.coocked);
         }),
-        ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, 'remove'),
+        ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, 'remove', sourceParams),
       ];
 
       Promise.all(promises).then(results => {
@@ -187,7 +191,7 @@ export default class Request {
     });
   }
 
-  _saveUnsaved(unsavedList, pathToCollection, method, successCb) {
+  _saveUnsaved(unsavedList, pathToCollection, method, sourceParams, successCb) {
     var promises = [];
     _.each(_.reverse(unsavedList[pathToCollection]), (unsavedItem) => {
       // skip empty
@@ -198,7 +202,7 @@ export default class Request {
       if (_.isEmpty(unsavedList[pathToCollection])) delete unsavedList[pathToCollection];
 
       promises.push(new Promise((resolve) => {
-        this._startDriverRequest(method, pathToCollection, unsavedItem).then((resp) => {
+        this._startDriverRequest(method, pathToCollection, unsavedItem, sourceParams).then((resp) => {
           if (successCb) successCb(unsavedItem, resp);
 
           delete unsavedItem.$isNew;
@@ -230,14 +234,12 @@ export default class Request {
    * @param {string} method - one of: get, set, filter, add, remove
    * @param {string} moldPath - path in mold or schena
    * @param {*} [payload] - data to save
-   * @param {string|number} sourcePathParam - dynamic part of source path
+   * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}
    * @private
    */
-  _startDriverRequest(method, moldPath, payload, sourcePathParam) {
+  _startDriverRequest(method, moldPath, payload, sourceParams) {
     var driver = this._main.schemaManager.getDriver(moldPath);
-
-    console.log(343453454, method, moldPath, payload, sourcePathParam)
 
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
@@ -261,8 +263,8 @@ export default class Request {
       document: documentParams,
       driverPath: _.pickBy({
         // path to document
-        document: documentParams && this.convertToSource(documentParams.pathToDocument, documentParams.source, sourcePathParam),
-        full: (documentParams) ? this.convertToSource(moldPath, documentParams.source, sourcePathParam) : moldPath,
+        document: documentParams && this._convertToSource(documentParams.pathToDocument, documentParams.source, sourceParams),
+        full: (documentParams) ? this._convertToSource(moldPath, documentParams.source, sourceParams) : moldPath,
         // TODO: не правильно работает если брать элемент коллекции
         // base: splits && splits.basePath,
         // sub: splits && splits.paramPath,
@@ -274,21 +276,27 @@ export default class Request {
     return driver.startRequest(req);
   }
 
-  convertToSource(pathInSchema, realSource, sourcePathParam) {
+  _convertToSource(pathInSchema, realSource, sourceParams) {
     // TODO: test it
     if (!realSource) return pathInSchema;
 
-    let sourceSplit = splitLastParamPath(realSource);
+    return _.template(realSource)(sourceParams);
 
-    // TODO: сделать поддержку вложенных коллекций
-    if (sourceSplit.paramPath == '$item') {
-      let pathSplits = splitLastParamPath(pathInSchema);
-      // TODO: что если нет sourcePathParam???
-      return `${sourceSplit.basePath}.${sourcePathParam}`
-    }
-    else {
-      return realSource;
-    }
+
+
+    // var sourceSplit = splitLastParamPath(realSource);
+    //
+    //
+    //
+    // // TODO: сделать поддержку вложенных коллекций
+    // if (sourceSplit.paramPath == '$item') {
+    //   let pathSplits = splitLastParamPath(pathInSchema);
+    //   // TODO: что если нет sourcePathParam???
+    //   return `${sourceSplit.basePath}.${sourcePathParam}`
+    // }
+    // else {
+    //   return realSource;
+    // }
   }
 
 }
