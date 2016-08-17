@@ -57,7 +57,7 @@ class LocalPounchDb {
         // update
         this._db.put({
           ...resp,
-          ...request.payload,
+          ..._.omit(request.payload, '_rev'),
         })
           .then((resp) => {
             if (!resp.ok) reject(this._rejectHandler.bind(request, err));
