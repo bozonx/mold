@@ -67,9 +67,9 @@ describe 'Functional. Source.', ->
       .deep.equal('new value')
       .notify(done)
 
-  it 'primitive.save() - get source from parent', (done) ->
-    primitive = this.mold.instance('details.name');
+  it 'primitive.save() - via container.child. get source from parent', (done) ->
     container = this.mold.instance('details');
+    primitive = container.child('name');
     container.setSourceParams({itemId: 0});
     primitive.setMold('new value')
     expect(primitive.save()).to.eventually.notify =>
@@ -89,7 +89,3 @@ describe 'Functional. Source.', ->
         name: 'new value'
       })
       .notify(done)
-
-# TODO: test установка source params через инициализацию
-# TODO: test container -> child - load and save
-# TODO: test source for collections - load and save
