@@ -10,8 +10,18 @@ export default class State {
     this._composition = composition;
     this._request = new Request(this._main, composition);
     this._handlers = {};
+    this._sourceParams = {};
 
     this._initComposition();
+  }
+
+  getSourceParams(moldPath) {
+    // TODO: непонятно как будет работать для примитивов
+    return this._sourceParams[moldPath];
+  }
+
+  setSourceParams(moldPath, params) {
+    this._sourceParams[moldPath] = params;
   }
 
   /**

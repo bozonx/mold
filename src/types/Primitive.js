@@ -27,11 +27,11 @@ export default class Primitive extends _TypeBase{
    */
   get() {
     // TODO: удалить
-    return this._main.state.load(this._root, this._sourceParam);
+    return this._main.state.load(this._root, this.getSourceParams());
   }
 
   load() {
-    return this._main.state.load(this._root, this._sourceParam);
+    return this._main.state.load(this._root, this.getSourceParams());
   }
 
   /**
@@ -47,7 +47,7 @@ export default class Primitive extends _TypeBase{
    * @returns {Promise}
    */
   save() {
-    return this._main.state.save(this._root, this._sourceParam);
+    return this._main.state.save(this._root, this.getSourceParams());
   }
 
 }

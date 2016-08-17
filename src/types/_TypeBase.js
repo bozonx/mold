@@ -5,7 +5,6 @@ export default class _TypeBase {
 
   $init(root, schema) {
     this._root = root;
-    this._sourceParam = null;
     this.schema = schema;
     // mold is just a link to the composition
     this.updateMold();
@@ -23,8 +22,12 @@ export default class _TypeBase {
     return '' + this._root;
   }
 
-  setSourceParams(param) {
-    this._sourceParam = param;
+  getSourceParams() {
+    return this._main.state.getSourceParams(this._root);
+  }
+
+  setSourceParams(params) {
+    this._main.state.setSourceParams(this._root, params);
   }
 
   onChange(handler) {

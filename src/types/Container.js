@@ -41,7 +41,7 @@ export default class Container extends _TypeBase{
   }
 
   load() {
-    return this._main.state.load(this._root, this._sourceParam);
+    return this._main.state.load(this._root, this.getSourceParams());
   }
 
   setMold(pathOrValue, valueOrNothing) {
@@ -74,7 +74,7 @@ export default class Container extends _TypeBase{
       path = this._root;
     }
 
-    return this._main.state.save(path, this._sourceParam);
+    return this._main.state.save(path, this.getSourceParams());
   }
 
 }
