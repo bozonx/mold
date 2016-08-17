@@ -70,9 +70,9 @@ describe 'Functional. Source.', ->
   it 'container.save()', (done) ->
     container = this.mold.instance('details');
     container.setSourceParams({itemId: 0});
+    container.setMold('id', 0)
     container.setMold('name', 'new value')
     expect(container.save()).to.eventually.notify =>
-      #console.log(345345, _.get(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]'))
       expect(Promise.resolve(_.get(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]'))).to.eventually
       .deep.equal({
         id: 0
@@ -80,7 +80,6 @@ describe 'Functional. Source.', ->
       })
       .notify(done)
 
-# TODO: test primitive save
 # TODO: test установка source params через инициализацию
 # TODO: test container -> child - load and save
 # TODO: test source for collections - load and save

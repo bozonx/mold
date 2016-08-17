@@ -155,8 +155,6 @@ export default class Request {
    */
   saveContainer(pathToContainer, sourceParams) {
     var payload = this._composition.get(pathToContainer);
-    
-    
 
     return new Promise((resolve, reject) => {
       this._startDriverRequest('set', pathToContainer, payload, sourceParams).then((resp) => {
