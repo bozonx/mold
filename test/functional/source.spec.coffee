@@ -58,7 +58,29 @@ describe 'Functional. Source.', ->
             moldPath: 'details'
             schemaBaseType: 'container'
 
+  it 'primitive.save()', (done) ->
+    primitive = this.mold.instance('details.name');
+    primitive.setSourceParams({itemId: 0});
+    primitive.setMold('new value')
+    expect(primitive.save()).to.eventually.notify =>
+      expect(Promise.resolve(_.get(this.mold.schemaManager.$defaultMemoryDb, 'collection[0].name'))).to.eventually
+      .deep.equal('new value')
+      .notify(done)
 
+  it 'container.save()', (done) ->
+    container = this.mold.instance('details');
+    container.setSourceParams({itemId: 0});
+    container.setMold('name', 'new value')
+    expect(container.save()).to.eventually.notify =>
+      console.log(345345, _.get(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]'))
+      expect(Promise.resolve(_.get(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]'))).to.eventually
+      .deep.equal({
+        id: 0
+        name: 'new value'
+      })
+      .notify(done)
+
+# TODO: test primitive save
+# TODO: test установка source params через инициализацию
 # TODO: test container -> child - load and save
-# TODO: test container and primitive save
 # TODO: test source for collections - load and save
