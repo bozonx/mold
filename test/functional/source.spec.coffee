@@ -72,7 +72,7 @@ describe 'Functional. Source.', ->
     container.setSourceParams({itemId: 0});
     container.setMold('name', 'new value')
     expect(container.save()).to.eventually.notify =>
-      console.log(345345, _.get(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]'))
+      #console.log(345345, _.get(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]'))
       expect(Promise.resolve(_.get(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]'))).to.eventually
       .deep.equal({
         id: 0

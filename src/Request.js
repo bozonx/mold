@@ -54,7 +54,7 @@ export default class Request {
           coocked: _.get(resp.coocked, paramPath)
         };
 
-        console.log('---> finish load primitive: ', preparedResponse);
+        this._main.log.info('---> finish load primitive: ', preparedResponse);
 
         // update mold with server response data
         this._composition.update(pathToPrimitive, preparedResponse.coocked);
@@ -75,7 +75,7 @@ export default class Request {
       this._startDriverRequest('get', pathToContainer, undefined, sourceParams).then((resp) => {
         // update mold with server response data
 
-        console.log('---> finish load container: ', resp);
+        this._main.log.info('---> finish load container: ', resp);
 
         // TODO: так не должно быть
         var pathTo = (resp.request.document && resp.request.document.path) || resp.request.moldPath;
@@ -97,7 +97,7 @@ export default class Request {
       this._startDriverRequest('filter', pathToCollection, undefined, sourceParams).then((resp) => {
         // update mold with server response data
 
-        console.log('---> finish load collection: ', resp);
+        this._main.log.info('---> finish load collection: ', resp);
 
         // TODO: так не должно быть
         var pathTo = (resp.request.document && resp.request.document.path) || resp.request.moldPath;
@@ -138,7 +138,7 @@ export default class Request {
           coocked: resp.coocked[subPath],
         };
 
-        console.log('---> finish save primitive: ', preparedResp);
+        this._main.log.info('---> finish save primitive: ', preparedResp);
 
         // update mold with server response data
         this._composition.update(pathToPrimitive, preparedResp.coocked);
@@ -155,10 +155,12 @@ export default class Request {
    */
   saveContainer(pathToContainer, sourceParams) {
     var payload = this._composition.get(pathToContainer);
+    
+    
 
     return new Promise((resolve, reject) => {
       this._startDriverRequest('set', pathToContainer, payload, sourceParams).then((resp) => {
-        console.log('---> finish save container: ', resp);
+        this._main.log.info('---> finish save container: ', resp);
 
         // update mold with server response data
         this._composition.update(pathToContainer, resp.coocked);
@@ -185,7 +187,7 @@ export default class Request {
       ];
 
       Promise.all(promises).then(results => {
-        console.log('---> finish save collection: ', results);
+        this._main.log.info('---> finish save collection: ', results);
         mainResolve(results);
       });
     });
@@ -271,7 +273,7 @@ export default class Request {
       }),
     });
 
-    console.log('---> start request: ', req);
+    this._main.log.info('---> start request: ', req);
 
     return driver.startRequest(req);
   }

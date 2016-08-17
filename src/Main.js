@@ -2,12 +2,14 @@ import Composition from './Composition';
 import SchemaManager from './SchemaManager';
 import State from './State';
 import Config from './Config';
+import Log from './Log';
 
 export default class Main {
   constructor(config, schema) {
     var configInstance = new Config(config);
     this.config = configInstance.get();
     this.events = this.config.eventEmitter;
+    this.log = new Log({silent: this.config.silent});
 
     this._composition = new Composition(this.events);
     this.schemaManager = new SchemaManager();
