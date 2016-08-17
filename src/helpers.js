@@ -123,3 +123,15 @@ export function getUniqPartOfPaths(paths) {
     return paths;
   }
 }
+
+export function findTheClosestParentPath(path, assoc) {
+  if (_.isEmpty(assoc)) return;
+
+  var parents = _.compact(_.map(assoc, (value, name) => {
+    if (path.indexOf(name) === 0) return name;
+  }));
+
+  return _.reduce(parents, (sum, n) => {
+    return (n.length > sum.length) ? n : sum;
+  });
+}

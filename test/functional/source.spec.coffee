@@ -67,6 +67,16 @@ describe 'Functional. Source.', ->
       .deep.equal('new value')
       .notify(done)
 
+  it 'primitive.save() - get source from parent', (done) ->
+    primitive = this.mold.instance('details.name');
+    container = this.mold.instance('details');
+    container.setSourceParams({itemId: 0});
+    primitive.setMold('new value')
+    expect(primitive.save()).to.eventually.notify =>
+      expect(Promise.resolve(_.get(this.mold.schemaManager.$defaultMemoryDb, 'collection[0].name'))).to.eventually
+      .deep.equal('new value')
+      .notify(done)
+
   it 'container.save()', (done) ->
     container = this.mold.instance('details');
     container.setSourceParams({itemId: 0});

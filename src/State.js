@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { recursiveSchema } from './helpers';
+import { recursiveSchema, findTheClosestParentPath } from './helpers';
 import Request from './Request';
 
 export default class State {
@@ -16,8 +16,12 @@ export default class State {
   }
 
   getSourceParams(moldPath) {
-    // TODO: непонятно как будет работать для примитивов
-    return this._sourceParams[moldPath];
+    if (this._sourceParams[moldPath]) return this._sourceParams[moldPath];
+
+    // For primitives - find the closest parent
+    var findtheClosestParentPath = findTheClosestParentPath(moldPath, this._sourceParams);
+
+    return this._sourceParams[findtheClosestParentPath];
   }
 
   setSourceParams(moldPath, params) {
