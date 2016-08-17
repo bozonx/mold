@@ -279,8 +279,6 @@ export default class Request {
   _convertToSource(pathInSchema, realSource, sourceParams) {
     if (!realSource) return pathInSchema;
 
-    console.log(2222222, pathInSchema, realSource, sourceParams)
-
     return _.template(realSource)(sourceParams);
   }
 
