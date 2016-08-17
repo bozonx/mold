@@ -5,12 +5,15 @@ import _TypeBase from './_TypeBase';
 export default class Primitive extends _TypeBase{
   constructor(main) {
     super(main);
+
+    // TODO: в других типах тоже проставить type
+    this.type = 'primitive';
   }
 
   init(root, schema) {
     super.$init(root, schema);
-    
-    // update mold manually on each value change 
+
+    // update mold manually on each value change
     this._main.onMoldUpdate((event) => {
       if (event.path.indexOf(this._root) === 0) {
         this.updateMold();

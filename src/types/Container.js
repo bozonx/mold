@@ -25,12 +25,7 @@ export default class Container extends _TypeBase{
     if (!_.isString(path) && !_.isNumber(path))
       throw new Error(`You must pass a path argument.`);
 
-    var child = this._main.schemaManager.getInstance(concatPath(this._root, path));
-    if (child.type == 'primitive') {
-      child.parent = this;
-    }
-
-    return child;
+    return this._main.schemaManager.getInstance(concatPath(this._root, path));
   }
 
   /**
