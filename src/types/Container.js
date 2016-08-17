@@ -12,7 +12,6 @@ export default class Container extends _TypeBase{
   init(root, schema) {
     super.$init(root, schema);
 
-    this.sourceParam = null;
     this._isDocument = !!this._main.schemaManager.getDocument(this._root);
   }
 
@@ -37,18 +36,12 @@ export default class Container extends _TypeBase{
    */
   get(path) {
     // TODO: path не нужен нафиг
+    // TODO: удалить
     return this._main.state.load((path) ? concatPath(this._root, path) : this._root);
   }
 
-  setSourceParams(param) {
-    // TODO: test it
-    this.sourceParam = param;
-  }
-
   load() {
-    // TODO: test it
-    // TODO: удалить get(path)
-    return this._main.state.load(this._root, this.sourceParam);
+    return this._main.state.load(this._root, this._sourceParam);
   }
 
   setMold(pathOrValue, valueOrNothing) {
@@ -81,7 +74,7 @@ export default class Container extends _TypeBase{
       path = this._root;
     }
 
-    return this._main.state.save(path, this.sourceParam);
+    return this._main.state.save(path, this._sourceParam);
   }
 
 }

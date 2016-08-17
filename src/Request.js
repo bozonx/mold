@@ -277,26 +277,9 @@ export default class Request {
   }
 
   _convertToSource(pathInSchema, realSource, sourceParams) {
-    // TODO: test it
     if (!realSource) return pathInSchema;
 
     return _.template(realSource)(sourceParams);
-
-
-
-    // var sourceSplit = splitLastParamPath(realSource);
-    //
-    //
-    //
-    // // TODO: сделать поддержку вложенных коллекций
-    // if (sourceSplit.paramPath == '$item') {
-    //   let pathSplits = splitLastParamPath(pathInSchema);
-    //   // TODO: что если нет sourcePathParam???
-    //   return `${sourceSplit.basePath}.${sourcePathParam}`
-    // }
-    // else {
-    //   return realSource;
-    // }
   }
 
 }
