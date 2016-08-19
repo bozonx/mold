@@ -294,6 +294,6 @@ export default class State {
       }
     });
 
-    this._storage.$initAll(storageValues);
+    this._storage.$init(storageValues);
   }
 }

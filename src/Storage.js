@@ -2,26 +2,25 @@ import _ from 'lodash';
 
 import { convertToLodashPath } from './helpers';
 import mutate from './mutate';
-//import bubbling from './bubbling';
 
 export default class Storage {
   constructor(events) {
     this._events = events;
-    this._storage = {};
-
-    // this._events.on('mold.update', (event) => {
-    //   this._events.emit('mold.change::' + event.path, {
-    //
-    //   })
-    // });
-  }
-
-  $initAll(values) {
-    this._storage = values;
+    this._storage = null;
   }
 
   /**
-   * Get value from compositon.
+   * Set new storage.
+   * This method runs one time from State.js.
+   * Don't run it from your application.
+   * @param {object} newStorage
+   */
+  $init(newStorage) {
+    this._storage = newStorage;
+  }
+
+  /**
+   * Get value from storage.
    * It hopes a path is correct
    * To get root you can pass '' or undefined to a path
    * @param {string} path - absolute path
@@ -36,12 +35,12 @@ export default class Storage {
   /**
    * Update value. It use _.defaultsDeep method.
    * This method deeply mutates existent object or arrays.
-   * @param moldPath
-   * @param value
-     */
-  update(moldPath, value) {
-    // run mutates
-    var changes = mutate(this._storage, moldPath || '', value);
+   * @param {string} moldPath
+   * @param {*} newValue
+   */
+  update(moldPath, newValue) {
+    // run mutates and get list of changes
+    var changes = mutate(this._storage, moldPath || '', newValue);
 
     // run update events
     _.each(changes, (change) => {
@@ -50,9 +49,6 @@ export default class Storage {
         action: change[2],
       });
     });
-
-    // run events emiting
-    //bubbling(this._events, moldPath, 'mold.update', changes);
   }
 
   /**
@@ -61,9 +57,14 @@ export default class Storage {
    * @param {object} newItem
    */
   addToBeginning(pathToCollection, newItem) {
-    var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
-    //collection = [].concat(collection);
+    // var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
+    // var collectionClone = _.clone(collection);
+    //
+    // collectionClone.unshift(newItem);
+    // this.update(pathToCollection, collectionClone);
 
+
+    var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
     // add to beginning
     collection.unshift(newItem);
 
@@ -79,15 +80,13 @@ export default class Storage {
   }
 
   /**
-   * Remove item from collection by its primary id.
+   * Remove item from collection by its $index.
    * It hopes primary id is equal to index in an array in storage.
    * @param {string} pathToCollection
    * @param {number} $index
    */
   remove(pathToCollection, $index) {
     var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
-    //collection = [].concat(collection);
-
 
     // remove with rising an change event on array of collection
     collection.splice($index, 1);
