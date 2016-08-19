@@ -38,7 +38,7 @@ export default class Request {
   /**
    * Load primitive from driver
    * @param {string} pathToPrimitive
-   * @param {object} sourceParams - dynamic part of source path
+   * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
   loadPrimitive(pathToPrimitive, sourceParams) {
@@ -67,7 +67,7 @@ export default class Request {
   /**
    * Load container and it's contents from driver.
    * @param {string} pathToContainer
-   * @param {object} sourceParams - dynamic part of source path
+   * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
   loadContainer(pathToContainer, sourceParams) {
@@ -77,10 +77,7 @@ export default class Request {
 
         this._main.log.info('---> finish load container: ', resp);
 
-        // TODO: так не должно быть
-        var pathTo = (resp.request.document && resp.request.document.path) || resp.request.moldPath;
-
-        this._composition.update(pathTo, resp.coocked);
+        this._composition.update(pathToContainer, resp.coocked);
         resolve(resp);
       }, reject);
     });
@@ -89,7 +86,7 @@ export default class Request {
   /**
    * Load collection from driver.
    * @param {string} pathToCollection
-   * @param {object} sourceParams - dynamic part of source path
+   * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
   loadCollection(pathToCollection, sourceParams) {
@@ -111,7 +108,7 @@ export default class Request {
   /**
    * Save primitive on path to driver.
    * @param {string} pathToPrimitive
-   * @param {object} sourceParams - dynamic part of source path
+   * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
   savePrimitive(pathToPrimitive, sourceParams) {
@@ -150,7 +147,7 @@ export default class Request {
   /**
    * Save container and it's contents to driver.
    * @param {string} pathToContainer
-   * @param {object} sourceParams - dynamic part of source path
+   * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
   saveContainer(pathToContainer, sourceParams) {
@@ -170,7 +167,7 @@ export default class Request {
   /**
    * Save unsaved removed or added items to driver.
    * @param {string} pathToCollection
-   * @param {object} sourceParams - dynamic part of source path
+   * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
   saveCollection(pathToCollection, sourceParams) {
