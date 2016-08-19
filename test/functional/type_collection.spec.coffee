@@ -46,9 +46,9 @@ describe 'Functional. Collection type.', ->
       primitiveOfName = collectionItem.child('name')
       assert.equal(primitiveOfName.mold, 'name0')
 
-    it 'child(0).child("name") after get collection', (done) ->
+    it 'child(0).child("name") after load collection', (done) ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-      expect(this.collectionParam.get()).to.eventually.notify =>
+      expect(this.collectionParam.load()).to.eventually.notify =>
         collectionItem = this.collectionParam.child(0)
         primitiveOfName = collectionItem.child('name')
         expect(Promise.resolve(primitiveOfName.mold)).to.eventually
@@ -71,49 +71,49 @@ describe 'Functional. Collection type.', ->
       assert.equal(primitive.mold, 'name0')
 
     # TODO: do it - тот самый баг - похоже не обновляется mold после load
-#    it 'child("0.name") after get', (done) ->
+#    it 'child("0.name") after load', (done) ->
 #      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
 #      primitive = this.collectionParam.child('0.name')
 #
-#      expect(primitive.get()).to.eventually.notify =>
+#      expect(primitive.load()).to.eventually.notify =>
 #        expect(Promise.resolve(primitive.mold)).to.eventually
 #        .equal('name0')
 #        .notify(done)
 
-  describe 'get(), get(num), get(subpath)', ->
+  describe 'load(), load(num), load(subpath)', ->
     beforeEach () ->
       this.mold = mold.initSchema( {}, testSchema() )
       this.collectionParam = this.mold.instance('inMemory.collectionParam')
 
-    it 'get() - check promise', ->
+    it 'load() - check promise', ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-      expect(this.collectionParam.get()).to.eventually
+      expect(this.collectionParam.load()).to.eventually
       .property('coocked').deep.equal([testValues[0]])
 
-    it 'get() - check mold', (done) ->
+    it 'load() - check mold', (done) ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-      expect(this.collectionParam.get()).to.eventually.notify =>
+      expect(this.collectionParam.load()).to.eventually.notify =>
         expect(Promise.resolve(this.collectionParam.mold)).to.eventually
         .deep.equal([
           {id: 0, name: 'name0', $index: 0},
         ])
         .notify(done)
 
-    it 'get(0) - check promise', ->
+    it 'load(0) - check promise', ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-      expect(this.collectionParam.get(0)).to.eventually
+      expect(this.collectionParam.load(0)).to.eventually
       .property('coocked').deep.equal(testValues[0])
 
-    it 'get(0) - check mold', (done) ->
+    it 'load(0) - check mold', (done) ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-      expect(this.collectionParam.get(0)).to.eventually.notify =>
+      expect(this.collectionParam.load(0)).to.eventually.notify =>
         expect(Promise.resolve(this.collectionParam.mold)).to.eventually
         .deep.equal([{id: 0, name: 'name0', $index: 0}])
         .notify(done)
 
-    it 'get("0.name") - check promise', ->
+    it 'load("0.name") - check promise', ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-      expect(this.collectionParam.get('0.name')).to.eventually
+      expect(this.collectionParam.load('0.name')).to.eventually
       .property('coocked').deep.equal(testValues[0].name)
 
   describe 'addMold({...}), removeMold({...})', ->
@@ -128,11 +128,11 @@ describe 'Functional. Collection type.', ->
         {name: 'name3', $isNew: true, $index: 0},
       ])
 
-    it 'addMold() - after get', (done) ->
+    it 'addMold() - after load', (done) ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
 
       newItem = {name: 'name3'}
-      expect(this.collectionParam.get()).to.eventually.notify =>
+      expect(this.collectionParam.load()).to.eventually.notify =>
         this.collectionParam.addMold(newItem)
         expect(Promise.resolve(this.collectionParam.mold)).to.eventually
         .deep.equal([
@@ -141,10 +141,10 @@ describe 'Functional. Collection type.', ->
         ])
         .notify(done)
 
-    it 'removeMold() - after get', (done) ->
+    it 'removeMold() - after load', (done) ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', testValues)
 
-      expect(this.collectionParam.get()).to.eventually.notify =>
+      expect(this.collectionParam.load()).to.eventually.notify =>
         this.collectionParam.removeMold({$index: 0})
         expect(Promise.resolve(this.collectionParam.mold)).to.eventually
         .deep.equal([
@@ -188,7 +188,7 @@ describe 'Functional. Collection type.', ->
 
     it 'save() removed - check memory', (done) ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0], testValues[1]])
-      expect(this.collectionParam.get()).to.eventually.notify =>
+      expect(this.collectionParam.load()).to.eventually.notify =>
         this.collectionParam.removeMold(this.collectionParam.mold[0])
 
         expect(this.collectionParam.save()).to.eventually.notify =>
@@ -198,7 +198,7 @@ describe 'Functional. Collection type.', ->
 
     it 'save() removed - check unsaved', (done) ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', testValues)
-      expect(this.collectionParam.get()).to.eventually.notify =>
+      expect(this.collectionParam.load()).to.eventually.notify =>
         this.collectionParam.removeMold(this.collectionParam.mold[0])
 
         expect(this.collectionParam.save()).to.eventually.notify =>

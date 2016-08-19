@@ -41,31 +41,6 @@ export default class Collection extends _TypeBase {
    * @param {number|string|undefined} noneOrIdOrPath - path, or promary id or nothing for whore collection
    * @returns {Promise} with item or collection
    */
-  get(noneOrIdOrPath) {
-    // TODO: remove
-    var path;
-    if (_.isUndefined(noneOrIdOrPath)) {
-      // load whore collection
-      path = this._root;
-      return this._main.state.load(path, this.getSourceParams());
-    }
-    else if (_.isNumber(noneOrIdOrPath) || _.isString(noneOrIdOrPath)) {
-      // load collection child
-      path = concatPath(this._root, noneOrIdOrPath);
-      return this._main.state.load(path, this.getSourceParams());
-    }
-    else {
-      throw new Error(`You must pass only number, string or undefined!`);
-    }
-  }
-
-  /**
-   * Request for data.
-   * Get one item from collection by primary id.  Example:
-   *     collection.item(urlParams.id)
-   * @param {number|string|undefined} noneOrIdOrPath - path, or promary id or nothing for whore collection
-   * @returns {Promise} with item or collection
-   */
   load(noneOrIdOrPath) {
     var path;
     if (_.isUndefined(noneOrIdOrPath)) {
