@@ -96,10 +96,7 @@ export default class Request {
 
         this._main.log.info('---> finish load collection: ', resp);
 
-        // TODO: так не должно быть
-        var pathTo = (resp.request.document && resp.request.document.path) || resp.request.moldPath;
-
-        this._composition.update(pathTo, resp.coocked);
+        this._composition.update(pathToCollection, resp.coocked);
         resolve(resp);
       }, reject);
     });
