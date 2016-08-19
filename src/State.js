@@ -15,6 +15,11 @@ export default class State {
     this._initStorage();
   }
 
+  /**
+   * Get parameters for source path template.
+   * @param {string} moldPath
+   * @returns {object}
+   */
   getSourceParams(moldPath) {
     if (this._sourceParams[moldPath]) return this._sourceParams[moldPath];
 
@@ -24,17 +29,22 @@ export default class State {
     return this._sourceParams[findtheClosestParentPath];
   }
 
+  /**
+   * Set parameters for source path template.
+   * @param {string} moldPath
+   * @param {object} params
+   */
   setSourceParams(moldPath, params) {
     this._sourceParams[moldPath] = params;
   }
 
   /**
    * Get mold by path
-   * @param {string} path
+   * @param {string} moldPath
    * @returns {*} - value from mold
    */
-  getMold(path) {
-    return this._storage.get(path);
+  getMold(moldPath) {
+    return this._storage.get(moldPath);
   }
 
   /**
@@ -52,7 +62,6 @@ export default class State {
   }
 
   offMoldUpdate(handler) {
-    // TODO: test it
     this._main.events.off('mold.update', handler);
   }
 
@@ -148,35 +157,35 @@ export default class State {
     throw new Error(`Unknown type!`);
   }
 
-  /**
-   * Add change event handler on path.
-   * @param {string} moldPath - full path in mold
-   * @param {function} handler
-   */
-  addListener(moldPath, handler) {
-    // Save listener
-    if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
-    this._handlers[moldPath].push(handler);
-
-    // Add listener
-    this._main.events.on('mold.update::' + moldPath, handler);
-  }
-
-  /**
-   * Remove change event handler from path.
-   * @param {string} moldPath - full path in mold
-   * @param {function} handler
-   */
-  removeListener(moldPath, handler) {
-    // Remove listener
-    if (!this._handlers[moldPath]) return;
-    var index = _.indexOf(this._handlers[moldPath], handler);
-    if (index < 0) return;
-    this._handlers[moldPath].splice(index, 1);
-
-    // Unbind listener
-    this._main.events.removeListener('mold.update::' + moldPath, handler);
-  }
+  // /**
+  //  * Add change event handler on path.
+  //  * @param {string} moldPath - full path in mold
+  //  * @param {function} handler
+  //  */
+  // addListener(moldPath, handler) {
+  //   // Save listener
+  //   if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
+  //   this._handlers[moldPath].push(handler);
+  //
+  //   // Add listener
+  //   this._main.events.on('mold.update::' + moldPath, handler);
+  // }
+  //
+  // /**
+  //  * Remove change event handler from path.
+  //  * @param {string} moldPath - full path in mold
+  //  * @param {function} handler
+  //  */
+  // removeListener(moldPath, handler) {
+  //   // Remove listener
+  //   if (!this._handlers[moldPath]) return;
+  //   var index = _.indexOf(this._handlers[moldPath], handler);
+  //   if (index < 0) return;
+  //   this._handlers[moldPath].splice(index, 1);
+  //
+  //   // Unbind listener
+  //   this._main.events.removeListener('mold.update::' + moldPath, handler);
+  // }
 
   destroy(moldPath) {
     if (this._handlers[moldPath]) {
@@ -187,9 +196,6 @@ export default class State {
     }
 
     this._storage.clear(moldPath);
-
-    // TODO: не очень хорошее решение, наверное нужно поднимать внутренние silent события без баблинга
-    this._main.events.emit('mold.update::' + moldPath, {});
   }
 
   /**
@@ -253,16 +259,13 @@ export default class State {
   }
 
   /**
-   * Set initial values (null|[]) to storage for all items from schema.
-   * @param {string} moldPath
+   * Set initial values (null|[]|{}) to storage for all items from schema.
    * @private
    */
-  _initStorage(moldPath) {
-    // TODO: похоже moldPathне нужнен
-
+  _initStorage() {
     var storageValues = {};
 
-    recursiveSchema(moldPath || '', this._main.schemaManager.get(moldPath || ''), (newPath, value) => {
+    recursiveSchema('', this._main.schemaManager.get(''), (newPath, value) => {
       if (value.type == 'array') {
         // array
         _.set(storageValues, newPath, []);
