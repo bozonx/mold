@@ -1,27 +1,27 @@
-Composition = require('../../src/Composition').default
+Storage = require('../../src/Storage').default
 
-describe 'Unit. Composition.', ->
+describe 'Unit. Storage.', ->
   beforeEach ->
     this.emitSpy = sinon.spy();
     this.eventsMock = {
       emit: this.emitSpy
     }
-    this.composition = new Composition(this.eventsMock)
+    this.storage = new Storage(this.eventsMock)
 
   describe 'update.', ->
     it 'update primitive', ->
-      this.composition._storage = {
+      this.storage._storage = {
         container:
           booleanParam: null
           stringParam: null
           numberParam: null
           arrayParam: []
       }
-      this.composition.update('container.booleanParam', true)
-      this.composition.update('container.stringParam', 'new value')
-      this.composition.update('container.numberParam', 5)
-      this.composition.update('container.arrayParam', ['value1'])
-      assert.deepEqual(this.composition.get('container'), {
+      this.storage.update('container.booleanParam', true)
+      this.storage.update('container.stringParam', 'new value')
+      this.storage.update('container.numberParam', 5)
+      this.storage.update('container.arrayParam', ['value1'])
+      assert.deepEqual(this.storage.get('container'), {
         booleanParam: true
         stringParam: 'new value'
         numberParam: 5
@@ -29,7 +29,7 @@ describe 'Unit. Composition.', ->
       })
 
     it 'update complex container', ->
-      this.composition._storage = {
+      this.storage._storage = {
         container:
           stringParam: null
           $index: 1
@@ -37,14 +37,14 @@ describe 'Unit. Composition.', ->
             nestedParam: null
           }
       }
-      this.composition.update('container', {
+      this.storage.update('container', {
         stringParam: 'new value',
         _id: 'new'
         nested: {
           nestedParam: 'new nested value'
         }
       });
-      assert.deepEqual(this.composition.get('container'), {
+      assert.deepEqual(this.storage.get('container'), {
         stringParam: 'new value'
         _id: 'new'
         $index: 1
@@ -54,7 +54,7 @@ describe 'Unit. Composition.', ->
       })
 
     it 'update complex collection', ->
-      this.composition._storage = {
+      this.storage._storage = {
         collection: [
           {
             id: 0,
@@ -70,7 +70,7 @@ describe 'Unit. Composition.', ->
           }
         ]
       }
-      this.composition.update('collection', [
+      this.storage.update('collection', [
         {
           id: 0,
           name: 'new name0',
@@ -81,7 +81,7 @@ describe 'Unit. Composition.', ->
         }
       ]);
 
-      assert.deepEqual(this.composition.get('collection'), [
+      assert.deepEqual(this.storage.get('collection'), [
         {
           id: 0,
           $index: 0,
@@ -97,7 +97,7 @@ describe 'Unit. Composition.', ->
   # TODO: пересмотреть
 #  describe 'Update events', ->
 #    it 'container bubbling', ->
-#      this.composition._storage = {
+#      this.storage._storage = {
 #        container:
 #          stringParam: null
 #          unchanged: null
@@ -108,7 +108,7 @@ describe 'Unit. Composition.', ->
 #            nestedUnchangedParam: null
 #          }
 #      }
-#      this.composition.update('container', {
+#      this.storage.update('container', {
 #        stringParam: 'new value',
 #        _id: 'container'
 #        nested: {

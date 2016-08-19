@@ -1,4 +1,4 @@
-import Composition from './Composition';
+import Storage from './Storage';
 import SchemaManager from './SchemaManager';
 import State from './State';
 import Config from './Config';
@@ -11,13 +11,13 @@ export default class Main {
     this.events = this.config.eventEmitter;
     this.log = new Log({silent: this.config.silent});
 
-    this._composition = new Composition(this.events);
+    this._storage = new Storage(this.events);
     this.schemaManager = new SchemaManager();
     this.state = new State();
 
     // initialize
     this.schemaManager.init(schema, this);
-    this.state.init(this, this._composition);
+    this.state.init(this, this._storage);
   }
 
   /**

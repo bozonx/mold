@@ -5,14 +5,14 @@ import { recursiveSchema, findTheClosestParentPath } from './helpers';
 import Request from './Request';
 
 export default class State {
-  init(main, composition) {
+  init(main, storage) {
     this._main = main;
-    this._composition = composition;
-    this._request = new Request(this._main, composition);
+    this._storage = storage;
+    this._request = new Request(this._main, storage);
     this._handlers = {};
     this._sourceParams = {};
 
-    this._initComposition();
+    this._initStorage();
   }
 
   getSourceParams(moldPath) {
@@ -34,7 +34,7 @@ export default class State {
    * @returns {*} - value from mold
    */
   getMold(path) {
-    return this._composition.get(path);
+    return this._storage.get(path);
   }
 
   /**
@@ -44,7 +44,7 @@ export default class State {
    */
   setMold(moldPath, value) {
     this._checkNode(moldPath, value);
-    this._composition.update(moldPath, value);
+    this._storage.update(moldPath, value);
   }
 
   onMoldUpdate(handler) {
@@ -73,7 +73,7 @@ export default class State {
     };
 
     this._checkNode(pathToCollection, preparedItem);
-    this._composition.addToBeginning(pathToCollection, preparedItem);
+    this._storage.addToBeginning(pathToCollection, preparedItem);
     // add to collection of unsaved added items
     this._request.addUnsavedAddedItem(pathToCollection, preparedItem);
   }
@@ -92,11 +92,11 @@ export default class State {
     if (!_.isNumber(itemToRemove.$index))
       throw new Error(`Deleted item must has an $index param.`);
 
-    var realItem = _.find(this._composition.get(pathToCollection), itemToRemove);
+    var realItem = _.find(this._storage.get(pathToCollection), itemToRemove);
     // do nothing if item isn't exist
     if (!realItem) return;
 
-    this._composition.remove(pathToCollection, realItem.$index);
+    this._storage.remove(pathToCollection, realItem.$index);
     // add to collection of unsaved removed items
     this._request.addUnsavedRemovedItem(pathToCollection, realItem);
   }
@@ -186,7 +186,7 @@ export default class State {
       this._handlers[moldPath] = [];
     }
 
-    this._composition.clear(moldPath);
+    this._storage.clear(moldPath);
 
     // TODO: не очень хорошее решение, наверное нужно поднимать внутренние silent события без баблинга
     this._main.events.emit('mold.update::' + moldPath, {});
@@ -253,42 +253,44 @@ export default class State {
   }
 
   /**
-   * Set initial values (null|[]) to composition for all items from schema.
+   * Set initial values (null|[]) to storage for all items from schema.
    * @param {string} moldPath
    * @private
    */
-  _initComposition(moldPath) {
-    var compositionValues = {};
+  _initStorage(moldPath) {
+    // TODO: похоже moldPathне нужнен
+
+    var storageValues = {};
 
     recursiveSchema(moldPath || '', this._main.schemaManager.get(moldPath || ''), (newPath, value) => {
       if (value.type == 'array') {
         // array
-        _.set(compositionValues, newPath, []);
+        _.set(storageValues, newPath, []);
 
         // Go deeper
         return false;
       }
       else if (value.type == 'collection') {
-        _.set(compositionValues, newPath, []);
+        _.set(storageValues, newPath, []);
 
         // Go deeper
         return false;
       }
       else if (_.includes(['boolean', 'string', 'number'], value.type)) {
         // primitive
-        _.set(compositionValues, newPath, null);
+        _.set(storageValues, newPath, null);
 
         return false;
       }
       else {
         // container
-        _.set(compositionValues, newPath, {});
+        _.set(storageValues, newPath, {});
 
         // Go deeper
         return true;
       }
     });
 
-    this._composition.$initAll(compositionValues);
+    this._storage.$initAll(storageValues);
   }
 }

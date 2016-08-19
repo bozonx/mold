@@ -28,7 +28,7 @@ receive
 returns
 
 * return promise with generated response
-* response data placed in 'coocked' param. It must be a correct data to set to composition
+* response data placed in 'coocked' param. It must be a correct data to set to storage
 
 
 ## Request format

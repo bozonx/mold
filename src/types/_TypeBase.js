@@ -6,7 +6,7 @@ export default class _TypeBase {
   $init(root, schema) {
     this._root = root;
     this.schema = schema;
-    // mold is just a link to the composition
+    // mold is just a link to the storage
     this.updateMold();
   }
 

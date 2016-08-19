@@ -3,9 +3,9 @@ import _ from 'lodash';
 import { findPrimary, splitLastParamPath, getSchemaBaseType } from './helpers';
 
 export default class Request {
-  constructor(main, composition) {
+  constructor(main, storage) {
     this._main = main;
-    this._composition = composition;
+    this._storage = storage;
 
     this._addedUnsavedItems = {};
     this._removedUnsavedItems = {};
@@ -57,7 +57,7 @@ export default class Request {
         this._main.log.info('---> finish load primitive: ', preparedResponse);
 
         // update mold with server response data
-        this._composition.update(pathToPrimitive, preparedResponse.coocked);
+        this._storage.update(pathToPrimitive, preparedResponse.coocked);
 
         resolve(preparedResponse);
       }, reject);
@@ -77,7 +77,7 @@ export default class Request {
 
         this._main.log.info('---> finish load container: ', resp);
 
-        this._composition.update(pathToContainer, resp.coocked);
+        this._storage.update(pathToContainer, resp.coocked);
         resolve(resp);
       }, reject);
     });
@@ -96,7 +96,7 @@ export default class Request {
 
         this._main.log.info('---> finish load collection: ', resp);
 
-        this._composition.update(pathToCollection, resp.coocked);
+        this._storage.update(pathToCollection, resp.coocked);
         resolve(resp);
       }, reject);
     });
@@ -122,11 +122,11 @@ export default class Request {
       // TODO: это должно проверяться ещё на стадии валидации схемы.
       throw new Error(`Something wrong with your schema. Primitive must be placed in container.`);
 
-    var payload = this._composition.get(pathToContainer);
+    var payload = this._storage.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
       this._startDriverRequest('set', pathToContainer, payload, sourceParams).then((resp) => {
-        // update composition with server response
+        // update storage with server response
         let preparedResp = {
           ...resp,
           coocked: resp.coocked[subPath],
@@ -135,7 +135,7 @@ export default class Request {
         this._main.log.info('---> finish save primitive: ', preparedResp);
 
         // update mold with server response data
-        this._composition.update(pathToPrimitive, preparedResp.coocked);
+        this._storage.update(pathToPrimitive, preparedResp.coocked);
         resolve(preparedResp);
       }, reject);
     });
@@ -148,14 +148,14 @@ export default class Request {
    * @returns {Promise}
    */
   saveContainer(pathToContainer, sourceParams) {
-    var payload = this._composition.get(pathToContainer);
+    var payload = this._storage.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
       this._startDriverRequest('set', pathToContainer, payload, sourceParams).then((resp) => {
         this._main.log.info('---> finish save container: ', resp);
 
         // update mold with server response data
-        this._composition.update(pathToContainer, resp.coocked);
+        this._storage.update(pathToContainer, resp.coocked);
         resolve(resp);
       }, reject);
     });

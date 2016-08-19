@@ -4,7 +4,7 @@ import { convertToLodashPath } from './helpers';
 import mutate from './mutate';
 //import bubbling from './bubbling';
 
-export default class Composition {
+export default class Storage {
   constructor(events) {
     this._events = events;
     this._storage = {};
@@ -57,7 +57,7 @@ export default class Composition {
 
   /**
    * Add to beginning of collection
-   * @param {string} pathToCollection - it must be a path to array in composition
+   * @param {string} pathToCollection - it must be a path to array in storage
    * @param {object} newItem
    */
   addToBeginning(pathToCollection, newItem) {
@@ -80,7 +80,7 @@ export default class Composition {
 
   /**
    * Remove item from collection by its primary id.
-   * It hopes primary id is equal to index in an array in composition.
+   * It hopes primary id is equal to index in an array in storage.
    * @param {string} pathToCollection
    * @param {number} $index
    */
