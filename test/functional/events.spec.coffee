@@ -89,7 +89,7 @@ describe 'Functional. Events.', ->
 
       this.mold.onMoldUpdate(this.handler)
 
-      expect(container.get()).to.eventually.notify =>
+      expect(container.load()).to.eventually.notify =>
         expect(this.handler).to.have.been.calledWith({
           path: 'fullContainer.stringParam'
           action: 'change'

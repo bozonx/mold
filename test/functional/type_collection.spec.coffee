@@ -55,11 +55,11 @@ describe 'Functional. Collection type.', ->
         .equal('name0')
         .notify(done)
 
-    it 'child(0).child("name") after get item', (done) ->
+    it 'child(0).child("name") after load item', (done) ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
       collectionItem = this.collectionParam.child(0)
 
-      expect(collectionItem.get()).to.eventually.notify =>
+      expect(collectionItem.load()).to.eventually.notify =>
         primitiveOfName = collectionItem.child('name')
         expect(Promise.resolve(primitiveOfName.mold)).to.eventually
         .equal('name0')

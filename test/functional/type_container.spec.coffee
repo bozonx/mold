@@ -41,7 +41,7 @@ describe 'Functional. Container type.', ->
       assert.equal(arrayInstance.getRoot(), 'memoryBranch.inMemory.arrayParam')
       assert.deepEqual(arrayInstance.schema, this.testSchema.memoryBranch.inMemory.arrayParam)
 
-  describe 'get() and get(subpath)', ->
+  describe 'load()', ->
     beforeEach () ->
       testSchema = () ->
         inMemory:
@@ -73,28 +73,16 @@ describe 'Functional. Container type.', ->
         arrayParam: [],
       })
 
-    it 'get() and check mold', (done) ->
+    it 'load() and check mold', (done) ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory', this.containerValues)
-      expect(this.container.get()).to.eventually.notify =>
+      expect(this.container.load()).to.eventually.notify =>
         expect(Promise.resolve(this.container.mold)).to.eventually
         .deep.equal(this.containerValues)
         .notify(done)
 
-    it 'get() and check response', ->
+    it 'load() and check response', ->
       _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory', this.containerValues)
-      expect(this.container.get()).to.eventually.property('coocked').deep.equal(this.containerValues)
-
-    it 'get(subpath) and check mold', (done) ->
-      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.stringParam', 'new value')
-      expect(this.container.get('stringParam')).to.eventually.notify =>
-        expect(Promise.resolve(this.container.mold.stringParam)).to.eventually
-        .equal('new value')
-        .notify(done)
-
-    it 'get(subpath) and check response', ->
-      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.stringParam', 'new value')
-      expect(this.container.get('stringParam')).to.eventually.property('coocked').equal('new value')
-
+      expect(this.container.load()).to.eventually.property('coocked').deep.equal(this.containerValues)
 
   describe 'setMold and save', ->
     beforeEach ->

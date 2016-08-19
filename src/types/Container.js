@@ -29,17 +29,8 @@ export default class Container extends _TypeBase{
 
   /**
    * Load data.
-   * If you pass path = '' or undefined, it means get data for this container
-   * You can pass subpath to get data for nested items
-   * @param {string} path - path relative to this instance root
    * @returns {Promise}
    */
-  get(path) {
-    // TODO: path не нужен нафиг
-    // TODO: удалить
-    return this._main.state.load((path) ? concatPath(this._root, path) : this._root);
-  }
-
   load() {
     return this._main.state.load(this._root, this.getSourceParams());
   }
