@@ -1,4 +1,4 @@
-mold = require('../../src/index')
+mold = require('../../src/index').default
 
 describe 'Functional. Container type.', ->
   describe 'child(subpath)', ->
@@ -22,7 +22,7 @@ describe 'Functional. Container type.', ->
                 type: 'string'
 
       this.testSchema = testSchema()
-      this.mold = mold.initSchema( {}, this.testSchema )
+      this.mold = mold( {}, this.testSchema )
       this.rootInstance = this.mold.instance('memoryBranch')
       this.container = this.rootInstance.child('inMemory')
 
@@ -55,7 +55,7 @@ describe 'Functional. Container type.', ->
             type: 'array'
 
       this.testSchema = testSchema()
-      this.mold = mold.initSchema( {}, this.testSchema )
+      this.mold = mold( {}, this.testSchema )
       this.container = this.mold.instance('inMemory')
 
       this.containerValues = {
@@ -100,7 +100,7 @@ describe 'Functional. Container type.', ->
               nestedStringParam:
                 type: 'string'
 
-      this.mold = mold.initSchema( {}, this.testSchema )
+      this.mold = mold( {}, this.testSchema )
       rootInstance = this.mold.instance('memoryBranch')
       this.simpleContainer = rootInstance.child('simpleContainer')
       this.nestedContainer = rootInstance.child('nestedContainer')

@@ -1,7 +1,7 @@
 PouchDB = require('pouchdb')
 memdown = require('memdown')
 
-mold = require('../../src/index')
+mold = require('../../src/index').default
 PounchDbDriver = require('../../src/drivers/PounchDb').default
 driverHelpers = require('../_drivers_helpers.coffee')
 
@@ -31,7 +31,7 @@ describe 'Functional. PounchDb driver.', ->
         db: new PouchDB(dbName, {db: memdown}),
       });
       this.testSchema = testSchema(pounch)
-      this.mold = mold.initSchema( {}, this.testSchema )
+      this.mold = mold( {}, this.testSchema )
 
   it 'container_get', (done) ->
     this.init('container_get')

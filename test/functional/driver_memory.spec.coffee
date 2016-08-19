@@ -1,4 +1,4 @@
-mold = require('../../src/index')
+mold = require('../../src/index').default
 Memory = require('../../src/drivers/Memory').default
 driverHelpers = require('../_drivers_helpers.coffee')
 
@@ -24,7 +24,7 @@ describe 'Functional. Memory driver.', ->
   beforeEach ->
     memory = new Memory({});
     this.testSchema = testSchema(memory)
-    this.mold = mold.initSchema( {}, this.testSchema )
+    this.mold = mold( {}, this.testSchema )
     this.container = this.mold.instance('commonBranch.inMemory.container')
 
   it 'container_get', (done) ->

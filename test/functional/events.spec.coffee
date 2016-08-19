@@ -1,4 +1,4 @@
-mold = require('../../src/index')
+mold = require('../../src/index').default
 
 testSchema = () ->
   container:
@@ -20,7 +20,7 @@ testSchema = () ->
 describe 'Functional. Events.', ->
   describe 'mold.update', ->
     beforeEach () ->
-      this.mold = mold.initSchema( {}, testSchema() )
+      this.mold = mold( {}, testSchema() )
       this.handler = sinon.spy();
 
     it 'mold.update - primitive', ->
@@ -106,7 +106,7 @@ describe 'Functional. Events.', ->
 
   describe 'watch', ->
 #    beforeEach () ->
-#      this.mold = mold.initSchema( {}, testSchema() )
+#      this.mold = mold( {}, testSchema() )
 #      this.container = this.mold.instance('container')
 #      this.collection = this.mold.instance('collection')
 #      this.primitive = this.container.child('stringParam')

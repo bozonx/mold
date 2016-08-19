@@ -1,4 +1,4 @@
-mold = require('../../src/index')
+mold = require('../../src/index').default
 Memory = require('../../src/drivers/Memory').default
 
 testSchema = () ->
@@ -24,7 +24,7 @@ describe 'Functional. Collection type.', ->
 
   describe 'init, child(), child(num), child(subpath)', ->
     beforeEach () ->
-      this.mold = mold.initSchema( {}, testSchema() )
+      this.mold = mold( {}, testSchema() )
       this.collectionParam = this.mold.instance('inMemory.collectionParam')
 
     it 'init value', ->
@@ -82,7 +82,7 @@ describe 'Functional. Collection type.', ->
 
   describe 'load(), load(num), load(subpath)', ->
     beforeEach () ->
-      this.mold = mold.initSchema( {}, testSchema() )
+      this.mold = mold( {}, testSchema() )
       this.collectionParam = this.mold.instance('inMemory.collectionParam')
 
     it 'load() - check promise', ->
@@ -118,7 +118,7 @@ describe 'Functional. Collection type.', ->
 
   describe 'addMold({...}), removeMold({...})', ->
     beforeEach () ->
-      this.mold = mold.initSchema( {}, testSchema() )
+      this.mold = mold( {}, testSchema() )
       this.collectionParam = this.mold.instance('inMemory.collectionParam')
 
     it 'addMold() - check mold', ->
@@ -154,7 +154,7 @@ describe 'Functional. Collection type.', ->
 
   describe 'save() added, save() removed', ->
     beforeEach () ->
-      this.mold = mold.initSchema( {}, testSchema() )
+      this.mold = mold( {}, testSchema() )
       this.collectionParam = this.mold.instance('inMemory.collectionParam')
 
     it 'save() added - check promise', ->
@@ -208,7 +208,7 @@ describe 'Functional. Collection type.', ->
 
   describe 'complex', ->
     beforeEach () ->
-      this.mold = mold.initSchema( {}, testSchema() )
+      this.mold = mold( {}, testSchema() )
       this.collectionParam = this.mold.instance('inMemory.collectionParam')
 
     it 'Many manupulations with collection', (done) ->

@@ -1,4 +1,4 @@
-mold = require('../../src/index')
+mold = require('../../src/index').default
 
 testSchema = () ->
   inMemory:
@@ -11,7 +11,7 @@ testSchema = () ->
 
 describe 'Functional. Primitive type.', ->
   beforeEach () ->
-    this.mold = mold.initSchema( {}, testSchema() )
+    this.mold = mold( {}, testSchema() )
     this.container = this.mold.instance('inMemory')
 
   it 'All the values is null, after init', () ->

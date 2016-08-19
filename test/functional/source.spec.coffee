@@ -1,4 +1,4 @@
-mold = require('../../src/index')
+mold = require('../../src/index').default
 
 testSchema = () ->
   details:
@@ -10,7 +10,7 @@ testSchema = () ->
 
 describe 'Functional. Source.', ->
   beforeEach () ->
-    this.mold = mold.initSchema( {}, testSchema() )
+    this.mold = mold( {}, testSchema() )
     _.set(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]', {
       id: 0
       name: 'value0'

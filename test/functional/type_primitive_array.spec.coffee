@@ -1,4 +1,4 @@
-mold = require('../../src/index')
+mold = require('../../src/index').default
 
 testSchema = () ->
   inMemory:
@@ -8,7 +8,7 @@ testSchema = () ->
 
 describe 'Functional. Primitive array Type.', ->
   beforeEach () ->
-    this.mold = mold.initSchema( {}, testSchema() )
+    this.mold = mold( {}, testSchema() )
     this.container = this.mold.instance('inMemory')
     this.arrayValues = ['value1', 'value2']
 
