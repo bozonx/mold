@@ -30,13 +30,13 @@ export default class _TypeBase {
     this._main.state.setSourceParams(this._root, params);
   }
 
-  onChange(handler) {
-    this._main.state.addListener(this._root, handler);
-  }
-
-  offChange(handler) {
-    this._main.state.removeListener(this._root, handler);
-  }
+  // onChange(handler) {
+  //   this._main.state.addListener(this._root, handler);
+  // }
+  //
+  // offChange(handler) {
+  //   this._main.state.removeListener(this._root, handler);
+  // }
 
   destroy() {
     this._main.state.destroy(this._root);

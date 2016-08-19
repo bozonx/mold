@@ -56,7 +56,6 @@ export default class SchemaInit {
     });
   }
 
-
   _initDriver(path, value) {
     if (!_.isPlainObject(value.schema))
       throw new Error(`On a path "${path}" driver must has a "schema" param.`);

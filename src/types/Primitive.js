@@ -6,7 +6,6 @@ export default class Primitive extends _TypeBase{
   constructor(main) {
     super(main);
 
-    // TODO: в других типах тоже проставить type
     this.type = 'primitive';
   }
 
