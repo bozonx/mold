@@ -9,7 +9,7 @@ export default class Container extends _TypeBase{
     super(main);
   }
 
-  init(root, schema) {
+  $init(root, schema) {
     super.$init(root, schema);
 
     this._isDocument = !!this._main.schemaManager.getDocument(this._root);

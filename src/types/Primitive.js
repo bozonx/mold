@@ -10,7 +10,7 @@ export default class Primitive extends _TypeBase{
     this.type = 'primitive';
   }
 
-  init(root, schema) {
+  $init(root, schema) {
     super.$init(root, schema);
 
     // update mold manually on each value change
