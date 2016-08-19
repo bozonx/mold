@@ -16,15 +16,15 @@ describe 'Functional. Primitive array Type.', ->
     primitive = this.container.child('arrayParam')
     assert.deepEqual(primitive.mold, [])
 
-  it 'get() and check response', ->
+  it 'load() and check response', ->
     _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.arrayParam', this.arrayValues)
     primitive = this.container.child('arrayParam')
-    expect(primitive.get()).to.eventually.property('coocked').deep.equal(this.arrayValues)
+    expect(primitive.load()).to.eventually.property('coocked').deep.equal(this.arrayValues)
 
-  it 'get() and check mold', (done) ->
+  it 'load() and check mold', (done) ->
     _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.arrayParam', this.arrayValues)
     primitive = this.container.child('arrayParam')
-    expect(primitive.get()).to.eventually.notify =>
+    expect(primitive.load()).to.eventually.notify =>
       expect(Promise.resolve(primitive.mold)).to.eventually
       .deep.equal(this.arrayValues)
       .notify(done)

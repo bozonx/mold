@@ -25,11 +25,6 @@ export default class Primitive extends _TypeBase{
    * Load data to mold.
    * @returns {Promise}
    */
-  get() {
-    // TODO: удалить
-    return this._main.state.load(this._root, this.getSourceParams());
-  }
-
   load() {
     return this._main.state.load(this._root, this.getSourceParams());
   }

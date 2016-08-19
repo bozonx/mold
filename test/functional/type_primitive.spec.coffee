@@ -19,15 +19,15 @@ describe 'Functional. Primitive type.', ->
     assert.isNull(this.container.child('stringParam').mold)
     assert.isNull(this.container.child('numberParam').mold)
 
-  it 'get() and check response', ->
+  it 'load() and check response', ->
     _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.stringParam', 'new value')
     primitive = this.container.child('stringParam')
-    expect(primitive.get()).to.eventually.property('coocked').equal('new value')
+    expect(primitive.load()).to.eventually.property('coocked').equal('new value')
 
-  it 'get() and check mold', (done) ->
+  it 'load() and check mold', (done) ->
     _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.stringParam', 'new value')
     primitive = this.container.child('stringParam')
-    expect(primitive.get()).to.eventually.notify =>
+    expect(primitive.load()).to.eventually.notify =>
       expect(Promise.resolve(primitive.mold)).to.eventually
       .equal('new value')
       .notify(done)
