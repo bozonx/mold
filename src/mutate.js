@@ -30,10 +30,10 @@ class Mutate {
     }
   }
 
-  _updateContainer(rootLodash, newData) {
+  _updateContainer(rootLodash, newContainerState) {
     var isChanged = false;
     // TODO: refactor - use reduce
-    _.each(newData, (value, name) => {
+    _.each(newContainerState, (value, name) => {
       var isItemChanged = this._crossroads(this._makePath(rootLodash, name), value);
       if (!isChanged) isChanged = isItemChanged;
     });
@@ -46,10 +46,10 @@ class Mutate {
     return isChanged;
   }
 
-  _updateCollection(rootLodash, newData) {
+  _updateCollection(rootLodash, newCollectionState) {
     var isChanged = false;
     // remove whore source collection if new collection is empty
-    if (newData.length === 0)
+    if (newCollectionState.length === 0)
       return _.remove(_.get(this.storage, rootLodash));
 
     var oldCollection = _.get(this.storage, rootLodash);
@@ -58,7 +58,7 @@ class Mutate {
     _.each(oldCollection, (value, index) => {
       if (_.isNil(value)) return;
 
-      if (!newData[index]) {
+      if (!newCollectionState[index]) {
         delete oldCollection[index];
         this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'remove']);
         isChanged = true;
@@ -66,7 +66,7 @@ class Mutate {
     });
 
     // updateArray
-    _.each(newData, (value, index) => {
+    _.each(newCollectionState, (value, index) => {
       if (_.isNil(value)) return;
 
       if (oldCollection[index]) {
@@ -99,14 +99,14 @@ class Mutate {
     return isChanged;
   }
 
-  _updatePrimitive(rootLodash, newData) {
+  _updatePrimitive(rootLodash, newPrimitiveState) {
     var oldValue = _.get(this.storage, rootLodash);
-    _.set(this.storage, rootLodash, newData);
+    _.set(this.storage, rootLodash, newPrimitiveState);
 
-    var isChanged = oldValue !== newData;
+    var isChanged = oldValue !== newPrimitiveState;
 
-    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'change']);
-    else this.updates.push([convertFromLodashToMoldPath(rootLodash), newData, 'unchanged']);
+    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newPrimitiveState, 'change']);
+    else this.updates.push([convertFromLodashToMoldPath(rootLodash), newPrimitiveState, 'unchanged']);
 
     return isChanged;
   }
