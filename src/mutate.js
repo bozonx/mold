@@ -25,7 +25,7 @@ class Mutate {
       return this._updateCollection(rootLodash, newData);
     }
     else {
-      // It's primitive
+      // It's primitive or primitive array
       return this._updatePrimitive(rootLodash, newData);
     }
   }
@@ -47,19 +47,24 @@ class Mutate {
   }
 
   _updateCollection(rootLodash, newCollectionState) {
+    // события поднимаются на коллекции только если изменилось количество элементов
+    // события поднимаются на элементе коллекции поднимаются только added, removed
+    // события поднимаются на primitive элементов коллекции
+
     var isChanged = false;
     // remove whore source collection if new collection is empty
     if (newCollectionState.length === 0)
       return _.remove(_.get(this.storage, rootLodash));
 
-    var oldCollection = _.get(this.storage, rootLodash);
+    var originalCollection = _.get(this.storage, rootLodash);
 
     // remove useless items
-    _.each(oldCollection, (value, index) => {
+    _.each(originalCollection, (value, index) => {
       if (_.isNil(value)) return;
 
-      if (!newCollectionState[index]) {
-        delete oldCollection[index];
+       if (!newCollectionState[index]) {
+        delete originalCollection[index];
+
         this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'remove']);
         isChanged = true;
       }
@@ -69,17 +74,17 @@ class Mutate {
     _.each(newCollectionState, (value, index) => {
       if (_.isNil(value)) return;
 
-      if (oldCollection[index]) {
+      if (originalCollection[index]) {
         // update existent item
         var isItemChanged = this._updateContainer(this._makePath(rootLodash, index), value);
-        if (!isChanged) isChanged = isItemChanged;
+        //if (!isChanged) isChanged = isItemChanged;
       }
       else {
         // add new item if it doesn't exist
         // It's rise event like push, but we can set item to its index
         // TODO: проверить можно ли устанавливать на любой индекс не по порядку
-        //oldCollection.splice(oldCollection.length + 1, 1, value);
-        oldCollection.splice(index, 1, value);
+        //originalCollection.splice(originalCollection.length + 1, 1, value);
+        originalCollection.splice(index, 1, value);
         this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'add']);
         isChanged = true;
       }
@@ -87,14 +92,15 @@ class Mutate {
 
     // remove empty values like undefined, null, etc.
     // TODO: после этой операции не отработают вотчеры массива - use collection.splice($index, 1);
-    _.remove(oldCollection, (value) => !_.isPlainObject(value));
+    _.remove(originalCollection, (value) => !_.isPlainObject(value));
 
-    this._updateIndexes(oldCollection);
+    this._updateIndexes(originalCollection);
 
-    // var moldPath = convertFromLodashToMoldPath(rootLodash);
-    // var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
-    // if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
-    // else this.updates.push([moldPath, inStorage, 'unchanged']);
+    // rise update on whore collection
+    var moldPath = convertFromLodashToMoldPath(rootLodash);
+    var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
+    if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
+    //else this.updates.push([moldPath, inStorage, 'unchanged']);
 
     return isChanged;
   }

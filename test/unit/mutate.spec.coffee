@@ -231,10 +231,20 @@ describe 'Unit. mutate.', ->
         }
         'add'
       ]
+      [
+        "collection"
+        [
+          {
+            "$index": 0
+            "id": 5
+            "name": "new item"
+          }
+        ]
+        "changed"
+      ]
     ]
 
-
-  it 'collection remove and add', ->
+  it 'collection remove and add (originally replace)', ->
     storage =
       collection: [
         {
@@ -275,18 +285,44 @@ describe 'Unit. mutate.', ->
       }
     ] })
 
-    # TODO: check updates - наверное должно только добавлять и удалять, не обновлять
-#    assert.deepEqual updates, [
+    assert.deepEqual updates, [
+      [
+        "collection.0.id"
+        6
+        "change"
+      ]
+      [
+        "collection.0.name"
+        "old item"
+        "change"
+      ]
+      [
+        "collection.1.id"
+        7
+        "change"
+      ]
+      [
+        "collection.1.name"
+        "new item"
+        "change"
+      ]
 #      [
-#        'collection.0'
-#        {
-#          $index: 0,
-#          id: 5
-#          name: 'to remove item'
-#        }
-#        'removed'
+#        "collection"
+#        [
+#          {
+#            "$index": 0
+#            "id": 6
+#            "name": "old item"
+#          }
+#          {
+#            "$index": 1
+#            "id": 7
+#            "name": "new item"
+#          }
+#        ]
+#        "unchanged"
 #      ]
-#    ]
+    ]
 
   it 'collection item change on updating collection', ->
     storage =

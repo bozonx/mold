@@ -57,6 +57,7 @@ export default class Storage {
    * @param {object} newItem
    */
   addToBeginning(pathToCollection, newItem) {
+    // TODO: use update()
     // var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
     // var collectionClone = _.clone(collection);
     //
@@ -64,12 +65,10 @@ export default class Storage {
     // this.update(pathToCollection, collectionClone);
 
 
+    
     var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
     // add to beginning
     collection.unshift(newItem);
-
-    // TODO: use update()
-    //this.update(pathToCollection, collection);
 
     // // Rise an event
     this._events.emit('mold.update', {
