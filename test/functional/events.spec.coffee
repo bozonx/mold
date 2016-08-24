@@ -63,6 +63,11 @@ describe 'Functional. Events.', ->
 
       expect(this.handler).to.have.been.calledWith({
         path: 'collection'
+        action: 'changed'
+      })
+
+      expect(this.handler).to.have.been.calledWith({
+        path: 'collection.0'
         action: 'add'
       })
 
@@ -73,7 +78,7 @@ describe 'Functional. Events.', ->
         action: 'remove'
       })
 
-      expect(this.handler).to.have.been.calledTwice
+      expect(this.handler).to.have.been.calledThrice
 
     it 'mold.update - on load', (done) ->
       container = this.mold.instance('fullContainer')

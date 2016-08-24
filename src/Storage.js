@@ -58,29 +58,27 @@ export default class Storage {
    */
   addToBeginning(pathToCollection, newItem) {
     // TODO: use update()
-    // var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
-    // var collectionClone = _.clone(collection);
-    //
-    // collectionClone.unshift(newItem);
-    // this.update(pathToCollection, collectionClone);
-
-
-    
     var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
-    // add to beginning
-    collection.unshift(newItem);
+    var collectionClone = _.cloneDeep(collection);
 
-    // // Rise an event
-    this._events.emit('mold.update', {
-      path: pathToCollection,
-      action: 'add',
-    });
-    this._updateIndexes(pathToCollection);
+    collectionClone.unshift(newItem);
+
+    this.update(pathToCollection, collectionClone);
+
+    // var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
+    // // add to beginning
+    // collection.unshift(newItem);
+    //
+    // // // Rise an event
+    // this._events.emit('mold.update', {
+    //   path: pathToCollection,
+    //   action: 'add',
+    // });
+    // this._updateIndexes(pathToCollection);
   }
 
   /**
    * Remove item from collection by its $index.
-   * It hopes primary id is equal to index in an array in storage.
    * @param {string} pathToCollection
    * @param {number} $index
    */

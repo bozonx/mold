@@ -10,23 +10,23 @@ class Mutate {
     this.updates = [];
   }
 
-  mutate(rootMold, newData) {
+  mutate(rootMold, newState) {
     rootMold = rootMold || '';
     var rootLodash = convertToLodashPath(rootMold);
 
-    return this._crossroads(rootLodash, newData);
+    return this._crossroads(rootLodash, newState);
   }
 
-  _crossroads(rootLodash, newData) {
-    if (_.isPlainObject(newData)) {
-      return this._updateContainer(rootLodash, newData);
+  _crossroads(rootLodash, newState) {
+    if (_.isPlainObject(newState)) {
+      return this._updateContainer(rootLodash, newState);
     }
-    else if (_.isArray(newData) && newData.length > 0 && _.isPlainObject(_.head(newData))) {
-      return this._updateCollection(rootLodash, newData);
+    else if (_.isArray(newState) && newState.length > 0 && _.isPlainObject(_.head(newState))) {
+      return this._updateCollection(rootLodash, newState);
     }
     else {
       // It's primitive or primitive array
-      return this._updatePrimitive(rootLodash, newData);
+      return this._updatePrimitive(rootLodash, newState);
     }
   }
 
@@ -70,14 +70,21 @@ class Mutate {
       }
     });
 
+    //console.log(1111111, originalCollection)
+    //console.log(22222222, newCollectionState)
+
     // updateArray
     _.each(newCollectionState, (value, index) => {
       if (_.isNil(value)) return;
 
+      //console.log('++++>', index, value)
+
       if (originalCollection[index]) {
         // update existent item
-        var isItemChanged = this._updateContainer(this._makePath(rootLodash, index), value);
+        this._updateContainer(this._makePath(rootLodash, index), value);
+        //var isItemChanged = this._updateContainer(this._makePath(rootLodash, index), value);
         //if (!isChanged) isChanged = isItemChanged;
+        //console.log('=======>', this._makePath(rootLodash, index), value, originalCollection[index])
       }
       else {
         // add new item if it doesn't exist
@@ -85,14 +92,22 @@ class Mutate {
         // TODO: проверить можно ли устанавливать на любой индекс не по порядку
         //originalCollection.splice(originalCollection.length + 1, 1, value);
         originalCollection.splice(index, 1, value);
+        //console.log('----->', index, value)
         this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'add']);
         isChanged = true;
       }
     });
 
+    //console.log(33333333, originalCollection)
+
+
+
     // remove empty values like undefined, null, etc.
     // TODO: после этой операции не отработают вотчеры массива - use collection.splice($index, 1);
     _.remove(originalCollection, (value) => !_.isPlainObject(value));
+
+
+
 
     this._updateIndexes(originalCollection);
 
@@ -126,8 +141,8 @@ class Mutate {
     return _.trim(`${rootLodash}.${child}`, '.');
   }
 
-  _updateIndexes(ollectionInStorage) {
-    _.each(ollectionInStorage, (value, index) => {
+  _updateIndexes(collectionInStorage) {
+    _.each(collectionInStorage, (value, index) => {
       // skip empty items. Because indexes are primary ids. In collection may be empty items before real item
       //if (!value) return;
       value.$index = index;
@@ -140,11 +155,11 @@ class Mutate {
  * Mutate storage.
  * @param {object|array} storage - This will be mutate
  * @param {string} rootMold - It's root path in mold format like 'path.to.0.item'
- * @param {object|array} newData - This is new data
+ * @param {object|array} newState - This is new data
  */
-export default function(storage, rootMold, newData) {
+export default function(storage, rootMold, newState) {
   var mutate = new Mutate(storage);
-  mutate.mutate(rootMold, newData);
+  mutate.mutate(rootMold, newState);
 
   return mutate.updates;
 }
