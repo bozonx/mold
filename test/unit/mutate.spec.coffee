@@ -23,27 +23,22 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'container.stringValue'
-        'new value'
         'change'
       ]
       [
         'container.numberValue'
-        5
         'change'
       ]
       [
         'container.boolValue'
-        true
         'change'
       ]
       [
         'container.arrayValue'
-        ['val1', 'val2']
         'change'
       ]
       [
         'container.newValue'
-        'new'
         'change'
       ]
     ]
@@ -63,7 +58,6 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'container.unchangedValue'
-        'old value'
         'unchanged'
       ]
     ]
@@ -85,12 +79,10 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'container.unchangedValue'
-        'old value'
         'unchanged'
       ]
       [
         'container.changedValue'
-        'new value'
         'change'
       ]
     ]
@@ -115,7 +107,6 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'container.changedValue'
-        'new value'
         'change'
       ]
     ]
@@ -140,12 +131,10 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'container.changedValue'
-        'new value'
         'change'
       ]
       [
         'container._id'
-        'container'
         'change'
       ]
     ]
@@ -169,12 +158,10 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'container.stringValue'
-        'new value'
         'change'
       ]
       [
         'container.nested.nestedString'
-        'new nested value'
         'change'
       ]
     ]
@@ -195,7 +182,6 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'container.stringValue'
-        'new value'
         'change'
       ]
     ]
@@ -224,22 +210,10 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'collection.0'
-        {
-          $index: 0,
-          id: 5
-          name: 'new item'
-        }
         'add'
       ]
       [
         "collection"
-        [
-          {
-            "$index": 0
-            "id": 5
-            "name": "new item"
-          }
-        ]
         "change"
       ]
     ]
@@ -288,38 +262,22 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         "collection.0.id"
-        6
         "change"
       ]
       [
         "collection.0.name"
-        "old item"
         "change"
       ]
       [
         "collection.1.id"
-        7
         "change"
       ]
       [
         "collection.1.name"
-        "new item"
         "change"
       ]
 #      [
 #        "collection"
-#        [
-#          {
-#            "$index": 0
-#            "id": 6
-#            "name": "old item"
-#          }
-#          {
-#            "$index": 1
-#            "id": 7
-#            "name": "new item"
-#          }
-#        ]
 #        "unchanged"
 #      ]
     ]
@@ -354,12 +312,10 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'collection.0.id'
-        5
         'unchanged'
       ]
       [
         'collection.0.name'
-        'new item'
         'change'
       ]
     ]
@@ -392,12 +348,10 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'collection.0.id'
-        5
         'unchanged'
       ]
       [
         'collection.0.name'
-        'new item'
         'change'
       ]
     ]
@@ -427,7 +381,6 @@ describe 'Unit. mutate.', ->
     assert.deepEqual updates, [
       [
         'collection.0.name'
-        'new item'
         'change'
       ]
     ]

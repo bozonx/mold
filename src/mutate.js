@@ -26,8 +26,8 @@ class Mutate {
     // add to beginning
     collection.splice(0, 0, newItem);
 
-    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), collection, 'change']);
-    this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, 0)), _.get(this.storage, this._makePath(this.rootLodash, 0)), 'add']);
+    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), 'change']);
+    this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, 0)), 'add']);
     // TODO: нужно ли поднимать события по каждому элементу контейнера???
 
     this._updateIndexes(collection);
@@ -44,8 +44,8 @@ class Mutate {
     // remove with rising an change event on array of collection
     collection.splice(item.$index, 1);
 
-    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), collection, 'change']);
-    this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, item.$index)), item, 'remove']);
+    this.updates.push([convertFromLodashToMoldPath(this.rootLodash),  'change']);
+    this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, item.$index)), 'remove']);
     // TODO: нужно ли поднимать события по каждому элементу контейнера???
 
     this._updateIndexes(collection);
@@ -128,7 +128,7 @@ class Mutate {
         //originalCollection.splice(originalCollection.length + 1, 1, value);
         originalCollection.splice(index, 1, value);
         //console.log('----->', index, value)
-        this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'add']);
+        this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), 'add']);
         isChanged = true;
       }
     });
@@ -148,9 +148,8 @@ class Mutate {
 
     // rise update on whore collection
     var moldPath = convertFromLodashToMoldPath(rootLodash);
-    var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
-    if (isChanged) this.updates.push([moldPath, inStorage, 'change']);
-    //else this.updates.push([moldPath, inStorage, 'unchanged']);
+    if (isChanged) this.updates.push([moldPath, 'change']);
+    //else this.updates.push([moldPath, 'unchanged']);
 
     return isChanged;
   }
@@ -161,8 +160,8 @@ class Mutate {
 
     var isChanged = oldValue !== newPrimitiveState;
 
-    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), newPrimitiveState, 'change']);
-    else this.updates.push([convertFromLodashToMoldPath(rootLodash), newPrimitiveState, 'unchanged']);
+    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), 'change']);
+    else this.updates.push([convertFromLodashToMoldPath(rootLodash), 'unchanged']);
 
     return isChanged;
   }

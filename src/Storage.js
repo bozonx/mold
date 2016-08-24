@@ -102,7 +102,7 @@ export default class Storage {
     _.each(changes, (change) => {
       this._events.emit('mold.update', {
         path: change[0],
-        action: change[2],
+        action: change[1],
       });
     });
   }

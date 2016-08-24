@@ -23,7 +23,7 @@ describe 'Functional. Events.', ->
       this.mold = mold( {}, testSchema() )
       this.handler = sinon.spy();
 
-    it 'mold.update - primitive', ->
+    it 'primitive', ->
       this.mold.onMoldUpdate(this.handler)
       primitive = this.mold.instance('container.stringParam')
       primitive.setMold('new value')
@@ -34,7 +34,7 @@ describe 'Functional. Events.', ->
         action: 'change'
       })
 
-    it 'mold.update - container', ->
+    it 'container', ->
       this.mold.onMoldUpdate(this.handler)
       container = this.mold.instance('fullContainer')
       container.setMold({
@@ -56,7 +56,7 @@ describe 'Functional. Events.', ->
         action: 'unchanged'
       })
 
-    it 'mold.update - on addMold and removeMold', ->
+    it 'on addMold and removeMold', ->
       this.mold.onMoldUpdate(this.handler)
       collection = this.mold.instance('collection')
       collection.addMold({id:1, name: 'value1'})
@@ -85,7 +85,7 @@ describe 'Functional. Events.', ->
 
       expect(this.handler).to.have.been.callCount(4)
 
-    it 'mold.update - on load', (done) ->
+    it 'on load', (done) ->
       container = this.mold.instance('fullContainer')
       container.setMold({
         numberParam: 5
