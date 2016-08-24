@@ -57,22 +57,22 @@ export default class Storage {
    * @param {object} newItem
    */
   addToBeginning(pathToCollection, newItem) {
-    // var changes = mutate(this._storage, pathToCollection).addToBeginning(newItem);
-    //
-    // // run update events
-    // _.each(changes, (change) => {
-    //   this._events.emit('mold.update', {
-    //     path: change[0],
-    //     action: change[2],
-    //   });
-    // });
+    var changes = mutate(this._storage, pathToCollection).addToBeginning(newItem);
+    
+    // run update events
+    _.each(changes, (change) => {
+      this._events.emit('mold.update', {
+        path: change[0],
+        action: change[2],
+      });
+    });
 
-    var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
-    var collectionClone = _.cloneDeep(collection);
-    
-    collectionClone.unshift(newItem);
-    
-    this.update(pathToCollection, collectionClone);
+    // var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
+    // var collectionClone = _.cloneDeep(collection);
+    //
+    // collectionClone.unshift(newItem);
+    //
+    // this.update(pathToCollection, collectionClone);
 
 
 

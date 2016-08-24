@@ -7,7 +7,7 @@ class Mutate {
     rootMold = rootMold || '';
     this.rootLodash = convertToLodashPath(rootMold);
     this.storage = storage;
-    
+
     // it's list of all updates, like [moldPath, value, action]
     //     Action one of: changed, unchanged, deleted, added.
     this.updates = [];
@@ -19,7 +19,18 @@ class Mutate {
   }
 
   addToBeginning(newItem) {
-    // TODO: !!!
+    if (!newItem) return this.updates;
+
+    var originalCollection = _.get(this.storage, this.rootLodash);
+
+    // add to beginning
+    originalCollection.splice(0, 0, newItem);
+
+    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), originalCollection, 'changed']);
+    this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, 0)), _.get(this.storage, this._makePath(this.rootLodash, 0)), 'add']);
+    // TODO: нужно ли поднимать события по каждому элементу контейнера???
+
+    this._updateIndexes(originalCollection);
 
     return this.updates;
   }
@@ -69,8 +80,12 @@ class Mutate {
     _.each(originalCollection, (value, index) => {
       if (_.isNil(value)) return;
 
-       if (!newCollectionState[index]) {
+      if (!newCollectionState[index]) {
         delete originalCollection[index];
+
+        // TODO: use this
+        // remove with rising an change event on array of collection
+        //collection.splice($index, 1);
 
         this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'remove']);
         isChanged = true;

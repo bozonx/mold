@@ -136,8 +136,7 @@ describe 'Functional. Collection type.', ->
         this.collectionParam.addMold(newItem)
         expect(Promise.resolve(this.collectionParam.mold)).to.eventually
         .deep.equal([
-          # id:0 because first item has been updated with new item
-          {id: 0, name: 'name3', $isNew: true, $index: 0},
+          {name: 'name3', $isNew: true, $index: 0},
           {id: 0, name: 'name0', $index: 1},
         ])
         .notify(done)
@@ -250,24 +249,20 @@ describe 'Functional. Collection type.', ->
         }
       ]
 
-      done()
-      
-      # TODO: вернуть!!!! - должно работать
-      
-#      expect(this.collectionParam.save()).to.eventually.notify =>
-#        expect(Promise.resolve(this.collectionParam.mold)).to.eventually
-#        .deep.equal([
-#          {
-#            id: 0
-#            name: 'name2'
-#            $index: 0
-#          }
-#          {
-#            id: 1
-#            name: 'new name'
-#            $index: 1
-#          }
-#        ])
-#        .notify(done)
+      expect(this.collectionParam.save()).to.eventually.notify =>
+        expect(Promise.resolve(this.collectionParam.mold)).to.eventually
+        .deep.equal([
+          {
+            id: 0
+            name: 'name2'
+            $index: 0
+          }
+          {
+            id: 1
+            name: 'new name'
+            $index: 1
+          }
+        ])
+        .notify(done)
 
       # TODO: проверить - удаленный элемент не должен сохраняться, так как он новосозданный
