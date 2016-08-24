@@ -240,7 +240,7 @@ describe 'Unit. mutate.', ->
             "name": "new item"
           }
         ]
-        "changed"
+        "change"
       ]
     ]
 

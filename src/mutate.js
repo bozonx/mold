@@ -26,7 +26,7 @@ class Mutate {
     // add to beginning
     collection.splice(0, 0, newItem);
 
-    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), collection, 'changed']);
+    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), collection, 'change']);
     this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, 0)), _.get(this.storage, this._makePath(this.rootLodash, 0)), 'add']);
     // TODO: нужно ли поднимать события по каждому элементу контейнера???
 
@@ -44,7 +44,7 @@ class Mutate {
     // remove with rising an change event on array of collection
     collection.splice(item.$index, 1);
 
-    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), collection, 'changed']);
+    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), collection, 'change']);
     this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, item.$index)), item, 'remove']);
     // TODO: нужно ли поднимать события по каждому элементу контейнера???
 
@@ -73,11 +73,6 @@ class Mutate {
       var isItemChanged = this._crossroads(this._makePath(rootLodash, name), value);
       if (!isChanged) isChanged = isItemChanged;
     });
-
-    // var moldPath = convertFromLodashToMoldPath(rootLodash);
-    // var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
-    // if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
-    // else this.updates.push([moldPath, inStorage, 'unchanged']);
 
     return isChanged;
   }
@@ -154,7 +149,7 @@ class Mutate {
     // rise update on whore collection
     var moldPath = convertFromLodashToMoldPath(rootLodash);
     var inStorage = (rootLodash) ? _.get(this.storage, rootLodash) : this.storage;
-    if (isChanged) this.updates.push([moldPath, inStorage, 'changed']);
+    if (isChanged) this.updates.push([moldPath, inStorage, 'change']);
     //else this.updates.push([moldPath, inStorage, 'unchanged']);
 
     return isChanged;
@@ -188,7 +183,6 @@ class Mutate {
       value.$index = index;
     });
   }
-
 }
 
 /**
