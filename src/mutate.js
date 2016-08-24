@@ -3,18 +3,25 @@ import _ from 'lodash';
 import { convertFromLodashToMoldPath, convertToLodashPath } from './helpers';
 
 class Mutate {
-  constructor(storage) {
+  constructor(storage, rootMold) {
+    rootMold = rootMold || '';
+    this.rootLodash = convertToLodashPath(rootMold);
     this.storage = storage;
+    
     // it's list of all updates, like [moldPath, value, action]
     //     Action one of: changed, unchanged, deleted, added.
     this.updates = [];
   }
 
-  mutate(rootMold, newState) {
-    rootMold = rootMold || '';
-    var rootLodash = convertToLodashPath(rootMold);
+  update(newState) {
+    this._crossroads(this.rootLodash, newState);
+    return this.updates;
+  }
 
-    return this._crossroads(rootLodash, newState);
+  addToBeginning(newItem) {
+    // TODO: !!!
+
+    return this.updates;
   }
 
   _crossroads(rootLodash, newState) {
@@ -155,11 +162,7 @@ class Mutate {
  * Mutate storage.
  * @param {object|array} storage - This will be mutate
  * @param {string} rootMold - It's root path in mold format like 'path.to.0.item'
- * @param {object|array} newState - This is new data
  */
-export default function(storage, rootMold, newState) {
-  var mutate = new Mutate(storage);
-  mutate.mutate(rootMold, newState);
-
-  return mutate.updates;
+export default function(storage, rootMold) {
+  return new Mutate(storage, rootMold);
 }

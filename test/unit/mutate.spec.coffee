@@ -16,7 +16,7 @@ describe 'Unit. mutate.', ->
       arrayValue: ['val1', 'val2']
       newValue: 'new'
 
-    updates = mutate(storage, 'container', newData)
+    updates = mutate(storage, 'container').update(newData)
 
     assert.deepEqual(storage, { container: newData })
 
@@ -56,7 +56,7 @@ describe 'Unit. mutate.', ->
     newData =
       unchangedValue: 'old value'
 
-    updates = mutate(storage, 'container', newData)
+    updates = mutate(storage, 'container').update(newData)
 
     assert.deepEqual(storage, { container: newData })
 
@@ -78,7 +78,7 @@ describe 'Unit. mutate.', ->
       unchangedValue: 'old value'
       changedValue: 'new value'
 
-    updates = mutate(storage, 'container', newData)
+    updates = mutate(storage, 'container').update(newData)
 
     assert.deepEqual(storage, { container: newData })
 
@@ -104,7 +104,7 @@ describe 'Unit. mutate.', ->
     newData =
       changedValue: 'new value'
 
-    updates = mutate(storage, 'container', newData)
+    updates = mutate(storage, 'container').update(newData)
 
     assert.deepEqual storage, {
       container:
@@ -129,7 +129,7 @@ describe 'Unit. mutate.', ->
       changedValue: 'new value'
       _id: 'container'
 
-    updates = mutate(storage, 'container', newData)
+    updates = mutate(storage, 'container').update(newData)
 
     assert.deepEqual storage, {
       container:
@@ -162,7 +162,7 @@ describe 'Unit. mutate.', ->
       nested:
         nestedString: 'new nested value'
 
-    updates = mutate(storage, 'container', newData)
+    updates = mutate(storage, 'container').update(newData)
 
     assert.deepEqual(storage, { container: newData })
 
@@ -188,7 +188,7 @@ describe 'Unit. mutate.', ->
       container:
         stringValue: 'new value'
 
-    updates = mutate(storage, '', newData)
+    updates = mutate(storage, '').update(newData)
 
     assert.deepEqual(storage, newData)
 
@@ -199,7 +199,7 @@ describe 'Unit. mutate.', ->
         'change'
       ]
     ]
-
+    
   it 'collection init (add from server)', ->
     storage =
       collection: []
@@ -211,7 +211,7 @@ describe 'Unit. mutate.', ->
       }
     ]
 
-    updates = mutate(storage, 'collection', newData)
+    updates = mutate(storage, 'collection').update(newData)
 
     assert.deepEqual(storage, { collection: [
       {
@@ -270,7 +270,7 @@ describe 'Unit. mutate.', ->
       }
     ]
 
-    updates = mutate(storage, 'collection', newData)
+    updates = mutate(storage, 'collection').update(newData)
 
     assert.deepEqual(storage, { collection: [
       {
@@ -341,7 +341,7 @@ describe 'Unit. mutate.', ->
       }
     ]
 
-    updates = mutate(storage, 'collection', newData)
+    updates = mutate(storage, 'collection').update(newData)
 
     assert.deepEqual(storage, { collection: [
       {
@@ -379,7 +379,7 @@ describe 'Unit. mutate.', ->
       name: 'new item'
     }
 
-    updates = mutate(storage, 'collection.0', newData)
+    updates = mutate(storage, 'collection.0').update(newData)
 
     assert.deepEqual(storage, { collection: [
       {
@@ -414,7 +414,7 @@ describe 'Unit. mutate.', ->
 
     newData = 'new item'
 
-    updates = mutate(storage, 'collection.0.name', newData)
+    updates = mutate(storage, 'collection.0.name').update(newData)
 
     assert.deepEqual(storage, { collection: [
       {
