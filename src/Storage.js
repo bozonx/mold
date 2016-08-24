@@ -41,14 +41,8 @@ export default class Storage {
   update(moldPath, newValue) {
     // run mutates and get list of changes
     var changes = mutate(this._storage, moldPath || '').update(newValue);
- 
     // run update events
-    _.each(changes, (change) => {
-      this._events.emit('mold.update', {
-        path: change[0],
-        action: change[2],
-      });
-    });
+    this._riseEvents(changes);
   }
 
   /**
@@ -58,36 +52,8 @@ export default class Storage {
    */
   addToBeginning(pathToCollection, newItem) {
     var changes = mutate(this._storage, pathToCollection).addToBeginning(newItem);
-    
     // run update events
-    _.each(changes, (change) => {
-      this._events.emit('mold.update', {
-        path: change[0],
-        action: change[2],
-      });
-    });
-
-    // var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
-    // var collectionClone = _.cloneDeep(collection);
-    //
-    // collectionClone.unshift(newItem);
-    //
-    // this.update(pathToCollection, collectionClone);
-
-
-
-
-
-    // var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
-    // // add to beginning
-    // collection.unshift(newItem);
-    //
-    // // // Rise an event
-    // this._events.emit('mold.update', {
-    //   path: pathToCollection,
-    //   action: 'add',
-    // });
-    // this._updateIndexes(pathToCollection);
+    this._riseEvents(changes);
   }
 
   /**
@@ -96,26 +62,11 @@ export default class Storage {
    * @param {number} $index
    */
   remove(pathToCollection, $index) {
-    // var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
-    // var collectionClone = _.cloneDeep(collection);
-    //
-    // collectionClone.splice($index, 1);
-    //
-    // this.update(pathToCollection, collectionClone);
-    //
+    // TODO: наверное лучше принимать item а не index
 
-
-    var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
-
-    // remove with rising an change event on array of collection
-    collection.splice($index, 1);
-
-    // // Rise an event
-    this._events.emit('mold.update', {
-      path: pathToCollection,
-      action: 'remove',
-    });
-    this._updateIndexes(pathToCollection);
+    var changes = mutate(this._storage, pathToCollection).remove({$index});
+    // run update events
+    this._riseEvents(changes);
   }
 
   /**
@@ -147,13 +98,12 @@ export default class Storage {
     clearRecursive(contents, '');
   }
 
-  _updateIndexes(pathToCollection) {
-    // TODO: unused
-    var collection = _.get(this._storage, convertToLodashPath(pathToCollection));
-    _.each(collection, (value, index) => {
-      // skip empty items. Because indexes are primary ids. In collection may be empty items before real item
-      if (!value) return;
-      value.$index = index;
+  _riseEvents(changes) {
+    _.each(changes, (change) => {
+      this._events.emit('mold.update', {
+        path: change[0],
+        action: change[2],
+      });
     });
   }
 

@@ -9,7 +9,7 @@ class Mutate {
     this.storage = storage;
 
     // it's list of all updates, like [moldPath, value, action]
-    //     Action one of: changed, unchanged, deleted, added.
+    //     Action one of: changed, unchanged, remove, add.
     this.updates = [];
   }
 
@@ -21,16 +21,34 @@ class Mutate {
   addToBeginning(newItem) {
     if (!newItem) return this.updates;
 
-    var originalCollection = _.get(this.storage, this.rootLodash);
+    var collection = _.get(this.storage, this.rootLodash);
 
     // add to beginning
-    originalCollection.splice(0, 0, newItem);
+    collection.splice(0, 0, newItem);
 
-    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), originalCollection, 'changed']);
+    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), collection, 'changed']);
     this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, 0)), _.get(this.storage, this._makePath(this.rootLodash, 0)), 'add']);
     // TODO: нужно ли поднимать события по каждому элементу контейнера???
 
-    this._updateIndexes(originalCollection);
+    this._updateIndexes(collection);
+
+    return this.updates;
+  }
+
+  remove(item) {
+    if (!item) return this.updates;
+    if (!_.isNumber(item.$index)) throw new Error(`Remove from collection: item must have an $index param. ${item}`);
+
+    var collection = _.get(this.storage, this.rootLodash);
+
+    // remove with rising an change event on array of collection
+    collection.splice(item.$index, 1);
+
+    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), collection, 'changed']);
+    this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, item.$index)), item, 'remove']);
+    // TODO: нужно ли поднимать события по каждому элементу контейнера???
+
+    this._updateIndexes(collection);
 
     return this.updates;
   }
