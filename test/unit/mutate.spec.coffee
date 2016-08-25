@@ -276,10 +276,6 @@ describe 'Unit. mutate.', ->
         "collection.1.name"
         "change"
       ]
-#      [
-#        "collection"
-#        "unchanged"
-#      ]
     ]
 
   it 'collection item change on updating collection', ->

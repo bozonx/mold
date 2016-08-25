@@ -10,33 +10,49 @@ class Mutate {
 
     // it's list of all updates, like [moldPath, value, action]
     //     Action one of: changed, unchanged, remove, add.
-    this.updates = [];
+    this.changes = [];
   }
 
+  /**
+   * Update container/collection/primitive with new state.
+   * WARNING: If you add item to beginning of existent collection
+   *     it means - update all items and add last item
+   * @param {*} newState
+   * @returns {Array} changes
+   */
   update(newState) {
     this._crossroads(this.rootLodash, newState);
-    return this.updates;
+    return this.changes;
   }
 
+  /**
+   * Add item to beginning of collection
+   * @param {object} newItem
+   * @returns {Array} changes
+   */
   addToBeginning(newItem) {
-    if (!newItem) return this.updates;
+    if (!newItem) return this.changes;
 
     var collection = _.get(this.storage, this.rootLodash);
 
     // add to beginning
     collection.splice(0, 0, newItem);
 
-    this.updates.push([convertFromLodashToMoldPath(this.rootLodash), 'change']);
-    this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, 0)), 'add']);
-    // TODO: нужно ли поднимать события по каждому элементу контейнера???
+    this.changes.push([convertFromLodashToMoldPath(this.rootLodash), 'change']);
+    this.changes.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, 0)), 'add']);
 
     this._updateIndexes(collection);
 
-    return this.updates;
+    return this.changes;
   }
 
+  /**
+   * Remove item from collection
+   * @param {object} item
+   * @returns {Array} changes
+   */
   remove(item) {
-    if (!item) return this.updates;
+    if (!item) return this.changes;
     if (!_.isNumber(item.$index)) throw new Error(`Remove from collection: item must have an $index param. ${item}`);
 
     var collection = _.get(this.storage, this.rootLodash);
@@ -44,13 +60,12 @@ class Mutate {
     // remove with rising an change event on array of collection
     collection.splice(item.$index, 1);
 
-    this.updates.push([convertFromLodashToMoldPath(this.rootLodash),  'change']);
-    this.updates.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, item.$index)), 'remove']);
-    // TODO: нужно ли поднимать события по каждому элементу контейнера???
+    this.changes.push([convertFromLodashToMoldPath(this.rootLodash),  'change']);
+    this.changes.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, item.$index)), 'remove']);
 
     this._updateIndexes(collection);
 
-    return this.updates;
+    return this.changes;
   }
 
   _crossroads(rootLodash, newState) {
@@ -94,32 +109,23 @@ class Mutate {
       if (_.isNil(value)) return;
 
       if (!newCollectionState[index]) {
-        delete originalCollection[index];
-
-        // TODO: use this
         // remove with rising an change event on array of collection
-        //collection.splice($index, 1);
+        originalCollection.splice(index, 1);
 
-        this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'remove']);
+        this.changes.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'remove']);
         isChanged = true;
       }
     });
 
-    //console.log(1111111, originalCollection)
-    //console.log(22222222, newCollectionState)
-
     // updateArray
     _.each(newCollectionState, (value, index) => {
       if (_.isNil(value)) return;
-
-      //console.log('++++>', index, value)
 
       if (originalCollection[index]) {
         // update existent item
         this._updateContainer(this._makePath(rootLodash, index), value);
         //var isItemChanged = this._updateContainer(this._makePath(rootLodash, index), value);
         //if (!isChanged) isChanged = isItemChanged;
-        //console.log('=======>', this._makePath(rootLodash, index), value, originalCollection[index])
       }
       else {
         // add new item if it doesn't exist
@@ -127,29 +133,21 @@ class Mutate {
         // TODO: проверить можно ли устанавливать на любой индекс не по порядку
         //originalCollection.splice(originalCollection.length + 1, 1, value);
         originalCollection.splice(index, 1, value);
-        //console.log('----->', index, value)
-        this.updates.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), 'add']);
+        this.changes.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), 'add']);
         isChanged = true;
       }
     });
-
-    //console.log(33333333, originalCollection)
-
-
 
     // remove empty values like undefined, null, etc.
     // TODO: после этой операции не отработают вотчеры массива - use collection.splice($index, 1);
     _.remove(originalCollection, (value) => !_.isPlainObject(value));
 
-
-
-
     this._updateIndexes(originalCollection);
 
     // rise update on whore collection
     var moldPath = convertFromLodashToMoldPath(rootLodash);
-    if (isChanged) this.updates.push([moldPath, 'change']);
-    //else this.updates.push([moldPath, 'unchanged']);
+    if (isChanged) this.changes.push([moldPath, 'change']);
+    //else this.changes.push([moldPath, 'unchanged']);
 
     return isChanged;
   }
@@ -160,8 +158,8 @@ class Mutate {
 
     var isChanged = oldValue !== newPrimitiveState;
 
-    if (isChanged) this.updates.push([convertFromLodashToMoldPath(rootLodash), 'change']);
-    else this.updates.push([convertFromLodashToMoldPath(rootLodash), 'unchanged']);
+    if (isChanged) this.changes.push([convertFromLodashToMoldPath(rootLodash), 'change']);
+    else this.changes.push([convertFromLodashToMoldPath(rootLodash), 'unchanged']);
 
     return isChanged;
   }
