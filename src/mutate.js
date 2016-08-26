@@ -75,8 +75,12 @@ class Mutate {
     else if (_.isArray(newState) && newState.length > 0 && _.isPlainObject(_.head(newState))) {
       return this._updateCollection(rootLodash, newState);
     }
+    else if (_.isArray(newState) && !newState.length) {
+      // It's primitive array or empty collection
+      return this._updatePrimitiveArray(rootLodash, newState);
+    }
     else {
-      // It's primitive or primitive array
+      // It's primitive, one of boolean, string, number of null
       return this._updatePrimitive(rootLodash, newState);
     }
   }
@@ -154,9 +158,31 @@ class Mutate {
 
   _updatePrimitive(rootLodash, newPrimitiveState) {
     var oldValue = _.get(this.storage, rootLodash);
+    // set to storage
     _.set(this.storage, rootLodash, newPrimitiveState);
 
     var isChanged = oldValue !== newPrimitiveState;
+
+    if (isChanged) this.changes.push([convertFromLodashToMoldPath(rootLodash), 'change']);
+    else this.changes.push([convertFromLodashToMoldPath(rootLodash), 'unchanged']);
+
+    return isChanged;
+  }
+
+  _updatePrimitiveArray(rootLodash, newPrimitiveArrayState) {
+    // TODO: test it
+    var originalArray = _.get(this.storage, rootLodash);
+    var isChanged = !_.isEqual(originalArray, newPrimitiveArrayState);
+    if (!isChanged) return false;
+
+    // clear old array
+    // TODO: надо поднять событие
+    // TODO: надо удалять только лишние элементы, так как те что от начала и так заменятся
+    _.remove(originalArray);
+
+    _.each(newPrimitiveArrayState, (value, index) => {
+      originalArray.splice(index, 1, value);
+    });
 
     if (isChanged) this.changes.push([convertFromLodashToMoldPath(rootLodash), 'change']);
     else this.changes.push([convertFromLodashToMoldPath(rootLodash), 'unchanged']);

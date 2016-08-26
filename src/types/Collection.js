@@ -44,20 +44,17 @@ export default class Collection extends _TypeBase {
    * @returns {Promise} with item or collection
    */
   load(noneOrIdOrPath) {
-    var path;
     if (_.isUndefined(noneOrIdOrPath)) {
       // load whore collection
-      path = this._root;
-      return this._main.state.load(path, this.getSourceParams());
+      return this._main.state.load(this._root, this.getSourceParams());
     }
     else if (_.isNumber(noneOrIdOrPath) || _.isString(noneOrIdOrPath)) {
       // load collection child
-      path = concatPath(this._root, noneOrIdOrPath);
+      let path = concatPath(this._root, noneOrIdOrPath);
       return this._main.state.load(path, this.getSourceParams());
     }
-    else {
-      throw new Error(`You must pass only number, string or undefined!`);
-    }
+
+    throw new Error(`You must pass only number, string or undefined!`);
   }
 
   /**
