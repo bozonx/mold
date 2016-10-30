@@ -6,6 +6,8 @@ import _ from 'lodash';
 
 import Collection from './types/Collection';
 import Container from './types/Container';
+import Document from './types/Document';
+import DocumentsCollection from './types/DocumentsCollection';
 import { convertToSchemaPath, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
 import SchemaInit from './SchemaInit';
@@ -82,6 +84,12 @@ export default class SchemaManager {
     else if (schema.type == 'collection') {
       instance = new Collection(this._main);
     }
+    else if (schema.type == 'document') {
+      instance = new Document(this._main);
+    }
+    else if (schema.type == 'documentsCollection') {
+      instance = new DocumentsCollection(this._main);
+    }
     else if (schema.type == 'array') {
       throw new Error(`You can't get instance of primitive array!`);
     }
@@ -101,6 +109,8 @@ export default class SchemaManager {
    * @returns {object|undefined}
    */
   getDocument(path) {
+    // TODO: !!!! не нужно, вместо этого можно просто брать инстанс документа
+
     if (!_.isString(path))
       throw new Error(`You must pass the path argument!`);
 

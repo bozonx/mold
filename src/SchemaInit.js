@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { recursiveSchema } from './helpers';
 
 /**
- * It generate runtime schema from raw schema and extract drivers and documents.
+ * It inits and validate the schema.
  * @class
  */
 export default class SchemaInit {
@@ -26,23 +26,24 @@ export default class SchemaInit {
         // Go through inner param 'schema'
         return 'schema';
       }
-      else if (value.type == 'array') {
-        // array
-        this._initArray(newPath, value);
-
-        // Go deeper
-        return false;
-      }
       else if (value.type == 'collection') {
         this._initCollection(newPath, value);
 
         // Go deeper
         return true;
       }
-      else if (value.type) {
+      else if (value.type == 'array') {
+        // array
+        this._initArray(newPath, value);
+
+        // don't go deeper
+        return false;
+      }
+      else if (value.type == 'number' || value.type == 'string' || value.type == 'boolean') {
         // primitive
         this._initPrimitive(newPath, value);
 
+        // don't go deeper
         return false;
       }
       else {

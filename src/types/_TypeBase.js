@@ -10,10 +10,6 @@ export default class _TypeBase {
     this.updateMold();
   }
 
-  isDocument() {
-    return this._isDocument;
-  }
-
   /**
    * Get instance root
    * @returns {string}

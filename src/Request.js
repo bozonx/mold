@@ -243,6 +243,7 @@ export default class Request {
     if (!driver)
       throw new Error(`No-one driver did found!!!`);
 
+    // TODO: не использовать getDocument, получить его через instance и получить там его параметры
     var documentParams = this._main.schemaManager.getDocument(moldPath);
     var splits;
     if (documentParams && documentParams.pathToDocument && documentParams.pathToDocument != moldPath)
