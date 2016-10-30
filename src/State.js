@@ -120,15 +120,20 @@ export default class State {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
 
-    if (schema.type == 'collection') {
+    if (schema.type == 'container') {
+      return this._request.loadContainer(moldPath, sourceParams);
+    }
+    else if (schema.type == 'document') {
+      return this._request.loadContainer(moldPath, sourceParams);
+    }
+    else if (schema.type == 'documentsCollection') {
+      return this._request.loadCollection(moldPath, sourceParams);
+    }
+    else if (schema.type == 'collection') {
       return this._request.loadCollection(moldPath, sourceParams);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
       return this._request.loadPrimitive(moldPath, sourceParams);
-    }
-    else if (!schema.type) {
-      // It's container
-      return this._request.loadContainer(moldPath, sourceParams);
     }
 
     throw new Error(`Unknown type!`);
@@ -144,14 +149,20 @@ export default class State {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
 
-    if (schema.type == 'collection') {
+     if (schema.type == 'container') {
+      return this._request.saveContainer(moldPath, sourceParams);
+    }
+    if (schema.type == 'document') {
+      return this._request.saveContainer(moldPath, sourceParams);
+    }
+    if (schema.type == 'documentsCollection') {
+      return this._request.saveCollection(moldPath, sourceParams);
+    }
+    else if (schema.type == 'collection') {
       return this._request.saveCollection(moldPath, sourceParams);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
       return this._request.savePrimitive(moldPath, sourceParams);
-    }
-    else if (!schema.type) {
-      return this._request.saveContainer(moldPath, sourceParams);
     }
 
     throw new Error(`Unknown type!`);
@@ -207,9 +218,14 @@ export default class State {
    * @private
    */
   _checkNode(path, value, schema) {
+    // TODO: переделать!!!
+
+    return true;
+
+
     schema = schema || this._main.schemaManager.get(path);
 
-    // TODO: переделать!!!
+
 
     var _checkRecursively = function(path, value, childPath, childSchema) {
       if (childSchema.type) {
@@ -265,32 +281,46 @@ export default class State {
   _initStorage() {
     var storageValues = {};
 
+    // TODO: объединить это с инициализацией схемы
+
     recursiveSchema('', this._main.schemaManager.get(''), (newPath, value) => {
-      if (value.type == 'array') {
-        // array
-        _.set(storageValues, newPath, []);
+      if (value.type == 'container') {
+        _.set(storageValues, newPath, {});
 
         // Go deeper
+        return 'schema';
+      }
+      if (value.type == 'document') {
+        _.set(storageValues, newPath, {});
+
+        // Go deeper
+        return 'schema';
+      }
+      else if (value.type == 'documentsCollection') {
+        _.set(storageValues, newPath, []);
+
+        // Dont't go deeper
         return false;
       }
       else if (value.type == 'collection') {
         _.set(storageValues, newPath, []);
 
-        // Go deeper
+        // Dont't go deeper
+        return false;
+      }
+      else if (value.type == 'array') {
+        // array
+        _.set(storageValues, newPath, []);
+
+        // Dont't go deeper
         return false;
       }
       else if (_.includes(['boolean', 'string', 'number'], value.type)) {
         // primitive
         _.set(storageValues, newPath, null);
 
+        // Dont't go deeper
         return false;
-      }
-      else {
-        // container
-        _.set(storageValues, newPath, {});
-
-        // Go deeper
-        return true;
       }
     });
 

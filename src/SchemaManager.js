@@ -8,13 +8,13 @@ import Collection from './types/Collection';
 import Container from './types/Container';
 import Document from './types/Document';
 import DocumentsCollection from './types/DocumentsCollection';
-import { convertToSchemaPath, getTheBestMatchPath } from './helpers';
+import { convertToSchemaPathFromLodash, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
 import SchemaInit from './SchemaInit';
 
 export default class SchemaManager {
   init(schema, main) {
-    this._rawSchema = schema;
+    this._schema = schema;
     this._main = main;
     this.$defaultMemoryDb = {};
 
@@ -23,41 +23,25 @@ export default class SchemaManager {
     });
     this.mainMemoryDriver = memoryDriver.schema({}, {}).driver;
 
-    var completed = new SchemaInit(this._rawSchema, this._main);
-    this._schema = completed.schema;
-    this._drivers = completed.drivers;
-    this._documents = completed.documents;
+
+    var schemaInit = new SchemaInit(this._schema, this._main);
+    this._drivers = schemaInit.init();
   }
 
   /**
    * get schema part by path
-   * @param {string} path - absolute path
+   * @param {string} path - absolute path in lodash format
    * @returns {object} schema
    */
   get(path) {
     if (path === '') return this.getFullSchema();
 
-    var schemaPath = convertToSchemaPath(path);
-
+    var schemaPath = convertToSchemaPathFromLodash(path);
     var schema = _.get(this._schema, schemaPath);
+
     if (_.isUndefined(schema)) throw new Error(`Schema on path "${schemaPath}" doesn't exists`);
 
     return schema;
-  }
-
-  /**
-   * Has a param on path
-   * Path = '' means root.
-   * @param {string} path - absolute path
-   * @returns {boolean} If path = '' it means root and return true
-   */
-  has(path) {
-    // TODO: test it or remove
-    if (path === '') return true;
-
-    var schemaPath = convertToSchemaPath(path);
-
-    return _.has(this._schema, schemaPath);
   }
 
   /**
@@ -78,8 +62,13 @@ export default class SchemaManager {
     // It rise an error if path doesn't consist with schema
     var schema = this.get(path);
 
-    if (!schema.type) {
+    if (schema.type == 'container') {
+
+
+
       instance = new Container(this._main);
+
+      console.log(222222222, path)
     }
     else if (schema.type == 'collection') {
       instance = new Collection(this._main);
@@ -96,6 +85,9 @@ export default class SchemaManager {
     else if (schema.type == 'boolean' || schema.type == 'string' || schema.type == 'number'){
       throw new Error(`You can't get instance of primitive!`);
     }
+    else {
+      throw new Error(`No one type have found!`);
+    }
 
     // It's need for creating collection child
     instance.$init(path, schema);
@@ -108,16 +100,16 @@ export default class SchemaManager {
    * @param {string} path - absolute path for document or its child
    * @returns {object|undefined}
    */
-  getDocument(path) {
-    // TODO: !!!! не нужно, вместо этого можно просто брать инстанс документа
-
-    if (!_.isString(path))
-      throw new Error(`You must pass the path argument!`);
-
-    var matchPath = getTheBestMatchPath(path, _.keys(this._documents));
-
-    return this._documents[matchPath];
-  }
+  // getDocument(path) {
+  //   // TODO: !!!! не нужно, вместо этого можно просто брать инстанс документа
+  //
+  //   if (!_.isString(path))
+  //     throw new Error(`You must pass the path argument!`);
+  //
+  //   var matchPath = getTheBestMatchPath(path, _.keys(this._documents));
+  //
+  //   return this._documents[matchPath];
+  // }
 
   /**
    * Get driver. If it doesnt exists, returns undefined
@@ -125,6 +117,8 @@ export default class SchemaManager {
    * @returns {object|undefined}
    */
   getDriver(path) {
+    // TODO: драйверы в списке должны быть просто ссылками на драйверы в схеме
+
     if (!_.isString(path))
       throw new Error(`You must pass the path argument!`);
 

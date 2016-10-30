@@ -2,15 +2,23 @@ mold = require('../../src/index').default
 
 testSchema = () ->
   container:
-    stringParam: {type: 'string'}
+    type: 'container'
+    schema:
+      stringParam: {type: 'string'}
   fullContainer:
-    stringParam: {type: 'string'}
-    numberParam: {type: 'number'}
-    booleanParam: {type: 'boolean'}
-  nested:
-    container:
+    type: 'container'
+    schema:
       stringParam: {type: 'string'}
       numberParam: {type: 'number'}
+      booleanParam: {type: 'boolean'}
+  nested:
+    type: 'container'
+    schema:
+      container:
+        type: 'container'
+        schema:
+          stringParam: {type: 'string'}
+          numberParam: {type: 'number'}
   collection:
     type: 'collection'
     item:

@@ -19,6 +19,7 @@ import _ from 'lodash';
 //   });
 // }
 
+// TODO: сделать по другому
 export function recursiveSchema(root, schema, cb) {
   _.each(schema, function (childSchema, childName) {
     if (!_.isPlainObject(childSchema)) return;
@@ -44,9 +45,29 @@ export function findPrimary(schema) {
   return primary;
 }
 
+// TODO: убрать
 export function convertToSchemaPath(path) {
   return path.replace(/(\[\d+])|(\.\d+)/, '.item');
 }
+
+// TODO: test it
+export function convertToSchemaPathFromLodash(path) {
+
+  // TODO: перевести на lodash синтаксис
+
+  var newPath = path;
+  // replace collection params [1]
+  newPath =  newPath.replace(/(\[\d+])|(\.\d+)/g, '!item!');
+
+  // TODO: use symbol
+  // replace "." to ".schema."
+  newPath = newPath.replace(/\./g, '.schema.');
+
+  newPath =  newPath.replace(/!item!/g, '.item');
+
+  return newPath;
+}
+
 
 export function convertToLodashPath(moldPath) {
   return moldPath.replace(/\.(\d+)/g, '[\$1]');

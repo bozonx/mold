@@ -5,21 +5,27 @@ describe 'Functional. Container type.', ->
     beforeEach () ->
       testSchema = () ->
         memoryBranch:
-          inMemory:
-            boolParam:
-              type: 'boolean'
-              default: false
-            stringParam:
-              type: 'string'
-              default: 'defaultStringValue'
-            numberParam:
-              type: 'number'
-              default: 5
-            arrayParam:
-              type: 'array'
-            nested:
-              nestedStringParam:
-                type: 'string'
+          type: 'container'
+          schema:
+            inMemory:
+              type: 'container'
+              schema:
+                boolParam:
+                  type: 'boolean'
+                  default: false
+                stringParam:
+                  type: 'string'
+                  default: 'defaultStringValue'
+                numberParam:
+                  type: 'number'
+                  default: 5
+                arrayParam:
+                  type: 'array'
+                nested:
+                  type: 'container'
+                  schema:
+                    nestedStringParam:
+                      type: 'string'
 
       this.testSchema = testSchema()
       this.mold = mold( {}, this.testSchema )
@@ -29,7 +35,7 @@ describe 'Functional. Container type.', ->
     it 'child: container', () ->
       containerDeeper = this.container.child('nested')
       assert.equal(containerDeeper.getRoot(), 'memoryBranch.inMemory.nested')
-      assert.deepEqual(containerDeeper.schema, this.testSchema.memoryBranch.inMemory.nested)
+      assert.deepEqual(containerDeeper.schema, this.testSchema.memoryBranch.schema.inMemory.schema.nested)
 
 #    it 'child: primitive', () ->
 #      primitiveInstance = this.container.child('stringParam')
@@ -45,14 +51,16 @@ describe 'Functional. Container type.', ->
     beforeEach () ->
       testSchema = () ->
         inMemory:
-          boolParam:
-            type: 'boolean'
-          stringParam:
-            type: 'string'
-          numberParam:
-            type: 'number'
-          arrayParam:
-            type: 'array'
+          type: 'container'
+          schema:
+            boolParam:
+              type: 'boolean'
+            stringParam:
+              type: 'string'
+            numberParam:
+              type: 'number'
+            arrayParam:
+              type: 'array'
 
       this.testSchema = testSchema()
       this.mold = mold( {}, this.testSchema )
@@ -88,17 +96,21 @@ describe 'Functional. Container type.', ->
     beforeEach ->
       this.testSchema =
         memoryBranch:
-          simpleContainer:
-            numberParam:
-              type: 'number'
-            stringParam:
-              type: 'string'
-          nestedContainer:
-            stringParam:
-              type: 'string'
-            nested:
-              nestedStringParam:
-                type: 'string'
+          type: 'container'
+          schema:
+            simpleContainer:
+              type: 'container'
+              schema:
+                numberParam: { type: 'number' }
+                stringParam: { type: 'string' }
+            nestedContainer:
+              type: 'container'
+              schema:
+                stringParam: { type: 'string' }
+                nested:
+                  type: 'container'
+                  schema:
+                    nestedStringParam: { type: 'string' }
 
       this.mold = mold( {}, this.testSchema )
       rootInstance = this.mold.instance('memoryBranch')
@@ -119,12 +131,13 @@ describe 'Functional. Container type.', ->
 
     it 'to child', ->
       this.simpleContainer.setMold('stringParam', 'new value')
+
       assert.deepEqual(this.simpleContainer.mold, {
         stringParam: 'new value'
         numberParam: null
       })
-      expect(this.simpleContainer.save('stringParam')).to.eventually
-      .property('coocked').equal('new value')
+      expect(this.simpleContainer.save()).to.eventually
+      .property('coocked').property('stringParam').equal('new value')
 
     it 'to nested container', ->
       this.nestedContainer.setMold('nested', {nestedStringParam: 'new value'})
@@ -139,13 +152,13 @@ describe 'Functional. Container type.', ->
         nestedStringParam: 'new value'
       })
 
-    it 'to nested container child', ->
-      this.nestedContainer.setMold('nested.nestedStringParam', 'new value')
-      assert.deepEqual(this.nestedContainer.mold, {
-        stringParam: null
-        nested: {
-          nestedStringParam: 'new value'
-        }
-      })
-      expect(this.nestedContainer.save('nested.nestedStringParam')).to.eventually
-      .property('coocked').deep.equal('new value')
+#    it 'to nested container child', ->
+#      this.nestedContainer.setMold('nested.nestedStringParam', 'new value')
+#      assert.deepEqual(this.nestedContainer.mold, {
+#        stringParam: null
+#        nested: {
+#          nestedStringParam: 'new value'
+#        }
+#      })
+#      expect(this.nestedContainer.save('nested.nestedStringParam')).to.eventually
+#      .property('coocked').deep.equal('new value')

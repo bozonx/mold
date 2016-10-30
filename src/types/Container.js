@@ -21,6 +21,7 @@ export default class Container extends _TypeBase{
    * @returns {object} - instance of param or list or container
    */
   child(path) {
+    // TODO: number не должен поддерживаться
     if (!_.isString(path) && !_.isNumber(path))
       throw new Error(`You must pass a path argument.`);
 
@@ -57,6 +58,7 @@ export default class Container extends _TypeBase{
   }
 
   save(pathOrNothing) {
+    // TODO: путь здесь вообще левая тема
     var path;
     if (pathOrNothing) {
       path = concatPath(this._root, pathOrNothing);
