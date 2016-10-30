@@ -1,6 +1,6 @@
 // Primitives like boolean, string and number.
 
-import _TypeBase from './_TypeBase';
+import _TypeBase from '../src/types/_TypeBase';
 
 export default class Primitive extends _TypeBase{
   constructor(main) {

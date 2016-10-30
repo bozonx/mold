@@ -40,35 +40,39 @@ describe 'Functional. Collection type.', ->
       this.collectionParam.addMold({name: 'name0'})
       assert.equal(this.collectionParam.child(0).mold.name, 'name0')
 
-    it 'child(0).child("name") after add', ->
-      this.collectionParam.addMold({name: 'name0'})
-      collectionItem = this.collectionParam.child(0)
-      primitiveOfName = collectionItem.child('name')
-      assert.equal(primitiveOfName.mold, 'name0')
+#    it 'child(0).child("name") after add', ->
+#      this.collectionParam.addMold({name: 'name0'})
+#      collectionItem = this.collectionParam.child(0)
+#      primitiveOfName = collectionItem.child('name')
+#      assert.equal(primitiveOfName.mold, 'name0')
+#
+#    it 'child(0).child("name") after load collection', (done) ->
+#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
+#      expect(this.collectionParam.load()).to.eventually.notify =>
+#        collectionItem = this.collectionParam.child(0)
+#        primitiveOfName = collectionItem.child('name')
+#        expect(Promise.resolve(primitiveOfName.mold)).to.eventually
+#        .equal('name0')
+#        .notify(done)
+#
+#    it 'child(0).child("name") after load item', (done) ->
+#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
+#      collectionItem = this.collectionParam.child(0)
+#
+#      expect(collectionItem.load()).to.eventually.notify =>
+#        primitiveOfName = collectionItem.child('name')
+#        expect(Promise.resolve(primitiveOfName.mold)).to.eventually
+#        .equal('name0')
+#        .notify(done)
 
-    it 'child(0).child("name") after load collection', (done) ->
-      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-      expect(this.collectionParam.load()).to.eventually.notify =>
-        collectionItem = this.collectionParam.child(0)
-        primitiveOfName = collectionItem.child('name')
-        expect(Promise.resolve(primitiveOfName.mold)).to.eventually
-        .equal('name0')
-        .notify(done)
+#    it 'child("0.name") after add', ->
+#      this.collectionParam.addMold({name: 'name0'})
+#      primitive = this.collectionParam.child('0.name')
+#      assert.equal(primitive.mold, 'name0')
 
-    it 'child(0).child("name") after load item', (done) ->
-      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-      collectionItem = this.collectionParam.child(0)
 
-      expect(collectionItem.load()).to.eventually.notify =>
-        primitiveOfName = collectionItem.child('name')
-        expect(Promise.resolve(primitiveOfName.mold)).to.eventually
-        .equal('name0')
-        .notify(done)
 
-    it 'child("0.name") after add', ->
-      this.collectionParam.addMold({name: 'name0'})
-      primitive = this.collectionParam.child('0.name')
-      assert.equal(primitive.mold, 'name0')
+
 
     # TODO: do it - тот самый баг - похоже не обновляется mold после load
 #    it 'child("0.name") after load', (done) ->

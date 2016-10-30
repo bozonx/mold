@@ -23,16 +23,16 @@ describe 'Functional. Events.', ->
       this.mold = mold( {}, testSchema() )
       this.handler = sinon.spy();
 
-    it 'primitive', ->
-      this.mold.onMoldUpdate(this.handler)
-      primitive = this.mold.instance('container.stringParam')
-      primitive.setMold('new value')
-
-      expect(this.handler).to.have.been.calledOnce
-      expect(this.handler).to.have.been.calledWith({
-        path: 'container.stringParam'
-        action: 'change'
-      })
+#    it 'primitive', ->
+#      this.mold.onMoldUpdate(this.handler)
+#      primitive = this.mold.instance('container.stringParam')
+#      primitive.setMold('new value')
+#
+#      expect(this.handler).to.have.been.calledOnce
+#      expect(this.handler).to.have.been.calledWith({
+#        path: 'container.stringParam'
+#        action: 'change'
+#      })
 
     it 'container', ->
       this.mold.onMoldUpdate(this.handler)

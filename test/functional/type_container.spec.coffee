@@ -31,15 +31,15 @@ describe 'Functional. Container type.', ->
       assert.equal(containerDeeper.getRoot(), 'memoryBranch.inMemory.nested')
       assert.deepEqual(containerDeeper.schema, this.testSchema.memoryBranch.inMemory.nested)
 
-    it 'child: primitive', () ->
-      primitiveInstance = this.container.child('stringParam')
-      assert.equal(primitiveInstance.getRoot(), 'memoryBranch.inMemory.stringParam')
-      assert.deepEqual(primitiveInstance.schema, this.testSchema.memoryBranch.inMemory.stringParam)
+#    it 'child: primitive', () ->
+#      primitiveInstance = this.container.child('stringParam')
+#      assert.equal(primitiveInstance.getRoot(), 'memoryBranch.inMemory.stringParam')
+#      assert.deepEqual(primitiveInstance.schema, this.testSchema.memoryBranch.inMemory.stringParam)
 
-    it 'child: array', () ->
-      arrayInstance = this.container.child('arrayParam')
-      assert.equal(arrayInstance.getRoot(), 'memoryBranch.inMemory.arrayParam')
-      assert.deepEqual(arrayInstance.schema, this.testSchema.memoryBranch.inMemory.arrayParam)
+#    it 'child: array', () ->
+#      arrayInstance = this.container.child('arrayParam')
+#      assert.equal(arrayInstance.getRoot(), 'memoryBranch.inMemory.arrayParam')
+#      assert.deepEqual(arrayInstance.schema, this.testSchema.memoryBranch.inMemory.arrayParam)
 
   describe 'load()', ->
     beforeEach () ->

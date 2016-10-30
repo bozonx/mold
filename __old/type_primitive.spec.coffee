@@ -1,4 +1,4 @@
-mold = require('../../src/index').default
+mold = require('../src/index').default
 
 testSchema = () ->
   inMemory:

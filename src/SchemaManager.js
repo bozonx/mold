@@ -4,10 +4,8 @@
 
 import _ from 'lodash';
 
-import PrimitiveArray from './types/PrimitiveArray';
 import Collection from './types/Collection';
 import Container from './types/Container';
-import Primitive from './types/Primitive';
 import { convertToSchemaPath, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
 import SchemaInit from './SchemaInit';
@@ -85,10 +83,10 @@ export default class SchemaManager {
       instance = new Collection(this._main);
     }
     else if (schema.type == 'array') {
-      instance = new PrimitiveArray(this._main);
+      throw new Error(`You can't get instance of primitive array!`);
     }
     else if (schema.type == 'boolean' || schema.type == 'string' || schema.type == 'number'){
-      instance = new Primitive(this._main);
+      throw new Error(`You can't get instance of primitive!`);
     }
 
     // It's need for creating collection child
