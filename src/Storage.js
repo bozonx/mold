@@ -19,6 +19,10 @@ export default class Storage {
     this._storage = newStorage;
   }
 
+  $getWhoreStorageState() {
+    return this._storage;
+  }
+
   /**
    * Get value from storage.
    * It hopes a path is correct

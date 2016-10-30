@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import Storage from './Storage';
 import SchemaManager from './SchemaManager';
 import State from './State';
@@ -18,6 +20,23 @@ export default class Main {
     // initialize
     this.schemaManager.init(schema, this);
     this.state.init(this, this._storage);
+  }
+
+  /**
+   * Get real storage. Use it only for binding to react or other fremeworks.
+   * For other ways use exportStorage.
+   * @returns {*}
+   */
+  $getWhoreStorageState() {
+    return this._storage.$getWhoreStorageState();
+  }
+
+  /**
+   * Export storage
+   * @returns {*}
+   */
+  exportStorage() {
+    return _.cloneDeep(this._storage.$getWhoreStorageState());
   }
 
   /**
