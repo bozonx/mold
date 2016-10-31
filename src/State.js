@@ -66,7 +66,7 @@ export default class State {
   }
 
   /**
-   * Add to collection in mold.
+   * Add to collection in store by user action.
    * @param {string} pathToCollection
    * @param {object} newItem
    */
@@ -74,7 +74,7 @@ export default class State {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToCollection);
     if (schema.type !== 'collection')
-      throw new Error(`Only collection type has "add" method.`);
+      throw new Error(`You can add new item only to collection!`);
 
     var preparedItem = {
       ...newItem,
@@ -97,7 +97,7 @@ export default class State {
     var schema = this._main.schemaManager.get(pathToCollection);
 
     if (schema.type !== 'collection')
-      throw new Error(`Only collection type has "add" method.`);
+      throw new Error(`You can remove only from collection!`);
     if (!_.isNumber(itemToRemove.$index))
       throw new Error(`Deleted item must has an $index param.`);
 
@@ -111,7 +111,7 @@ export default class State {
   }
 
   /**
-   * Get data from driver, update mold with new data and return primise
+   * Get data from driver, update mold with new data and return promise
    * @param {string} moldPath - full path in mold
    * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}

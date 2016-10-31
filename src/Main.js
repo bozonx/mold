@@ -27,7 +27,7 @@ export default class Main {
    * For other ways use exportStorage.
    * @returns {*}
    */
-  $getWhoreStorageState() {
+  $getWholeStorageState() {
     return this._storage.$getWhoreStorageState();
   }
 
