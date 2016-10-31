@@ -6,7 +6,7 @@ import Document from './types/Document';
 import DocumentsCollection from './types/DocumentsCollection';
 import { convertToSchemaPathFromLodash, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
-import SchemaInit from './SchemaInit';
+import checkSchemaAndInitStore from './checkSchemaAndInitStore';
 
 
 /**
@@ -26,8 +26,8 @@ export default class SchemaManager {
     });
     this.mainMemoryDriver = memoryDriver.schema({}, {}).driver;
 
-    var schemaInit = new SchemaInit(this._schema, this._main);
-    this._drivers = schemaInit.init();
+    var drivers = checkSchemaAndInitStore(this._schema);
+    this._drivers = drivers;
   }
 
   /**
