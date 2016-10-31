@@ -3,50 +3,54 @@ mold = require('../../src/index').default
 describe 'Functional. Container type.', ->
   beforeEach () ->
     testSchema = () ->
-      root:
+      container:
         type: 'container'
         schema:
-          boolParam:
-            type: 'boolean'
-            default: false
-          stringParam:
-            type: 'string'
-            default: 'defaultStringValue'
-          numberParam:
-            type: 'number'
-            default: 5
-          arrayParam:
-            type: 'array'
+          boolParam: { type: 'boolean' }
+          stringParam: { type: 'string'}
+          numberParam: { type: 'number' }
+          arrayParam: { type: 'array' }
           nested:
             type: 'container'
             schema:
               nestedStringParam:
                 type: 'string'
 
-      this.testSchema = testSchema()
-      this.mold = mold( {}, this.testSchema )
-      this.root = this.mold.instance('root')
+    this.testValues = {
+      boolParam: true,
+      stringParam: 'newValue',
+      numberParam: 5,
+      arrayParam: ['value1'],
+      nested:
+        nestedStringParam: 'nestedValue'
+    }
 
+    this.testSchema = testSchema()
+    this.mold = mold( {}, this.testSchema )
+    this.container = this.mold.instance('container')
 
+  it "Initial values", ->
+    assert.deepEqual(this.container.mold, {
+      boolParam: null,
+      stringParam: null,
+      numberParam: null,
+      arrayParam: [],
+      nested:
+        nestedStringParam: null
+    })
 
-  # TODO: check initial values, setMold, getMold, child
+  it "child(subpath)", ->
+    nested = this.container.child('nested')
+    assert.equal(nested.getRoot(), 'container.nested')
+    assert.deepEqual(nested.schema, this.testSchema.container.schema.nested)
+    assert.deepEqual(nested.mold, {nestedStringParam: null})
 
-  describe 'child(subpath)', ->
+  # TODO: do it
+#  it "getMold()", ->
+#    _.set(this.mold.schemaManager.$defaultMemoryDb, 'container', this.testValues)
+#    assert.deepEqual(this.container.getMold(), this.testValues)
 
-
-#    it 'child: container', () ->
-#      #this.container = this.rootInstance.child('inMemory')
-#
-#      containerDeeper = this.container.child('nested')
-#      assert.equal(containerDeeper.getRoot(), 'memoryBranch.inMemory.nested')
-#      assert.deepEqual(containerDeeper.schema, this.testSchema.memoryBranch.schema.inMemory.schema.nested)
-
-#    it 'child: primitive', () ->
-#      primitiveInstance = this.container.child('stringParam')
-#      assert.equal(primitiveInstance.getRoot(), 'memoryBranch.inMemory.stringParam')
-#      assert.deepEqual(primitiveInstance.schema, this.testSchema.memoryBranch.inMemory.stringParam)
-
-#    it 'child: array', () ->
-#      arrayInstance = this.container.child('arrayParam')
-#      assert.equal(arrayInstance.getRoot(), 'memoryBranch.inMemory.arrayParam')
-#      assert.deepEqual(arrayInstance.schema, this.testSchema.memoryBranch.inMemory.arrayParam)
+  it "setMold()", ->
+    this.container.setMold(this.testValues)
+    this.container.setMold({stringParam: 'newerValue'})
+    assert.deepEqual(this.container.mold, _.defaultsDeep({stringParam: 'newerValue'}, this.testValues))
