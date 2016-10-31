@@ -5,8 +5,8 @@ testSchema = () ->
     type: 'container'
     schema:
       stringParam: {type: 'string'}
-  fullContainer:
-    type: 'container'
+  document:
+    type: 'document'
     schema:
       stringParam: {type: 'string'}
       numberParam: {type: 'number'}
@@ -44,7 +44,7 @@ describe 'Functional. Events.', ->
 
     it 'container', ->
       this.mold.onMoldUpdate(this.handler)
-      container = this.mold.instance('fullContainer')
+      container = this.mold.instance('document')
       container.setMold({
         stringParam: 'new string'
         numberParam: 5
@@ -52,15 +52,15 @@ describe 'Functional. Events.', ->
 
       expect(this.handler).to.have.been.calledThice
       expect(this.handler).to.have.been.calledWith({
-        path: 'fullContainer.stringParam'
+        path: 'document.stringParam'
         action: 'change'
       })
       expect(this.handler).to.have.been.calledWith({
-        path: 'fullContainer.numberParam'
+        path: 'document.numberParam'
         action: 'change'
       })
       expect(this.handler).to.have.been.calledWith({
-        path: 'fullContainer.booleanParam'
+        path: 'document.booleanParam'
         action: 'unchanged'
       })
 
@@ -94,12 +94,12 @@ describe 'Functional. Events.', ->
       expect(this.handler).to.have.been.callCount(4)
 
     it 'on load', (done) ->
-      container = this.mold.instance('fullContainer')
-      container.setMold({
+      document = this.mold.instance('document')
+      document.setMold({
         numberParam: 5
       })
 
-      _.set(this.mold.schemaManager.$defaultMemoryDb, 'fullContainer', {
+      _.set(this.mold.schemaManager.$defaultMemoryDb, 'document', {
         stringParam: 'new value'
         numberParam: 5
         booleanParam: true
@@ -107,17 +107,17 @@ describe 'Functional. Events.', ->
 
       this.mold.onMoldUpdate(this.handler)
 
-      expect(container.load()).to.eventually.notify =>
+      expect(document.load()).to.eventually.notify =>
         expect(this.handler).to.have.been.calledWith({
-          path: 'fullContainer.stringParam'
+          path: 'document.stringParam'
           action: 'change'
         })
         expect(this.handler).to.have.been.calledWith({
-          path: 'fullContainer.numberParam'
+          path: 'document.numberParam'
           action: 'unchanged'
         })
         expect(this.handler).to.have.been.calledWith({
-          path: 'fullContainer.booleanParam'
+          path: 'document.booleanParam'
           action: 'change'
         })
         done()

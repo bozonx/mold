@@ -28,14 +28,6 @@ export default class Container extends _TypeBase{
     return this._main.schemaManager.getInstance(concatPath(this._root, path));
   }
 
-  /**
-   * Load data.
-   * @returns {Promise}
-   */
-  load() {
-    return this._main.state.load(this._root, this.getSourceParams());
-  }
-
   setMold(pathOrValue, valueOrNothing) {
     var path = pathOrValue;
     var value = valueOrNothing;
@@ -55,19 +47,6 @@ export default class Container extends _TypeBase{
     }
 
     this._main.state.setMold(this._root, payload);
-  }
-
-  save(pathOrNothing) {
-    // TODO: pathOrNothing здесь вообще левая тема
-    var path;
-    if (pathOrNothing) {
-      path = concatPath(this._root, pathOrNothing);
-    }
-    else {
-      path = this._root;
-    }
-
-    return this._main.state.save(path, this.getSourceParams());
   }
 
 }
