@@ -3,25 +3,48 @@ mold = require('../../src/index').default
 describe 'Functional. Document type.', ->
   beforeEach () ->
     testSchema = () ->
-      root:
-        type: 'container',
-        driver: 'memory',
+      document:
+        type: 'document'
         schema:
-          articleDetails:
-            type: 'document',
+          boolParam: { type: 'boolean' }
+          stringParam: { type: 'string'}
+          numberParam: { type: 'number' }
+          arrayParam: { type: 'array' }
+          nested:
+            type: 'container'
             schema:
-              stringParam: { type: 'string' }
-              nested:
-                type: 'container',
-                schema:
-                  nestedParam: { type: 'string' }
+              nestedStringParam:
+                type: 'string'
 
-    # get by path -   root.articleDetails.stringParam.nested.stringParam
-    # get in schema - root.schema.articleDetails.schema.nested.schema.stringParam
+    this.testValues = {
+      boolParam: true,
+      stringParam: 'newValue',
+      numberParam: 5,
+      arrayParam: ['value1'],
+      nested:
+        nestedStringParam: 'nestedValue'
+    }
 
-#    this.testSchema = testSchema()
-#    this.mold = mold( {}, this.testSchema )
-#    this.rootInstance = this.mold.instance('memoryBranch')
-#    this.container = this.rootInstance.child('inMemory')
+    this.testSchema = testSchema()
+    this.mold = mold( {}, this.testSchema )
+    this.document = this.mold.instance('document')
 
-  it '', () ->
+  it 'load() and check mold', (done) ->
+    _.set(this.mold.schemaManager.$defaultMemoryDb, 'document', this.testValues)
+
+    expect(this.document.load()).to.eventually.notify =>
+      expect(Promise.resolve(this.document.mold)).to.eventually
+      .deep.equal(this.testValues)
+      .notify(done)
+
+  it 'load() and check response', ->
+    _.set(this.mold.schemaManager.$defaultMemoryDb, 'document', this.testValues)
+
+    expect(this.document.load()).to.eventually.property('coocked').deep.equal(this.testValues)
+
+  it 'setMold and save', ->
+    this.document.setMold(this.testValues)
+    expect(this.document.save()).to.eventually
+    .property('coocked').deep.equal(this.testValues)
+
+# TODO: test save and load to nested document

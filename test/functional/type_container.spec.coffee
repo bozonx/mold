@@ -81,17 +81,6 @@ describe 'Functional. Container type.', ->
         arrayParam: [],
       })
 
-    it 'load() and check mold', (done) ->
-      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory', this.containerValues)
-      expect(this.container.load()).to.eventually.notify =>
-        expect(Promise.resolve(this.container.mold)).to.eventually
-        .deep.equal(this.containerValues)
-        .notify(done)
-
-    it 'load() and check response', ->
-      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory', this.containerValues)
-      expect(this.container.load()).to.eventually.property('coocked').deep.equal(this.containerValues)
-
   describe 'setMold and save', ->
     beforeEach ->
       this.testSchema =
