@@ -8,6 +8,7 @@ import { recursiveSchema } from './helpers';
  */
 export default function(rawSchema) {
   var drivers = {};
+  var initialStorage = {};
 
   recursiveSchema('', rawSchema, (newPath, value) => {
     if (value.driver) {
@@ -34,12 +35,16 @@ export default function(rawSchema) {
       if (!_.isPlainObject(value.schema))
         throw new Error(`Schema definition of document on "${newPath}" must have a "schema" param!`);
 
+      _.set(initialStorage, newPath, {});
+
       // Go through inner param 'schema'
       return 'schema';
     }
     else if (value.type == 'container') {
       if (!_.isPlainObject(value.schema))
         throw new Error(`Schema definition of container on "${newPath}" must have a "schema" param!`);
+
+      _.set(initialStorage, newPath, {});
 
       // Go through inner param 'schema'
       return 'schema';
@@ -48,6 +53,8 @@ export default function(rawSchema) {
       if (!_.isPlainObject(value.item))
         throw new Error(`Schema definition of documentsCollection on "${newPath}" must have an "item" param!`);
 
+      _.set(initialStorage, newPath, []);
+
       // Go through inner param 'item'
       return 'item';
     }
@@ -55,16 +62,21 @@ export default function(rawSchema) {
       if (!_.isPlainObject(value.item))
         throw new Error(`Schema definition of collection on "${newPath}" must have an "item" param!`);
 
+      _.set(initialStorage, newPath, []);
+
       // Go through inner param 'item'
       return 'item';
     }
     else if (value.type == 'array') {
       // TODO: если есть параметр itemType - проверить, чтобы его типы совпадали с существующими
 
+      _.set(initialStorage, newPath, []);
+
       // don't go deeper
       return false;
     }
     else if (value.type == 'number' || value.type == 'string' || value.type == 'boolean') {
+      _.set(initialStorage, newPath, null);
 
       // don't go deeper
       return false;
@@ -74,5 +86,5 @@ export default function(rawSchema) {
     }
   });
 
-  return drivers;
+  return { initialStorage, drivers };
 }

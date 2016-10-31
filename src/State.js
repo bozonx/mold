@@ -5,14 +5,14 @@ import { recursiveSchema, findTheClosestParentPath } from './helpers';
 import Request from './Request';
 
 export default class State {
-  init(main, storage) {
+  init(main, storage, initialStorage) {
     this._main = main;
     this._storage = storage;
     this._request = new Request(this._main, storage);
     this._handlers = {};
     this._sourceParams = {};
 
-    this._initStorage();
+    this._storage.$init(initialStorage);
   }
 
   /**
@@ -276,54 +276,4 @@ export default class State {
     throw new Error(`Not valid value "${JSON.stringify(value)}" of param "${path}"! See validation rules in your schema.`);
   }
 
-  /**
-   * Set initial values (null|[]|{}) to storage for all items from schema.
-   * @private
-   */
-  _initStorage() {
-    var storageValues = {};
-
-    recursiveSchema('', this._main.schemaManager.get(''), (newPath, value) => {
-      if (value.type == 'container') {
-        _.set(storageValues, newPath, {});
-
-        // Go deeper
-        return 'schema';
-      }
-      if (value.type == 'document') {
-        _.set(storageValues, newPath, {});
-
-        // Go deeper
-        return 'schema';
-      }
-      else if (value.type == 'documentsCollection') {
-        _.set(storageValues, newPath, []);
-
-        // Don't go deeper
-        return false;
-      }
-      else if (value.type == 'collection') {
-        _.set(storageValues, newPath, []);
-
-        // Don't go deeper
-        return false;
-      }
-      else if (value.type == 'array') {
-        // array
-        _.set(storageValues, newPath, []);
-
-        // Don't go deeper
-        return false;
-      }
-      else if (_.includes(['boolean', 'string', 'number'], value.type)) {
-        // primitive
-        _.set(storageValues, newPath, null);
-
-        // Don't go deeper
-        return false;
-      }
-    });
-
-    this._storage.$init(storageValues);
-  }
 }
