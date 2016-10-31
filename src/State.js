@@ -133,7 +133,8 @@ export default class State {
       return this._request.loadCollection(moldPath, sourceParams);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      return this._request.loadPrimitive(moldPath, sourceParams);
+      throw new Error(`You can't send load request to primitive of "${schema.type}"!`);
+      //return this._request.loadPrimitive(moldPath, sourceParams);
     }
 
     throw new Error(`Unknown type!`);
@@ -162,7 +163,8 @@ export default class State {
       return this._request.saveCollection(moldPath, sourceParams);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      return this._request.savePrimitive(moldPath, sourceParams);
+      throw new Error(`You can't send save request to primitive of "${schema.type}"!`);
+      //return this._request.savePrimitive(moldPath, sourceParams);
     }
 
     throw new Error(`Unknown type!`);
@@ -281,8 +283,6 @@ export default class State {
   _initStorage() {
     var storageValues = {};
 
-    // TODO: объединить это с инициализацией схемы
-
     recursiveSchema('', this._main.schemaManager.get(''), (newPath, value) => {
       if (value.type == 'container') {
         _.set(storageValues, newPath, {});
@@ -299,27 +299,27 @@ export default class State {
       else if (value.type == 'documentsCollection') {
         _.set(storageValues, newPath, []);
 
-        // Dont't go deeper
+        // Don't go deeper
         return false;
       }
       else if (value.type == 'collection') {
         _.set(storageValues, newPath, []);
 
-        // Dont't go deeper
+        // Don't go deeper
         return false;
       }
       else if (value.type == 'array') {
         // array
         _.set(storageValues, newPath, []);
 
-        // Dont't go deeper
+        // Don't go deeper
         return false;
       }
       else if (_.includes(['boolean', 'string', 'number'], value.type)) {
         // primitive
         _.set(storageValues, newPath, null);
 
-        // Dont't go deeper
+        // Don't go deeper
         return false;
       }
     });

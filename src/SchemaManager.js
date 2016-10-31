@@ -1,7 +1,3 @@
-// It's schema manager
-// You can set schema only once on creating instance
-// You can't mutate a schema
-
 import _ from 'lodash';
 
 import Collection from './types/Collection';
@@ -12,6 +8,13 @@ import { convertToSchemaPathFromLodash, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
 import SchemaInit from './SchemaInit';
 
+
+/**
+ * It's schema manager
+ * You can set schema only once on creating instance
+ * You can't mutate a schema
+ * @class
+ */
 export default class SchemaManager {
   init(schema, main) {
     this._schema = schema;
@@ -23,7 +26,6 @@ export default class SchemaManager {
     });
     this.mainMemoryDriver = memoryDriver.schema({}, {}).driver;
 
-
     var schemaInit = new SchemaInit(this._schema, this._main);
     this._drivers = schemaInit.init();
   }
@@ -31,7 +33,7 @@ export default class SchemaManager {
   /**
    * get schema part by path
    * @param {string} path - absolute path in lodash format
-   * @returns {object} schema
+   * @returns {object} schema like {type, driver, params, schema}
    */
   get(path) {
     if (path === '') return this.getFullSchema();
@@ -62,23 +64,10 @@ export default class SchemaManager {
     // It rise an error if path doesn't consist with schema
     var schema = this.get(path);
 
-    if (schema.type == 'container') {
-
-
-
-      instance = new Container(this._main);
-
-      console.log(222222222, path)
-    }
-    else if (schema.type == 'collection') {
-      instance = new Collection(this._main);
-    }
-    else if (schema.type == 'document') {
-      instance = new Document(this._main);
-    }
-    else if (schema.type == 'documentsCollection') {
-      instance = new DocumentsCollection(this._main);
-    }
+    if (schema.type == 'container')                 instance = new Container(this._main);
+    else if (schema.type == 'collection')           instance = new Collection(this._main);
+    else if (schema.type == 'document')             instance = new Document(this._main);
+    else if (schema.type == 'documentsCollection')  instance = new DocumentsCollection(this._main);
     else if (schema.type == 'array') {
       throw new Error(`You can't get instance of primitive array!`);
     }
@@ -96,22 +85,6 @@ export default class SchemaManager {
   }
 
   /**
-   * Get document. If it doesn't exists, returns undefined
-   * @param {string} path - absolute path for document or its child
-   * @returns {object|undefined}
-   */
-  // getDocument(path) {
-  //   // TODO: !!!! не нужно, вместо этого можно просто брать инстанс документа
-  //
-  //   if (!_.isString(path))
-  //     throw new Error(`You must pass the path argument!`);
-  //
-  //   var matchPath = getTheBestMatchPath(path, _.keys(this._documents));
-  //
-  //   return this._documents[matchPath];
-  // }
-
-  /**
    * Get driver. If it doesnt exists, returns undefined
    * @param {string} path - absolute path for driver or its child
    * @returns {object|undefined}
@@ -127,7 +100,7 @@ export default class SchemaManager {
     if (matchPath)
       return this._drivers[matchPath];
 
-    // no-one - memory driver
+    // no-one = memory driver
     return this.mainMemoryDriver;
   }
 
