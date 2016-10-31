@@ -36,35 +36,6 @@ export default class Request {
   }
 
   /**
-   * Load primitive from driver
-   * @param {string} pathToPrimitive
-   * @param {object|null} sourceParams - dynamic part of source path
-   * @returns {Promise}
-   */
-  // loadPrimitive(pathToPrimitive, sourceParams) {
-  //   return new Promise((resolve, reject) => {
-  //     var splits = splitLastParamPath(pathToPrimitive);
-  //     var basePath = splits.basePath;
-  //     var paramPath = splits.paramPath;
-  //
-  //     this._startDriverRequest('get', basePath, undefined, sourceParams).then((resp) => {
-  //       // unwrap primitive value from container
-  //       var preparedResponse = {
-  //         ...resp,
-  //         coocked: _.get(resp.coocked, paramPath)
-  //       };
-  //
-  //       this._main.log.info('---> finish load primitive: ', preparedResponse);
-  //
-  //       // update mold with server response data
-  //       this._storage.update(pathToPrimitive, preparedResponse.coocked);
-  //
-  //       resolve(preparedResponse);
-  //     }, reject);
-  //   });
-  // }
-
-  /**
    * Load container and it's contents from driver.
    * @param {string} pathToContainer
    * @param {object|null} sourceParams - dynamic part of source path
@@ -101,45 +72,6 @@ export default class Request {
       }, reject);
     });
   }
-
-  /**
-   * Save primitive on path to driver.
-   * @param {string} pathToPrimitive
-   * @param {object|null} sourceParams - dynamic part of source path
-   * @returns {Promise}
-   */
-  // savePrimitive(pathToPrimitive, sourceParams) {
-  //   // For primitive, get container upper on path
-  //   var splits = splitLastParamPath(pathToPrimitive);
-  //   var pathToContainer = splits.basePath;
-  //   var subPath = splits.paramPath;
-  //
-  //   if (_.isUndefined(splits.paramPath))
-  //     // TODO: это должно проверяться ещё на стадии валидации схемы.
-  //     throw new Error(`Something wrong with your schema. Root of primitive must be a container.`);
-  //
-  //   if (this._main.schemaManager.get(pathToContainer).type)
-  //     // TODO: это должно проверяться ещё на стадии валидации схемы.
-  //     throw new Error(`Something wrong with your schema. Primitive must be placed in container.`);
-  //
-  //   var payload = this._storage.get(pathToContainer);
-  //
-  //   return new Promise((resolve, reject) => {
-  //     this._startDriverRequest('set', pathToContainer, payload, sourceParams).then((resp) => {
-  //       // update storage with server response
-  //       let preparedResp = {
-  //         ...resp,
-  //         coocked: resp.coocked[subPath],
-  //       };
-  //
-  //       this._main.log.info('---> finish save primitive: ', preparedResp);
-  //
-  //       // update mold with server response data
-  //       this._storage.update(pathToPrimitive, preparedResp.coocked);
-  //       resolve(preparedResp);
-  //     }, reject);
-  //   });
-  // }
 
   /**
    * Save container and it's contents to driver.
