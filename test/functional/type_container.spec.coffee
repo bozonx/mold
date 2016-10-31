@@ -45,10 +45,9 @@ describe 'Functional. Container type.', ->
     assert.deepEqual(nested.schema, this.testSchema.container.schema.nested)
     assert.deepEqual(nested.mold, {nestedStringParam: null})
 
-  # TODO: do it
-#  it "getMold()", ->
-#    _.set(this.mold.schemaManager.$defaultMemoryDb, 'container', this.testValues)
-#    assert.deepEqual(this.container.getMold(), this.testValues)
+  it "getMold()", ->
+    this.container.setMold(this.testValues)
+    assert.deepEqual(this.container.getMold(), this.testValues)
 
   it "setMold()", ->
     this.container.setMold(this.testValues)
