@@ -233,6 +233,8 @@ export default class Request {
    * @private
    */
   _startDriverRequest(method, moldPath, payload, sourceParams) {
+    // TODO: !!!! pathToDocument не надо - он всегда = moldPath
+
     var driver = this._main.schemaManager.getDriver(moldPath);
 
     // It rise an error if path doesn't consist with schema
@@ -244,7 +246,11 @@ export default class Request {
       throw new Error(`No-one driver did found!!!`);
 
     var documentSchema = this._main.schemaManager.get(moldPath);
-    var documentParams = documentSchema.params;
+    // TODO: надо добавить ещё document params
+    var documentParams = {
+      source: documentSchema.source,
+      pathToDocument: moldPath,
+    };
 
     var splits;
     if (documentParams && documentParams.pathToDocument && documentParams.pathToDocument != moldPath)

@@ -119,13 +119,19 @@ export function concatPath(root, relativePath) {
 }
 
 export function getSchemaBaseType(schemaType) {
-  if (schemaType == 'collection') {
-    return 'collection';
-  }
-  else if(!schemaType) {
+  if (schemaType == 'container') {
     return 'container';
   }
-  else {
+  if (schemaType == 'document') {
+    return 'container';
+  }
+  else if (schemaType == 'collection') {
+    return 'collection';
+  }
+  else if (schemaType == 'documentCollection') {
+    return 'collection';
+  }
+  else if (_.includes(['boolean', 'string', 'number', 'array'], schemaType)) {
     return 'primitive';
   }
 }

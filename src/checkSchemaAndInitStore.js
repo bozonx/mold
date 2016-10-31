@@ -75,7 +75,7 @@ export default function(rawSchema) {
       // don't go deeper
       return false;
     }
-    else if (value.type == 'number' || value.type == 'string' || value.type == 'boolean') {
+    else if (_.includes(['boolean', 'string', 'number'], value.type)) {
       _.set(initialStorage, newPath, null);
 
       // don't go deeper

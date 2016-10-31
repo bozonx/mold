@@ -58,7 +58,7 @@ export default class Container extends _TypeBase{
   }
 
   save(pathOrNothing) {
-    // TODO: путь здесь вообще левая тема
+    // TODO: pathOrNothing здесь вообще левая тема
     var path;
     if (pathOrNothing) {
       path = concatPath(this._root, pathOrNothing);
