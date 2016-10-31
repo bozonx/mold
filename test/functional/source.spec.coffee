@@ -6,9 +6,9 @@
 #    schema:
 #      document:
 #        source: 'collection.${itemId}',
-#      schema:
-#        id: {type: 'number'}
-#        name: {type: 'string'}
+#        schema:
+#          id: {type: 'number'}
+#          name: {type: 'string'}
 #
 #describe 'Functional. Source.', ->
 #  beforeEach () ->
