@@ -39,7 +39,7 @@ export default class PagedCollection extends _TypeBase {
    * Get list with all the items of all the pages.
    */
   getFlat() {
-    // TODO: test it
+    // TODO: наверное нужно пересчитать индексы $index или убрать их
     return _.flatMap(_.cloneDeep(this.mold));
   }
 
@@ -47,7 +47,6 @@ export default class PagedCollection extends _TypeBase {
    * Get copy of list of pages.
    */
   getMold() {
-    // TODO: test it
     return _.cloneDeep(this.mold);
   }
 
@@ -55,33 +54,22 @@ export default class PagedCollection extends _TypeBase {
    * add item to the end of last page.
    */
   addItem(item) {
-    var lastPage;
+    var pageNum;
 
     if (!_.isPlainObject(item))
       throw new Error(`You can add only item of plain object type!`);
 
     if (_.isEmpty(this.mold)) {
-      // TODO: add first empty page
-      lastPage = [];
-      //this._main.state.setMold(concatPath(this._root, 0), []);
-      //this._main.state.addMold(this._root, []);
-      this._main.state.addPage(this._root, []);
+      pageNum = 0;
+      this._main.state.addPage(this._root, [], pageNum);
     }
     else {
-      // TODO: проверить если страница полная, то добавить в новую
-      lastPage = _.last(this.mold);
+      pageNum = this.mold.length - 1;
     }
 
+    // TODO: не допускать переполнение страницы - создавать новую, если эта переполненна
 
-    //lastPage.push(item);
-
-    //this._main.state.setMold(this._root, newMold);
-
-
-
-    this._main.state.addToEnd(concatPath(this._root, 0), item);
-
-    // TODO: add item to page
+    this._main.state.addToEnd(concatPath(this._root, pageNum), item);
   }
 
   /**
@@ -90,6 +78,10 @@ export default class PagedCollection extends _TypeBase {
    */
   addManyItems(items) {
     // TODO: test it
+    if (!_.isArray(items))
+      throw new Error(`You can add only items of array type!`);
+
+    // TODO: делать это поштучно - тогда поднимется много событий. Или всё разом???
   }
 
   /**
@@ -97,16 +89,12 @@ export default class PagedCollection extends _TypeBase {
    * @param {number} pageNum
    * @param {array} page
    */
-  // addPage(pageNum, page) {
-  //   if (!_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
-  //   if (!_.isArray(page)) throw new Error(`The page must be type of array!`);
-  //
-  //   // TODO: нужно ли здесь полное клонирование???
-  //   var newMold = _.clone(this.mold);
-  //   newMold[pageNum] = page;
-  //
-  //   this._main.state.setMold(this._root, newMold);
-  // }
+  addPage(page, pageNum) {
+    if (!_.isUndefined(pageNum) && !_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
+    if (!_.isArray(page)) throw new Error(`The page must be type of array!`);
+
+    this._main.state.addPage(this._root, page, pageNum);
+  }
 
   /**
    * Remove page

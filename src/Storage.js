@@ -88,6 +88,9 @@ export default class Storage {
       }
     ];
 
+    //var changes = mutate(this._storage, pathToPagedCollection).addToEnd(page);
+
+    // run update events
     this._riseEvents(changes);
   }
 

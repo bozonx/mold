@@ -174,8 +174,7 @@ class Mutate {
     this._updateIndexes(originalCollection);
 
     // rise update on whore collection
-    var moldPath = rootLodash;
-    if (isChanged) this.changes.push([moldPath, 'change']);
+    if (isChanged) this.changes.push([rootLodash, 'change']);
     //else this.changes.push([moldPath, 'unchanged']);
 
     return isChanged;

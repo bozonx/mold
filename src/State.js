@@ -92,7 +92,7 @@ export default class State {
   /**
    * Add page to paged collection in store.
    * @param {string} pathToPagedCollection
-   * @param {array} page
+   * @param {Array} page
    */
   addPage(pathToPagedCollection, page) {
     // It rise an error if path doesn't consist with schema
@@ -101,8 +101,15 @@ export default class State {
     if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
       throw new Error(`You can add new item only to paged collection!`);
 
+    var preparedPage = _.map(page, (item) => {
+      return {
+        ...item,
+        $isNew: true,
+      };
+    });
+
     //this._checkNode(pathToPagedCollection, page);
-    this._storage.addPage(pathToPagedCollection, page);
+    this._storage.addPage(pathToPagedCollection, preparedPage);
     // add to collection of unsaved added items
     //this._request.addUnsavedAddedItem(pathToPagedCollection, page);
   }
