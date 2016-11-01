@@ -45,19 +45,11 @@ export function findPrimary(schema) {
   return primary;
 }
 
-// TODO: убрать
-export function convertToSchemaPath(path) {
-  return path.replace(/(\[\d+])|(\.\d+)/, '.item');
-}
-
 // TODO: test it
 export function convertToSchemaPathFromLodash(path) {
-
-  // TODO: перевести на lodash синтаксис
-
   var newPath = path;
   // replace collection params [1]
-  newPath =  newPath.replace(/(\[\d+])|(\.\d+)/g, '!item!');
+  newPath =  newPath.replace(/\[\d+]/g, '!item!');
 
   // TODO: use symbol
   // replace "." to ".schema."
@@ -112,9 +104,12 @@ export function getTheBestMatchPath(sourcePath, pathsList) {
 }
 
 export function concatPath(root, relativePath) {
-  //   if (_.startsWith(relativePath, '['))
-  //     return `${this._root}${relativePath}`;
-  //
+  if (_.isNumber(relativePath))
+    return `${root}[${relativePath}]`;
+
+  if (_.startsWith(relativePath, '['))
+    return `${root}${relativePath}`;
+
   return `${root}.${relativePath}`;
 }
 

@@ -25,27 +25,37 @@ describe 'Unit. helpers.', ->
         basePath: 'dir1.dir2'
         paramPath: 'file'
       })
-      
+
     it 'dir1.dir2.file.0', ->
       assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0'), {
         basePath: 'dir1.dir2.file'
         paramPath: 0
       })
-    
+
     it 'dir1.dir2.file.0.name', ->
       assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0.name'), {
         basePath: 'dir1.dir2.file.0'
         paramPath: 'name'
       })
-    
+
     it 'dir1.dir2.file.0.param.1', ->
       assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0.param.1'), {
         basePath: 'dir1.dir2.file.0.param'
         paramPath: 1
       })
-    
+
     it 'dir1.dir2.file.0.param.1.name', ->
       assert.deepEqual(helpers.splitLastParamPath('dir1.dir2.file.0.param.1.name'), {
         basePath: 'dir1.dir2.file.0.param.1'
         paramPath: 'name'
       })
+
+  describe 'concatPath.', ->
+    it 'common path', ->
+      assert.deepEqual(helpers.concatPath('dir1.dir2', 'file'), 'dir1.dir2.file')
+
+    it 'concat number', ->
+      assert.deepEqual(helpers.concatPath('dir1.dir2', 1), 'dir1.dir2[1]')
+
+    it 'concat array', ->
+      assert.deepEqual(helpers.concatPath('dir1.dir2', '[1]'), 'dir1.dir2[1]')
