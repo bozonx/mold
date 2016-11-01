@@ -19,6 +19,8 @@ describe 'Unit. helpers.', ->
       assert.equal(helpers.getTheBestMatchPath('one.two.three.other', paths), 'one.two.three')
       assert.equal(helpers.getTheBestMatchPath('one.two.three.four.other', paths), 'one.two.three.four')
 
+    it 'path with array', ->
+      assert.equal(helpers.getTheBestMatchPath('one[1].two[2]', ['one[1].two']), 'one[1].two')
 
   describe 'concatPath.', ->
     it 'common path', ->

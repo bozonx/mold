@@ -39,17 +39,7 @@ export function convertToSchemaPathFromLodash(path) {
   return newPath;
 }
 
-
-export function convertToLodashPath(moldPath) {
-  return moldPath.replace(/\.(\d+)/g, '[\$1]');
-}
-
-export function convertFromLodashToMoldPath(moldPath) {
-  return moldPath.replace(/\[(\d+)]/g, '.\$1');
-}
-
 export function getTheBestMatchPath(sourcePath, pathsList) {
-  // TODO: нужна ли поддержка lodash array format???
   var matchList = _.map(pathsList, (path) => {
     if (sourcePath.indexOf(path) === 0) return path;
   });
