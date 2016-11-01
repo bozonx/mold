@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import PagedCollection from './types/PagedCollection';
 import Collection from './types/Collection';
 import Container from './types/Container';
 import Document from './types/Document';
@@ -65,6 +66,7 @@ export default class SchemaManager {
 
     if (schema.type == 'container')                 instance = new Container(this._main);
     else if (schema.type == 'collection')           instance = new Collection(this._main);
+    else if (schema.type == 'pagedCollection')      instance = new PagedCollection(this._main);
     else if (schema.type == 'document')             instance = new Document(this._main);
     else if (schema.type == 'documentsCollection')  instance = new DocumentsCollection(this._main);
     else if (schema.type == 'array') {

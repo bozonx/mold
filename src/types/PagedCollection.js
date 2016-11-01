@@ -22,23 +22,24 @@ export default class PagedCollection extends _TypeBase {
    * @returns {object} - instance of child
    */
   child(pageNum) {
-    // if (_.isUndefined(primaryIdOrPath))
-    //   throw new Error(`You must pass a path argument.`);
-    //
-    // var pathToChild = concatPath(this._root, primaryIdOrPath);
-    // // get container instance
-    // var instance = this._main.schemaManager.getInstance(pathToChild);
-    // // reinit container instance with correct path
-    // instance.$init(pathToChild, instance.schema);
-    //
-    // return instance;
+    if (!_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
+
+    // TODO: test it
+
+    var pathToChild = concatPath(this._root, pageNum);
+    // get container instance
+    var instance = this._main.schemaManager.getInstance(pageNum);
+    // reinit container instance with correct path
+    instance.$init(pathToChild, instance.schema);
+
+    return instance;
   }
 
   /**
    * Get list with all the items of all the pages.
    */
   getFlat() {
-
+    return _.flatMap(_.cloneDeep(this.mold));
   }
 
   /**
@@ -52,6 +53,27 @@ export default class PagedCollection extends _TypeBase {
    * add item to the end of last page.
    */
   addItem(item) {
+    var lastPage;
+
+    if (!_.isPlainObject(item))
+      throw new Error(`You can add only item of plain object type!`);
+
+    if (_.isEmpty(this.mold)) {
+      // TODO: add first empty page
+      lastPage = [];
+    }
+    else {
+      lastPage = _.last(this.mold);
+    }
+
+    // TODO: add item to page
+  }
+
+  /**
+   * Add list of items. They will be separate to pages
+   * @param items
+   */
+  addItems(items) {
 
   }
 
@@ -60,15 +82,22 @@ export default class PagedCollection extends _TypeBase {
    * @param {number} pageNum
    * @param {array} page
    */
-  addPage(pageNum, page) {
-    //this._main.state.addMold(this._root, item);
-  }
+  // addPage(pageNum, page) {
+  //   if (!_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
+  //   if (!_.isArray(page)) throw new Error(`The page must be type of array!`);
+  //
+  //   // TODO: нужно ли здесь полное клонирование???
+  //   var newMold = _.clone(this.mold);
+  //   newMold[pageNum] = page;
+  //
+  //   this._main.state.setMold(this._root, newMold);
+  // }
 
   /**
    * Remove page
    * @param {number} pageNum
    */
   removePage(pageNum) {
-    //this._main.state.removeMold(this._root, item);
+    // TODO: !!!!
   }
 }
