@@ -7,8 +7,10 @@ import Container from './Container';
 export default class Document extends Container{
   constructor(main) {
     super(main);
+  }
 
-    this.type = 'document';
+  get type() {
+    return 'document';
   }
 
   $init(root, schema) {

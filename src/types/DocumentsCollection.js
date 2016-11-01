@@ -7,8 +7,10 @@ import PagedCollection from './PagedCollection';
 export default class DocumentsCollection extends PagedCollection{
   constructor(main) {
     super(main);
+  }
 
-    this.type = 'documentsCollection';
+  get type() {
+    return 'documentsCollection';
   }
 
   $init(root, schema) {

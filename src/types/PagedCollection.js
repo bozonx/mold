@@ -9,7 +9,19 @@ export default class PagedCollection extends _TypeBase {
   constructor(main) {
     super(main);
 
-    this.type = 'pagedCollection';
+    this._itemsPerPage = 10;
+  }
+
+  get type() {
+    return 'pagedCollection';
+  }
+
+  get itemsPerPage() {
+    return this._itemsPerPage;
+  }
+
+  set itemsPerPage(value) {
+    this._itemsPerPage = value;
   }
 
   $init(root, schema) {

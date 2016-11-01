@@ -9,6 +9,8 @@ import checkSchemaAndInitStore from './checkSchemaAndInitStore';
 
 export default class Main {
   constructor(config, schema) {
+    // TODO: наверное не стоит делать объекты открытыми - использовать геттер или $$
+
     var configInstance = new Config(config);
     this.config = configInstance.get();
     this.events = this.config.eventEmitter;

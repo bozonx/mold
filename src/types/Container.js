@@ -7,8 +7,10 @@ import _TypeBase from './_TypeBase';
 export default class Container extends _TypeBase{
   constructor(main) {
     super(main);
+  }
 
-    this.type = 'container';
+  get type() {
+    return 'container';
   }
 
   $init(root, schema) {
