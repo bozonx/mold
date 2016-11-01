@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { findPrimary, splitLastParamPath, getSchemaBaseType } from './helpers';
+import { findPrimary, getSchemaBaseType } from './helpers';
 
 export default class Request {
   constructor(main, storage) {
@@ -184,9 +184,9 @@ export default class Request {
       pathToDocument: moldPath,
     };
 
-    var splits;
-    if (documentParams && documentParams.pathToDocument && documentParams.pathToDocument != moldPath)
-      splits = splitLastParamPath(documentParams.pathToDocument);
+    // var splits;
+    // if (documentParams && documentParams.pathToDocument && documentParams.pathToDocument != moldPath)
+    //   splits = splitLastParamPath(documentParams.pathToDocument);
 
     var req = _.pickBy({
       method,

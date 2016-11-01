@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { recursiveSchema, findTheClosestParentPath } from './helpers';
+import { findTheClosestParentPath } from './helpers';
 import Request from './Request';
 
 export default class State {

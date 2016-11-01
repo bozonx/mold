@@ -1,25 +1,5 @@
 import _ from 'lodash';
 
-// export function recursively(root, item, cb) {
-//   if (!_.isPlainObject(item) && !_.isArray(item)) {
-//     cb(root);
-//     return;
-//   }
-//
-//   _.each(item, function (value, name) {
-//     console.log(999999, root, name)
-//     // TODO: !!!!! ошибка с путем
-//     var childPath = _.trim(`${root}.${name}`, '.');
-//
-//     var isGoDeeper = cb(childPath, value, name);
-//     if (_.isString(isGoDeeper)) {
-//       recursively(childPath, value[isGoDeeper], cb);
-//     }
-//     else if (isGoDeeper) recursively(childPath, value, cb);
-//   });
-// }
-
-// TODO: сделать по другому
 export function recursiveSchema(root, schema, cb) {
   _.each(schema, function (childSchema, childName) {
     if (!_.isPlainObject(childSchema)) return;
@@ -45,7 +25,6 @@ export function findPrimary(schema) {
   return primary;
 }
 
-// TODO: test it
 export function convertToSchemaPathFromLodash(path) {
   var newPath = path;
   // replace collection params [1]
@@ -69,24 +48,8 @@ export function convertFromLodashToMoldPath(moldPath) {
   return moldPath.replace(/\[(\d+)]/g, '.\$1');
 }
 
-export function splitLastParamPath(path) {
-  var splits = path.split('.');
-  if (splits.length === 0) return {
-    basePath: path,
-    paramPath: undefined,
-  };
-
-  var paramPath = splits.pop();
-  var toNum = _.toNumber(paramPath);
-  if (!_.isNaN(toNum)) paramPath = toNum;
-
-  return {
-    basePath: splits.join('.'),
-    paramPath,
-  };
-}
-
 export function getTheBestMatchPath(sourcePath, pathsList) {
+  // TODO: нужна ли поддержка lodash array format???
   var matchList = _.map(pathsList, (path) => {
     if (sourcePath.indexOf(path) === 0) return path;
   });
@@ -141,6 +104,8 @@ export function getSchemaBaseType(schemaType) {
 }
 
 export function findTheClosestParentPath(path, assoc) {
+  // TODO: нужна ли поддержка lodash array format???
+
   if (_.isEmpty(assoc)) return;
 
   var parents = _.compact(_.map(assoc, (value, name) => {
@@ -165,4 +130,40 @@ export function findTheClosestParentPath(path, assoc) {
 //     // if string or other
 //     return paths;
 //   }
+// }
+
+// export function splitLastParamPath(path) {
+//   var splits = path.split('.');
+//   if (splits.length === 0) return {
+//     basePath: path,
+//     paramPath: undefined,
+//   };
+//
+//   var paramPath = splits.pop();
+//   var toNum = _.toNumber(paramPath);
+//   if (!_.isNaN(toNum)) paramPath = toNum;
+//
+//   return {
+//     basePath: splits.join('.'),
+//     paramPath,
+//   };
+// }
+
+// export function recursively(root, item, cb) {
+//   if (!_.isPlainObject(item) && !_.isArray(item)) {
+//     cb(root);
+//     return;
+//   }
+//
+//   _.each(item, function (value, name) {
+//     console.log(999999, root, name)
+//     // TODO: !!!!! ошибка с путем
+//     var childPath = _.trim(`${root}.${name}`, '.');
+//
+//     var isGoDeeper = cb(childPath, value, name);
+//     if (_.isString(isGoDeeper)) {
+//       recursively(childPath, value[isGoDeeper], cb);
+//     }
+//     else if (isGoDeeper) recursively(childPath, value, cb);
+//   });
 // }

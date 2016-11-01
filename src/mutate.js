@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import { convertFromLodashToMoldPath, convertToLodashPath } from './helpers';
+import { convertFromLodashToMoldPath } from './helpers';
 
 class Mutate {
   constructor(storage, rootMold) {
     rootMold = rootMold || '';
-    this.rootLodash = convertToLodashPath(rootMold);
+    this.rootLodash = rootMold;
     this.storage = storage;
 
     // it's list of all updates, like [moldPath, value, action]

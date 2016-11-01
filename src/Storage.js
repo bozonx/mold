@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { convertToLodashPath } from './helpers';
+//import { } from './helpers';
 import mutate from './mutate';
 
 export default class Storage {
@@ -33,7 +33,7 @@ export default class Storage {
   get(path) {
     if (!path) return this._storage;
 
-    return _.get(this._storage, convertToLodashPath(path));
+    return _.get(this._storage, path);
   }
 
   /**
