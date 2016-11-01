@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { convertFromLodashToMoldPath } from './helpers';
+//import {  } from './helpers';
 
 class Mutate {
   constructor(storage, rootMold) {
@@ -38,8 +38,8 @@ class Mutate {
     // add to beginning
     collection.splice(0, 0, newItem);
 
-    this.changes.push([convertFromLodashToMoldPath(this.rootLodash), 'change']);
-    this.changes.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, 0)), 'add']);
+    this.changes.push([this.rootLodash, 'change']);
+    this.changes.push([this._makePath(this.rootLodash, 0), 'add']);
 
     this._updateIndexes(collection);
 
@@ -60,8 +60,8 @@ class Mutate {
     // remove with rising an change event on array of collection
     collection.splice(item.$index, 1);
 
-    this.changes.push([convertFromLodashToMoldPath(this.rootLodash),  'change']);
-    this.changes.push([convertFromLodashToMoldPath(this._makePath(this.rootLodash, item.$index)), 'remove']);
+    this.changes.push([this.rootLodash,  'change']);
+    this.changes.push([this._makePath(this.rootLodash, item.$index), 'remove']);
 
     this._updateIndexes(collection);
 
@@ -116,7 +116,7 @@ class Mutate {
         // remove with rising an change event on array of collection
         originalCollection.splice(index, 1);
 
-        this.changes.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), value, 'remove']);
+        this.changes.push([this._makePath(rootLodash, index), value, 'remove']);
         isChanged = true;
       }
     });
@@ -137,7 +137,7 @@ class Mutate {
         // TODO: проверить можно ли устанавливать на любой индекс не по порядку
         //originalCollection.splice(originalCollection.length + 1, 1, value);
         originalCollection.splice(index, 1, value);
-        this.changes.push([convertFromLodashToMoldPath(this._makePath(rootLodash, index)), 'add']);
+        this.changes.push([this._makePath(rootLodash, index), 'add']);
         isChanged = true;
       }
     });
@@ -149,7 +149,7 @@ class Mutate {
     this._updateIndexes(originalCollection);
 
     // rise update on whore collection
-    var moldPath = convertFromLodashToMoldPath(rootLodash);
+    var moldPath = rootLodash;
     if (isChanged) this.changes.push([moldPath, 'change']);
     //else this.changes.push([moldPath, 'unchanged']);
 
@@ -163,8 +163,8 @@ class Mutate {
 
     var isChanged = oldValue !== newPrimitiveState;
 
-    if (isChanged) this.changes.push([convertFromLodashToMoldPath(rootLodash), 'change']);
-    else this.changes.push([convertFromLodashToMoldPath(rootLodash), 'unchanged']);
+    if (isChanged) this.changes.push([rootLodash, 'change']);
+    else this.changes.push([rootLodash, 'unchanged']);
 
     return isChanged;
   }
@@ -184,8 +184,8 @@ class Mutate {
       originalArray.splice(index, 1, value);
     });
 
-    if (isChanged) this.changes.push([convertFromLodashToMoldPath(rootLodash), 'change']);
-    else this.changes.push([convertFromLodashToMoldPath(rootLodash), 'unchanged']);
+    if (isChanged) this.changes.push([rootLodash, 'change']);
+    else this.changes.push([rootLodash, 'unchanged']);
 
     return isChanged;
   }

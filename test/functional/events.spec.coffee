@@ -75,7 +75,7 @@ describe 'Functional. Events.', ->
       })
 
       expect(this.handler).to.have.been.calledWith({
-        path: 'collection.0'
+        path: 'collection[0]'
         action: 'add'
       })
 
@@ -87,7 +87,7 @@ describe 'Functional. Events.', ->
       })
 
       expect(this.handler).to.have.been.calledWith({
-        path: 'collection.0'
+        path: 'collection[0]'
         action: 'remove'
       })
 
