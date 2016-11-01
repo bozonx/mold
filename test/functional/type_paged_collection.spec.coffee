@@ -76,3 +76,27 @@ describe 'Functional. Paged Collection type.', ->
         }
       ])
     # TODO: тестировать добаление страницы не попорядку
+
+  describe 'child(pageNum)', ->
+    it 'no one pages', ->
+      assert.isUndefined(this.pagedCollection.child(0))
+      assert.isUndefined(this.pagedCollection.child(1))
+
+    it 'returned page is a collection', ->
+      page = [{name: 'newValue1'}, {name: 'newValue2'}]
+      this.pagedCollection.addPage([])
+      this.pagedCollection.addPage(page)
+      child = this.pagedCollection.child(1)
+
+      assert.equal(child.type, 'collection')
+      assert.deepEqual(child.mold, [
+        {
+          # TODO: должен быть $index
+          $isNew: true,
+          name: 'newValue1',
+        },
+        {
+          $isNew: true,
+          name: 'newValue2',
+        },
+      ])

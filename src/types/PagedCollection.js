@@ -19,16 +19,16 @@ export default class PagedCollection extends _TypeBase {
   /**
    * Get instance of page.
    * @param {number} pageNum
-   * @returns {object} - instance of child
+   * @returns {object|undefined} - instance of Collection of undefined if page not found.
    */
   child(pageNum) {
     if (!_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
 
-    // TODO: test it
+    if (_.isUndefined(this.mold[pageNum])) return undefined;
 
     var pathToChild = concatPath(this._root, pageNum);
     // get container instance
-    var instance = this._main.schemaManager.getInstance(pageNum);
+    var instance = this._main.schemaManager.getInstance(pathToChild);
     // reinit container instance with correct path
     instance.$init(pathToChild, instance.schema);
 
