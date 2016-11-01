@@ -37,10 +37,15 @@ export default class PagedCollection extends _TypeBase {
 
   /**
    * Get list with all the items of all the pages.
+   * It removes $index param.
    */
   getFlat() {
-    // TODO: наверное нужно пересчитать индексы $index или убрать их
-    return _.flatMap(_.cloneDeep(this.mold));
+    return _.flatMap(_.cloneDeep(this.mold), (page) => {
+      return _.map(page, (item) => {
+        delete item.$index;
+        return item;
+      })
+    });
   }
 
   /**

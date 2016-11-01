@@ -59,7 +59,6 @@ describe 'Functional. Paged Collection type.', ->
       this.pagedCollection.addPage(page2)
       assert.deepEqual(this.pagedCollection.getFlat(), [
         {
-          # TODO: должен быть $index
           $isNew: true,
           name: 'newValue1',
         },
