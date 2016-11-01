@@ -22,6 +22,7 @@ class Mutate {
    */
   update(newState) {
     this._crossroads(this.rootLodash, newState);
+
     return this.changes;
   }
 
@@ -37,6 +38,30 @@ class Mutate {
 
     // add to beginning
     collection.splice(0, 0, newItem);
+
+    this.changes.push([this.rootLodash, 'change']);
+    this.changes.push([this._makePath(this.rootLodash, 0), 'add']);
+
+    this._updateIndexes(collection);
+
+    return this.changes;
+  }
+
+  /**
+   * Add item to end of collection
+   * @param {object} newItem
+   * @returns {Array} changes
+   */
+  addToEnd(newItem) {
+
+    // TODO: test it
+
+    if (!newItem) return this.changes;
+
+    var collection = _.get(this.storage, this.rootLodash);
+
+    // add to beginning
+    collection.splice(collection.length, 0, newItem);
 
     this.changes.push([this.rootLodash, 'change']);
     this.changes.push([this._makePath(this.rootLodash, 0), 'add']);

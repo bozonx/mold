@@ -63,7 +63,9 @@ export default class PagedCollection extends _TypeBase {
     if (_.isEmpty(this.mold)) {
       // TODO: add first empty page
       lastPage = [];
-      this._main.state.setMold(concatPath(this._root, 0), []);
+      //this._main.state.setMold(concatPath(this._root, 0), []);
+      //this._main.state.addMold(this._root, []);
+      this._main.state.addPage(this._root, []);
     }
     else {
       // TODO: проверить если страница полная, то добавить в новую
@@ -71,13 +73,13 @@ export default class PagedCollection extends _TypeBase {
     }
 
 
-    lastPage.push(item);
+    //lastPage.push(item);
 
     //this._main.state.setMold(this._root, newMold);
 
-    // TODO: добавлять в конец
 
-    this._main.state.addMold(concatPath(this._root, 0), item);
+
+    this._main.state.addToEnd(concatPath(this._root, 0), item);
 
     // TODO: add item to page
   }

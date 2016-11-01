@@ -54,6 +54,7 @@ export default class State {
    */
   setMold(moldPath, value) {
     this._checkNode(moldPath, value);
+
     this._storage.update(moldPath, value);
   }
 
@@ -71,6 +72,7 @@ export default class State {
    * @param {object} newItem
    */
   addMold(pathToCollection, newItem) {
+    // TODO: должна работать так же как и addMoldToEnd
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToCollection);
     if (schema.type !== 'collection')
@@ -81,12 +83,53 @@ export default class State {
       $isNew: true,
     };
 
-    console.log(11111, preparedItem, pathToCollection, schema)
-
     this._checkNode(pathToCollection, preparedItem);
     this._storage.addToBeginning(pathToCollection, preparedItem);
     // add to collection of unsaved added items
     this._request.addUnsavedAddedItem(pathToCollection, preparedItem);
+  }
+
+  /**
+   * Add page to paged collection in store.
+   * @param {string} pathToPagedCollection
+   * @param {array} page
+   */
+  addPage(pathToPagedCollection, page) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(pathToPagedCollection);
+
+    if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
+      throw new Error(`You can add new item only to paged collection!`);
+
+    //this._checkNode(pathToPagedCollection, page);
+    this._storage.addPage(pathToPagedCollection, page);
+    // add to collection of unsaved added items
+    //this._request.addUnsavedAddedItem(pathToPagedCollection, page);
+  }
+
+
+  //if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
+
+  /**
+   * Add to end of collection in store by user action.
+   * @param {string} pathToCollection
+   * @param {object} newItem
+   */
+  addToEnd(pathToCollection, newItem) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(pathToCollection);
+    if (schema.type !== 'collection')
+      throw new Error(`You can add new item only to collection!`);
+
+    var preparedItem = {
+      ...newItem,
+      $isNew: true,
+    };
+
+    this._checkNode(pathToCollection, preparedItem);
+    this._storage.addToEnd(pathToCollection, preparedItem);
+    // add to collection of unsaved added items
+    //this._request.addUnsavedAddedItem(pathToCollection, preparedItem);
   }
 
   /**

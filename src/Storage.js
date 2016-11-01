@@ -39,12 +39,12 @@ export default class Storage {
   /**
    * Update value. It use _.defaultsDeep method.
    * This method deeply mutates existent object or arrays.
-   * @param {string} moldPath
+   * @param {string} path
    * @param {*} newValue
    */
-  update(moldPath, newValue) {
+  update(path, newValue) {
     // run mutates and get list of changes
-    var changes = mutate(this._storage, moldPath || '').update(newValue);
+    var changes = mutate(this._storage, path || '').update(newValue);
     // run update events
     this._riseEvents(changes);
   }
@@ -57,6 +57,37 @@ export default class Storage {
   addToBeginning(pathToCollection, newItem) {
     var changes = mutate(this._storage, pathToCollection).addToBeginning(newItem);
     // run update events
+    this._riseEvents(changes);
+  }
+
+  /**
+   * Add to the end of collection
+   * @param {string} pathToCollection - it must be a path to array in storage
+   * @param {object} newItem
+   */
+  addToEnd(pathToCollection, newItem) {
+    var changes = mutate(this._storage, pathToCollection).addToEnd(newItem);
+    // run update events
+    this._riseEvents(changes);
+  }
+
+  /**
+   * Add page to paged collection
+   * @param {string} pathToPagedCollection
+   * @param {Array} page
+   */
+  addPage(pathToPagedCollection, page) {
+    var collection = _.get(this._storage, pathToPagedCollection);
+
+    collection.splice(collection.length, 0, page);
+
+    var changes = [
+      {
+        path: pathToPagedCollection,
+        action: 'add',
+      }
+    ];
+
     this._riseEvents(changes);
   }
 
