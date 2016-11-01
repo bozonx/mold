@@ -4,20 +4,26 @@ testSchema = () ->
   pagedCollection:
     type: 'pagedCollection'
     item:
-      collection:
-        type: 'collection'
-        item:
-          num:
-            type: 'container'
-            schema:
-              id: {type: 'number', primary: true}
-              name: {type: 'string'}
+      type: 'collection'
+      item:
+        type: 'container'
+        schema:
+          id: {type: 'number', primary: true}
+          name: {type: 'string'}
 
 describe 'Functional. Paged Collection type.', ->
   beforeEach () ->
     this.mold = mold( {}, testSchema() )
     this.pagedCollection = this.mold.instance('pagedCollection')
+    this.newItem = {name: 'newName'}
 
   it 'init value', ->
-    console.log(this.pagedCollection)
     assert.deepEqual(this.pagedCollection.mold, [])
+
+  describe 'addItem()', ->
+    it 'add to empty collection', ->
+      this.pagedCollection.addItem(this.newItem)
+      assert.deepEqual(this.pagedCollection.mold, [[this.newItem]])
+
+    # TODO: проверить чтобы не было переполнения страницы - при полной странице добавляется в новую
+    # TODO: проверить что добавляется в конец

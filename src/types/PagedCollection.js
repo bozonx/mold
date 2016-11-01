@@ -39,6 +39,7 @@ export default class PagedCollection extends _TypeBase {
    * Get list with all the items of all the pages.
    */
   getFlat() {
+    // TODO: test it
     return _.flatMap(_.cloneDeep(this.mold));
   }
 
@@ -46,6 +47,7 @@ export default class PagedCollection extends _TypeBase {
    * Get copy of list of pages.
    */
   getMold() {
+    // TODO: test it
     return _.cloneDeep(this.mold);
   }
 
@@ -61,10 +63,21 @@ export default class PagedCollection extends _TypeBase {
     if (_.isEmpty(this.mold)) {
       // TODO: add first empty page
       lastPage = [];
+      this._main.state.setMold(concatPath(this._root, 0), []);
     }
     else {
+      // TODO: проверить если страница полная, то добавить в новую
       lastPage = _.last(this.mold);
     }
+
+
+    lastPage.push(item);
+
+    //this._main.state.setMold(this._root, newMold);
+
+    // TODO: добавлять в конец
+
+    this._main.state.addMold(concatPath(this._root, 0), item);
 
     // TODO: add item to page
   }
@@ -73,8 +86,8 @@ export default class PagedCollection extends _TypeBase {
    * Add list of items. They will be separate to pages
    * @param items
    */
-  addItems(items) {
-
+  addManyItems(items) {
+    // TODO: test it
   }
 
   /**

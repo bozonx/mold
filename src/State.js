@@ -81,6 +81,8 @@ export default class State {
       $isNew: true,
     };
 
+    console.log(11111, preparedItem, pathToCollection, schema)
+
     this._checkNode(pathToCollection, preparedItem);
     this._storage.addToBeginning(pathToCollection, preparedItem);
     // add to collection of unsaved added items
