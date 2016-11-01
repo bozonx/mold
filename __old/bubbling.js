@@ -3,7 +3,7 @@
 
 import _ from 'lodash';
 
-import { splitLastParamPath, getUniqPartOfPaths } from './helpers';
+import { splitLastParamPath, getUniqPartOfPaths } from '../src/helpers';
 
 /**
  * Bubbling - rise event on end point and their parents.

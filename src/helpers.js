@@ -103,6 +103,12 @@ export function getTheBestMatchPath(sourcePath, pathsList) {
   // Else return undefined
 }
 
+/**
+ * It contacts two paths. It supports arrays in lodash format.
+ * @param root
+ * @param relativePath
+ * @returns {string}
+ */
 export function concatPath(root, relativePath) {
   if (_.isNumber(relativePath))
     return `${root}[${relativePath}]`;
@@ -120,29 +126,17 @@ export function getSchemaBaseType(schemaType) {
   if (schemaType == 'document') {
     return 'container';
   }
+  else if (schemaType == 'pagedCollection') {
+    return 'collection';
+  }
   else if (schemaType == 'collection') {
     return 'collection';
   }
-  else if (schemaType == 'documentCollection') {
+  else if (schemaType == 'documentsCollection') {
     return 'collection';
   }
   else if (_.includes(['boolean', 'string', 'number', 'array'], schemaType)) {
     return 'primitive';
-  }
-}
-
-export function getUniqPartOfPaths(paths) {
-  if(_.isArray(paths) && paths.length == 1) {
-    return paths[0];
-  }
-  else if (_.isArray(paths) && paths.length > 1) {
-    // It ins't need for more difficult logic
-    var intersection = _.intersection(paths[0], paths[1]);
-    return intersection.join('.');
-  }
-  else {
-    // if string or other
-    return paths;
   }
 }
 
@@ -157,3 +151,18 @@ export function findTheClosestParentPath(path, assoc) {
     return (n.length > sum.length) ? n : sum;
   });
 }
+
+// export function getUniqPartOfPaths(paths) {
+//   if(_.isArray(paths) && paths.length == 1) {
+//     return paths[0];
+//   }
+//   else if (_.isArray(paths) && paths.length > 1) {
+//     // It ins't need for more difficult logic
+//     var intersection = _.intersection(paths[0], paths[1]);
+//     return intersection.join('.');
+//   }
+//   else {
+//     // if string or other
+//     return paths;
+//   }
+// }
