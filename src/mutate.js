@@ -33,7 +33,7 @@ class Mutate {
     // add to beginning
     collection.splice(0, 0, newItem);
 
-    this._updateIndexes(collection);
+    this.updateIndexes(collection);
   }
 
   /**
@@ -53,7 +53,7 @@ class Mutate {
     // add to beginning
     collection.splice(collection.length, 0, newItem);
 
-    this._updateIndexes(collection);
+    this.updateIndexes(collection);
   }
 
   /**
@@ -75,7 +75,7 @@ class Mutate {
     collection[index] = null;
     collection.splice(index, 1, newItem);
 
-    this._updateIndexes(collection);
+    this.updateIndexes(collection);
   }
 
   /**
@@ -93,7 +93,7 @@ class Mutate {
     // remove with rising an change event on array of collection
     collection.splice(item.$index, 1);
 
-    this._updateIndexes(collection);
+    this.updateIndexes(collection);
   }
 
   _crossroads(root, newState) {
@@ -192,7 +192,7 @@ class Mutate {
     });
 
     this._removeOddFromRight(originalCollection, newCollectionState);
-    this._updateIndexes(originalCollection);
+    this.updateIndexes(originalCollection);
     return isChanged;
   }
 
@@ -201,7 +201,7 @@ class Mutate {
     originalArray.splice(newArray.length, originalArray.length - newArray.length);
   }
 
-  _updateIndexes(collectionInStorage) {
+  updateIndexes(collectionInStorage) {
     if (_.isArray(_.last(collectionInStorage))) {
       // for paged collections
       _.each(collectionInStorage, (page) => {

@@ -8,6 +8,61 @@ describe 'Unit. Storage.', ->
     }
     this.storage = new Storage(this.eventsMock)
 
+  it 'addToBeginning()', ->
+    this.storage._storage = {
+      collection: [
+        {
+          id: 0
+        }
+      ]
+    }
+    this.storage.addToBeginning('collection', {id: 1})
+
+    assert.deepEqual(this.storage.get('collection'), [
+      {
+        $index: 0,
+        id: 1,
+      },
+      {
+        $index: 1,
+        id: 0,
+      },
+    ])
+
+  it 'addToEnd()', ->
+    this.storage._storage = {
+      collection: [
+        {
+          id: 0
+        }
+      ]
+    }
+    this.storage.addToEnd('collection', {id: 1})
+
+    assert.deepEqual(this.storage.get('collection'), [
+      {
+        $index: 0,
+        id: 0,
+      },
+      {
+        $index: 1,
+        id: 1,
+      },
+    ])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   describe 'update.', ->
     it 'update primitive', ->
       this.storage._storage = {
