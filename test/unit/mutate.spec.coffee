@@ -1,7 +1,7 @@
 mutate = require('../../src/mutate').default
 
 describe 'Unit. mutate.', ->
-  describe 'containers and primitives', ->
+  describe 'containers and primitives updates', ->
     it 'all types of primitives', ->
       storage =
         container:
@@ -9,14 +9,12 @@ describe 'Unit. mutate.', ->
           numberValue: 1
           boolValue: false
           arrayValue: ['val1']
-
       newData =
         stringValue: 'new value'
         numberValue: 5
         boolValue: true
         arrayValue: ['val1', 'val2']
         newValue: 'new'
-
       mutate(storage, 'container').update(newData)
 
       assert.deepEqual(storage, { container: newData })
@@ -25,10 +23,8 @@ describe 'Unit. mutate.', ->
       storage =
         container:
           unchangedValue: 'old value'
-
       newData =
         unchangedValue: 'old value'
-
       haveChanges = mutate(storage, 'container').update(newData)
 
       assert.deepEqual(storage, { container: newData })
@@ -39,11 +35,9 @@ describe 'Unit. mutate.', ->
         container:
           unchangedValue: 'old value'
           changedValue: 'old value'
-
       newData =
         unchangedValue: 'old value'
         changedValue: 'new value'
-
       haveChanges = mutate(storage, 'container').update(newData)
 
       assert.deepEqual(storage, { container: newData })
@@ -54,10 +48,8 @@ describe 'Unit. mutate.', ->
         container:
           untouchedValue: 'untouched value'
           changedValue: 'old value'
-
       newData =
         changedValue: 'new value'
-
       haveChanges = mutate(storage, 'container').update(newData)
 
       assert.deepEqual storage, {
@@ -71,11 +63,9 @@ describe 'Unit. mutate.', ->
       storage =
         container:
           changedValue: 'old value'
-
       newData =
         changedValue: 'new value'
         _id: 'container'
-
       mutate(storage, 'container').update(newData)
 
       assert.deepEqual storage, {
@@ -90,12 +80,10 @@ describe 'Unit. mutate.', ->
           stringValue: 'old value'
           nested:
             nestedString: 'old nested value'
-
       newData =
         stringValue: 'new value'
         nested:
           nestedString: 'new nested value'
-
       mutate(storage, 'container').update(newData)
 
       assert.deepEqual(storage, { container: newData })
@@ -104,28 +92,42 @@ describe 'Unit. mutate.', ->
       storage =
         container:
           stringValue: 'old value'
-
       newData =
         container:
           stringValue: 'new value'
-
       mutate(storage, '').update(newData)
 
       assert.deepEqual(storage, newData)
 
 
-  describe 'Collections', ->
+  describe 'primitive and clean array updates', ->
+    it 'primitive array', ->
+      storage =
+        arrayParam: ['oldValue']
+      newData = [undefined, 'newValue1', 'newValue2']
+      mutate(storage).update({ arrayParam: newData })
+
+      assert.deepEqual(storage, { arrayParam: newData })
+
+    it 'primitive array - new array is shorter', ->
+      storage =
+        arrayParam: ['oldValue1', 'oldValue2', 'oldValue3']
+      newData = [undefined, 'newValue2']
+      mutate(storage).update({ arrayParam: newData })
+
+      assert.deepEqual(storage, { arrayParam: newData })
+
+
+  describe 'Collections updates', ->
     it 'collection init (add from server)', ->
       storage =
         collection: []
-
       newData = [
         {
           id: 5
           name: 'new item'
         }
       ]
-
       mutate(storage, 'collection').update(newData)
 
       assert.deepEqual(storage, { collection: [

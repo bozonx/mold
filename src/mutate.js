@@ -26,6 +26,8 @@ class Mutate {
   addToBeginning(newItem) {
     if (!newItem) return;
 
+    // TODO: наверное вынести в Storage
+
     var collection = _.get(this.storage, this.root);
 
     // add to beginning
@@ -41,6 +43,8 @@ class Mutate {
   addToEnd(newItem) {
 
     // TODO: test it
+
+    // TODO: наверное вынести в Storage
 
     if (!newItem) return;
 
@@ -61,6 +65,8 @@ class Mutate {
 
     // TODO: test it
 
+    // TODO: наверное вынести в Storage
+
     if (!newItem) return;
     if (!_.isNumber(index)) return;
 
@@ -77,6 +83,8 @@ class Mutate {
    * @param {object} item
    */
   remove(item) {
+    // TODO: наверное вынести в Storage
+
     if (!item) return;
     if (!_.isNumber(item.$index)) throw new Error(`Remove from collection: item must have an $index param. ${item}`);
 
@@ -94,7 +102,7 @@ class Mutate {
     }
     else if (_.isArray(newState)) {
       if (newState.length === 0) {
-        return this._updateСleanArray(root, newState);
+        return this._updateCleanArray(root, newState);
       }
       // TODO: оптимизировать проверку - compact возможно много жрет ресурсов
       else if (newState.length && _.isPlainObject(_.head(_.compact(newState)))) {
@@ -175,7 +183,7 @@ class Mutate {
     return isChanged;
   }
 
-  _updateСleanArray(root, newPrimitiveArrayState) {
+  _updateCleanArray(root, newPrimitiveArrayState) {
     // TODO: !!! что должно произойти - старый должен очиститься или ничего не должно происходить???
     // TODO: test it
     var originalArray = _.get(this.storage, root);
@@ -194,20 +202,27 @@ class Mutate {
     return isChanged;
   }
 
+  /**
+   * It carefully replace old array with new array.
+   * @param root
+   * @param newPrimitiveArrayState
+   * @returns {boolean}
+   * @private
+   */
   _updatePrimitiveArray(root, newPrimitiveArrayState) {
-    // TODO: test it
     var originalArray = _.get(this.storage, root);
     var isChanged = !_.isEqual(originalArray, newPrimitiveArrayState);
     if (!isChanged) return false;
 
-    // clear old array
-    // TODO: надо поднять событие
-    // TODO: надо удалять только лишние элементы, так как те что от начала и так заменятся
-    _.remove(originalArray);
-
     _.each(newPrimitiveArrayState, (value, index) => {
       originalArray.splice(index, 1, value);
     });
+
+    // Remove odd items from right
+    if (originalArray.length && newPrimitiveArrayState.length &&
+        newPrimitiveArrayState.length < originalArray.length) {
+      originalArray.splice(originalArray.length - 1, newPrimitiveArrayState.length - 1);
+    }
 
     return isChanged;
   }
