@@ -25,15 +25,50 @@ describe 'Functional. Paged Collection type.', ->
       this.pagedCollection.addItem(this.newItem)
       assert.deepEqual(this.pagedCollection.mold, [[
         {
-          $index: 0,
+          # TODO: должен быть $index
+          #$index: 0,
           $isNew: true,
           name: 'newValue',
         }
       ]])
 
+    it 'add to full page and page unordered', ->
+      page = [{name: 'newValue1'}, {name: 'newValue2'}]
+      this.pagedCollection.itemsPerPage = 2
+      this.pagedCollection.addPage(page, 2)
+      this.pagedCollection.addItem(this.newItem)
+
+      result = []
+      result[2] = [
+        {
+          # TODO: должен быть $index
+          $isNew: true,
+          name: 'newValue1',
+        },
+        {
+          $isNew: true,
+          name: 'newValue2',
+        },
+      ]
+      result[3] = [
+        {
+          # TODO: должен быть $index
+          $isNew: true,
+          name: 'newValue',
+        },
+      ]
+      assert.deepEqual(this.pagedCollection.mold, result)
+
+
+    it 'add to almost full page', ->
+
+    it 'add to almost full page', ->
+
+
     # TODO: проверить чтобы не было переполнения страницы - при полной странице добавляется в новую
     # TODO: проверить что добавляется в конец
     # TODO: тестировать страницы не по порядку
+    # TODO: если уже есть одна страница
 
 
   describe 'addPage()', ->

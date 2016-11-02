@@ -72,22 +72,21 @@ export default class PagedCollection extends _TypeBase {
    * add item to the end of last page.
    */
   addItem(item) {
-    var pageNum;
-
     if (!_.isPlainObject(item))
       throw new Error(`You can add only item of plain object type!`);
 
     if (_.isEmpty(this.mold)) {
-      pageNum = 0;
-      this._main.state.addPage(this._root, [], pageNum);
+      let pageNum = 0;
+      this._main.state.addPage(this._root, [item], pageNum);
+    }
+    else if (_.last(this.mold).length >= this._itemsPerPage) {
+      let pageNum = this.mold.length;
+      this._main.state.addPage(this._root, [item], pageNum);
     }
     else {
-      pageNum = this.mold.length - 1;
+      let pageNum = this.mold.length - 1;
+      this._main.state.addToEnd(concatPath(this._root, pageNum), item);
     }
-
-    // TODO: не допускать переполнение страницы - создавать новую, если эта переполненна
-
-    this._main.state.addToEnd(concatPath(this._root, pageNum), item);
   }
 
   /**
