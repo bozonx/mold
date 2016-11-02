@@ -21,8 +21,9 @@ describe 'Functional. Paged Collection type.', ->
     assert.deepEqual(this.pagedCollection.mold, [])
 
   describe 'addItem()', ->
-    it 'add to empty collection', ->
+    it 'add to an empty collection', ->
       this.pagedCollection.addItem(this.newItem)
+
       assert.deepEqual(this.pagedCollection.mold, [[
         {
           # TODO: должен быть $index

@@ -50,18 +50,10 @@ describe 'Functional. Events.', ->
         numberParam: 5
       })
 
-      expect(this.handler).to.have.been.calledThice
+      expect(this.handler).to.have.been.calledOnce
       expect(this.handler).to.have.been.calledWith({
-        path: 'document.stringParam'
+        path: 'document'
         action: 'change'
-      })
-      expect(this.handler).to.have.been.calledWith({
-        path: 'document.numberParam'
-        action: 'change'
-      })
-      expect(this.handler).to.have.been.calledWith({
-        path: 'document.booleanParam'
-        action: 'unchanged'
       })
 
     it 'on addMold and removeMold', ->
@@ -69,29 +61,11 @@ describe 'Functional. Events.', ->
       collection = this.mold.instance('collection')
       collection.addMold({id:1, name: 'value1'})
 
+      expect(this.handler).to.have.been.calledOnce
       expect(this.handler).to.have.been.calledWith({
         path: 'collection'
-        action: 'change'
-      })
-
-      expect(this.handler).to.have.been.calledWith({
-        path: 'collection[0]'
         action: 'add'
       })
-
-      collection.removeMold({id:1, name: 'value1', $index: 0})
-
-      expect(this.handler).to.have.been.calledWith({
-        path: 'collection'
-        action: 'change'
-      })
-
-      expect(this.handler).to.have.been.calledWith({
-        path: 'collection[0]'
-        action: 'remove'
-      })
-
-      expect(this.handler).to.have.been.callCount(4)
 
     it 'on load', (done) ->
       document = this.mold.instance('document')
@@ -109,15 +83,7 @@ describe 'Functional. Events.', ->
 
       expect(document.load()).to.eventually.notify =>
         expect(this.handler).to.have.been.calledWith({
-          path: 'document.stringParam'
-          action: 'change'
-        })
-        expect(this.handler).to.have.been.calledWith({
-          path: 'document.numberParam'
-          action: 'unchanged'
-        })
-        expect(this.handler).to.have.been.calledWith({
-          path: 'document.booleanParam'
+          path: 'document'
           action: 'change'
         })
         done()

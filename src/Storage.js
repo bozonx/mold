@@ -44,9 +44,10 @@ export default class Storage {
    */
   update(path, newValue) {
     // run mutates and get list of changes
-    var changes = mutate(this._storage, path || '').update(newValue);
-    // run update events
-    this._riseEvents(changes);
+    mutate(this._storage, path).update(newValue);
+
+    // run update event
+    this._riseEvents(path, 'change');
   }
 
   /**
@@ -55,9 +56,9 @@ export default class Storage {
    * @param {object} newItem
    */
   addToBeginning(pathToCollection, newItem) {
-    var changes = mutate(this._storage, pathToCollection).addToBeginning(newItem);
-    // run update events
-    this._riseEvents(changes);
+    mutate(this._storage, pathToCollection).addToBeginning(newItem);
+    // run update event
+    this._riseEvents(pathToCollection, 'add');
   }
 
   /**
@@ -66,9 +67,9 @@ export default class Storage {
    * @param {object} newItem
    */
   addToEnd(pathToCollection, newItem) {
-    var changes = mutate(this._storage, pathToCollection).addToEnd(newItem);
-    // run update events
-    this._riseEvents(changes);
+    mutate(this._storage, pathToCollection).addToEnd(newItem);
+    // run update event
+    this._riseEvents(pathToCollection, 'add');
   }
 
   /**
@@ -86,18 +87,10 @@ export default class Storage {
 
     // TODO: может делать через mutate???
     // TODO: обновить $index всех элементов на страницах
-    //var changes = mutate(this._storage, pathToPagedCollection).addToEnd(page);
+    //mutate(this._storage, pathToPagedCollection).addToEnd(page);
 
-    var changes = [
-      {
-        path: pathToPagedCollection,
-        action: 'add',
-      }
-    ];
-
-
-    // run update events
-    this._riseEvents(changes);
+    // run update event
+    this._riseEvents(pathToPagedCollection, 'add');
   }
 
   /**
@@ -108,9 +101,9 @@ export default class Storage {
   remove(pathToCollection, $index) {
     // TODO: наверное лучше принимать item а не index
 
-    var changes = mutate(this._storage, pathToCollection).remove({$index});
-    // run update events
-    this._riseEvents(changes);
+    mutate(this._storage, pathToCollection).remove({$index});
+    // run update event
+     this._riseEvents(pathToCollection, 'remove');
   }
 
   /**
@@ -118,6 +111,8 @@ export default class Storage {
    * @param moldPath
    */
   clear(moldPath) {
+    // TODO: разве не используем mutate???
+
     var contents = _.get(this._storage, moldPath);
 
     var clearRecursive = (value, localPath) => {
@@ -142,12 +137,10 @@ export default class Storage {
     clearRecursive(contents, '');
   }
 
-  _riseEvents(changes) {
-    _.each(changes, (change) => {
-      this._events.emit('mold.update', {
-        path: change[0],
-        action: change[1],
-      });
+  _riseEvents(path, action) {
+    this._events.emit('mold.update', {
+      path,
+      action,
     });
   }
 
