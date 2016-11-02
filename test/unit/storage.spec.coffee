@@ -199,21 +199,20 @@ describe 'Unit. Storage.', ->
       }
       this.storage.setPage('pagedCollection', [{id: 2}], 2)
 
-      assert.deepEqual(this.storage.get('pagedCollection'), [
-        [
-          {
-            $index: 0,
-            id: 0,
-          },
-        ],
-        undefined,
-        [
-          {
-            $index: 2,
-            id: 2,
-          },
-        ],
+      assert.deepEqual(this.storage.get('pagedCollection[0]'), [
+        {
+          $index: 0,
+          id: 0,
+        },
       ])
+      assert.isUndefined(this.storage.get('pagedCollection[1]'))
+      assert.deepEqual(this.storage.get('pagedCollection[2]'), [
+        {
+          $index: 0,
+          id: 2,
+        },
+      ])
+
 
 
 # TODO: setPage

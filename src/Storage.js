@@ -58,7 +58,7 @@ export default class Storage {
    * @param {object} newItem
    */
   addToBeginning(pathToCollection, newItem) {
-    if (!_.isPlainObject(newItem)) return;
+    if (!_.isObject(newItem)) return;
     var collection = this.get(pathToCollection);
 
     // add to beginning
@@ -77,19 +77,8 @@ export default class Storage {
    * @param {object} newItem
    */
   addToEnd(pathToCollection, newItem) {
-    // TODO: use addTo()
-
-    if (!_.isPlainObject(newItem)) return;
     var collection = this.get(pathToCollection);
-
-    // add to end
-    collection.splice(collection.length, 0, newItem);
-
-    // TODO: refactor
-    mutate({}).updateIndexes(collection);
-
-    // run update event
-    this._riseEvents(pathToCollection, 'add');
+    this.addTo(pathToCollection, newItem, collection.length);
   }
 
   /**
@@ -99,6 +88,8 @@ export default class Storage {
    * @param {number} index
    */
   addTo(pathToCollection, newItem, index) {
+    // TODO: может при замене использовать mutate????
+
     if (!_.isObject(newItem)) return;
     if (!_.isNumber(index)) return;
     var collection = this.get(pathToCollection);
