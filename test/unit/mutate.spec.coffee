@@ -1,248 +1,252 @@
 mutate = require('../../src/mutate').default
 
 describe 'Unit. mutate.', ->
-  it 'primitives', ->
-    storage =
-      container:
-        stringValue: 'old value'
-        numberValue: 1
-        boolValue: false
-        arrayValue: ['val1']
+  describe 'containers and primitives', ->
+    it 'all types of primitives', ->
+      storage =
+        container:
+          stringValue: 'old value'
+          numberValue: 1
+          boolValue: false
+          arrayValue: ['val1']
 
-    newData =
-      stringValue: 'new value'
-      numberValue: 5
-      boolValue: true
-      arrayValue: ['val1', 'val2']
-      newValue: 'new'
+      newData =
+        stringValue: 'new value'
+        numberValue: 5
+        boolValue: true
+        arrayValue: ['val1', 'val2']
+        newValue: 'new'
 
-    mutate(storage, 'container').update(newData)
+      mutate(storage, 'container').update(newData)
 
-    assert.deepEqual(storage, { container: newData })
+      assert.deepEqual(storage, { container: newData })
 
-  it 'unchanged values - nothing to change', ->
-    storage =
-      container:
+    it 'unchanged values - nothing to change', ->
+      storage =
+        container:
+          unchangedValue: 'old value'
+
+      newData =
         unchangedValue: 'old value'
 
-    newData =
-      unchangedValue: 'old value'
+      haveChanges = mutate(storage, 'container').update(newData)
 
-    haveChanges = mutate(storage, 'container').update(newData)
+      assert.deepEqual(storage, { container: newData })
+      assert.isFalse(haveChanges)
 
-    assert.deepEqual(storage, { container: newData })
-    assert.isFalse(haveChanges)
+    it 'unchanged values - change partly', ->
+      storage =
+        container:
+          unchangedValue: 'old value'
+          changedValue: 'old value'
 
-  it 'unchanged values - change partly', ->
-    storage =
-      container:
+      newData =
         unchangedValue: 'old value'
-        changedValue: 'old value'
-
-    newData =
-      unchangedValue: 'old value'
-      changedValue: 'new value'
-
-    haveChanges = mutate(storage, 'container').update(newData)
-
-    assert.deepEqual(storage, { container: newData })
-    assert.isTrue(haveChanges)
-
-  it 'untouched value', ->
-    storage =
-      container:
-        untouchedValue: 'untouched value'
-        changedValue: 'old value'
-
-    newData =
-      changedValue: 'new value'
-
-    mutate(storage, 'container').update(newData)
-
-    assert.deepEqual storage, {
-      container:
-        untouchedValue: 'untouched value'
         changedValue: 'new value'
-    }
 
-  it 'server returns _id additionally', ->
-    storage =
-      container:
-        changedValue: 'old value'
+      haveChanges = mutate(storage, 'container').update(newData)
 
-    newData =
-      changedValue: 'new value'
-      _id: 'container'
+      assert.deepEqual(storage, { container: newData })
+      assert.isTrue(haveChanges)
 
-    mutate(storage, 'container').update(newData)
+    it 'untouched value', ->
+      storage =
+        container:
+          untouchedValue: 'untouched value'
+          changedValue: 'old value'
 
-    assert.deepEqual storage, {
-      container:
+      newData =
+        changedValue: 'new value'
+
+      haveChanges = mutate(storage, 'container').update(newData)
+
+      assert.deepEqual storage, {
+        container:
+          untouchedValue: 'untouched value'
+          changedValue: 'new value'
+      }
+      assert.isTrue(haveChanges)
+
+    it 'server returns _id additionally', ->
+      storage =
+        container:
+          changedValue: 'old value'
+
+      newData =
         changedValue: 'new value'
         _id: 'container'
-    }
 
-  it 'nested container', ->
-    storage =
-      container:
-        stringValue: 'old value'
-        nested:
-          nestedString: 'old nested value'
+      mutate(storage, 'container').update(newData)
 
-    newData =
-      stringValue: 'new value'
-      nested:
-        nestedString: 'new nested value'
+      assert.deepEqual storage, {
+        container:
+          changedValue: 'new value'
+          _id: 'container'
+      }
 
-    mutate(storage, 'container').update(newData)
+    it 'nested container', ->
+      storage =
+        container:
+          stringValue: 'old value'
+          nested:
+            nestedString: 'old nested value'
 
-    assert.deepEqual(storage, { container: newData })
-
-  it 'update from root', ->
-    storage =
-      container:
-        stringValue: 'old value'
-
-    newData =
-      container:
+      newData =
         stringValue: 'new value'
+        nested:
+          nestedString: 'new nested value'
 
-    mutate(storage, '').update(newData)
+      mutate(storage, 'container').update(newData)
 
-    assert.deepEqual(storage, newData)
+      assert.deepEqual(storage, { container: newData })
 
-  it 'collection init (add from server)', ->
-    storage =
-      collection: []
+    it 'update from root', ->
+      storage =
+        container:
+          stringValue: 'old value'
 
-    newData = [
-      {
-        id: 5
-        name: 'new item'
-      }
-    ]
+      newData =
+        container:
+          stringValue: 'new value'
 
-    mutate(storage, 'collection').update(newData)
+      mutate(storage, '').update(newData)
 
-    assert.deepEqual(storage, { collection: [
-      {
-        $index: 0
-        id: 5
-        name: 'new item'
-      }
-    ] })
+      assert.deepEqual(storage, newData)
 
-  it 'collection remove and add (originally replace)', ->
-    storage =
-      collection: [
+
+  describe 'Collections', ->
+    it 'collection init (add from server)', ->
+      storage =
+        collection: []
+
+      newData = [
         {
-          $index: 0,
           id: 5
-          name: 'to remove item'
+          name: 'new item'
         }
+      ]
+
+      mutate(storage, 'collection').update(newData)
+
+      assert.deepEqual(storage, { collection: [
         {
-          $index: 1,
+          $index: 0
+          id: 5
+          name: 'new item'
+        }
+      ] })
+
+    it 'collection remove and add (originally replace)', ->
+      storage =
+        collection: [
+          {
+            $index: 0,
+            id: 5
+            name: 'to remove item'
+          }
+          {
+            $index: 1,
+            id: 6
+            name: 'old item'
+          }
+        ]
+
+      newData = [
+        {
           id: 6
           name: 'old item'
         }
-      ]
-
-    newData = [
-      {
-        id: 6
-        name: 'old item'
-      }
-      {
-        id: 7
-        name: 'new item'
-      }
-    ]
-
-    mutate(storage, 'collection').update(newData)
-
-    assert.deepEqual(storage, { collection: [
-      {
-        $index: 0,
-        id: 6
-        name: 'old item'
-      }
-      {
-        $index: 1,
-        id: 7
-        name: 'new item'
-      }
-    ] })
-
-  it 'collection item change on updating collection', ->
-    storage =
-      collection: [
         {
-          $index: 0
-          id: 5
-          name: 'old item'
+          id: 7
+          name: 'new item'
         }
       ]
 
-    newData = [
-      {
-        id: 5
-        name: 'new item'
-      }
-    ]
+      mutate(storage, 'collection').update(newData)
 
-    mutate(storage, 'collection').update(newData)
-
-    assert.deepEqual(storage, { collection: [
-      {
-        $index: 0
-        id: 5
-        name: 'new item'
-      }
-    ] })
-
-  it 'collection item change on updating item himself via container "collection[0]"', ->
-    storage =
-      collection: [
+      assert.deepEqual(storage, { collection: [
         {
-          $index: 0
-          id: 5
+          $index: 0,
+          id: 6
           name: 'old item'
+        }
+        {
+          $index: 1,
+          id: 7
+          name: 'new item'
+        }
+      ] })
+
+    it 'collection item change on updating collection', ->
+      storage =
+        collection: [
+          {
+            $index: 0
+            id: 5
+            name: 'old item'
+          }
+        ]
+
+      newData = [
+        {
+          id: 5
+          name: 'new item'
         }
       ]
 
-    newData = {
-      id: 5
-      name: 'new item'
-    }
+      mutate(storage, 'collection').update(newData)
 
-    mutate(storage, 'collection[0]').update(newData)
-
-    assert.deepEqual(storage, { collection: [
-      {
-        $index: 0
-        id: 5
-        name: 'new item'
-      }
-    ] })
-
-  it 'collection item change on updating item himself via primitive "collection[0].name"', ->
-    storage =
-      collection: [
+      assert.deepEqual(storage, { collection: [
         {
           $index: 0
           id: 5
-          name: 'old item'
+          name: 'new item'
         }
-      ]
+      ] })
 
-    newData = 'new item'
+    it 'collection item change on updating item himself via container "collection[0]"', ->
+      storage =
+        collection: [
+          {
+            $index: 0
+            id: 5
+            name: 'old item'
+          }
+        ]
 
-    mutate(storage, 'collection[0].name').update(newData)
-
-    assert.deepEqual(storage, { collection: [
-      {
-        $index: 0
+      newData = {
         id: 5
         name: 'new item'
       }
-    ] })
+
+      mutate(storage, 'collection[0]').update(newData)
+
+      assert.deepEqual(storage, { collection: [
+        {
+          $index: 0
+          id: 5
+          name: 'new item'
+        }
+      ] })
+
+    it 'collection item change on updating item himself via primitive "collection[0].name"', ->
+      storage =
+        collection: [
+          {
+            $index: 0
+            id: 5
+            name: 'old item'
+          }
+        ]
+
+      newData = 'new item'
+
+      mutate(storage, 'collection[0].name').update(newData)
+
+      assert.deepEqual(storage, { collection: [
+        {
+          $index: 0
+          id: 5
+          name: 'new item'
+        }
+      ] })

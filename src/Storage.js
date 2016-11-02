@@ -44,7 +44,9 @@ export default class Storage {
    */
   update(path, newValue) {
     // run mutates and get list of changes
-    mutate(this._storage, path).update(newValue);
+    var isWereChanges = mutate(this._storage, path).update(newValue);
+
+    // TODO: может не поднимать событие если не было изменений???
 
     // run update event
     this._riseEvents(path, 'change');

@@ -92,12 +92,18 @@ class Mutate {
     if (_.isPlainObject(newState)) {
       return this._updateContainer(root, newState);
     }
-    else if (_.isArray(newState) && newState.length > 0 && _.isPlainObject(_.head(newState))) {
-      return this._updateCollection(root, newState);
-    }
-    else if (_.isArray(newState) && !newState.length) {
-      // It's primitive array or empty collection
-      return this._updatePrimitiveArray(root, newState);
+    else if (_.isArray(newState)) {
+      if (newState.length === 0) {
+        return this._updateСleanArray(root, newState);
+      }
+      // TODO: оптимизировать проверку - compact возможно много жрет ресурсов
+      else if (newState.length && _.isPlainObject(_.head(_.compact(newState)))) {
+        return this._updateCollection(root, newState);
+      }
+      else if (newState.length) {
+        // It's primitive array or empty collection
+        return this._updatePrimitiveArray(root, newState);
+      }
     }
     else {
       // It's primitive, one of boolean, string, number of null
@@ -106,14 +112,17 @@ class Mutate {
   }
 
   _updateContainer(root, newContainerState) {
-    var isChanged = false;
-    // TODO: refactor - use reduce
-    _.each(newContainerState, (value, name) => {
-      var isItemChanged = this._crossroads(concatPath(root, name), value);
-      if (!isChanged) isChanged = isItemChanged;
-    });
+    return _.reduce(newContainerState, (sum, value, name) => {
+      var haveChanges = this._crossroads(concatPath(root, name), value);
+      return !sum && haveChanges;
+    }, false);
+  }
 
-    return isChanged;
+  _updatePrimitive(root, newPrimitiveState) {
+    var oldValue = _.get(this.storage, root);
+    // set to storage
+    _.set(this.storage, root, newPrimitiveState);
+    return oldValue !== newPrimitiveState;
   }
 
   _updateCollection(root, newCollectionState) {
@@ -166,12 +175,21 @@ class Mutate {
     return isChanged;
   }
 
-  _updatePrimitive(root, newPrimitiveState) {
-    var oldValue = _.get(this.storage, root);
-    // set to storage
-    _.set(this.storage, root, newPrimitiveState);
+  _updateСleanArray(root, newPrimitiveArrayState) {
+    // TODO: !!! что должно произойти - старый должен очиститься или ничего не должно происходить???
+    // TODO: test it
+    var originalArray = _.get(this.storage, root);
+    var isChanged = !_.isEqual(originalArray, newPrimitiveArrayState);
+    if (!isChanged) return false;
 
-    var isChanged = oldValue !== newPrimitiveState;
+    // clear old array
+    // TODO: надо поднять событие
+    // TODO: надо удалять только лишние элементы, так как те что от начала и так заменятся
+    _.remove(originalArray);
+
+    _.each(newPrimitiveArrayState, (value, index) => {
+      originalArray.splice(index, 1, value);
+    });
 
     return isChanged;
   }
