@@ -104,16 +104,6 @@ export default class Storage {
   }
 
   /**
-   * Add page to paged collection
-   * @param {string} pathToPagedCollection
-   * @param {Array} page
-   * @param {number} pageNum
-   */
-  setPage(pathToPagedCollection, page, pageNum) {
-    this.addTo(pathToPagedCollection, page, pageNum);
-  }
-
-  /**
    * Remove item from collection by its $index.
    * @param {string} pathToCollection
    * @param {number} $index

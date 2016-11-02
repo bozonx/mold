@@ -166,7 +166,7 @@ export default class State {
     });
 
     //this._checkNode(pathToPagedCollection, page);
-    this._storage.setPage(pathToPagedCollection, preparedPage, pageNum);
+    this._storage.addTo(pathToPagedCollection, preparedPage, pageNum);
   }
 
   /**

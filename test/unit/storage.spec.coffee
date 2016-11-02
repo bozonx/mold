@@ -175,44 +175,6 @@ describe 'Unit. Storage.', ->
         id: 2,
       })
 
-  describe 'setPage(pathToCollection, page, pageNum)', ->
-    it 'to empty', ->
-      this.storage._storage = {
-        pagedCollection: []
-      }
-      this.storage.setPage('pagedCollection', [{id: 1}], 0)
-
-      assert.deepEqual(this.storage.get('pagedCollection'), [
-        [
-          {
-            $index: 0,
-            id: 1,
-          },
-        ],
-      ])
-
-    it 'to new end', ->
-      this.storage._storage = {
-        pagedCollection: [
-          [{ id: 0 }],
-        ]
-      }
-      this.storage.setPage('pagedCollection', [{id: 2}], 2)
-
-      assert.deepEqual(this.storage.get('pagedCollection[0]'), [
-        {
-          $index: 0,
-          id: 0,
-        },
-      ])
-      assert.isUndefined(this.storage.get('pagedCollection[1]'))
-      assert.deepEqual(this.storage.get('pagedCollection[2]'), [
-        {
-          $index: 0,
-          id: 2,
-        },
-      ])
-
   describe 'remove(pathToCollection, $index)', ->
     it 'will be empty', ->
       this.storage._storage = {
