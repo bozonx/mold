@@ -90,18 +90,6 @@ export default class PagedCollection extends _TypeBase {
   }
 
   /**
-   * Add list of items. They will be separate to pages
-   * @param items
-   */
-  addManyItems(items) {
-    // TODO: test it
-    if (!_.isArray(items))
-      throw new Error(`You can add only items of array type!`);
-
-    // TODO: делать всё за одно изменение - должно подняться одно событие
-  }
-
-  /**
    * Add page to mold.
    * It doesn't mark items as unsaved.
    * @param {Array} page
@@ -125,6 +113,22 @@ export default class PagedCollection extends _TypeBase {
    * @param {number} pageNum
    */
   removePage(pageNum) {
+    // TODO: !!!!
+  }
+
+  /**
+   * Add list of items. They will be separate to pages
+   * @param items
+   */
+  batchAdd(items) {
+    // TODO: test it
+    if (!_.isArray(items))
+      throw new Error(`You can add only items of array type!`);
+
+    // TODO: делать всё за одно изменение - должно подняться одно событие
+  }
+
+  batchRemove(items) {
     // TODO: !!!!
   }
 }

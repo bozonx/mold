@@ -154,3 +154,15 @@ describe 'Functional. Paged Collection type.', ->
           name: 'newValue2',
         },
       ])
+
+  describe 'removePage(pageNum)', ->
+    it 'common', ->
+    #TODO: !!!! do it!
+
+  describe 'batchAdd(items)', ->
+    it 'common', ->
+      #TODO: !!!! do it!
+
+  describe 'batchRemove(items)', ->
+    it 'common', ->
+    #TODO: !!!! do it!

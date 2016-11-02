@@ -81,4 +81,14 @@ export default class Collection extends _TypeBase {
     return this._main.state.save(this._root, this.getSourceParams());
   }
 
+  batchAdd(items) {
+    // TODO: !!!!
+  }
+
+  batchRemove(items) {
+    // TODO: !!!!
+  }
+
+
+
 }
