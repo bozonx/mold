@@ -6,10 +6,6 @@ class Mutate {
   constructor(storage, rootLodash = '') {
     this.root = rootLodash;
     this.storage = storage;
-
-    // it's list of all updates, like [moldPath, value, action]
-    //     Action one of: changed, unchanged, remove, add.
-    this.changes = [];
   }
 
   /**
@@ -20,62 +16,47 @@ class Mutate {
    */
   update(newState) {
     this._crossroads(this.root, newState);
-
-    return this.changes;
   }
 
   /**
    * Add item to beginning of collection
    * @param {object} newItem
-   * @returns {Array} changes
    */
   addToBeginning(newItem) {
-    if (!newItem) return this.changes;
+    if (!newItem) return;
 
     var collection = _.get(this.storage, this.root);
 
     // add to beginning
     collection.splice(0, 0, newItem);
 
-    this.changes.push([this.root, 'change']);
-    this.changes.push([this._makePath(this.root, 0), 'add']);
-
     this._updateIndexes(collection);
-
-    return this.changes;
   }
 
   /**
    * Add item to end of collection
    * @param {object} newItem
-   * @returns {Array} changes
    */
   addToEnd(newItem) {
 
     // TODO: test it
 
-    if (!newItem) return this.changes;
+    if (!newItem) return;
 
     var collection = _.get(this.storage, this.root);
 
     // add to beginning
     collection.splice(collection.length, 0, newItem);
 
-    this.changes.push([this.root, 'change']);
-    this.changes.push([this._makePath(this.root, 0), 'add']);
-
     this._updateIndexes(collection);
-
-    return this.changes;
   }
 
   /**
    * Remove item from collection
    * @param {object} item
-   * @returns {Array} changes
    */
   remove(item) {
-    if (!item) return this.changes;
+    if (!item) return;
     if (!_.isNumber(item.$index)) throw new Error(`Remove from collection: item must have an $index param. ${item}`);
 
     var collection = _.get(this.storage, this.root);
@@ -83,12 +64,7 @@ class Mutate {
     // remove with rising an change event on array of collection
     collection.splice(item.$index, 1);
 
-    this.changes.push([this.root,  'change']);
-    this.changes.push([this._makePath(this.root, item.$index), 'remove']);
-
     this._updateIndexes(collection);
-
-    return this.changes;
   }
 
   _crossroads(root, newState) {
@@ -139,7 +115,6 @@ class Mutate {
         // remove with rising an change event on array of collection
         originalCollection.splice(index, 1);
 
-        this.changes.push([this._makePath(root, index), value, 'remove']);
         isChanged = true;
       }
     });
@@ -160,7 +135,7 @@ class Mutate {
         // TODO: проверить можно ли устанавливать на любой индекс не по порядку
         //originalCollection.splice(originalCollection.length + 1, 1, value);
         originalCollection.splice(index, 1, value);
-        this.changes.push([this._makePath(root, index), 'add']);
+
         isChanged = true;
       }
     });
@@ -171,10 +146,6 @@ class Mutate {
 
     this._updateIndexes(originalCollection);
 
-    // rise update on whore collection
-    if (isChanged) this.changes.push([root, 'change']);
-    //else this.changes.push([moldPath, 'unchanged']);
-
     return isChanged;
   }
 
@@ -184,9 +155,6 @@ class Mutate {
     _.set(this.storage, root, newPrimitiveState);
 
     var isChanged = oldValue !== newPrimitiveState;
-
-    if (isChanged) this.changes.push([root, 'change']);
-    else this.changes.push([root, 'unchanged']);
 
     return isChanged;
   }
@@ -205,9 +173,6 @@ class Mutate {
     _.each(newPrimitiveArrayState, (value, index) => {
       originalArray.splice(index, 1, value);
     });
-
-    if (isChanged) this.changes.push([root, 'change']);
-    else this.changes.push([root, 'unchanged']);
 
     return isChanged;
   }
