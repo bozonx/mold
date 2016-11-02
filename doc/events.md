@@ -3,7 +3,7 @@
 ## Mold update event
 
 On each change of primitives or add or remove item from collections,
-mold rises 'mold.update' event.
+mold rises 'change' event.
 
 Event has next params:
 

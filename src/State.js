@@ -39,11 +39,11 @@ export default class State {
   }
 
   onMoldUpdate(handler) {
-    this._main.events.on('mold.update', handler);
+    this._main.events.on('change', handler);
   }
 
   offMoldUpdate(handler) {
-    this._main.events.off('mold.update', handler);
+    this._main.events.off('change', handler);
   }
 
   /**
@@ -264,6 +264,7 @@ export default class State {
   destroy(moldPath) {
     if (this._handlers[moldPath]) {
       _.each(this._handlers[moldPath], (handler) => {
+        // TODO: странное название события
         this._main.events.removeListener('mold.update::' + moldPath, handler);
       });
       this._handlers[moldPath] = [];

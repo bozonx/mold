@@ -26,7 +26,7 @@ testSchema = () ->
       name: {type: 'string'}
 
 describe 'Functional. Events.', ->
-  describe 'mold.update', ->
+  describe 'change', ->
     beforeEach () ->
       this.mold = mold( {}, testSchema() )
       this.handler = sinon.spy();
