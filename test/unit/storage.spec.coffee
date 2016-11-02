@@ -78,29 +78,92 @@ describe 'Unit. Storage.', ->
         },
       ])
 
-#  it 'addTo(pathToCollection, newItem, index)', ->
-#    this.storage._storage = {
-#      collection: [
-#        {
-#          id: 0
-#        },
-#        {
-#          id: 1
-#        }
-#      ]
-#    }
-#    this.storage.addTo('collection', {id: 1})
-#
-#    assert.deepEqual(this.storage.get('collection'), [
-#      {
-#        $index: 0,
-#        id: 0,
-#      },
-#      {
-#        $index: 1,
-#        id: 1,
-#      },
-#    ])
+
+  describe 'addTo(pathToCollection, newItem, index)', ->
+    it 'to empty', ->
+
+    it 'replace first', ->
+      this.storage._storage = {
+        collection: [
+          {
+            id: 0
+          },
+        ]
+      }
+      this.storage.addTo('collection', {id: 1}, 0)
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 1,
+        },
+      ])
+
+    it 'to second', ->
+      this.storage._storage = {
+        collection: [
+          {
+            id: 0
+          },
+          {
+            id: 1
+          }
+        ]
+      }
+      this.storage.addTo('collection', {id: 2}, 1)
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 0,
+        },
+        {
+          $index: 1,
+          id: 2,
+        },
+      ])
+
+    it 'to end', ->
+      this.storage._storage = {
+        collection: [
+          {
+            id: 0
+          },
+        ]
+      }
+      this.storage.addTo('collection', {id: 1}, 1)
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 0,
+        },
+        {
+          $index: 1,
+          id: 1,
+        },
+      ])
+
+    it 'to new end', ->
+      this.storage._storage = {
+        collection: [
+          {
+            id: 0
+          },
+        ]
+      }
+      this.storage.addTo('collection', {id: 2}, 2)
+
+      assert.deepEqual(this.storage.get('collection[0]'), {
+        $index: 0,
+        id: 0,
+      })
+      assert.isUndefined(this.storage.get('collection[1]'))
+      assert.deepEqual(this.storage.get('collection[2]'), {
+        $index: 2,
+        id: 2,
+      })
+
 
 
 

@@ -77,6 +77,8 @@ export default class Storage {
    * @param {object} newItem
    */
   addToEnd(pathToCollection, newItem) {
+    // TODO: use addTo()
+
     if (!_.isPlainObject(newItem)) return;
     var collection = this.get(pathToCollection);
 
