@@ -32,6 +32,27 @@ describe 'Functional. Paged Collection type.', ->
         }
       ]])
 
+    it 'add to almost full page', ->
+      page = [{name: 'newValue1'}]
+      this.pagedCollection.itemsPerPage = 2
+      this.pagedCollection.addPage(page)
+      this.pagedCollection.addItem(this.newItem)
+
+      assert.deepEqual(this.pagedCollection.mold, [
+        [
+          {
+            $index: 0,
+            $isNew: true,
+            name: 'newValue1',
+          },
+          {
+            $index: 1,
+            $isNew: true,
+            name: 'newValue',
+          },
+        ]
+      ])
+
     it 'add to full page and page unordered', ->
       page = [{name: 'newValue1'}, {name: 'newValue2'}]
       this.pagedCollection.itemsPerPage = 2
@@ -58,18 +79,6 @@ describe 'Functional. Paged Collection type.', ->
         },
       ]
       assert.deepEqual(this.pagedCollection.mold, result)
-
-
-    it 'add to almost full page', ->
-
-    it 'add to almost full page', ->
-
-
-    # TODO: проверить чтобы не было переполнения страницы - при полной странице добавляется в новую
-    # TODO: проверить что добавляется в конец
-    # TODO: тестировать страницы не по порядку
-    # TODO: если уже есть одна страница
-
 
   describe 'addPage()', ->
     it 'common', ->
