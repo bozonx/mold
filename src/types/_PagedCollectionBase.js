@@ -85,7 +85,7 @@ export default class _PagedCollectionBase extends _TypeBase {
    * @param {Array} page
    * @param {number|undefined} pageNum
    */
-  setPage(page, pageNum) {
+  $setPage(page, pageNum) {
     if (_.isUndefined(pageNum)) {
       pageNum = (this.mold.length) ? this.mold.length : 0;
     }
@@ -102,7 +102,7 @@ export default class _PagedCollectionBase extends _TypeBase {
    * Remove page
    * @param {number} pageNum
    */
-  removePage(pageNum) {
+  $removePage(pageNum) {
     // TODO: !!!!
   }
 

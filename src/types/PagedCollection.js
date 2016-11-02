@@ -14,4 +14,22 @@ export default class PagedCollection extends _PagedCollectionBase {
   $init(root, schema) {
     super.$init(root, schema);
   }
+
+  /**
+   * Set page to mold.
+   * It doesn't mark items as unsaved.
+   * @param {Array} page
+   * @param {number|undefined} pageNum
+   */
+  setPage(page, pageNum) {
+    super.$setPage(page, pageNum);
+  }
+
+  /**
+   * Remove page
+   * @param {number} pageNum
+   */
+  removePage(pageNum) {
+    super.$removePage(pageNum);
+  }
 }

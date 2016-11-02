@@ -31,7 +31,6 @@ export default class DocumentsCollection extends _PagedCollectionBase{
 
   batchAdd() {
     // TODO: !!!!
-    // TODO: !!!!
   }
 
   batchRemove() {
@@ -39,15 +38,14 @@ export default class DocumentsCollection extends _PagedCollectionBase{
     // TODO: можно удалять даже не загруженные элементы
   }
 
-  // TODO: setPage - тут не нужет, вместо него будет load
-  // TODO: removePage - тоже не нужно наверное
-
   load(pageNum) {
     // TODO: !!!!
   }
 
   save() {
     // TODO: !!!!
+
+
   }
 
 }
