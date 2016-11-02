@@ -4,6 +4,14 @@ export default class _TypeBase {
   }
 
   /**
+   * Get root path
+   * @returns {string}
+   */
+  get root() {
+    return '' + this._root;
+  }
+
+  /**
    * Get real mold.
    */
   get mold() {
@@ -23,15 +31,6 @@ export default class _TypeBase {
     // mold is just a link to the storage
     this.updateMold();
   }
-
-  /**
-   * Get instance root
-   * @returns {string}
-   */
-  getRoot() {
-    return '' + this._root;
-  }
-
 
   // TODO: только в документах
   getSourceParams() {

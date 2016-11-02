@@ -41,7 +41,7 @@ describe 'Functional. Container type.', ->
 
   it "child(subpath)", ->
     nested = this.container.child('nested')
-    assert.equal(nested.getRoot(), 'container.nested')
+    assert.equal(nested.root, 'container.nested')
     assert.deepEqual(nested.schema, this.testSchema.container.schema.nested)
     assert.deepEqual(nested.mold, {nestedStringParam: null})
 
