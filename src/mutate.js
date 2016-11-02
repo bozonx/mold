@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-//import {  } from './helpers';
+import { concatPath } from './helpers';
 
 class Mutate {
   constructor(storage, rootLodash = '') {
@@ -88,7 +88,7 @@ class Mutate {
     var isChanged = false;
     // TODO: refactor - use reduce
     _.each(newContainerState, (value, name) => {
-      var isItemChanged = this._crossroads(this._makePath(root, name), value);
+      var isItemChanged = this._crossroads(concatPath(root, name), value);
       if (!isChanged) isChanged = isItemChanged;
     });
 
@@ -96,10 +96,6 @@ class Mutate {
   }
 
   _updateCollection(root, newCollectionState) {
-    // события поднимаются на коллекции только если изменилось количество элементов
-    // события поднимаются на элементе коллекции поднимаются только added, removed
-    // события поднимаются на primitive элементов коллекции
-
     var isChanged = false;
     // remove whore source collection if new collection is empty
     if (newCollectionState.length === 0)
@@ -125,7 +121,7 @@ class Mutate {
 
       if (originalCollection[index]) {
         // update existent item
-        this._updateContainer(this._makePath(root, index), value);
+        this._updateContainer(concatPath(root, index), value);
         //var isItemChanged = this._updateContainer(this._makePath(root, index), value);
         //if (!isChanged) isChanged = isItemChanged;
       }
@@ -177,20 +173,18 @@ class Mutate {
     return isChanged;
   }
 
-  _makePath(root, child) {
-    if (_.isNumber(child)) {
-      // Path form collection item
-      return `${root}[${child}]`;
-    }
-    // Path for containers and primitives
-    return _.trim(`${root}.${child}`, '.');
-  }
+  // _makePath(root, child) {
+  //   if (_.isNumber(child)) {
+  //     // Path form collection item
+  //     return `${root}[${child}]`;
+  //   }
+  //   // Path for containers and primitives
+  //   return _.trim(`${root}.${child}`, '.');
+  // }
 
   _updateIndexes(collectionInStorage) {
     _.each(collectionInStorage, (value, index) => {
-      // skip empty items. Because indexes are primary ids. In collection may be empty items before real item
-      //if (!value) return;
-      value.$index = index;
+      if (_.isPlainObject(value)) value.$index = index;
     });
   }
 }

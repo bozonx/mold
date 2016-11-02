@@ -69,7 +69,7 @@ export function concatPath(root, relativePath) {
   if (_.startsWith(relativePath, '['))
     return `${root}${relativePath}`;
 
-  return `${root}.${relativePath}`;
+  return _.trim(`${root}.${relativePath}`, '.');
 }
 
 export function getSchemaBaseType(schemaType) {
