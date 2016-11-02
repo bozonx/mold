@@ -79,7 +79,6 @@ export default class Storage {
    * @param {number} pageNum
    */
   setPage(pathToPagedCollection, page, pageNum) {
-    // TODO: обновить $index всех элементов на страницах
     mutate(this._storage, pathToPagedCollection).addTo(page, pageNum);
 
     // run update event

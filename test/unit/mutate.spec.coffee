@@ -28,9 +28,10 @@ describe 'Unit. mutate.', ->
     newData =
       unchangedValue: 'old value'
 
-    mutate(storage, 'container').update(newData)
+    haveChanges = mutate(storage, 'container').update(newData)
 
     assert.deepEqual(storage, { container: newData })
+    assert.isFalse(haveChanges)
 
   it 'unchanged values - change partly', ->
     storage =
@@ -42,9 +43,10 @@ describe 'Unit. mutate.', ->
       unchangedValue: 'old value'
       changedValue: 'new value'
 
-    mutate(storage, 'container').update(newData)
+    haveChanges = mutate(storage, 'container').update(newData)
 
     assert.deepEqual(storage, { container: newData })
+    assert.isTrue(haveChanges)
 
   it 'untouched value', ->
     storage =

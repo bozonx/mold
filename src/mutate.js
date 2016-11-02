@@ -13,9 +13,10 @@ class Mutate {
    * WARNING: If you add item to beginning of existent collection
    *     it means - update all items and add last item
    * @param {*} newState
+   * @returns {boolean} true if there were any changes.
    */
   update(newState) {
-    this._crossroads(this.root, newState);
+    return this._crossroads(this.root, newState);
   }
 
   /**
