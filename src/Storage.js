@@ -99,7 +99,7 @@ export default class Storage {
    * @param {number} index
    */
   addTo(pathToCollection, newItem, index) {
-    if (!_.isPlainObject(newItem)) return;
+    if (!_.isObject(newItem)) return;
     if (!_.isNumber(index)) return;
     var collection = this.get(pathToCollection);
 
@@ -122,11 +122,7 @@ export default class Storage {
    * @param {number} pageNum
    */
   setPage(pathToPagedCollection, page, pageNum) {
-    //this.addTo(pathToPagedCollection, page, pageNum)
-    mutate(this._storage, pathToPagedCollection).addTo(page, pageNum);
-
-    // run update event
-    this._riseEvents(pathToPagedCollection, 'add');
+    this.addTo(pathToPagedCollection, page, pageNum);
   }
 
   /**
@@ -147,7 +143,7 @@ export default class Storage {
    * @param moldPath
    */
   clear(moldPath) {
-    // TODO: разве не используем mutate???
+    // TODO: а события?? или может лучше mutate использовать?
 
     var contents = _.get(this._storage, moldPath);
 

@@ -19,65 +19,6 @@ class Mutate {
     return this._crossroads(this.root, newState);
   }
 
-  // /**
-  //  * Add item to beginning of collection
-  //  * @param {object} newItem
-  //  */
-  // addToBeginning(newItem) {
-  //   if (!newItem) return;
-  //
-  //   // TODO: наверное вынести в Storage
-  //
-  //   var collection = _.get(this.storage, this.root);
-  //
-  //   // add to beginning
-  //   collection.splice(0, 0, newItem);
-  //
-  //   this.updateIndexes(collection);
-  // }
-
-  // /**
-  //  * Add item to end of collection
-  //  * @param {object} newItem
-  //  */
-  // addToEnd(newItem) {
-  //
-  //   // TODO: test it
-  //
-  //   // TODO: наверное вынести в Storage
-  //
-  //   if (!newItem) return;
-  //
-  //   var collection = _.get(this.storage, this.root);
-  //
-  //   // add to beginning
-  //   collection.splice(collection.length, 0, newItem);
-  //
-  //   this.updateIndexes(collection);
-  // }
-
-  /**
-   * Add item specified index of collection
-   * @param {object} newItem
-   * @param {number} index
-   */
-  addTo(newItem, index) {
-
-    // TODO: test it
-
-    // TODO: наверное вынести в Storage
-
-    if (!newItem) return;
-    if (!_.isNumber(index)) return;
-
-    var collection = _.get(this.storage, this.root);
-
-    collection[index] = null;
-    collection.splice(index, 1, newItem);
-
-    this.updateIndexes(collection);
-  }
-
   /**
    * Remove item from collection
    * @param {object} item

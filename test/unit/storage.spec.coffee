@@ -81,6 +81,17 @@ describe 'Unit. Storage.', ->
 
   describe 'addTo(pathToCollection, newItem, index)', ->
     it 'to empty', ->
+      this.storage._storage = {
+        collection: []
+      }
+      this.storage.addTo('collection', {id: 1}, 0)
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 1,
+        },
+      ])
 
     it 'replace first', ->
       this.storage._storage = {
@@ -164,7 +175,52 @@ describe 'Unit. Storage.', ->
         id: 2,
       })
 
+  describe 'setPage(pathToCollection, page, pageNum)', ->
+    it 'to empty', ->
+      this.storage._storage = {
+        pagedCollection: []
+      }
+      this.storage.setPage('pagedCollection', [{id: 1}], 0)
 
+      assert.deepEqual(this.storage.get('pagedCollection'), [
+        [
+          {
+            $index: 0,
+            id: 1,
+          },
+        ],
+      ])
+
+    it 'to new end', ->
+      this.storage._storage = {
+        pagedCollection: [
+          [{ id: 0 }],
+        ]
+      }
+      this.storage.setPage('pagedCollection', [{id: 2}], 2)
+
+      assert.deepEqual(this.storage.get('pagedCollection'), [
+        [
+          {
+            $index: 0,
+            id: 0,
+          },
+        ],
+        undefined,
+        [
+          {
+            $index: 2,
+            id: 2,
+          },
+        ],
+      ])
+
+
+# TODO: setPage
+# TODO: remove
+# TODO: clear
+# TODO: update
+# TODO: events
 
 
 
