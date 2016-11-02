@@ -55,6 +55,7 @@ export default class _TypeBase {
   }
 
   updateMold() {
+    // TODO: ф-я не особо нужна без примитивов
     this._mold = this._main.state.getMold(this._root);
   }
 }

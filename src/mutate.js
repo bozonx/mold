@@ -44,24 +44,6 @@ class Mutate {
   update(newState) {
     return this._crossroads(this.root, newState);
   }
-  //
-  // /**
-  //  * Remove item from collection
-  //  * @param {object} item
-  //  */
-  // remove(item) {
-  //   // TODO: наверное вынести в Storage
-  //
-  //   if (!item) return;
-  //   if (!_.isNumber(item.$index)) throw new Error(`Remove from collection: item must have an $index param. ${item}`);
-  //
-  //   var collection = _.get(this.storage, this.root);
-  //
-  //   // remove with rising an change event on array of collection
-  //   collection.splice(item.$index, 1);
-  //
-  //   updateIndexes(collection);
-  // }
 
   _crossroads(root, newState) {
     if (_.isPlainObject(newState)) {

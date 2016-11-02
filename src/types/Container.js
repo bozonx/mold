@@ -31,6 +31,7 @@ export default class Container extends _TypeBase{
   }
 
   setMold(pathOrValue, valueOrNothing) {
+    // TODO: отказаться от формата path, value
     var path = pathOrValue;
     var value = valueOrNothing;
     var payload;
