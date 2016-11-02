@@ -52,6 +52,26 @@ class Mutate {
   }
 
   /**
+   * Add item specified index of collection
+   * @param {object} newItem
+   * @param {number} index
+   */
+  addTo(newItem, index) {
+
+    // TODO: test it
+
+    if (!newItem) return;
+    if (!_.isNumber(index)) return;
+
+    var collection = _.get(this.storage, this.root);
+
+    collection[index] = null;
+    collection.splice(index, 1, newItem);
+
+    this._updateIndexes(collection);
+  }
+
+  /**
    * Remove item from collection
    * @param {object} item
    */
@@ -183,9 +203,18 @@ class Mutate {
   // }
 
   _updateIndexes(collectionInStorage) {
-    _.each(collectionInStorage, (value, index) => {
-      if (_.isPlainObject(value)) value.$index = index;
-    });
+    if (_.isArray(_.last(collectionInStorage))) {
+      _.each(collectionInStorage, (page) => {
+        _.each(page, (value, index) => {
+          if (_.isPlainObject(value)) value.$index = index;
+        });
+      });
+    }
+    else {
+      _.each(collectionInStorage, (value, index) => {
+        if (_.isPlainObject(value)) value.$index = index;
+      });
+    }
   }
 }
 

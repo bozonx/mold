@@ -79,15 +79,8 @@ export default class Storage {
    * @param {number} pageNum
    */
   setPage(pathToPagedCollection, page, pageNum) {
-    var collection = _.get(this._storage, pathToPagedCollection);
-
-    collection[pageNum] = null;
-
-    collection.splice(pageNum, 1, page);
-
-    // TODO: может делать через mutate???
     // TODO: обновить $index всех элементов на страницах
-    //mutate(this._storage, pathToPagedCollection).addToEnd(page);
+    mutate(this._storage, pathToPagedCollection).addTo(page, pageNum);
 
     // run update event
     this._riseEvents(pathToPagedCollection, 'add');

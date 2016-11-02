@@ -26,8 +26,7 @@ describe 'Functional. Paged Collection type.', ->
 
       assert.deepEqual(this.pagedCollection.mold, [[
         {
-          # TODO: должен быть $index
-          #$index: 0,
+          $index: 0,
           $isNew: true,
           name: 'newValue',
         }
@@ -63,18 +62,19 @@ describe 'Functional. Paged Collection type.', ->
       result = []
       result[2] = [
         {
-          # TODO: должен быть $index
+          $index: 0,
           $isNew: true,
           name: 'newValue1',
         },
         {
+          $index: 1,
           $isNew: true,
           name: 'newValue2',
         },
       ]
       result[3] = [
         {
-          # TODO: должен быть $index
+          $index: 0,
           $isNew: true,
           name: 'newValue',
         },
@@ -87,8 +87,7 @@ describe 'Functional. Paged Collection type.', ->
       this.pagedCollection.setPage(page)
       assert.deepEqual(this.pagedCollection.mold, [[
         {
-          # TODO: должен быть $index
-          #$index: 0,
+          $index: 0,
           $isNew: true,
           name: 'newValue',
         }
@@ -100,7 +99,7 @@ describe 'Functional. Paged Collection type.', ->
       result = []
       result[2] = [
         {
-          # TODO: должен быть $index
+          $index: 0,
           $isNew: true,
           name: 'newValue',
         }
@@ -146,11 +145,12 @@ describe 'Functional. Paged Collection type.', ->
       assert.equal(child.type, 'collection')
       assert.deepEqual(child.mold, [
         {
-          # TODO: должен быть $index
+          $index: 0,
           $isNew: true,
           name: 'newValue1',
         },
         {
+          $index: 1,
           $isNew: true,
           name: 'newValue2',
         },
