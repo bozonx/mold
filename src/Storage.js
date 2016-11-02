@@ -58,7 +58,15 @@ export default class Storage {
    * @param {object} newItem
    */
   addToBeginning(pathToCollection, newItem) {
-    mutate(this._storage, pathToCollection).addToBeginning(newItem);
+    if (!_.isPlainObject(newItem)) return;
+    var collection = this.get(pathToCollection);
+
+    // add to beginning
+    collection.splice(0, 0, newItem);
+
+    // TODO: refactor
+    mutate({}).updateIndexes(collection);
+
     // run update event
     this._riseEvents(pathToCollection, 'add');
   }
@@ -69,9 +77,40 @@ export default class Storage {
    * @param {object} newItem
    */
   addToEnd(pathToCollection, newItem) {
-    mutate(this._storage, pathToCollection).addToEnd(newItem);
+    if (!_.isPlainObject(newItem)) return;
+    var collection = this.get(pathToCollection);
+
+    // add to end
+    collection.splice(collection.length, 0, newItem);
+
+    // TODO: refactor
+    mutate({}).updateIndexes(collection);
+
     // run update event
     this._riseEvents(pathToCollection, 'add');
+  }
+
+  /**
+   * Add item specified index of collection
+   * @param {string} pathToCollection - it must be a path to array in storage
+   * @param {object} newItem
+   * @param {number} index
+   */
+  addTo(pathToCollection, newItem, index) {
+    if (!_.isPlainObject(newItem)) return;
+    if (!_.isNumber(index)) return;
+    var collection = this.get(pathToCollection);
+
+    // extend array
+    collection[index] = null;
+    collection.splice(index, 1, newItem);
+
+    // TODO: refactor
+    mutate({}).updateIndexes(collection);
+
+    // run update event
+    // TODO: rise add if its was added
+    this._riseEvents(pathToCollection, 'change');
   }
 
   /**
@@ -81,6 +120,7 @@ export default class Storage {
    * @param {number} pageNum
    */
   setPage(pathToPagedCollection, page, pageNum) {
+    //this.addTo(pathToPagedCollection, page, pageNum)
     mutate(this._storage, pathToPagedCollection).addTo(page, pageNum);
 
     // run update event

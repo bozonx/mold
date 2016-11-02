@@ -8,47 +8,99 @@ describe 'Unit. Storage.', ->
     }
     this.storage = new Storage(this.eventsMock)
 
-  it 'addToBeginning()', ->
-    this.storage._storage = {
-      collection: [
+  describe 'addToBeginning(pathToCollection, newItem)', ->
+    it 'to empty', ->
+      this.storage._storage = {
+        collection: []
+      }
+      this.storage.addToBeginning('collection', {id: 1})
+
+      assert.deepEqual(this.storage.get('collection'), [
         {
-          id: 0
-        }
-      ]
-    }
-    this.storage.addToBeginning('collection', {id: 1})
+          $index: 0,
+          id: 1,
+        },
+      ])
 
-    assert.deepEqual(this.storage.get('collection'), [
-      {
-        $index: 0,
-        id: 1,
-      },
-      {
-        $index: 1,
-        id: 0,
-      },
-    ])
+    it 'to not empty', ->
+      this.storage._storage = {
+        collection: [
+          {
+            id: 0
+          }
+        ]
+      }
+      this.storage.addToBeginning('collection', {id: 1})
 
-  it 'addToEnd()', ->
-    this.storage._storage = {
-      collection: [
+      assert.deepEqual(this.storage.get('collection'), [
         {
-          id: 0
-        }
-      ]
-    }
-    this.storage.addToEnd('collection', {id: 1})
+          $index: 0,
+          id: 1,
+        },
+        {
+          $index: 1,
+          id: 0,
+        },
+      ])
 
-    assert.deepEqual(this.storage.get('collection'), [
-      {
-        $index: 0,
-        id: 0,
-      },
-      {
-        $index: 1,
-        id: 1,
-      },
-    ])
+  describe 'addToEnd(pathToCollection, newItem)', ->
+    it 'to empty', ->
+      this.storage._storage = {
+        collection: []
+      }
+      this.storage.addToEnd('collection', {id: 1})
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 1,
+        },
+      ])
+
+    it 'to not empty', ->
+      this.storage._storage = {
+        collection: [
+          {
+            id: 0
+          }
+        ]
+      }
+      this.storage.addToEnd('collection', {id: 1})
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 0,
+        },
+        {
+          $index: 1,
+          id: 1,
+        },
+      ])
+
+#  it 'addTo(pathToCollection, newItem, index)', ->
+#    this.storage._storage = {
+#      collection: [
+#        {
+#          id: 0
+#        },
+#        {
+#          id: 1
+#        }
+#      ]
+#    }
+#    this.storage.addTo('collection', {id: 1})
+#
+#    assert.deepEqual(this.storage.get('collection'), [
+#      {
+#        $index: 0,
+#        id: 0,
+#      },
+#      {
+#        $index: 1,
+#        id: 1,
+#      },
+#    ])
 
 
 

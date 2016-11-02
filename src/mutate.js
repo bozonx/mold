@@ -19,42 +19,42 @@ class Mutate {
     return this._crossroads(this.root, newState);
   }
 
-  /**
-   * Add item to beginning of collection
-   * @param {object} newItem
-   */
-  addToBeginning(newItem) {
-    if (!newItem) return;
+  // /**
+  //  * Add item to beginning of collection
+  //  * @param {object} newItem
+  //  */
+  // addToBeginning(newItem) {
+  //   if (!newItem) return;
+  //
+  //   // TODO: наверное вынести в Storage
+  //
+  //   var collection = _.get(this.storage, this.root);
+  //
+  //   // add to beginning
+  //   collection.splice(0, 0, newItem);
+  //
+  //   this.updateIndexes(collection);
+  // }
 
-    // TODO: наверное вынести в Storage
-
-    var collection = _.get(this.storage, this.root);
-
-    // add to beginning
-    collection.splice(0, 0, newItem);
-
-    this.updateIndexes(collection);
-  }
-
-  /**
-   * Add item to end of collection
-   * @param {object} newItem
-   */
-  addToEnd(newItem) {
-
-    // TODO: test it
-
-    // TODO: наверное вынести в Storage
-
-    if (!newItem) return;
-
-    var collection = _.get(this.storage, this.root);
-
-    // add to beginning
-    collection.splice(collection.length, 0, newItem);
-
-    this.updateIndexes(collection);
-  }
+  // /**
+  //  * Add item to end of collection
+  //  * @param {object} newItem
+  //  */
+  // addToEnd(newItem) {
+  //
+  //   // TODO: test it
+  //
+  //   // TODO: наверное вынести в Storage
+  //
+  //   if (!newItem) return;
+  //
+  //   var collection = _.get(this.storage, this.root);
+  //
+  //   // add to beginning
+  //   collection.splice(collection.length, 0, newItem);
+  //
+  //   this.updateIndexes(collection);
+  // }
 
   /**
    * Add item specified index of collection
