@@ -75,6 +75,8 @@ export default class State {
     // TODO: должна работать так же как и addMoldToEnd
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToCollection);
+
+    // TODO: перенести это в checkNode
     if (schema.type !== 'collection')
       throw new Error(`You can add new item only to collection!`);
 
@@ -85,19 +87,24 @@ export default class State {
 
     this._checkNode(pathToCollection, preparedItem);
     this._storage.addToBeginning(pathToCollection, preparedItem);
+
+    // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
     // add to collection of unsaved added items
     this._request.addUnsavedAddedItem(pathToCollection, preparedItem);
   }
 
   /**
    * Add page to paged collection in store.
+   * It doesn't mark items as unsaved.
    * @param {string} pathToPagedCollection
    * @param {Array} page
+   * @param {number} pageNum
    */
-  addPage(pathToPagedCollection, page) {
-    // It rise an error if path doesn't consist with schema
+  addPage(pathToPagedCollection, page, pageNum) {
+    // It rises an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToPagedCollection);
 
+    // TODO: перенести это в checkNode
     if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
       throw new Error(`You can add new item only to paged collection!`);
 
@@ -109,9 +116,7 @@ export default class State {
     });
 
     //this._checkNode(pathToPagedCollection, page);
-    this._storage.addPage(pathToPagedCollection, preparedPage);
-    // add to collection of unsaved added items
-    //this._request.addUnsavedAddedItem(pathToPagedCollection, page);
+    this._storage.addPage(pathToPagedCollection, preparedPage, pageNum);
   }
 
 
@@ -125,6 +130,8 @@ export default class State {
   addToEnd(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToCollection);
+
+    // TODO: перенести это в checkNode
     if (schema.type !== 'collection')
       throw new Error(`You can add new item only to collection!`);
 
@@ -158,6 +165,8 @@ export default class State {
     if (!realItem) return;
 
     this._storage.remove(pathToCollection, realItem.$index);
+
+    // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
     // add to collection of unsaved removed items
     this._request.addUnsavedRemovedItem(pathToCollection, realItem);
   }

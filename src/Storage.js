@@ -75,11 +75,18 @@ export default class Storage {
    * Add page to paged collection
    * @param {string} pathToPagedCollection
    * @param {Array} page
+   * @param {number} pageNum
    */
-  addPage(pathToPagedCollection, page) {
+  addPage(pathToPagedCollection, page, pageNum) {
     var collection = _.get(this._storage, pathToPagedCollection);
 
-    collection.splice(collection.length, 0, page);
+    collection[pageNum] = null;
+
+    collection.splice(pageNum, 1, page);
+
+    // TODO: может делать через mutate???
+    // TODO: обновить $index всех элементов на страницах
+    //var changes = mutate(this._storage, pathToPagedCollection).addToEnd(page);
 
     var changes = [
       {
@@ -88,7 +95,6 @@ export default class Storage {
       }
     ];
 
-    //var changes = mutate(this._storage, pathToPagedCollection).addToEnd(page);
 
     // run update events
     this._riseEvents(changes);

@@ -9,6 +9,7 @@ export default class PagedCollection extends _TypeBase {
   constructor(main) {
     super(main);
 
+    // TODO: значение по умолчанию брать из конфига
     this._itemsPerPage = 10;
   }
 
@@ -98,17 +99,24 @@ export default class PagedCollection extends _TypeBase {
     if (!_.isArray(items))
       throw new Error(`You can add only items of array type!`);
 
-    // TODO: делать это поштучно - тогда поднимется много событий. Или всё разом???
+    // TODO: делать всё за одно изменение - должно подняться одно событие
   }
 
   /**
-   * Add page to mold
-   * @param {number} pageNum
-   * @param {array} page
+   * Add page to mold.
+   * It doesn't mark items as unsaved.
+   * @param {Array} page
+   * @param {number|undefined} pageNum
    */
   addPage(page, pageNum) {
-    if (!_.isUndefined(pageNum) && !_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
-    if (!_.isArray(page)) throw new Error(`The page must be type of array!`);
+    if (_.isUndefined(pageNum)) {
+      pageNum = (this.mold.length) ? this.mold.length : 0;
+    }
+    else if (!_.isNumber(pageNum)) {
+      throw new Error(`The pageNum must be type of number!`);
+    }
+    if (!_.isArray(page))
+      throw new Error(`The page must be type of array!`);
 
     this._main.state.addPage(this._root, page, pageNum);
   }

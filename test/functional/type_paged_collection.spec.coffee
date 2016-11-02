@@ -49,14 +49,25 @@ describe 'Functional. Paged Collection type.', ->
         }
       ]])
 
-    # TODO: тестировать добаление страницы не попорядку
+    it 'unordered', ->
+      page = [{name: 'newValue'}]
+      this.pagedCollection.addPage(page, 2)
+      result = []
+      result[2] = [
+        {
+          # TODO: должен быть $index
+          $isNew: true,
+          name: 'newValue',
+        }
+      ]
+      assert.deepEqual(this.pagedCollection.mold, result)
 
   describe 'getFlat()', ->
-    it 'common', ->
+    it 'unordered', ->
       page1 = [{name: 'newValue1'}, {name: 'newValue2'}]
       page2 = [{name: 'newValue3'}, {name: 'newValue4'}]
-      this.pagedCollection.addPage(page1)
-      this.pagedCollection.addPage(page2)
+      this.pagedCollection.addPage(page1, 2)
+      this.pagedCollection.addPage(page2, 5)
       assert.deepEqual(this.pagedCollection.getFlat(), [
         {
           $isNew: true,
@@ -75,7 +86,6 @@ describe 'Functional. Paged Collection type.', ->
           name: 'newValue4',
         }
       ])
-    # TODO: тестировать добаление страницы не попорядку
 
   describe 'child(pageNum)', ->
     it 'no one pages', ->
