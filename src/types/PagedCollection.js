@@ -30,6 +30,7 @@ export default class PagedCollection extends _PagedCollectionBase {
    * @param {number} pageNum
    */
   removePage(pageNum) {
+    // TODO: test it
     super.$removePage(pageNum);
   }
 }

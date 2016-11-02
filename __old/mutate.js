@@ -3,8 +3,9 @@ import _ from 'lodash';
 //import {  } from './helpers';
 
 class Mutate {
-  constructor(storage, rootLodash = '') {
-    this.root = rootLodash;
+  constructor(storage, rootMold) {
+    rootMold = rootMold || '';
+    this.rootLodash = rootMold;
     this.storage = storage;
 
     // it's list of all updates, like [moldPath, value, action]
@@ -17,9 +18,10 @@ class Mutate {
    * WARNING: If you add item to beginning of existent collection
    *     it means - update all items and add last item
    * @param {*} newState
+   * @returns {Array} changes
    */
   update(newState) {
-    this._crossroads(this.root, newState);
+    this._crossroads(this.rootLodash, newState);
 
     return this.changes;
   }
@@ -32,13 +34,13 @@ class Mutate {
   addToBeginning(newItem) {
     if (!newItem) return this.changes;
 
-    var collection = _.get(this.storage, this.root);
+    var collection = _.get(this.storage, this.rootLodash);
 
     // add to beginning
     collection.splice(0, 0, newItem);
 
-    this.changes.push([this.root, 'change']);
-    this.changes.push([this._makePath(this.root, 0), 'add']);
+    this.changes.push([this.rootLodash, 'change']);
+    this.changes.push([this._makePath(this.rootLodash, 0), 'add']);
 
     this._updateIndexes(collection);
 
@@ -56,13 +58,13 @@ class Mutate {
 
     if (!newItem) return this.changes;
 
-    var collection = _.get(this.storage, this.root);
+    var collection = _.get(this.storage, this.rootLodash);
 
     // add to beginning
     collection.splice(collection.length, 0, newItem);
 
-    this.changes.push([this.root, 'change']);
-    this.changes.push([this._makePath(this.root, 0), 'add']);
+    this.changes.push([this.rootLodash, 'change']);
+    this.changes.push([this._makePath(this.rootLodash, 0), 'add']);
 
     this._updateIndexes(collection);
 
@@ -78,48 +80,48 @@ class Mutate {
     if (!item) return this.changes;
     if (!_.isNumber(item.$index)) throw new Error(`Remove from collection: item must have an $index param. ${item}`);
 
-    var collection = _.get(this.storage, this.root);
+    var collection = _.get(this.storage, this.rootLodash);
 
     // remove with rising an change event on array of collection
     collection.splice(item.$index, 1);
 
-    this.changes.push([this.root,  'change']);
-    this.changes.push([this._makePath(this.root, item.$index), 'remove']);
+    this.changes.push([this.rootLodash,  'change']);
+    this.changes.push([this._makePath(this.rootLodash, item.$index), 'remove']);
 
     this._updateIndexes(collection);
 
     return this.changes;
   }
 
-  _crossroads(root, newState) {
+  _crossroads(rootLodash, newState) {
     if (_.isPlainObject(newState)) {
-      return this._updateContainer(root, newState);
+      return this._updateContainer(rootLodash, newState);
     }
     else if (_.isArray(newState) && newState.length > 0 && _.isPlainObject(_.head(newState))) {
-      return this._updateCollection(root, newState);
+      return this._updateCollection(rootLodash, newState);
     }
     else if (_.isArray(newState) && !newState.length) {
       // It's primitive array or empty collection
-      return this._updatePrimitiveArray(root, newState);
+      return this._updatePrimitiveArray(rootLodash, newState);
     }
     else {
       // It's primitive, one of boolean, string, number of null
-      return this._updatePrimitive(root, newState);
+      return this._updatePrimitive(rootLodash, newState);
     }
   }
 
-  _updateContainer(root, newContainerState) {
+  _updateContainer(rootLodash, newContainerState) {
     var isChanged = false;
     // TODO: refactor - use reduce
     _.each(newContainerState, (value, name) => {
-      var isItemChanged = this._crossroads(this._makePath(root, name), value);
+      var isItemChanged = this._crossroads(this._makePath(rootLodash, name), value);
       if (!isChanged) isChanged = isItemChanged;
     });
 
     return isChanged;
   }
 
-  _updateCollection(root, newCollectionState) {
+  _updateCollection(rootLodash, newCollectionState) {
     // события поднимаются на коллекции только если изменилось количество элементов
     // события поднимаются на элементе коллекции поднимаются только added, removed
     // события поднимаются на primitive элементов коллекции
@@ -127,9 +129,9 @@ class Mutate {
     var isChanged = false;
     // remove whore source collection if new collection is empty
     if (newCollectionState.length === 0)
-      return _.remove(_.get(this.storage, root));
+      return _.remove(_.get(this.storage, rootLodash));
 
-    var originalCollection = _.get(this.storage, root);
+    var originalCollection = _.get(this.storage, rootLodash);
 
     // remove useless items
     _.each(originalCollection, (value, index) => {
@@ -139,7 +141,7 @@ class Mutate {
         // remove with rising an change event on array of collection
         originalCollection.splice(index, 1);
 
-        this.changes.push([this._makePath(root, index), value, 'remove']);
+        this.changes.push([this._makePath(rootLodash, index), value, 'remove']);
         isChanged = true;
       }
     });
@@ -150,8 +152,8 @@ class Mutate {
 
       if (originalCollection[index]) {
         // update existent item
-        this._updateContainer(this._makePath(root, index), value);
-        //var isItemChanged = this._updateContainer(this._makePath(root, index), value);
+        this._updateContainer(this._makePath(rootLodash, index), value);
+        //var isItemChanged = this._updateContainer(this._makePath(rootLodash, index), value);
         //if (!isChanged) isChanged = isItemChanged;
       }
       else {
@@ -160,7 +162,7 @@ class Mutate {
         // TODO: проверить можно ли устанавливать на любой индекс не по порядку
         //originalCollection.splice(originalCollection.length + 1, 1, value);
         originalCollection.splice(index, 1, value);
-        this.changes.push([this._makePath(root, index), 'add']);
+        this.changes.push([this._makePath(rootLodash, index), 'add']);
         isChanged = true;
       }
     });
@@ -172,28 +174,28 @@ class Mutate {
     this._updateIndexes(originalCollection);
 
     // rise update on whore collection
-    if (isChanged) this.changes.push([root, 'change']);
+    if (isChanged) this.changes.push([rootLodash, 'change']);
     //else this.changes.push([moldPath, 'unchanged']);
 
     return isChanged;
   }
 
-  _updatePrimitive(root, newPrimitiveState) {
-    var oldValue = _.get(this.storage, root);
+  _updatePrimitive(rootLodash, newPrimitiveState) {
+    var oldValue = _.get(this.storage, rootLodash);
     // set to storage
-    _.set(this.storage, root, newPrimitiveState);
+    _.set(this.storage, rootLodash, newPrimitiveState);
 
     var isChanged = oldValue !== newPrimitiveState;
 
-    if (isChanged) this.changes.push([root, 'change']);
-    else this.changes.push([root, 'unchanged']);
+    if (isChanged) this.changes.push([rootLodash, 'change']);
+    else this.changes.push([rootLodash, 'unchanged']);
 
     return isChanged;
   }
 
-  _updatePrimitiveArray(root, newPrimitiveArrayState) {
+  _updatePrimitiveArray(rootLodash, newPrimitiveArrayState) {
     // TODO: test it
-    var originalArray = _.get(this.storage, root);
+    var originalArray = _.get(this.storage, rootLodash);
     var isChanged = !_.isEqual(originalArray, newPrimitiveArrayState);
     if (!isChanged) return false;
 
@@ -206,19 +208,19 @@ class Mutate {
       originalArray.splice(index, 1, value);
     });
 
-    if (isChanged) this.changes.push([root, 'change']);
-    else this.changes.push([root, 'unchanged']);
+    if (isChanged) this.changes.push([rootLodash, 'change']);
+    else this.changes.push([rootLodash, 'unchanged']);
 
     return isChanged;
   }
 
-  _makePath(root, child) {
+  _makePath(rootLodash, child) {
     if (_.isNumber(child)) {
       // Path form collection item
-      return `${root}[${child}]`;
+      return `${rootLodash}[${child}]`;
     }
     // Path for containers and primitives
-    return _.trim(`${root}.${child}`, '.');
+    return _.trim(`${rootLodash}.${child}`, '.');
   }
 
   _updateIndexes(collectionInStorage) {
@@ -232,9 +234,9 @@ class Mutate {
 
 /**
  * Mutate storage.
- * @param {object|Array} storage - This will be mutate
- * @param {string} rootLodash - It's root path in mold format like 'path.to.0.item'
+ * @param {object|array} storage - This will be mutate
+ * @param {string} rootMold - It's root path in mold format like 'path.to.0.item'
  */
-export default function(storage, rootLodash) {
-  return new Mutate(storage, rootLodash);
+export default function(storage, rootMold) {
+  return new Mutate(storage, rootMold);
 }
