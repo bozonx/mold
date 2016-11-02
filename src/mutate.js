@@ -2,6 +2,32 @@ import _ from 'lodash';
 
 import { concatPath } from './helpers';
 
+export function updateIndexes(collectionInStorage) {
+  if (_.isArray(_.last(collectionInStorage))) {
+    // for paged collections
+    _.each(collectionInStorage, (page) => {
+      _.each(page, (value, index) => {
+        if (_.isPlainObject(value)) value.$index = index;
+      });
+    });
+  }
+  else {
+    // for simple collections
+    _.each(collectionInStorage, (value, index) => {
+      if (_.isPlainObject(value)) value.$index = index;
+    });
+  }
+}
+
+/**
+ * Mutate storage.
+ * @param {object|Array} storage - This will be mutate
+ * @param {string} rootLodash - It's root path in mold format like 'path.to.0.item'
+ */
+export function mutate(storage, rootLodash) {
+  return new Mutate(storage, rootLodash);
+}
+
 class Mutate {
   constructor(storage, rootLodash = '') {
     this.root = rootLodash;
@@ -34,7 +60,7 @@ class Mutate {
     // remove with rising an change event on array of collection
     collection.splice(item.$index, 1);
 
-    this.updateIndexes(collection);
+    updateIndexes(collection);
   }
 
   _crossroads(root, newState) {
@@ -133,7 +159,7 @@ class Mutate {
     });
 
     this._removeOddFromRight(originalCollection, newCollectionState);
-    this.updateIndexes(originalCollection);
+    updateIndexes(originalCollection);
     return isChanged;
   }
 
@@ -142,29 +168,4 @@ class Mutate {
     originalArray.splice(newArray.length, originalArray.length - newArray.length);
   }
 
-  updateIndexes(collectionInStorage) {
-    if (_.isArray(_.last(collectionInStorage))) {
-      // for paged collections
-      _.each(collectionInStorage, (page) => {
-        _.each(page, (value, index) => {
-          if (_.isPlainObject(value)) value.$index = index;
-        });
-      });
-    }
-    else {
-      // for simple collections
-      _.each(collectionInStorage, (value, index) => {
-        if (_.isPlainObject(value)) value.$index = index;
-      });
-    }
-  }
-}
-
-/**
- * Mutate storage.
- * @param {object|Array} storage - This will be mutate
- * @param {string} rootLodash - It's root path in mold format like 'path.to.0.item'
- */
-export default function(storage, rootLodash) {
-  return new Mutate(storage, rootLodash);
 }

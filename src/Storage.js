@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
-//import { } from './helpers';
-import mutate from './mutate';
+import { mutate, updateIndexes } from './mutate';
 
 export default class Storage {
   constructor(events) {
@@ -64,8 +63,7 @@ export default class Storage {
     // add to beginning
     collection.splice(0, 0, newItem);
 
-    // TODO: refactor
-    mutate({}).updateIndexes(collection);
+    updateIndexes(collection);
 
     // run update event
     this._riseEvents(pathToCollection, 'add');
@@ -98,8 +96,7 @@ export default class Storage {
     collection[index] = null;
     collection.splice(index, 1, newItem);
 
-    // TODO: refactor
-    mutate({}).updateIndexes(collection);
+    updateIndexes(collection);
 
     // run update event
     // TODO: rise add if its was added
@@ -123,8 +120,9 @@ export default class Storage {
    */
   remove(pathToCollection, $index) {
     // TODO: наверное лучше принимать item а не index
-
+    // TODO: а нужен ли тут mutate&???
     mutate(this._storage, pathToCollection).remove({$index});
+
     // run update event
      this._riseEvents(pathToCollection, 'remove');
   }

@@ -215,7 +215,6 @@ describe 'Unit. Storage.', ->
 
 
 
-# TODO: setPage
 # TODO: remove
 # TODO: clear
 # TODO: update
