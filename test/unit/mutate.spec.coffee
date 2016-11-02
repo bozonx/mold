@@ -105,17 +105,44 @@ describe 'Unit. mutate.', ->
       storage =
         arrayParam: ['oldValue']
       newData = [undefined, 'newValue1', 'newValue2']
-      mutate(storage).update({ arrayParam: newData })
+      haveChanges = mutate(storage).update({ arrayParam: newData })
 
       assert.deepEqual(storage, { arrayParam: newData })
+      assert.isTrue(haveChanges)
 
     it 'primitive array - new array is shorter', ->
       storage =
         arrayParam: ['oldValue1', 'oldValue2', 'oldValue3']
       newData = [undefined, 'newValue2']
-      mutate(storage).update({ arrayParam: newData })
+      haveChanges = mutate(storage).update({ arrayParam: newData })
 
       assert.deepEqual(storage, { arrayParam: newData })
+      assert.isTrue(haveChanges)
+
+    it 'no one changes', ->
+      storage =
+        arrayParam: ['value1']
+      newData = ['value1']
+      haveChanges = mutate(storage).update({ arrayParam: newData })
+
+      assert.deepEqual(storage, { arrayParam: newData })
+      assert.isFalse(haveChanges)
+
+    it '_cleanArray', ->
+      storage =
+        arrayParam: ['oldValue']
+      haveChanges = mutate(storage).update({ arrayParam: [] })
+
+      assert.deepEqual(storage, { arrayParam: [] })
+      assert.isTrue(haveChanges)
+
+    it '_cleanArray - no changes', ->
+      storage =
+        arrayParam: []
+      haveChanges = mutate(storage).update({ arrayParam: [] })
+
+      assert.deepEqual(storage, { arrayParam: [] })
+      assert.isFalse(haveChanges)
 
 
   describe 'Collections updates', ->

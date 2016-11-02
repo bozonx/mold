@@ -102,7 +102,7 @@ class Mutate {
     }
     else if (_.isArray(newState)) {
       if (newState.length === 0) {
-        return this._updateCleanArray(root, newState);
+        return this._cleanArray(root);
       }
       // TODO: оптимизировать проверку - compact возможно много жрет ресурсов
       else if (newState.length && _.isPlainObject(_.head(_.compact(newState)))) {
@@ -131,6 +131,40 @@ class Mutate {
     // set to storage
     _.set(this.storage, root, newPrimitiveState);
     return oldValue !== newPrimitiveState;
+  }
+
+  _cleanArray(root) {
+    var originalArray = _.get(this.storage, root);
+
+    if (_.isEmpty(originalArray)) return false;
+
+    originalArray.splice(0);
+
+    return true;
+  }
+
+  /**
+   * It carefully replace old array with new array.
+   * @param root
+   * @param newPrimitiveArrayState
+   * @returns {boolean}
+   * @private
+   */
+  _updatePrimitiveArray(root, newPrimitiveArrayState) {
+    var originalArray = _.get(this.storage, root);
+    if (_.isEqual(originalArray, newPrimitiveArrayState)) return false;
+
+    _.each(newPrimitiveArrayState, (value, index) => {
+      originalArray.splice(index, 1, value);
+    });
+
+    // Remove odd items from right
+    if (originalArray.length && newPrimitiveArrayState.length &&
+        newPrimitiveArrayState.length < originalArray.length) {
+      originalArray.splice(originalArray.length - 1, newPrimitiveArrayState.length - 1);
+    }
+
+    return true;
   }
 
   _updateCollection(root, newCollectionState) {
@@ -183,50 +217,6 @@ class Mutate {
     return isChanged;
   }
 
-  _updateCleanArray(root, newPrimitiveArrayState) {
-    // TODO: !!! что должно произойти - старый должен очиститься или ничего не должно происходить???
-    // TODO: test it
-    var originalArray = _.get(this.storage, root);
-    var isChanged = !_.isEqual(originalArray, newPrimitiveArrayState);
-    if (!isChanged) return false;
-
-    // clear old array
-    // TODO: надо поднять событие
-    // TODO: надо удалять только лишние элементы, так как те что от начала и так заменятся
-    _.remove(originalArray);
-
-    _.each(newPrimitiveArrayState, (value, index) => {
-      originalArray.splice(index, 1, value);
-    });
-
-    return isChanged;
-  }
-
-  /**
-   * It carefully replace old array with new array.
-   * @param root
-   * @param newPrimitiveArrayState
-   * @returns {boolean}
-   * @private
-   */
-  _updatePrimitiveArray(root, newPrimitiveArrayState) {
-    var originalArray = _.get(this.storage, root);
-    var isChanged = !_.isEqual(originalArray, newPrimitiveArrayState);
-    if (!isChanged) return false;
-
-    _.each(newPrimitiveArrayState, (value, index) => {
-      originalArray.splice(index, 1, value);
-    });
-
-    // Remove odd items from right
-    if (originalArray.length && newPrimitiveArrayState.length &&
-        newPrimitiveArrayState.length < originalArray.length) {
-      originalArray.splice(originalArray.length - 1, newPrimitiveArrayState.length - 1);
-    }
-
-    return isChanged;
-  }
-
   _updateIndexes(collectionInStorage) {
     if (_.isArray(_.last(collectionInStorage))) {
       // for paged collections
@@ -237,7 +227,7 @@ class Mutate {
       });
     }
     else {
-      // for simpe collections
+      // for simple collections
       _.each(collectionInStorage, (value, index) => {
         if (_.isPlainObject(value)) value.$index = index;
       });
