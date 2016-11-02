@@ -193,17 +193,9 @@ class Mutate {
     return isChanged;
   }
 
-  // _makePath(root, child) {
-  //   if (_.isNumber(child)) {
-  //     // Path form collection item
-  //     return `${root}[${child}]`;
-  //   }
-  //   // Path for containers and primitives
-  //   return _.trim(`${root}.${child}`, '.');
-  // }
-
   _updateIndexes(collectionInStorage) {
     if (_.isArray(_.last(collectionInStorage))) {
+      // for paged collections
       _.each(collectionInStorage, (page) => {
         _.each(page, (value, index) => {
           if (_.isPlainObject(value)) value.$index = index;
@@ -211,6 +203,7 @@ class Mutate {
       });
     }
     else {
+      // for simpe collections
       _.each(collectionInStorage, (value, index) => {
         if (_.isPlainObject(value)) value.$index = index;
       });
