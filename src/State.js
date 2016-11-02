@@ -119,13 +119,13 @@ export default class State {
   }
 
   /**
-   * Add page to paged collection in store.
+   * Set page to paged collection in store.
    * It doesn't mark items as unsaved.
    * @param {string} pathToPagedCollection
    * @param {Array} page
    * @param {number} pageNum
    */
-  addPage(pathToPagedCollection, page, pageNum) {
+  setPage(pathToPagedCollection, page, pageNum) {
     // It rises an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToPagedCollection);
 
@@ -141,7 +141,7 @@ export default class State {
     });
 
     //this._checkNode(pathToPagedCollection, page);
-    this._storage.addPage(pathToPagedCollection, preparedPage, pageNum);
+    this._storage.setPage(pathToPagedCollection, preparedPage, pageNum);
   }
 
   /**

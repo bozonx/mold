@@ -35,7 +35,7 @@ describe 'Functional. Paged Collection type.', ->
     it 'add to almost full page', ->
       page = [{name: 'newValue1'}]
       this.pagedCollection.itemsPerPage = 2
-      this.pagedCollection.addPage(page)
+      this.pagedCollection.setPage(page)
       this.pagedCollection.addItem(this.newItem)
 
       assert.deepEqual(this.pagedCollection.mold, [
@@ -56,7 +56,7 @@ describe 'Functional. Paged Collection type.', ->
     it 'add to full page and page unordered', ->
       page = [{name: 'newValue1'}, {name: 'newValue2'}]
       this.pagedCollection.itemsPerPage = 2
-      this.pagedCollection.addPage(page, 2)
+      this.pagedCollection.setPage(page, 2)
       this.pagedCollection.addItem(this.newItem)
 
       result = []
@@ -80,10 +80,10 @@ describe 'Functional. Paged Collection type.', ->
       ]
       assert.deepEqual(this.pagedCollection.mold, result)
 
-  describe 'addPage()', ->
+  describe 'setPage()', ->
     it 'common', ->
       page = [{name: 'newValue'}]
-      this.pagedCollection.addPage(page)
+      this.pagedCollection.setPage(page)
       assert.deepEqual(this.pagedCollection.mold, [[
         {
           # TODO: должен быть $index
@@ -95,7 +95,7 @@ describe 'Functional. Paged Collection type.', ->
 
     it 'unordered', ->
       page = [{name: 'newValue'}]
-      this.pagedCollection.addPage(page, 2)
+      this.pagedCollection.setPage(page, 2)
       result = []
       result[2] = [
         {
@@ -110,8 +110,8 @@ describe 'Functional. Paged Collection type.', ->
     it 'unordered', ->
       page1 = [{name: 'newValue1'}, {name: 'newValue2'}]
       page2 = [{name: 'newValue3'}, {name: 'newValue4'}]
-      this.pagedCollection.addPage(page1, 2)
-      this.pagedCollection.addPage(page2, 5)
+      this.pagedCollection.setPage(page1, 2)
+      this.pagedCollection.setPage(page2, 5)
       assert.deepEqual(this.pagedCollection.getFlat(), [
         {
           $isNew: true,
@@ -138,8 +138,8 @@ describe 'Functional. Paged Collection type.', ->
 
     it 'returned page is a collection', ->
       page = [{name: 'newValue1'}, {name: 'newValue2'}]
-      this.pagedCollection.addPage([])
-      this.pagedCollection.addPage(page)
+      this.pagedCollection.setPage([])
+      this.pagedCollection.setPage(page)
       child = this.pagedCollection.child(1)
 
       assert.equal(child.type, 'collection')

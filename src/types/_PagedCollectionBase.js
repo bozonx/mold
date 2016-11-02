@@ -59,6 +59,7 @@ export default class _PagedCollectionBase extends _TypeBase {
 
   /**
    * add item to the end of last page.
+   * It creates new page if last page was overflowed
    */
   addItem(item) {
     if (!_.isPlainObject(item))
@@ -66,11 +67,11 @@ export default class _PagedCollectionBase extends _TypeBase {
 
     if (_.isEmpty(this.mold)) {
       let pageNum = 0;
-      this._main.state.addPage(this._root, [item], pageNum);
+      this._main.state.setPage(this._root, [item], pageNum);
     }
     else if (_.last(this.mold).length >= this._itemsPerPage) {
       let pageNum = this.mold.length;
-      this._main.state.addPage(this._root, [item], pageNum);
+      this._main.state.setPage(this._root, [item], pageNum);
     }
     else {
       let pageNum = this.mold.length - 1;
@@ -79,12 +80,12 @@ export default class _PagedCollectionBase extends _TypeBase {
   }
 
   /**
-   * Add page to mold.
+   * Set page to mold.
    * It doesn't mark items as unsaved.
    * @param {Array} page
    * @param {number|undefined} pageNum
    */
-  addPage(page, pageNum) {
+  setPage(page, pageNum) {
     if (_.isUndefined(pageNum)) {
       pageNum = (this.mold.length) ? this.mold.length : 0;
     }
@@ -94,7 +95,7 @@ export default class _PagedCollectionBase extends _TypeBase {
     if (!_.isArray(page))
       throw new Error(`The page must be type of array!`);
 
-    this._main.state.addPage(this._root, page, pageNum);
+    this._main.state.setPage(this._root, page, pageNum);
   }
 
   /**

@@ -77,7 +77,7 @@ export default class Storage {
    * @param {Array} page
    * @param {number} pageNum
    */
-  addPage(pathToPagedCollection, page, pageNum) {
+  setPage(pathToPagedCollection, page, pageNum) {
     var collection = _.get(this._storage, pathToPagedCollection);
 
     collection[pageNum] = null;
