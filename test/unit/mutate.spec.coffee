@@ -146,7 +146,7 @@ describe 'Unit. mutate.', ->
 
 
   describe 'Collections updates', ->
-    it 'collection init (add from server)', ->
+    it 'init', ->
       storage =
         collection: []
       newData = [
@@ -155,7 +155,7 @@ describe 'Unit. mutate.', ->
           name: 'new item'
         }
       ]
-      mutate(storage, 'collection').update(newData)
+      haveChanges = mutate(storage, 'collection').update(newData)
 
       assert.deepEqual(storage, { collection: [
         {
@@ -164,8 +164,52 @@ describe 'Unit. mutate.', ->
           name: 'new item'
         }
       ] })
+      assert.isTrue(haveChanges)
 
-    it 'collection replace - new data is greater', ->
+    it 'reduce collection size', ->
+      storage =
+        collection: [
+          undefined
+          {
+            $index: 0
+            id: 0
+            name: 'old item'
+          }
+        ]
+      newData = [
+        {
+          id: 1
+          name: 'new item'
+        }
+        undefined,
+      ]
+      haveChanges = mutate(storage, 'collection').update(newData)
+
+      assert.deepEqual(storage, { collection: [
+        {
+          $index: 0
+          id: 1
+          name: 'new item'
+        }
+        undefined,
+      ] })
+      assert.isTrue(haveChanges)
+
+    it 'clean a collection', ->
+      storage =
+        collection: [
+          {
+            $index: 0
+            id: 5
+            name: 'new item'
+          }
+        ]
+      haveChanges = mutate(storage, 'collection').update([])
+
+      assert.deepEqual(storage, { collection: [] })
+      assert.isTrue(haveChanges)
+
+    it 'replace - new data is greater', ->
       storage =
         collection: [
           {
@@ -179,8 +223,8 @@ describe 'Unit. mutate.', ->
             name: 'this will be replaced'
           }
         ]
-
       newData = [
+        undefined,
         {
           id: 6
           name: 'new item'
@@ -194,28 +238,29 @@ describe 'Unit. mutate.', ->
           name: 'new item'
         }
       ]
-
-      mutate(storage, 'collection').update(newData)
+      haveChanges = mutate(storage, 'collection').update(newData)
 
       assert.deepEqual(storage, { collection: [
+        undefined,
         {
-          $index: 0,
+          $index: 1,
           id: 6
           name: 'new item'
         }
         {
-          $index: 1,
+          $index: 2,
           id: 7
           name: 'new item'
         }
         {
-          $index: 2,
+          $index: 3,
           id: 8
           name: 'new item'
         }
       ] })
+      assert.isTrue(haveChanges)
 
-    it 'collection replace - new data is less', ->
+    it 'replace - new data is less', ->
       storage =
         collection: [
           {
@@ -223,21 +268,20 @@ describe 'Unit. mutate.', ->
             id: 5
             name: 'this will be replaced'
           }
+          undefined,
           {
             $index: 1,
             id: 6
             name: 'this will be stay untouched'
           }
         ]
-
       newData = [
         {
           id: 6
           name: 'new item'
         }
       ]
-
-      mutate(storage, 'collection').update(newData)
+      haveChanges = mutate(storage, 'collection').update(newData)
 
       assert.deepEqual(storage, { collection: [
         {
@@ -246,45 +290,7 @@ describe 'Unit. mutate.', ->
           name: 'new item'
         }
       ] })
-
-
-
-
-
-
-
-
-
-
-
-
-    ###############################
-    it 'collection item change on updating collection', ->
-      storage =
-        collection: [
-          {
-            $index: 0
-            id: 5
-            name: 'old item'
-          }
-        ]
-
-      newData = [
-        {
-          id: 5
-          name: 'new item'
-        }
-      ]
-
-      mutate(storage, 'collection').update(newData)
-
-      assert.deepEqual(storage, { collection: [
-        {
-          $index: 0
-          id: 5
-          name: 'new item'
-        }
-      ] })
+      assert.isTrue(haveChanges)
 
     it 'collection item change on updating item himself via container "collection[0]"', ->
       storage =
@@ -295,13 +301,11 @@ describe 'Unit. mutate.', ->
             name: 'old item'
           }
         ]
-
       newData = {
         id: 5
         name: 'new item'
       }
-
-      mutate(storage, 'collection[0]').update(newData)
+      haveChanges = mutate(storage, 'collection[0]').update(newData)
 
       assert.deepEqual(storage, { collection: [
         {
@@ -310,8 +314,9 @@ describe 'Unit. mutate.', ->
           name: 'new item'
         }
       ] })
+      assert.isTrue(haveChanges)
 
-    it 'collection item change on updating item himself via primitive "collection[0].name"', ->
+    it 'unchanged', ->
       storage =
         collection: [
           {
@@ -320,15 +325,14 @@ describe 'Unit. mutate.', ->
             name: 'old item'
           }
         ]
-
-      newData = 'new item'
-
-      mutate(storage, 'collection[0].name').update(newData)
-
-      assert.deepEqual(storage, { collection: [
+      newData = [
         {
           $index: 0
           id: 5
-          name: 'new item'
+          name: 'old item'
         }
-      ] })
+      ]
+      haveChanges = mutate(storage, 'collection').update(newData)
+
+      assert.deepEqual(storage, { collection: storage.collection })
+      assert.isFalse(haveChanges)

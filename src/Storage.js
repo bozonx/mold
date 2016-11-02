@@ -111,7 +111,8 @@ export default class Storage {
 
     var clearRecursive = (value, localPath) => {
       if (_.isArray(value)) {
-        _.remove(value);
+        //_.remove(value);
+        value.splice(0);
       }
       else if (_.isPlainObject(value)) {
         _.each(value, (containerItem, name) => {
