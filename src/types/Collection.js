@@ -36,26 +36,7 @@ export default class Collection extends _TypeBase {
     return instance;
   }
 
-  /**
-   * Request for data.
-   * Get one item from collection by primary id.  Example:
-   *     collection.item(urlParams.id)
-   * @param {number|string|undefined} noneOrIdOrPath - path, or promary id or nothing for whore collection
-   * @returns {Promise} with item or collection
-   */
-  load(noneOrIdOrPath) {
-    if (_.isUndefined(noneOrIdOrPath)) {
-      // load whore collection
-      return this._main.state.load(this._root, this.getSourceParams());
-    }
-    else if (_.isNumber(noneOrIdOrPath) || _.isString(noneOrIdOrPath)) {
-      // load collection child
-      let path = concatPath(this._root, noneOrIdOrPath);
-      return this._main.state.load(path, this.getSourceParams());
-    }
 
-    throw new Error(`You must pass only number, string or undefined!`);
-  }
 
   /**
    * Add item to beginning of list
@@ -74,10 +55,34 @@ export default class Collection extends _TypeBase {
   }
 
   /**
+   * Request for data.
+   * Get one item from collection by primary id.  Example:
+   *     collection.item(urlParams.id)
+   * @param {number|string|undefined} noneOrIdOrPath - path, or promary id or nothing for whore collection
+   * @returns {Promise} with item or collection
+   */
+  load(noneOrIdOrPath) {
+    // TODO: наверное не нужно!!!
+
+    if (_.isUndefined(noneOrIdOrPath)) {
+      // load whore collection
+      return this._main.state.load(this._root, this.getSourceParams());
+    }
+    else if (_.isNumber(noneOrIdOrPath) || _.isString(noneOrIdOrPath)) {
+      // load collection child
+      let path = concatPath(this._root, noneOrIdOrPath);
+      return this._main.state.load(path, this.getSourceParams());
+    }
+
+    throw new Error(`You must pass only number, string or undefined!`);
+  }
+
+  /**
    * Save unsaved added and remove elements.
    * @returns {Promise}
    */
   save() {
+    // TODO: наверное не нужно!!!
     return this._main.state.save(this._root, this.getSourceParams());
   }
 

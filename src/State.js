@@ -38,6 +38,14 @@ export default class State {
     this._sourceParams[moldPath] = params;
   }
 
+  onMoldUpdate(handler) {
+    this._main.events.on('mold.update', handler);
+  }
+
+  offMoldUpdate(handler) {
+    this._main.events.off('mold.update', handler);
+  }
+
   /**
    * Get mold by path
    * @param {string} moldPath
@@ -58,21 +66,12 @@ export default class State {
     this._storage.update(moldPath, value);
   }
 
-  onMoldUpdate(handler) {
-    this._main.events.on('mold.update', handler);
-  }
-
-  offMoldUpdate(handler) {
-    this._main.events.off('mold.update', handler);
-  }
-
   /**
    * Add to collection in store by user action.
    * @param {string} pathToCollection
    * @param {object} newItem
    */
   addMold(pathToCollection, newItem) {
-    // TODO: должна работать так же как и addMoldToEnd
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(pathToCollection);
 
@@ -87,6 +86,32 @@ export default class State {
 
     this._checkNode(pathToCollection, preparedItem);
     this._storage.addToBeginning(pathToCollection, preparedItem);
+
+    // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
+    // add to collection of unsaved added items
+    this._request.addUnsavedAddedItem(pathToCollection, preparedItem);
+  }
+
+  /**
+   * Add to end of collection in store by user action.
+   * @param {string} pathToCollection
+   * @param {object} newItem
+   */
+  addToEnd(pathToCollection, newItem) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(pathToCollection);
+
+    // TODO: перенести это в checkNode
+    if (schema.type !== 'collection')
+      throw new Error(`You can add new item only to collection!`);
+
+    var preparedItem = {
+      ...newItem,
+      $isNew: true,
+    };
+
+    this._checkNode(pathToCollection, preparedItem);
+    this._storage.addToEnd(pathToCollection, preparedItem);
 
     // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
     // add to collection of unsaved added items
@@ -117,33 +142,6 @@ export default class State {
 
     //this._checkNode(pathToPagedCollection, page);
     this._storage.addPage(pathToPagedCollection, preparedPage, pageNum);
-  }
-
-
-  //if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
-
-  /**
-   * Add to end of collection in store by user action.
-   * @param {string} pathToCollection
-   * @param {object} newItem
-   */
-  addToEnd(pathToCollection, newItem) {
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToCollection);
-
-    // TODO: перенести это в checkNode
-    if (schema.type !== 'collection')
-      throw new Error(`You can add new item only to collection!`);
-
-    var preparedItem = {
-      ...newItem,
-      $isNew: true,
-    };
-
-    this._checkNode(pathToCollection, preparedItem);
-    this._storage.addToEnd(pathToCollection, preparedItem);
-    // add to collection of unsaved added items
-    //this._request.addUnsavedAddedItem(pathToCollection, preparedItem);
   }
 
   /**

@@ -3,6 +3,20 @@ export default class _TypeBase {
     this._main = main;
   }
 
+  /**
+   * Get real mold.
+   */
+  get mold() {
+    return this._mold;
+  }
+
+  /**
+   * Get copy of mold.
+   */
+  getMold() {
+    return _.cloneDeep(this._mold);
+  }
+
   $init(root, schema) {
     this._root = root;
     this.schema = schema;
@@ -17,6 +31,7 @@ export default class _TypeBase {
   getRoot() {
     return '' + this._root;
   }
+
 
   // TODO: только в документах
   getSourceParams() {
@@ -41,6 +56,6 @@ export default class _TypeBase {
   }
 
   updateMold() {
-    this.mold = this._main.state.getMold(this._root);
+    this._mold = this._main.state.getMold(this._root);
   }
 }

@@ -30,13 +30,6 @@ export default class Container extends _TypeBase{
     return this._main.schemaManager.getInstance(concatPath(this._root, path));
   }
 
-  /**
-   * Get copy of mold.
-   */
-  getMold() {
-    return _.cloneDeep(this.mold);
-  }
-
   setMold(pathOrValue, valueOrNothing) {
     var path = pathOrValue;
     var value = valueOrNothing;
