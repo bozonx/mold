@@ -165,28 +165,32 @@ describe 'Unit. mutate.', ->
         }
       ] })
 
-    it 'collection remove and add (originally replace)', ->
+    it 'collection replace - new data is greater', ->
       storage =
         collection: [
           {
             $index: 0,
             id: 5
-            name: 'to remove item'
+            name: 'this will be replaced'
           }
           {
             $index: 1,
             id: 6
-            name: 'old item'
+            name: 'this will be replaced'
           }
         ]
 
       newData = [
         {
           id: 6
-          name: 'old item'
+          name: 'new item'
         }
         {
           id: 7
+          name: 'new item'
+        }
+        {
+          id: 8
           name: 'new item'
         }
       ]
@@ -197,15 +201,64 @@ describe 'Unit. mutate.', ->
         {
           $index: 0,
           id: 6
-          name: 'old item'
+          name: 'new item'
         }
         {
           $index: 1,
           id: 7
           name: 'new item'
         }
+        {
+          $index: 2,
+          id: 8
+          name: 'new item'
+        }
       ] })
 
+    it 'collection replace - new data is less', ->
+      storage =
+        collection: [
+          {
+            $index: 0,
+            id: 5
+            name: 'this will be replaced'
+          }
+          {
+            $index: 1,
+            id: 6
+            name: 'this will be stay untouched'
+          }
+        ]
+
+      newData = [
+        {
+          id: 6
+          name: 'new item'
+        }
+      ]
+
+      mutate(storage, 'collection').update(newData)
+
+      assert.deepEqual(storage, { collection: [
+        {
+          $index: 0,
+          id: 6
+          name: 'new item'
+        }
+      ] })
+
+
+
+
+
+
+
+
+
+
+
+
+    ###############################
     it 'collection item change on updating collection', ->
       storage =
         collection: [
