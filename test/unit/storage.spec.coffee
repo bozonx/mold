@@ -213,12 +213,91 @@ describe 'Unit. Storage.', ->
         },
       ])
 
+  describe 'remove(pathToCollection, $index)', ->
+    it 'will be empty', ->
+      this.storage._storage = {
+        collection: [
+          {
+            id: 0
+          },
+        ]
+      }
+      this.storage.remove('collection', 0)
 
+      assert.deepEqual(this.storage.get('collection'), [])
 
-# TODO: remove
+    it 'remove from beginning', ->
+      this.storage._storage = {
+        collection: [
+          {
+            id: 0
+          },
+          {
+            id: 1
+          },
+        ]
+      }
+      this.storage.remove('collection', 0)
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 1,
+        },
+      ])
+
+    it 'remove from end', ->
+      this.storage._storage = {
+        collection: [
+          {
+            id: 0
+          },
+          {
+            id: 1
+          },
+        ]
+      }
+      this.storage.remove('collection', 1)
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 0,
+        },
+      ])
+
+    it 'remove from middle', ->
+      this.storage._storage = {
+        collection: [
+          {
+            id: 0
+          },
+          {
+            id: 1
+          },
+          {
+            id: 2
+          },
+        ]
+      }
+      this.storage.remove('collection', 1)
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 0,
+        },
+        {
+          $index: 1,
+          id: 2,
+        },
+      ])
+
 # TODO: clear
 # TODO: update
-# TODO: events
+# TODO: events - no event
+
+
 
 
 

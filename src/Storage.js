@@ -119,9 +119,13 @@ export default class Storage {
    * @param {number} $index
    */
   remove(pathToCollection, $index) {
-    // TODO: наверное лучше принимать item а не index
-    // TODO: а нужен ли тут mutate&???
-    mutate(this._storage, pathToCollection).remove({$index});
+    if (!_.isNumber($index)) return;
+    var collection = this.get(pathToCollection);
+
+    // remove with rising an change event on array of collection
+    collection.splice($index, 1);
+
+    updateIndexes(collection);
 
     // run update event
      this._riseEvents(pathToCollection, 'remove');
