@@ -19,12 +19,12 @@ export default class Storage {
     this._storage = newStorage;
   }
 
-  $getWhoreStorageState() {
+  $getWholeStorageState() {
     return this._storage;
   }
 
   /**
-   * Get value from storage.
+   * Get value from the storage.
    * It hopes a path is correct
    * To get root you can pass '' or undefined to a path
    * @param {string} path - absolute path

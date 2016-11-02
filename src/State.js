@@ -119,32 +119,6 @@ export default class State {
   }
 
   /**
-   * Set page to paged collection in store.
-   * It doesn't mark items as unsaved.
-   * @param {string} pathToPagedCollection
-   * @param {Array} page
-   * @param {number} pageNum
-   */
-  setPage(pathToPagedCollection, page, pageNum) {
-    // It rises an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToPagedCollection);
-
-    // TODO: перенести это в checkNode
-    if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
-      throw new Error(`You can add new item only to paged collection!`);
-
-    var preparedPage = _.map(page, (item) => {
-      return {
-        ...item,
-        $isNew: true,
-      };
-    });
-
-    //this._checkNode(pathToPagedCollection, page);
-    this._storage.setPage(pathToPagedCollection, preparedPage, pageNum);
-  }
-
-  /**
    * Remove from collection.
    * @param {string} pathToCollection
    * @param {object} itemToRemove
@@ -170,6 +144,32 @@ export default class State {
   }
 
   /**
+   * Set page to paged collection in store.
+   * It doesn't mark items as unsaved.
+   * @param {string} pathToPagedCollection
+   * @param {Array} page
+   * @param {number} pageNum. It's required.
+   */
+  setPage(pathToPagedCollection, page, pageNum) {
+    // It rises an error if path doesn't consist with schema
+    var schema = this._main.schemaManager.get(pathToPagedCollection);
+
+    // TODO: перенести это в checkNode
+    if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
+      throw new Error(`You can add new item only to paged collection!`);
+
+    var preparedPage = _.map(page, (item) => {
+      return {
+        ...item,
+        $isNew: true,
+      };
+    });
+
+    //this._checkNode(pathToPagedCollection, page);
+    this._storage.setPage(pathToPagedCollection, preparedPage, pageNum);
+  }
+
+  /**
    * Get data from driver, update mold with new data and return promise
    * @param {string} moldPath - full path in mold
    * @param {object} sourceParams - dynamic part of source path
@@ -179,21 +179,22 @@ export default class State {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
 
-    if (schema.type == 'container') {
-      return this._request.loadContainer(moldPath, sourceParams);
-    }
-    else if (schema.type == 'document') {
+    if (schema.type == 'document') {
       return this._request.loadContainer(moldPath, sourceParams);
     }
     else if (schema.type == 'documentsCollection') {
       return this._request.loadCollection(moldPath, sourceParams);
     }
+    else if (schema.type == 'container') {
+      throw new Error(`You must use a document type instead container`);
+      //return this._request.loadContainer(moldPath, sourceParams);
+    }
     else if (schema.type == 'collection') {
-      return this._request.loadCollection(moldPath, sourceParams);
+      throw new Error(`You must use a documentsCollection type instead collection`);
+      //return this._request.loadCollection(moldPath, sourceParams);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
       throw new Error(`You can't send load request to primitive of "${schema.type}"!`);
-      //return this._request.loadPrimitive(moldPath, sourceParams);
     }
 
     throw new Error(`Unknown type!`);
@@ -209,21 +210,22 @@ export default class State {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.schemaManager.get(moldPath);
 
-     if (schema.type == 'container') {
-      return this._request.saveContainer(moldPath, sourceParams);
-    }
     if (schema.type == 'document') {
       return this._request.saveContainer(moldPath, sourceParams);
     }
-    if (schema.type == 'documentsCollection') {
+    else if (schema.type == 'documentsCollection') {
       return this._request.saveCollection(moldPath, sourceParams);
     }
+    else if (schema.type == 'container') {
+      throw new Error(`You must use a document type instead container`);
+      //return this._request.saveContainer(moldPath, sourceParams);
+    }
     else if (schema.type == 'collection') {
-      return this._request.saveCollection(moldPath, sourceParams);
+      throw new Error(`You must use a documentsCollection type instead collection`);
+      //return this._request.saveCollection(moldPath, sourceParams);
     }
     else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
       throw new Error(`You can't send save request to primitive of "${schema.type}"!`);
-      //return this._request.savePrimitive(moldPath, sourceParams);
     }
 
     throw new Error(`Unknown type!`);

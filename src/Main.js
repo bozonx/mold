@@ -32,7 +32,7 @@ export default class Main {
    * @returns {*}
    */
   $getWholeStorageState() {
-    return this._storage.$getWhoreStorageState();
+    return this._storage.$getWholeStorageState();
   }
 
   /**
@@ -40,7 +40,7 @@ export default class Main {
    * @returns {*}
    */
   exportStorage() {
-    return _.cloneDeep(this._storage.$getWhoreStorageState());
+    return _.cloneDeep(this._storage.$getWholeStorageState());
   }
 
   /**
