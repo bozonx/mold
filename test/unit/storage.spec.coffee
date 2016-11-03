@@ -8,6 +8,13 @@ describe 'Unit. Storage.', ->
     }
     this.storage = new Storage(this.eventsMock)
 
+    this.checkEvent = (path, action) =>
+      expect(this.emitSpy).to.have.been.calledOnce
+      expect(this.emitSpy).to.have.been.calledWith('change', {
+        path: path,
+        action: action,
+      })
+
   describe 'addToBeginning(pathToCollection, newItem)', ->
     it 'to empty', ->
       this.storage._storage = {
@@ -21,11 +28,7 @@ describe 'Unit. Storage.', ->
           id: 1,
         },
       ])
-      expect(this.emitSpy).to.have.been.calledOnce
-      expect(this.emitSpy).to.have.been.calledWith('change', {
-        path: 'collection',
-        action: 'add',
-      })
+      this.checkEvent('collection', 'add')
 
     it 'to not empty', ->
       this.storage._storage = {
@@ -47,6 +50,7 @@ describe 'Unit. Storage.', ->
           id: 0,
         },
       ])
+      this.checkEvent('collection', 'add')
 
   describe 'addToEnd(pathToCollection, newItem)', ->
     it 'to empty', ->
@@ -61,6 +65,7 @@ describe 'Unit. Storage.', ->
           id: 1,
         },
       ])
+      this.checkEvent('collection', 'add')
 
     it 'to not empty', ->
       this.storage._storage = {
@@ -82,6 +87,7 @@ describe 'Unit. Storage.', ->
           id: 1,
         },
       ])
+      this.checkEvent('collection', 'add')
 
 
   describe 'addTo(pathToCollection, newItem, index)', ->
@@ -97,6 +103,7 @@ describe 'Unit. Storage.', ->
           id: 1,
         },
       ])
+      this.checkEvent('collection', 'add')
 
     it 'replace first', ->
       this.storage._storage = {
@@ -114,6 +121,7 @@ describe 'Unit. Storage.', ->
           id: 1,
         },
       ])
+      this.checkEvent('collection', 'change')
 
     it 'to second', ->
       this.storage._storage = {
@@ -138,6 +146,7 @@ describe 'Unit. Storage.', ->
           id: 2,
         },
       ])
+      this.checkEvent('collection', 'change')
 
     it 'to end', ->
       this.storage._storage = {
@@ -159,6 +168,7 @@ describe 'Unit. Storage.', ->
           id: 1,
         },
       ])
+      this.checkEvent('collection', 'add')
 
     it 'to new end', ->
       this.storage._storage = {
@@ -179,6 +189,7 @@ describe 'Unit. Storage.', ->
         $index: 2,
         id: 2,
       })
+      this.checkEvent('collection', 'add')
 
   describe 'remove(pathToCollection, $index)', ->
     it 'will be empty', ->
@@ -192,6 +203,7 @@ describe 'Unit. Storage.', ->
       this.storage.remove('collection', 0)
 
       assert.deepEqual(this.storage.get('collection'), [])
+      this.checkEvent('collection', 'remove')
 
     it 'remove from beginning', ->
       this.storage._storage = {
@@ -212,6 +224,7 @@ describe 'Unit. Storage.', ->
           id: 1,
         },
       ])
+      this.checkEvent('collection', 'remove')
 
     it 'remove from end', ->
       this.storage._storage = {
@@ -232,6 +245,7 @@ describe 'Unit. Storage.', ->
           id: 0,
         },
       ])
+      this.checkEvent('collection', 'remove')
 
     it 'remove from middle', ->
       this.storage._storage = {
@@ -259,6 +273,7 @@ describe 'Unit. Storage.', ->
           id: 2,
         },
       ])
+      this.checkEvent('collection', 'remove')
 
 # TODO: clear
 # TODO: update

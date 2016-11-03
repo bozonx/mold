@@ -45,7 +45,7 @@ export default class Storage {
     // run mutates and get list of changes
     var isWereChanges = mutate(this._storage, path).update(newValue);
 
-    // TODO: может не поднимать событие если не было изменений???
+    // TODO: не поднимать событие если не было изменений
 
     // run update event
     this._riseEvents(path, 'change');
@@ -87,10 +87,12 @@ export default class Storage {
    */
   addTo(pathToCollection, newItem, index) {
     // TODO: может при замене использовать mutate????
+    // TODO: не поднимать событие если ничего не изменилось при замене
 
     if (!_.isObject(newItem)) return;
     if (!_.isNumber(index)) return;
     var collection = this.get(pathToCollection);
+    var oldCollectionLength = collection.length;
 
     // extend array
     collection[index] = null;
@@ -99,9 +101,10 @@ export default class Storage {
     updateIndexes(collection);
 
     // run update event
-    // TODO: rise add if its was added
-    this._riseEvents(pathToCollection, 'change');
+    this._riseEvents(pathToCollection, (index + 1 > oldCollectionLength) ? 'add' : 'change');
   }
+
+  // TODO: add method - addBetween
 
   /**
    * Remove item from collection by its $index.
@@ -116,6 +119,8 @@ export default class Storage {
     collection.splice($index, 1);
 
     updateIndexes(collection);
+
+    // TODO: не поднимать событие если не чего удалять
 
     // run update event
      this._riseEvents(pathToCollection, 'remove');
