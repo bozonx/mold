@@ -15,6 +15,81 @@ describe 'Unit. Storage.', ->
         action: action,
       })
 
+
+  describe 'update.', ->
+    it 'nothing to update', ->
+      newData = {
+        stringParam: 'value'
+      }
+      this.storage._storage = {
+        container: newData
+      }
+      this.storage.update('container', newData)
+
+      assert.deepEqual(this.storage.get('container'), newData)
+      expect(this.emitSpy).to.not.have.been.called
+
+    it 'complex update', ->
+      this.storage._storage = {
+        container:
+          booleanParam: null
+          stringParam: null
+          numberParam: null
+          arrayParam: []
+          nested: {
+            nestedParam: null
+          }
+          collection: []
+      }
+      newData = {
+        booleanParam: true
+        stringParam: 'newValue'
+        numberParam: 5
+        arrayParam: [1,2,3]
+        nested: {
+          nestedParam: 'nested'
+        }
+        collection: [
+          { id: 1 }
+        ]
+      }
+      this.storage.update('container', newData)
+
+      assert.deepEqual(this.storage.get('container'), {
+        booleanParam: true
+        stringParam: 'newValue'
+        numberParam: 5
+        arrayParam: [1,2,3]
+        nested: {
+          nestedParam: 'nested'
+        }
+        collection: [
+          {
+            $index: 0,
+            id: 1,
+          }
+        ]
+      })
+      this.checkEvent('container', 'change')
+
+    it 'update collection', ->
+      this.storage._storage = {
+        collection: []
+      }
+      newData = [
+        { id: 1 }
+      ]
+      this.storage.update('collection', newData)
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 1,
+        }
+      ])
+      this.checkEvent('collection', 'change')
+
+
   describe 'addToBeginning(pathToCollection, newItem)', ->
     it 'to empty', ->
       this.storage._storage = {
@@ -210,6 +285,7 @@ describe 'Unit. Storage.', ->
       })
       this.checkEvent('collection', 'add')
 
+
   describe 'remove(pathToCollection, $index)', ->
     it 'nothing to remove', ->
       this.storage._storage = {
@@ -304,104 +380,3 @@ describe 'Unit. Storage.', ->
       this.checkEvent('collection', 'remove')
 
 # TODO: clear
-# TODO: events - no event
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  describe 'update.', ->
-    it 'update primitive', ->
-      this.storage._storage = {
-        container:
-          booleanParam: null
-          stringParam: null
-          numberParam: null
-          arrayParam: []
-      }
-      this.storage.update('container.booleanParam', true)
-      this.storage.update('container.stringParam', 'new value')
-      this.storage.update('container.numberParam', 5)
-      this.storage.update('container.arrayParam', ['value1'])
-      assert.deepEqual(this.storage.get('container'), {
-        booleanParam: true
-        stringParam: 'new value'
-        numberParam: 5
-        arrayParam: ['value1']
-      })
-
-    it 'update complex container', ->
-      this.storage._storage = {
-        container:
-          stringParam: null
-          $index: 1
-          nested: {
-            nestedParam: null
-          }
-      }
-      this.storage.update('container', {
-        stringParam: 'new value',
-        _id: 'new'
-        nested: {
-          nestedParam: 'new nested value'
-        }
-      });
-      assert.deepEqual(this.storage.get('container'), {
-        stringParam: 'new value'
-        _id: 'new'
-        $index: 1
-        nested: {
-          nestedParam: 'new nested value'
-        }
-      })
-
-    it 'update complex collection', ->
-      this.storage._storage = {
-        collection: [
-          {
-            id: 0,
-            $index: 0,
-            name: 'name0',
-          }
-          undefined,
-          undefined,
-          {
-            id: 3,
-            $index: 3,
-            name: 'name3',
-          }
-        ]
-      }
-      this.storage.update('collection', [
-        {
-          id: 0,
-          name: 'new name0',
-        }
-        {
-          id: 2,
-          name: 'new name2',
-        }
-      ]);
-
-      assert.deepEqual(this.storage.get('collection'), [
-        {
-          id: 0,
-          $index: 0,
-          name: 'new name0',
-        }
-        {
-          id: 2,
-          $index: 1,
-          name: 'new name2',
-        }
-      ])
