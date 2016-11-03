@@ -119,15 +119,13 @@ export default class Storage {
     if (!_.isNumber($index)) return;
     var collection = this.get(pathToCollection);
 
+    if ($index > collection.length - 1) return;
+
     // remove with rising an change event on array of collection
     collection.splice($index, 1);
-
     updateIndexes(collection);
-
-    // TODO: не поднимать событие если не чего удалять
-
     // run update event
-     this._riseEvents(pathToCollection, 'remove');
+    this._riseEvents(pathToCollection, 'remove');
   }
 
   /**

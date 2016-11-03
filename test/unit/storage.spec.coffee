@@ -211,6 +211,15 @@ describe 'Unit. Storage.', ->
       this.checkEvent('collection', 'add')
 
   describe 'remove(pathToCollection, $index)', ->
+    it 'nothing to remove', ->
+      this.storage._storage = {
+        collection: []
+      }
+      this.storage.remove('collection', 0)
+
+      assert.deepEqual(this.storage.get('collection'), [])
+      expect(this.emitSpy).to.not.have.been.called
+
     it 'will be empty', ->
       this.storage._storage = {
         collection: [
@@ -295,7 +304,6 @@ describe 'Unit. Storage.', ->
       this.checkEvent('collection', 'remove')
 
 # TODO: clear
-# TODO: update
 # TODO: events - no event
 
 
