@@ -379,4 +379,34 @@ describe 'Unit. Storage.', ->
       ])
       this.checkEvent('collection', 'remove')
 
-# TODO: clear
+  describe 'clear(path)', ->
+    it 'nothing to clear', ->
+      this.storage._storage = {
+        collection: []
+      }
+      this.storage.clear('collection')
+
+      assert.deepEqual(this.storage.get('collection'), [])
+      expect(this.emitSpy).to.not.have.been.called
+
+    it 'complex clear', ->
+      this.storage._storage = {
+        container:
+          param: 'value'
+          nested:
+            array: [0,1,2]
+            number: 5
+            bool: true
+          collection: [ { id: 0 } ]
+      }
+      this.storage.clear('container')
+
+      assert.deepEqual(this.storage.get('container'), {
+        param: null
+        nested:
+          array: []
+          number: null
+          bool: null
+        collection: []
+      })
+      this.checkEvent('container', 'change')

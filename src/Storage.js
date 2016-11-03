@@ -130,34 +130,36 @@ export default class Storage {
 
   /**
    * Clear storage on path
-   * @param moldPath
+   * @param path
    */
-  clear(moldPath) {
-    // TODO: а события?? или может лучше mutate использовать?
+  clear(path) {
+    var containerOrArray = _.get(this._storage, path);
+    var isItEmpty = _.isEmpty(containerOrArray);
 
-    var contents = _.get(this._storage, moldPath);
+    this._clearRecursive(containerOrArray);
+    if (!isItEmpty) this._riseEvents(path, 'change');
+  }
 
-    var clearRecursive = (value, localPath) => {
-      if (_.isArray(value)) {
-        //_.remove(value);
-        value.splice(0);
-      }
-      else if (_.isPlainObject(value)) {
-        _.each(value, (containerItem, name) => {
-          clearRecursive(containerItem, localPath + '.' + name);
-        });
-      }
-      else {
-        if (localPath) {
-          _.set(contents, localPath, null);
+  /**
+   * Clear container or array recursively.
+   * @param {object|array} value
+   * @private
+   */
+  _clearRecursive(value) {
+    if (_.isArray(value)) {
+      value.splice(0);
+    }
+    else if (_.isPlainObject(value)) {
+      // container
+      _.each(value, (containerItem, name) => {
+        if (!_.isObject(containerItem)) {
+          _.set(value, name, null);
         }
         else {
-          _.set(this._storage, moldPath, null);
+          this._clearRecursive(containerItem);
         }
-      }
-    };
-
-    clearRecursive(contents, '');
+      });
+    }
   }
 
   _riseEvents(path, action) {

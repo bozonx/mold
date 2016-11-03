@@ -1,92 +1,92 @@
-mold = require('../../src/index').default
-
-testSchema = () ->
-  container:
-    type: 'container'
-    schema:
-      stringParam: {type: 'string'}
-  document:
-    type: 'document'
-    schema:
-      stringParam: {type: 'string'}
-      numberParam: {type: 'number'}
-      booleanParam: {type: 'boolean'}
-  nested:
-    type: 'container'
-    schema:
-      container:
-        type: 'container'
-        schema:
-          stringParam: {type: 'string'}
-          numberParam: {type: 'number'}
-  collection:
-    type: 'collection'
-    item:
-      id: {type: 'number', primary: true}
-      name: {type: 'string'}
-
-describe 'Functional. Events.', ->
-  describe 'change', ->
-    beforeEach () ->
-      this.mold = mold( {}, testSchema() )
-      this.handler = sinon.spy();
-
-#    it 'primitive', ->
+#mold = require('../../src/index').default
+#
+#testSchema = () ->
+#  container:
+#    type: 'container'
+#    schema:
+#      stringParam: {type: 'string'}
+#  document:
+#    type: 'document'
+#    schema:
+#      stringParam: {type: 'string'}
+#      numberParam: {type: 'number'}
+#      booleanParam: {type: 'boolean'}
+#  nested:
+#    type: 'container'
+#    schema:
+#      container:
+#        type: 'container'
+#        schema:
+#          stringParam: {type: 'string'}
+#          numberParam: {type: 'number'}
+#  collection:
+#    type: 'collection'
+#    item:
+#      id: {type: 'number', primary: true}
+#      name: {type: 'string'}
+#
+#describe 'Functional. Events.', ->
+#  describe 'change', ->
+#    beforeEach () ->
+#      this.mold = mold( {}, testSchema() )
+#      this.handler = sinon.spy();
+#
+##    it 'primitive', ->
+##      this.mold.onMoldUpdate(this.handler)
+##      primitive = this.mold.instance('container.stringParam')
+##      primitive.setMold('new value')
+##
+##      expect(this.handler).to.have.been.calledOnce
+##      expect(this.handler).to.have.been.calledWith({
+##        path: 'container.stringParam'
+##        action: 'change'
+##      })
+#
+#    it 'container', ->
 #      this.mold.onMoldUpdate(this.handler)
-#      primitive = this.mold.instance('container.stringParam')
-#      primitive.setMold('new value')
+#      container = this.mold.instance('document')
+#      container.setMold({
+#        stringParam: 'new string'
+#        numberParam: 5
+#      })
 #
 #      expect(this.handler).to.have.been.calledOnce
 #      expect(this.handler).to.have.been.calledWith({
-#        path: 'container.stringParam'
+#        path: 'document'
 #        action: 'change'
 #      })
-
-    it 'container', ->
-      this.mold.onMoldUpdate(this.handler)
-      container = this.mold.instance('document')
-      container.setMold({
-        stringParam: 'new string'
-        numberParam: 5
-      })
-
-      expect(this.handler).to.have.been.calledOnce
-      expect(this.handler).to.have.been.calledWith({
-        path: 'document'
-        action: 'change'
-      })
-
-    it 'on addMold and removeMold', ->
-      this.mold.onMoldUpdate(this.handler)
-      collection = this.mold.instance('collection')
-      collection.addMold({id:1, name: 'value1'})
-
-      expect(this.handler).to.have.been.calledOnce
-      expect(this.handler).to.have.been.calledWith({
-        path: 'collection'
-        action: 'add'
-      })
-
-    it 'on load', (done) ->
-      document = this.mold.instance('document')
-      document.setMold({
-        numberParam: 5
-      })
-
-      _.set(this.mold.schemaManager.$defaultMemoryDb, 'document', {
-        stringParam: 'new value'
-        numberParam: 5
-        booleanParam: true
-      })
-
-      this.mold.onMoldUpdate(this.handler)
-
-      expect(document.load()).to.eventually.notify =>
-        expect(this.handler).to.have.been.calledWith({
-          path: 'document'
-          action: 'change'
-        })
-        done()
+#
+#    it 'on addMold and removeMold', ->
+#      this.mold.onMoldUpdate(this.handler)
+#      collection = this.mold.instance('collection')
+#      collection.addMold({id:1, name: 'value1'})
+#
+#      expect(this.handler).to.have.been.calledOnce
+#      expect(this.handler).to.have.been.calledWith({
+#        path: 'collection'
+#        action: 'add'
+#      })
+#
+#    it 'on load', (done) ->
+#      document = this.mold.instance('document')
+#      document.setMold({
+#        numberParam: 5
+#      })
+#
+#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'document', {
+#        stringParam: 'new value'
+#        numberParam: 5
+#        booleanParam: true
+#      })
+#
+#      this.mold.onMoldUpdate(this.handler)
+#
+#      expect(document.load()).to.eventually.notify =>
+#        expect(this.handler).to.have.been.calledWith({
+#          path: 'document'
+#          action: 'change'
+#        })
+#        done()
 
   describe 'watch', ->
 #    beforeEach () ->
