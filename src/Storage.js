@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import { concatPath } from './helpers';
 import { mutate, updateIndexes } from './mutate';
 
 export default class Storage {
@@ -38,22 +39,22 @@ export default class Storage {
   /**
    * Update value. It use _.defaultsDeep method.
    * This method deeply mutates existent object or arrays.
+   * It rises an event only if were any changes
    * @param {string} path
    * @param {*} newValue
    */
   update(path, newValue) {
     // run mutates and get list of changes
-    var isWereChanges = mutate(this._storage, path).update(newValue);
-
-    // TODO: не поднимать событие если не было изменений
+    var wereChanges = mutate(this._storage, path).update(newValue);
 
     // run update event
-    this._riseEvents(path, 'change');
+    if (wereChanges) this._riseEvents(path, 'change');
   }
 
   /**
    * Add to beginning of collection
-   * @param {string} pathToCollection - it must be a path to array in storage
+   * It rises an event any way.
+   * @param {string} pathToCollection - it must be a path to array in storage.
    * @param {object} newItem
    */
   addToBeginning(pathToCollection, newItem) {
@@ -80,31 +81,34 @@ export default class Storage {
   }
 
   /**
-   * Add item specified index of collection
+   * Add item specified index of collection.
+   * It rises an event if item adds to the end or it update existent item and changes were registered.
    * @param {string} pathToCollection - it must be a path to array in storage
    * @param {object} newItem
    * @param {number} index
    */
   addTo(pathToCollection, newItem, index) {
-    // TODO: может при замене использовать mutate????
-    // TODO: не поднимать событие если ничего не изменилось при замене
-
     if (!_.isObject(newItem)) return;
     if (!_.isNumber(index)) return;
     var collection = this.get(pathToCollection);
     var oldCollectionLength = collection.length;
 
-    // extend array
-    collection[index] = null;
-    collection.splice(index, 1, newItem);
-
-    updateIndexes(collection);
-
-    // run update event
-    this._riseEvents(pathToCollection, (index + 1 > oldCollectionLength) ? 'add' : 'change');
+    if (index + 1 > oldCollectionLength) {
+      // add to the end
+      // extend array
+      collection[index] = null;
+      collection.splice(index, 1, newItem);
+      updateIndexes(collection);
+      // run update event
+      this._riseEvents(pathToCollection, 'add');
+    }
+    else {
+      // change existent item
+      let wereChanges = mutate(this._storage, concatPath(pathToCollection, index)).update(newItem);
+      updateIndexes(collection);
+      if (wereChanges) this._riseEvents(pathToCollection, 'change');
+    }
   }
-
-  // TODO: add method - addBetween
 
   /**
    * Remove item from collection by its $index.

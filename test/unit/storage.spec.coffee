@@ -91,6 +91,25 @@ describe 'Unit. Storage.', ->
 
 
   describe 'addTo(pathToCollection, newItem, index)', ->
+    it 'nothing to change', ->
+      this.storage._storage = {
+        collection: [
+          {
+            $index: 0,
+            id: 1,
+          },
+        ]
+      }
+      this.storage.addTo('collection', {id: 1}, 0)
+
+      assert.deepEqual(this.storage.get('collection'), [
+        {
+          $index: 0,
+          id: 1,
+        },
+      ])
+      expect(this.emitSpy).to.not.have.been.called
+
     it 'to empty', ->
       this.storage._storage = {
         collection: []
