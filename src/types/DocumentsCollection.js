@@ -13,8 +13,8 @@ export default class DocumentsCollection extends _PagedCollectionBase{
     return 'documentsCollection';
   }
 
-  $init(root, schema) {
-    super.$init(root, schema);
+  $init(root) {
+    super.$init(root);
   }
 
   /**

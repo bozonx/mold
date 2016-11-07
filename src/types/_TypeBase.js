@@ -25,9 +25,8 @@ export default class _TypeBase {
     return _.cloneDeep(this._mold);
   }
 
-  $init(root, schema) {
+  $init(root) {
     this._root = root;
-    this.schema = schema;
     // mold is just a link to the storage
     this.updateMold();
   }

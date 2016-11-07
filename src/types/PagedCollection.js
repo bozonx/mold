@@ -11,8 +11,8 @@ export default class PagedCollection extends _PagedCollectionBase {
     return 'pagedCollection';
   }
 
-  $init(root, schema) {
-    super.$init(root, schema);
+  $init(root) {
+    super.$init(root);
   }
 
   /**

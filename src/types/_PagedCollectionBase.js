@@ -21,8 +21,8 @@ export default class _PagedCollectionBase extends _TypeBase {
     this._itemsPerPage = value;
   }
 
-  $init(root, schema) {
-    super.$init(root, schema);
+  $init(root) {
+    super.$init(root);
   }
 
   /**
@@ -39,7 +39,7 @@ export default class _PagedCollectionBase extends _TypeBase {
     // get container instance
     var instance = this._main.$$schemaManager.getInstance(pathToChild);
     // reinit container instance with correct path
-    instance.$init(pathToChild, instance.schema);
+    instance.$init(pathToChild);
 
     return instance;
   }

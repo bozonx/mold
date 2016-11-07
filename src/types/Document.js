@@ -9,8 +9,8 @@ export default class Document extends Container{
     return 'document';
   }
 
-  $init(root, schema) {
-    super.$init(root, schema);
+  $init(root) {
+    super.$init(root);
   }
 
   /**

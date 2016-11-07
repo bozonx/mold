@@ -80,7 +80,7 @@ export default class SchemaManager {
     }
 
     // It's need for creating collection child
-    instance.$init(path, schema);
+    instance.$init(path);
 
     return instance;
   }
