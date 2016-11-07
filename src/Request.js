@@ -3,36 +3,10 @@ import _ from 'lodash';
 import { findPrimary, getSchemaBaseType } from './helpers';
 
 export default class Request {
-  constructor(main, storage) {
+  constructor(main, storage, saveBuffer) {
     this._main = main;
     this._storage = storage;
-
-    this._addedUnsavedItems = {};
-    this._removedUnsavedItems = {};
-  }
-
-  /**
-   * Add item to collection of unsaved added items .
-   * @param {string} pathToCollection
-   * @param {object} item
-   */
-  addUnsavedAddedItem(pathToCollection, item) {
-    if (!this._addedUnsavedItems[pathToCollection])
-      this._addedUnsavedItems[pathToCollection] = [];
-
-    this._addedUnsavedItems[pathToCollection].push(item);
-  }
-
-  /**
-   * Add item to collection unsaved removed items.
-   * @param {string} pathToCollection
-   * @param {object} item
-   */
-  addUnsavedRemovedItem(pathToCollection, item) {
-    if (!this._removedUnsavedItems[pathToCollection])
-      this._removedUnsavedItems[pathToCollection] = [];
-
-    this._removedUnsavedItems[pathToCollection].push(item);
+    this._saveBuffer = saveBuffer;
   }
 
   /**
@@ -103,11 +77,11 @@ export default class Request {
     // Save all unsaved added or removed items
     return new Promise((mainResolve) => {
       var promises = [
-        ...this._saveUnsaved(this._addedUnsavedItems, pathToCollection, 'add', sourceParams, (unsavedItem, resp) => {
+        ...this._saveUnsaved(this._saveBuffer.getAdded(), pathToCollection, 'add', sourceParams, (unsavedItem, resp) => {
           // update item from mold with server response data
           _.extend(unsavedItem, resp.coocked);
         }),
-        ...this._saveUnsaved(this._removedUnsavedItems, pathToCollection, 'remove', sourceParams),
+        ...this._saveUnsaved(this._saveBuffer.getRemoved(), pathToCollection, 'remove', sourceParams),
       ];
 
       Promise.all(promises).then(results => {

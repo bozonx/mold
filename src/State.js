@@ -3,12 +3,14 @@ import _ from 'lodash';
 
 import { findTheClosestParentPath } from './helpers';
 import Request from './Request';
+import SaveBuffer from './SaveBuffer';
 
 export default class State {
   init(main, storage, initialStorage) {
     this._main = main;
     this._storage = storage;
-    this._request = new Request(this._main, storage);
+    this._saveBuffer = new SaveBuffer();
+    this._request = new Request(this._main, storage, this._saveBuffer);
     this._handlers = {};
     this._sourceParams = {};
 
@@ -91,7 +93,7 @@ export default class State {
 
     // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
     // add to collection of unsaved added items
-    this._request.addUnsavedAddedItem(pathToCollection, preparedItem);
+    this._saveBuffer.addUnsavedAddedItem(pathToCollection, preparedItem);
   }
 
   /**
@@ -117,7 +119,7 @@ export default class State {
 
     // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
     // add to collection of unsaved added items
-    this._request.addUnsavedAddedItem(pathToCollection, preparedItem);
+    this._saveBuffer.addUnsavedAddedItem(pathToCollection, preparedItem);
   }
 
   /**
@@ -142,7 +144,7 @@ export default class State {
 
     // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
     // add to collection of unsaved removed items
-    this._request.addUnsavedRemovedItem(pathToCollection, realItem);
+    this._saveBuffer.addUnsavedRemovedItem(pathToCollection, realItem);
   }
 
   /**
