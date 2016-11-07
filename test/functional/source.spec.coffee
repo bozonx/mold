@@ -11,7 +11,7 @@ testSchema = () ->
 describe 'Functional. Source.', ->
   beforeEach () ->
     this.mold = mold( {}, testSchema() )
-    _.set(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]', {
+    _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'collection[0]', {
       id: 0
       name: 'value0'
     })
@@ -44,7 +44,7 @@ describe 'Functional. Source.', ->
     container.setMold('id', 0)
     container.setMold('name', 'new value')
     expect(container.save()).to.eventually.notify =>
-      expect(Promise.resolve(_.get(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]'))).to.eventually
+      expect(Promise.resolve(_.get(this.mold.$$schemaManager.$defaultMemoryDb, 'collection[0]'))).to.eventually
       .deep.equal({
         id: 0
         name: 'new value'

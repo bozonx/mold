@@ -9,21 +9,19 @@ import checkSchemaAndInitStore from './checkSchemaAndInitStore';
 
 export default class Main {
   constructor(config, schema) {
-    // TODO: наверное не стоит делать объекты открытыми - использовать геттер или $$
-
     var configInstance = new Config(config);
-    this.config = configInstance.get();
-    this.events = this.config.eventEmitter;
-    this.log = new Log({silent: this.config.silent});
+    this.$$config = configInstance.get();
+    this.$$events = this.$$config.eventEmitter;
+    this.$$log = new Log({silent: this.$$config.silent});
+    this.$$schemaManager = new SchemaManager();
+    this.$$state = new State();
 
-    this._storage = new Storage(this.events);
-    this.schemaManager = new SchemaManager();
-    this.state = new State();
+    this._storage = new Storage(this.$$events);
 
     // initialize
     var {initialStorage, drivers} = checkSchemaAndInitStore(schema);
-    this.schemaManager.init(schema, this);
-    this.state.init(this, this._storage, initialStorage);
+    this.$$schemaManager.init(schema, this);
+    this.$$state.init(this, this._storage, initialStorage);
   }
 
   /**
@@ -49,14 +47,14 @@ export default class Main {
    * @returns {object} - instance of one of the types
    */
   instance(path) {
-    return this.schemaManager.getInstance(path);
+    return this.$$schemaManager.getInstance(path);
   }
 
   onMoldUpdate(handler) {
-    this.state.onMoldUpdate(handler);
+    this.$$state.onMoldUpdate(handler);
   }
 
   offMoldUpdate(handler) {
-    this.state.offMoldUpdate(handler);
+    this.$$state.offMoldUpdate(handler);
   }
 }

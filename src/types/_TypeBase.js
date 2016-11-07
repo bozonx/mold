@@ -34,12 +34,12 @@ export default class _TypeBase {
 
   // TODO: только в документах
   getSourceParams() {
-    return this._main.state.getSourceParams(this._root);
+    return this._main.$$state.getSourceParams(this._root);
   }
 
   // TODO: только в документах
   setSourceParams(params) {
-    this._main.state.setSourceParams(this._root, params);
+    this._main.$$state.setSourceParams(this._root, params);
   }
 
   // onChange(handler) {
@@ -51,11 +51,11 @@ export default class _TypeBase {
   // }
 
   destroy() {
-    this._main.state.destroy(this._root);
+    this._main.$$state.destroy(this._root);
   }
 
   updateMold() {
     // TODO: ф-я не особо нужна без примитивов
-    this._mold = this._main.state.getMold(this._root);
+    this._mold = this._main.$$state.getMold(this._root);
   }
 }

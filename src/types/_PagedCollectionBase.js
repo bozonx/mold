@@ -37,7 +37,7 @@ export default class _PagedCollectionBase extends _TypeBase {
 
     var pathToChild = concatPath(this._root, pageNum);
     // get container instance
-    var instance = this._main.schemaManager.getInstance(pathToChild);
+    var instance = this._main.$$schemaManager.getInstance(pathToChild);
     // reinit container instance with correct path
     instance.$init(pathToChild, instance.schema);
 
@@ -67,15 +67,15 @@ export default class _PagedCollectionBase extends _TypeBase {
 
     if (_.isEmpty(this.mold)) {
       let pageNum = 0;
-      this._main.state.setPage(this._root, [item], pageNum);
+      this._main.$$state.setPage(this._root, [item], pageNum);
     }
     else if (_.last(this.mold).length >= this._itemsPerPage) {
       let pageNum = this.mold.length;
-      this._main.state.setPage(this._root, [item], pageNum);
+      this._main.$$state.setPage(this._root, [item], pageNum);
     }
     else {
       let pageNum = this.mold.length - 1;
-      this._main.state.addToEnd(concatPath(this._root, pageNum), item);
+      this._main.$$state.addToEnd(concatPath(this._root, pageNum), item);
     }
   }
 
@@ -95,7 +95,7 @@ export default class _PagedCollectionBase extends _TypeBase {
     if (!_.isArray(page))
       throw new Error(`The page must be type of array!`);
 
-    this._main.state.setPage(this._root, page, pageNum);
+    this._main.$$state.setPage(this._root, page, pageNum);
   }
 
   /**

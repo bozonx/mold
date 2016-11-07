@@ -46,7 +46,7 @@ export default class Request {
       this._startDriverRequest('get', pathToContainer, undefined, sourceParams).then((resp) => {
         // update mold with server response data
 
-        this._main.log.info('---> finish load container: ', resp);
+        this._main.$$log.info('---> finish load container: ', resp);
 
         this._storage.update(pathToContainer, resp.coocked);
         resolve(resp);
@@ -65,7 +65,7 @@ export default class Request {
       this._startDriverRequest('filter', pathToCollection, undefined, sourceParams).then((resp) => {
         // update mold with server response data
 
-        this._main.log.info('---> finish load collection: ', resp);
+        this._main.$$log.info('---> finish load collection: ', resp);
 
         this._storage.update(pathToCollection, resp.coocked);
         resolve(resp);
@@ -84,7 +84,7 @@ export default class Request {
 
     return new Promise((resolve, reject) => {
       this._startDriverRequest('set', pathToContainer, payload, sourceParams).then((resp) => {
-        this._main.log.info('---> finish save container: ', resp);
+        this._main.$$log.info('---> finish save container: ', resp);
 
         // update mold with server response data
         this._storage.update(pathToContainer, resp.coocked);
@@ -111,7 +111,7 @@ export default class Request {
       ];
 
       Promise.all(promises).then(results => {
-        this._main.log.info('---> finish save collection: ', results);
+        this._main.$$log.info('---> finish save collection: ', results);
         mainResolve(results);
       });
     });
@@ -167,17 +167,17 @@ export default class Request {
   _startDriverRequest(method, moldPath, payload, sourceParams) {
     // TODO: !!!! pathToDocument не надо - он всегда = moldPath
 
-    var driver = this._main.schemaManager.getDriver(moldPath);
+    var driver = this._main.$$schemaManager.getDriver(moldPath);
 
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(moldPath);
+    var schema = this._main.$$schemaManager.get(moldPath);
 
     var clearPayload = (_.isPlainObject(payload)) ? _.omit(_.cloneDeep(payload), '$index', '$isNew', '$unsaved') : payload;
 
     if (!driver)
       throw new Error(`No-one driver did found!!!`);
 
-    var documentSchema = this._main.schemaManager.get(moldPath);
+    var documentSchema = this._main.$$schemaManager.get(moldPath);
     // TODO: надо добавить ещё document params
     var documentParams = {
       source: documentSchema.source,
@@ -205,7 +205,7 @@ export default class Request {
       }),
     });
 
-    this._main.log.info('---> start request: ', req);
+    this._main.$$log.info('---> start request: ', req);
 
     return driver.startRequest(req);
   }

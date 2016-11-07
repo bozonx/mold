@@ -14,7 +14,7 @@ generateRequest = (pathToDoc, method, toExtend) ->
 
 module.exports =
   container_get: (mold, pathToDoc, done) ->
-    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+    driverInstance = mold.$$schemaManager.getDriver(pathToDoc)
 
     setRequest = generateRequest(pathToDoc, 'set', {
       payload:
@@ -38,7 +38,7 @@ module.exports =
       ])).to.eventually.notify(done)
 
   container_set: (mold, pathToDoc, done) ->
-    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+    driverInstance = mold.$$schemaManager.getDriver(pathToDoc)
 
     setRequest = generateRequest(pathToDoc, 'set', {
       payload:
@@ -59,7 +59,7 @@ module.exports =
     ])).to.eventually.notify(done)
 
   collection_filter: (mold, pathToDoc, done) ->
-    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+    driverInstance = mold.$$schemaManager.getDriver(pathToDoc)
 
     # add one
     addOneRequest = generateRequest(pathToDoc, 'add', {
@@ -81,7 +81,7 @@ module.exports =
       ])).to.eventually.notify(done)
 
   collection_add: (mold, pathToDoc, done) ->
-    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+    driverInstance = mold.$$schemaManager.getDriver(pathToDoc)
 
     addRequest = generateRequest(pathToDoc, 'add', {
       payload:
@@ -99,7 +99,7 @@ module.exports =
     ])).to.eventually.notify(done)
 
   collection_remove: (mold, pathToDoc, done) ->
-    driverInstance = mold.schemaManager.getDriver(pathToDoc)
+    driverInstance = mold.$$schemaManager.getDriver(pathToDoc)
 
     # add one
     addOneRequest = generateRequest(pathToDoc, 'add', {

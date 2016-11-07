@@ -30,7 +30,7 @@ describe 'Functional. Document type.', ->
     this.document = this.mold.instance('document')
 
   it 'load() and check mold', (done) ->
-    _.set(this.mold.schemaManager.$defaultMemoryDb, 'document', this.testValues)
+    _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'document', this.testValues)
 
     expect(this.document.load()).to.eventually.notify =>
       expect(Promise.resolve(this.document.mold)).to.eventually
@@ -38,7 +38,7 @@ describe 'Functional. Document type.', ->
       .notify(done)
 
   it 'load() and check response', ->
-    _.set(this.mold.schemaManager.$defaultMemoryDb, 'document', this.testValues)
+    _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'document', this.testValues)
 
     expect(this.document.load()).to.eventually.property('coocked').deep.equal(this.testValues)
 

@@ -27,7 +27,7 @@ export default class Container extends _TypeBase{
     if (!_.isString(path) && !_.isNumber(path))
       throw new Error(`You must pass a path argument.`);
 
-    return this._main.schemaManager.getInstance(concatPath(this._root, path));
+    return this._main.$$schemaManager.getInstance(concatPath(this._root, path));
   }
 
   setMold(pathOrValue, valueOrNothing) {
@@ -49,7 +49,7 @@ export default class Container extends _TypeBase{
       payload = _.defaultsDeep(value, _.cloneDeep(this.mold));
     }
 
-    this._main.state.setMold(this._root, payload);
+    this._main.$$state.setMold(this._root, payload);
   }
 
 }

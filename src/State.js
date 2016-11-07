@@ -39,11 +39,11 @@ export default class State {
   }
 
   onMoldUpdate(handler) {
-    this._main.events.on('change', handler);
+    this._main.$$events.on('change', handler);
   }
 
   offMoldUpdate(handler) {
-    this._main.events.off('change', handler);
+    this._main.$$events.off('change', handler);
   }
 
   /**
@@ -75,7 +75,7 @@ export default class State {
     // TODO: переименовать в addToBeginning
 
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToCollection);
+    var schema = this._main.$$schemaManager.get(pathToCollection);
 
     // TODO: перенести это в checkNode
     if (schema.type !== 'collection')
@@ -101,7 +101,7 @@ export default class State {
    */
   addToEnd(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToCollection);
+    var schema = this._main.$$schemaManager.get(pathToCollection);
 
     // TODO: перенести это в checkNode
     if (schema.type !== 'collection')
@@ -127,7 +127,7 @@ export default class State {
    */
   removeMold(pathToCollection, itemToRemove) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToCollection);
+    var schema = this._main.$$schemaManager.get(pathToCollection);
 
     if (schema.type !== 'collection')
       throw new Error(`You can remove only from collection!`);
@@ -154,7 +154,7 @@ export default class State {
    */
   setPage(pathToPagedCollection, page, pageNum) {
     // It rises an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(pathToPagedCollection);
+    var schema = this._main.$$schemaManager.get(pathToPagedCollection);
 
     // TODO: перенести это в checkNode
     if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
@@ -179,7 +179,7 @@ export default class State {
    */
   load(moldPath, sourceParams) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(moldPath);
+    var schema = this._main.$$schemaManager.get(moldPath);
 
     if (schema.type == 'document') {
       return this._request.loadContainer(moldPath, sourceParams);
@@ -210,7 +210,7 @@ export default class State {
    */
   save(moldPath, sourceParams) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.schemaManager.get(moldPath);
+    var schema = this._main.$$schemaManager.get(moldPath);
 
     if (schema.type == 'document') {
       return this._request.saveContainer(moldPath, sourceParams);
@@ -267,7 +267,7 @@ export default class State {
     if (this._handlers[moldPath]) {
       _.each(this._handlers[moldPath], (handler) => {
         // TODO: странное название события
-        this._main.events.removeListener('mold.update::' + moldPath, handler);
+        this._main.$$events.removeListener('mold.update::' + moldPath, handler);
       });
       this._handlers[moldPath] = [];
     }
@@ -289,7 +289,7 @@ export default class State {
     return true;
 
 
-    schema = schema || this._main.schemaManager.get(path);
+    schema = schema || this._main.$$schemaManager.get(path);
 
 
 

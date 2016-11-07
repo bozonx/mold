@@ -31,7 +31,7 @@ export default class Collection extends _TypeBase {
 
     var pathToChild = concatPath(this._root, primaryIdOrPath);
     // get container instance
-    var instance = this._main.schemaManager.getInstance(pathToChild);
+    var instance = this._main.$$schemaManager.getInstance(pathToChild);
     // reinit container instance with correct path
     instance.$init(pathToChild, instance.schema);
 
@@ -45,7 +45,7 @@ export default class Collection extends _TypeBase {
    * @param item
    */
   addMold(item) {
-    this._main.state.addMold(this._root, item);
+    this._main.$$state.addMold(this._root, item);
   }
 
   /**
@@ -53,7 +53,7 @@ export default class Collection extends _TypeBase {
    * @param item
    */
   removeMold(item) {
-    this._main.state.removeMold(this._root, item);
+    this._main.$$state.removeMold(this._root, item);
   }
 
   /**
@@ -68,12 +68,12 @@ export default class Collection extends _TypeBase {
 
     if (_.isUndefined(noneOrIdOrPath)) {
       // load whore collection
-      return this._main.state.load(this._root, this.getSourceParams());
+      return this._main.$$state.load(this._root, this.getSourceParams());
     }
     else if (_.isNumber(noneOrIdOrPath) || _.isString(noneOrIdOrPath)) {
       // load collection child
       let path = concatPath(this._root, noneOrIdOrPath);
-      return this._main.state.load(path, this.getSourceParams());
+      return this._main.$$state.load(path, this.getSourceParams());
     }
 
     throw new Error(`You must pass only number, string or undefined!`);
@@ -85,7 +85,7 @@ export default class Collection extends _TypeBase {
    */
   save() {
     // TODO: наверное не нужно!!!
-    return this._main.state.save(this._root, this.getSourceParams());
+    return this._main.$$state.save(this._root, this.getSourceParams());
   }
 
   batchAdd(items) {
