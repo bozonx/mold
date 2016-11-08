@@ -5,8 +5,6 @@ import _ from 'lodash';
 import { concatPath } from '../helpers';
 import _TypeBase from './_TypeBase';
 
-// TODO: переделать + тесты
-
 export default class Collection extends _TypeBase {
   constructor(main) {
     super(main);
@@ -37,8 +35,6 @@ export default class Collection extends _TypeBase {
 
     return instance;
   }
-
-
 
   /**
    * Add item to beginning of list
