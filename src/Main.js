@@ -5,7 +5,6 @@ import SchemaManager from './SchemaManager';
 import State from './State';
 import Config from './Config';
 import Log from './Log';
-import checkSchemaAndInitStore from './checkSchemaAndInitStore';
 
 export default class Main {
   constructor(config, schema) {
@@ -20,8 +19,7 @@ export default class Main {
 
     // initialize
     this.$$schemaManager.init(schema, this);
-    var {initialStorage} = checkSchemaAndInitStore(schema);
-    this.$$state.init(this, this._storage, initialStorage);
+    this.$$state.init(this, this._storage);
   }
 
   /**

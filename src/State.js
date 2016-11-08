@@ -1,12 +1,13 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { findTheClosestParentPath } from './helpers';
+import { findTheClosestParentPath, eachSchema } from './helpers';
 import Request from './Request';
 import SaveBuffer from './SaveBuffer';
 
+
 export default class State {
-  init(main, storage, initialStorage) {
+  init(main, storage) {
     this._main = main;
     this._storage = storage;
     this._saveBuffer = new SaveBuffer();
@@ -14,6 +15,7 @@ export default class State {
     this._handlers = {};
     this._sourceParams = {};
 
+    var initialStorage = this._getInitialStorage(this._main.$$schemaManager.getFullSchema());
     this._storage.$init(initialStorage);
   }
 
@@ -246,6 +248,60 @@ export default class State {
 
 
     throw new Error(`Not valid value "${JSON.stringify(value)}" of param "${path}"! See validation rules in your schema.`);
+  }
+
+  _getInitialStorage(rawSchema) {
+    var initialStorage = {};
+
+    // Init storage. Collection's init behavior if different than in schema init.
+    eachSchema(rawSchema, (path, value) => {
+      //  convert from schema to lodash
+      var moldPath = path.replace(/\.schema/g, '');
+      if (value.type == 'document') {
+        _.set(initialStorage, moldPath, {});
+
+        // Go through inner param 'schema'
+        //return 'schema';
+      }
+      else if (value.type == 'container') {
+        _.set(initialStorage, moldPath, {});
+
+        // Go through inner param 'schema'
+        //return 'schema';
+      }
+      else if (value.type == 'documentsCollection') {
+        _.set(initialStorage, moldPath, []);
+
+        // don't go deeper
+        return false;
+      }
+      else if (value.type == 'pagedCollection') {
+        _.set(initialStorage, moldPath, []);
+
+        // don't go deeper
+        return false;
+      }
+      else if (value.type == 'collection') {
+        _.set(initialStorage, moldPath, []);
+
+        // don't go deeper
+        return false;
+      }
+      else if (value.type == 'array') {
+        _.set(initialStorage, moldPath, []);
+
+        // don't go deeper
+        return false;
+      }
+      else if (_.includes(['boolean', 'string', 'number'], value.type)) {
+        _.set(initialStorage, moldPath, null);
+
+        // don't go deeper
+        return false;
+      }
+    });
+
+    return initialStorage;
   }
 
   // /**
