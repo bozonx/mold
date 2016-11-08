@@ -13,7 +13,7 @@ describe 'Unit. helpers.', ->
                 type: 'string'
 
       results = []
-      helpers.recursiveSchema2 schema, (path, value) =>
+      helpers.eachSchema schema, (path, value) =>
         results.push {
           path: path,
           value: value,

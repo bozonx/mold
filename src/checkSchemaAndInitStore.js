@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { recursiveSchema } from './helpers';
+import { recursiveSchema, eachSchema } from './helpers';
 
 // TODO: разъединить в отдельные ф-и
 
@@ -13,7 +13,7 @@ export default function(rawSchema) {
   var initialStorage = {};
 
   // Validate schema
-  recursiveSchema('', rawSchema, (newPath, value) => {
+  eachSchema(rawSchema, (newPath, value) => {
     if (value.driver) {
       // TODO: разобраться
       //drivers[newPath] = this._initDriver(newPath, value);
@@ -31,55 +31,33 @@ export default function(rawSchema) {
       //   //_.set(this.schema, path, value.schema);
       // }
 
-      // Go through inner param 'schema'
-      return 'schema';
     }
 
 
     if (value.type == 'document') {
       if (!_.isPlainObject(value.schema))
         throw new Error(`Schema definition of document on "${newPath}" must have a "schema" param!`);
-
-      // Go through inner param 'schema'
-      return 'schema';
     }
     else if (value.type == 'container') {
       if (!_.isPlainObject(value.schema))
         throw new Error(`Schema definition of container on "${newPath}" must have a "schema" param!`);
-
-      // Go through inner param 'schema'
-      return 'schema';
     }
     else if (value.type == 'documentsCollection') {
       if (!_.isPlainObject(value.item))
         throw new Error(`Schema definition of documentsCollection on "${newPath}" must have an "item" param!`);
-
-      // Go through inner param 'item'
-      return 'item';
     }
     else if (value.type == 'pagedCollection') {
       if (!_.isPlainObject(value.item))
         throw new Error(`Schema definition of pagedCollection on "${newPath}" must have an "item" param!`);
-
-      // Go through inner param 'item'
-      return 'item';
     }
     else if (value.type == 'collection') {
       if (!_.isPlainObject(value.item))
         throw new Error(`Schema definition of collection on "${newPath}" must have an "item" param!`);
-
-      // Go through inner param 'item'
-      return 'item';
     }
     else if (value.type == 'array') {
       // TODO: если есть параметр itemType - проверить, чтобы его типы совпадали с существующими
-
-      // don't go deeper
-      return false;
     }
     else if (_.includes(['boolean', 'string', 'number'], value.type)) {
-      // don't go deeper
-      return false;
     }
     else {
       throw new Error(`Unknown schema node ${JSON.stringify(value)} !`);

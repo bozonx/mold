@@ -27,21 +27,19 @@ export function eachSchema(fullSchema, cb) {
     // Do nothing if its isn't a plain object
     if (!_.isPlainObject(curSchema)) return;
 
+    var isGoDeeper = cb(curPath, curSchema);
+    if (isGoDeeper === false) return;
+
     if (curSchema.item) {
-      cb(curPath, curSchema);
       letItRecursive(`${curPath}.item`, curSchema['item']);
     }
     else if (curSchema.schema) {
-      cb(curPath, curSchema);
-      //letItRecursive(`${curPath}.schema`, curSchema['schema']);
       _.each(curSchema['schema'], function (subSchema, nodeName) {
         letItRecursive(`${curPath}.schema.${nodeName}`, subSchema);
       });
     }
-    else if (curSchema.type) {
-      // it's one of primitive
-      cb(curPath, curSchema);
-    }
+
+    // else is one of primitive
   }
 
   // expand the first level
