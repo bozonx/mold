@@ -7,10 +7,46 @@ export function recursiveSchema(root, schema, cb) {
     var childPath = _.trim(`${root}.${childName}`, '.');
 
     var isGoDeeper = cb(childPath, childSchema, childName);
-    if (_.isString(isGoDeeper)) {
+    if (isGoDeeper == 'item') {
+      recursiveSchema(childPath + '.item', childSchema[isGoDeeper], cb);
+    }
+    else if (_.isString(isGoDeeper)) {
       recursiveSchema(childPath, childSchema[isGoDeeper], cb);
     }
     else if (isGoDeeper) recursiveSchema(childPath, childSchema, cb);
+  });
+}
+
+/**
+ * It call cb recursively from root of schema.
+ * @param fullSchema
+ * @param cb
+ */
+export function eachSchema(fullSchema, cb) {
+  function letItRecursive(curPath, curSchema) {
+    // Do nothing if its isn't a plain object
+    if (!_.isPlainObject(curSchema)) return;
+
+    if (curSchema.item) {
+      cb(curPath, curSchema);
+      letItRecursive(`${curPath}.item`, curSchema['item']);
+    }
+    else if (curSchema.schema) {
+      cb(curPath, curSchema);
+      //letItRecursive(`${curPath}.schema`, curSchema['schema']);
+      _.each(curSchema['schema'], function (subSchema, nodeName) {
+        letItRecursive(`${curPath}.schema.${nodeName}`, subSchema);
+      });
+    }
+    else if (curSchema.type) {
+      // it's one of primitive
+      cb(curPath, curSchema);
+    }
+  }
+
+  // expand the first level
+  _.each(fullSchema, function (curSchema, nodeName) {
+    letItRecursive(nodeName, curSchema);
   });
 }
 

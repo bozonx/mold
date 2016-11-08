@@ -1,6 +1,32 @@
 helpers = require('../../src/helpers')
 
 describe 'Unit. helpers.', ->
+  describe 'recursiveSchema.', ->
+    it 'common', ->
+      schema =
+        collection:
+          type: 'collection'
+          item:
+            type: 'container'
+            schema:
+              param:
+                type: 'string'
+
+      results = []
+      helpers.recursiveSchema2 schema, (path, value) =>
+        results.push {
+          path: path,
+          value: value,
+        }
+
+      assert.equal(results[0].path,            'collection')
+      assert.deepEqual(results[0].value, schema.collection)
+      assert.equal(results[1].path,            'collection.item')
+      assert.deepEqual(results[1].value, schema.collection.item)
+      assert.equal(results[2].path,            'collection.item.schema.param')
+      assert.deepEqual(results[2].value, schema.collection.item.schema.param)
+      assert.equal(results.length, 3)
+
   describe 'getTheBestMatchPath.', ->
     it 'bad path', ->
       assert.isUndefined(helpers.getTheBestMatchPath('two', ['one.two']))

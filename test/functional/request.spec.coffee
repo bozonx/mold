@@ -11,7 +11,7 @@ describe 'Functional. Request.', ->
             id: {type: 'number', primary: true}
             stringParam: {type: 'string'}
 
-    this.mold = mold( {}, testSchema() )
+    #this.mold = mold( {}, testSchema() )
 
   describe 'Document.', ->
     it "Load", ->
