@@ -19,7 +19,6 @@ export default class Document extends Container{
    */
   load() {
     return this._main.$$state.$$request.loadDocument(this._root, this.getSourceParams());
-    //return this._main.$$state.load(this._root, this.getSourceParams());
   }
 
   /**
@@ -28,7 +27,6 @@ export default class Document extends Container{
    */
   save() {
     return this._main.$$state.$$request.saveDocument(this._root, this.getSourceParams());
-    //return this._main.$$state.save(this._root, this.getSourceParams());
   }
 
 }

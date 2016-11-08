@@ -251,68 +251,6 @@ export default class State {
   }
 
   // /**
-  //  * Get data from driver, update mold with new data and return promise
-  //  * @param {string} moldPath - full path in mold
-  //  * @param {object} sourceParams - dynamic part of source path
-  //  * @returns {Promise}
-  //  */
-  // load(moldPath, sourceParams) {
-  //   // It rise an error if path doesn't consist with schema
-  //   var schema = this._main.$$schemaManager.get(moldPath);
-  //
-  //   if (schema.type == 'document') {
-  //     return this.$$request.loadContainer(moldPath, sourceParams);
-  //   }
-  //   else if (schema.type == 'documentsCollection') {
-  //     return this.$$request.loadCollection(moldPath, sourceParams);
-  //   }
-  //   // else if (schema.type == 'container') {
-  //   //   throw new Error(`You must use a document type instead container`);
-  //   //   //return this.$$request.loadContainer(moldPath, sourceParams);
-  //   // }
-  //   // else if (schema.type == 'collection') {
-  //   //   throw new Error(`You must use a documentsCollection type instead collection`);
-  //   //   //return this.$$request.loadCollection(moldPath, sourceParams);
-  //   // }
-  //   // else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-  //   //   throw new Error(`You can't send load request to primitive of "${schema.type}"!`);
-  //   // }
-  //   //
-  //   // throw new Error(`Unknown type!`);
-  // }
-  //
-  // /**
-  //  * Save unsaved data to driver by path.
-  //  * @param {string} moldPath - full path in mold
-  //  * @param {object} sourceParams - dynamic part of source path
-  //  * @returns {Promise}
-  //  */
-  // save(moldPath, sourceParams) {
-  //   // It rise an error if path doesn't consist with schema
-  //   var schema = this._main.$$schemaManager.get(moldPath);
-  //
-  //   if (schema.type == 'document') {
-  //     return this.$$request.saveContainer(moldPath, sourceParams);
-  //   }
-  //   else if (schema.type == 'documentsCollection') {
-  //     return this.$$request.saveCollection(moldPath, sourceParams);
-  //   }
-  //   // else if (schema.type == 'container') {
-  //   //   throw new Error(`You must use a document type instead container`);
-  //   //   //return this.$$request.saveContainer(moldPath, sourceParams);
-  //   // }
-  //   // else if (schema.type == 'collection') {
-  //   //   throw new Error(`You must use a documentsCollection type instead collection`);
-  //   //   //return this.$$request.saveCollection(moldPath, sourceParams);
-  //   // }
-  //   // else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-  //   //   throw new Error(`You can't send save request to primitive of "${schema.type}"!`);
-  //   // }
-  //   //
-  //   // throw new Error(`Unknown type!`);
-  // }
-
-  // /**
   //  * Add change event handler on path.
   //  * @param {string} moldPath - full path in mold
   //  * @param {function} handler
