@@ -75,7 +75,7 @@ export default class Storage {
    * @param {string} pathToCollection - it must be a path to array in storage
    * @param {object} newItem
    */
-  addToEnd(pathToCollection, newItem) {
+  push(pathToCollection, newItem) {
     var collection = this.get(pathToCollection);
     this.addTo(pathToCollection, newItem, collection.length);
   }

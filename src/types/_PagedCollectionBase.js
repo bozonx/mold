@@ -75,7 +75,7 @@ export default class _PagedCollectionBase extends _TypeBase {
     }
     else {
       let pageNum = this.mold.length - 1;
-      this._main.$$state.addToEnd(concatPath(this._root, pageNum), item);
+      this._main.$$state.push(concatPath(this._root, pageNum), item);
     }
   }
 

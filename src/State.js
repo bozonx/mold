@@ -69,7 +69,7 @@ export default class State {
   }
 
   /**
-   * Add to collection in store by user action.
+   * Add to beginning of a collection in store by user action.
    * @param {string} pathToCollection
    * @param {object} newItem
    */
@@ -99,7 +99,7 @@ export default class State {
    * @param {string} pathToCollection
    * @param {object} newItem
    */
-  addToEnd(pathToCollection, newItem) {
+  push(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(pathToCollection);
 
@@ -113,7 +113,7 @@ export default class State {
     };
 
     this._checkNode(pathToCollection, preparedItem);
-    this._storage.addToEnd(pathToCollection, preparedItem);
+    this._storage.push(pathToCollection, preparedItem);
 
     // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
     // add to collection of unsaved added items

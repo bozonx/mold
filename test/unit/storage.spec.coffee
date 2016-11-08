@@ -127,12 +127,12 @@ describe 'Unit. Storage.', ->
       ])
       this.checkEvent('collection', 'add')
 
-  describe 'addToEnd(pathToCollection, newItem)', ->
+  describe 'push(pathToCollection, newItem)', ->
     it 'to empty', ->
       this.storage._storage = {
         collection: []
       }
-      this.storage.addToEnd('collection', {id: 1})
+      this.storage.push('collection', {id: 1})
 
       assert.deepEqual(this.storage.get('collection'), [
         {
@@ -150,7 +150,7 @@ describe 'Unit. Storage.', ->
           }
         ]
       }
-      this.storage.addToEnd('collection', {id: 1})
+      this.storage.push('collection', {id: 1})
 
       assert.deepEqual(this.storage.get('collection'), [
         {
