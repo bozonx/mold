@@ -1,7 +1,7 @@
 helpers = require('../../src/helpers')
 
 describe 'Unit. helpers.', ->
-  describe 'recursiveSchema.', ->
+  describe 'eachSchema.', ->
     it 'common', ->
       schema =
         collection:
@@ -58,15 +58,15 @@ describe 'Unit. helpers.', ->
     it 'concat array', ->
       assert.deepEqual(helpers.concatPath('dir1.dir2', '[1]'), 'dir1.dir2[1]')
 
-  describe 'convertToSchemaPathFromLodash.', ->
+  describe 'convertFromLodashToSchema.', ->
     it 'nested collections', ->
       assert.deepEqual(
-        helpers.convertToSchemaPathFromLodash('dir1.dir2[1].file[2].name'),
+        helpers.convertFromLodashToSchema('dir1.dir2[1].file[2].name'),
         'dir1.schema.dir2.item.schema.file.item.schema.name')
 
     it 'paged collection', ->
       assert.deepEqual(
-        helpers.convertToSchemaPathFromLodash('dir1[1][2].name'),
+        helpers.convertFromLodashToSchema('dir1[1][2].name'),
         'dir1.item.item.schema.name')
 
 

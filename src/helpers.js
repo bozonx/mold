@@ -1,22 +1,5 @@
 import _ from 'lodash';
 
-export function recursiveSchema(root, schema, cb) {
-  _.each(schema, function (childSchema, childName) {
-    if (!_.isPlainObject(childSchema)) return;
-
-    var childPath = _.trim(`${root}.${childName}`, '.');
-
-    var isGoDeeper = cb(childPath, childSchema, childName);
-    if (isGoDeeper == 'item') {
-      recursiveSchema(childPath + '.item', childSchema[isGoDeeper], cb);
-    }
-    else if (_.isString(isGoDeeper)) {
-      recursiveSchema(childPath, childSchema[isGoDeeper], cb);
-    }
-    else if (isGoDeeper) recursiveSchema(childPath, childSchema, cb);
-  });
-}
-
 /**
  * It call cb recursively from root of schema.
  * @param fullSchema
@@ -38,7 +21,6 @@ export function eachSchema(fullSchema, cb) {
         letItRecursive(`${curPath}.schema.${nodeName}`, subSchema);
       });
     }
-
     // else is one of primitive
   }
 
@@ -59,7 +41,7 @@ export function findPrimary(schema) {
   return primary;
 }
 
-export function convertToSchemaPathFromLodash(path) {
+export function convertFromLodashToSchema(path) {
   var newPath = path;
   // replace collection params [1]
   newPath =  newPath.replace(/\[\d+]/g, '!item!');
@@ -69,6 +51,14 @@ export function convertToSchemaPathFromLodash(path) {
   newPath = newPath.replace(/\./g, '.schema.');
 
   newPath =  newPath.replace(/!item!/g, '.item');
+
+  return newPath;
+}
+
+export function convertFromSchemaToLodash(path) {
+  var newPath = path;
+  // replace "schema" to nothing
+  newPath =  newPath.replace(/\.schema/g, '');
 
   return newPath;
 }
@@ -171,23 +161,4 @@ export function findTheClosestParentPath(path, assoc) {
 //     basePath: splits.join('.'),
 //     paramPath,
 //   };
-// }
-
-// export function recursively(root, item, cb) {
-//   if (!_.isPlainObject(item) && !_.isArray(item)) {
-//     cb(root);
-//     return;
-//   }
-//
-//   _.each(item, function (value, name) {
-//     console.log(999999, root, name)
-//     // TODO: !!!!! ошибка с путем
-//     var childPath = _.trim(`${root}.${name}`, '.');
-//
-//     var isGoDeeper = cb(childPath, value, name);
-//     if (_.isString(isGoDeeper)) {
-//       recursively(childPath, value[isGoDeeper], cb);
-//     }
-//     else if (isGoDeeper) recursively(childPath, value, cb);
-//   });
 // }

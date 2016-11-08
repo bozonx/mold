@@ -5,7 +5,7 @@ import Collection from './types/Collection';
 import Container from './types/Container';
 import Document from './types/Document';
 import DocumentsCollection from './types/DocumentsCollection';
-import { convertToSchemaPathFromLodash, getTheBestMatchPath } from './helpers';
+import { convertFromLodashToSchema, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
 
 
@@ -38,7 +38,7 @@ export default class SchemaManager {
   get(path) {
     if (path === '') return this.getFullSchema();
 
-    var schemaPath = convertToSchemaPathFromLodash(path);
+    var schemaPath = convertFromLodashToSchema(path);
     var schema = _.get(this._schema, schemaPath);
 
     if (_.isUndefined(schema)) throw new Error(`Schema on path "${schemaPath}" doesn't exists`);
