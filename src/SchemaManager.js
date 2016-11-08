@@ -7,6 +7,7 @@ import Document from './types/Document';
 import DocumentsCollection from './types/DocumentsCollection';
 import { convertFromLodashToSchema, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
+import { eachSchema } from './helpers';
 
 
 /**
@@ -25,6 +26,8 @@ export default class SchemaManager {
       db: this.$defaultMemoryDb,
     });
     this.mainMemoryDriver = memoryDriver.schema({}, {}).driver;
+
+    this._checkSchema(this._schema);
 
     // var drivers = checkSchemaAndInitStore(this._schema);
     // this._drivers = drivers;
@@ -105,4 +108,59 @@ export default class SchemaManager {
     return this.mainMemoryDriver;
   }
 
+  _checkSchema(rawSchema) {
+    var drivers = {};
+
+    // Validate schema
+    eachSchema(rawSchema, (schemaPath, value) => {
+      if (value.driver) {
+        // TODO: разобраться
+        //drivers[newPath] = this._initDriver(newPath, value);
+
+        // _initDriver(path, value) {
+        //   if (!_.isPlainObject(value.schema))
+        //     throw new Error(`On a path "${path}" driver must has a "schema" param.`);
+        //
+        //   // Init driver
+        //   value.driver.init(path, this._main);
+        //
+        //   // Set driver to drivers list
+        //   return value.driver;
+        //
+        //   //_.set(this.schema, path, value.schema);
+        // }
+
+      }
+
+
+      if (value.type == 'document') {
+        if (!_.isPlainObject(value.schema))
+          throw new Error(`Schema definition of document on "${schemaPath}" must have a "schema" param!`);
+      }
+      else if (value.type == 'container') {
+        if (!_.isPlainObject(value.schema))
+          throw new Error(`Schema definition of container on "${schemaPath}" must have a "schema" param!`);
+      }
+      else if (value.type == 'documentsCollection') {
+        if (!_.isPlainObject(value.item))
+          throw new Error(`Schema definition of documentsCollection on "${schemaPath}" must have an "item" param!`);
+      }
+      else if (value.type == 'pagedCollection') {
+        if (!_.isPlainObject(value.item))
+          throw new Error(`Schema definition of pagedCollection on "${schemaPath}" must have an "item" param!`);
+      }
+      else if (value.type == 'collection') {
+        if (!_.isPlainObject(value.item))
+          throw new Error(`Schema definition of collection on "${schemaPath}" must have an "item" param!`);
+      }
+      else if (value.type == 'array') {
+        // TODO: если есть параметр itemType - проверить, чтобы его типы совпадали с существующими
+      }
+      else if (_.includes(['boolean', 'string', 'number'], value.type)) {
+      }
+      else {
+        throw new Error(`Unknown schema node ${JSON.stringify(value)} !`);
+      }
+    });
+  }
 }

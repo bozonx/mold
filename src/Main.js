@@ -19,8 +19,8 @@ export default class Main {
     this._storage = new Storage(this.$$events);
 
     // initialize
-    var {initialStorage, drivers} = checkSchemaAndInitStore(schema);
     this.$$schemaManager.init(schema, this);
+    var {initialStorage} = checkSchemaAndInitStore(schema);
     this.$$state.init(this, this._storage, initialStorage);
   }
 
