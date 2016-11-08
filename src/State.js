@@ -10,7 +10,7 @@ export default class State {
     this._main = main;
     this._storage = storage;
     this._saveBuffer = new SaveBuffer();
-    this._request = new Request(this._main, storage, this._saveBuffer);
+    this.$$request = new Request(this._main, storage, this._saveBuffer);
     this._handlers = {};
     this._sourceParams = {};
 
@@ -173,98 +173,6 @@ export default class State {
     this._storage.addTo(pathToPagedCollection, preparedPage, pageNum);
   }
 
-  /**
-   * Get data from driver, update mold with new data and return promise
-   * @param {string} moldPath - full path in mold
-   * @param {object} sourceParams - dynamic part of source path
-   * @returns {Promise}
-   */
-  load(moldPath, sourceParams) {
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.$$schemaManager.get(moldPath);
-
-    if (schema.type == 'document') {
-      return this._request.loadContainer(moldPath, sourceParams);
-    }
-    else if (schema.type == 'documentsCollection') {
-      return this._request.loadCollection(moldPath, sourceParams);
-    }
-    else if (schema.type == 'container') {
-      throw new Error(`You must use a document type instead container`);
-      //return this._request.loadContainer(moldPath, sourceParams);
-    }
-    else if (schema.type == 'collection') {
-      throw new Error(`You must use a documentsCollection type instead collection`);
-      //return this._request.loadCollection(moldPath, sourceParams);
-    }
-    else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      throw new Error(`You can't send load request to primitive of "${schema.type}"!`);
-    }
-
-    throw new Error(`Unknown type!`);
-  }
-
-  /**
-   * Save unsaved data to driver by path.
-   * @param {string} moldPath - full path in mold
-   * @param {object} sourceParams - dynamic part of source path
-   * @returns {Promise}
-   */
-  save(moldPath, sourceParams) {
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.$$schemaManager.get(moldPath);
-
-    if (schema.type == 'document') {
-      return this._request.saveContainer(moldPath, sourceParams);
-    }
-    else if (schema.type == 'documentsCollection') {
-      return this._request.saveCollection(moldPath, sourceParams);
-    }
-    else if (schema.type == 'container') {
-      throw new Error(`You must use a document type instead container`);
-      //return this._request.saveContainer(moldPath, sourceParams);
-    }
-    else if (schema.type == 'collection') {
-      throw new Error(`You must use a documentsCollection type instead collection`);
-      //return this._request.saveCollection(moldPath, sourceParams);
-    }
-    else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-      throw new Error(`You can't send save request to primitive of "${schema.type}"!`);
-    }
-
-    throw new Error(`Unknown type!`);
-  }
-
-  // /**
-  //  * Add change event handler on path.
-  //  * @param {string} moldPath - full path in mold
-  //  * @param {function} handler
-  //  */
-  // addListener(moldPath, handler) {
-  //   // Save listener
-  //   if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
-  //   this._handlers[moldPath].push(handler);
-  //
-  //   // Add listener
-  //   this._main.events.on('mold.update::' + moldPath, handler);
-  // }
-  //
-  // /**
-  //  * Remove change event handler from path.
-  //  * @param {string} moldPath - full path in mold
-  //  * @param {function} handler
-  //  */
-  // removeListener(moldPath, handler) {
-  //   // Remove listener
-  //   if (!this._handlers[moldPath]) return;
-  //   var index = _.indexOf(this._handlers[moldPath], handler);
-  //   if (index < 0) return;
-  //   this._handlers[moldPath].splice(index, 1);
-  //
-  //   // Unbind listener
-  //   this._main.events.removeListener('mold.update::' + moldPath, handler);
-  // }
-
   destroy(moldPath) {
     if (this._handlers[moldPath]) {
       _.each(this._handlers[moldPath], (handler) => {
@@ -342,4 +250,95 @@ export default class State {
     throw new Error(`Not valid value "${JSON.stringify(value)}" of param "${path}"! See validation rules in your schema.`);
   }
 
+  // /**
+  //  * Get data from driver, update mold with new data and return promise
+  //  * @param {string} moldPath - full path in mold
+  //  * @param {object} sourceParams - dynamic part of source path
+  //  * @returns {Promise}
+  //  */
+  // load(moldPath, sourceParams) {
+  //   // It rise an error if path doesn't consist with schema
+  //   var schema = this._main.$$schemaManager.get(moldPath);
+  //
+  //   if (schema.type == 'document') {
+  //     return this.$$request.loadContainer(moldPath, sourceParams);
+  //   }
+  //   else if (schema.type == 'documentsCollection') {
+  //     return this.$$request.loadCollection(moldPath, sourceParams);
+  //   }
+  //   // else if (schema.type == 'container') {
+  //   //   throw new Error(`You must use a document type instead container`);
+  //   //   //return this.$$request.loadContainer(moldPath, sourceParams);
+  //   // }
+  //   // else if (schema.type == 'collection') {
+  //   //   throw new Error(`You must use a documentsCollection type instead collection`);
+  //   //   //return this.$$request.loadCollection(moldPath, sourceParams);
+  //   // }
+  //   // else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
+  //   //   throw new Error(`You can't send load request to primitive of "${schema.type}"!`);
+  //   // }
+  //   //
+  //   // throw new Error(`Unknown type!`);
+  // }
+  //
+  // /**
+  //  * Save unsaved data to driver by path.
+  //  * @param {string} moldPath - full path in mold
+  //  * @param {object} sourceParams - dynamic part of source path
+  //  * @returns {Promise}
+  //  */
+  // save(moldPath, sourceParams) {
+  //   // It rise an error if path doesn't consist with schema
+  //   var schema = this._main.$$schemaManager.get(moldPath);
+  //
+  //   if (schema.type == 'document') {
+  //     return this.$$request.saveContainer(moldPath, sourceParams);
+  //   }
+  //   else if (schema.type == 'documentsCollection') {
+  //     return this.$$request.saveCollection(moldPath, sourceParams);
+  //   }
+  //   // else if (schema.type == 'container') {
+  //   //   throw new Error(`You must use a document type instead container`);
+  //   //   //return this.$$request.saveContainer(moldPath, sourceParams);
+  //   // }
+  //   // else if (schema.type == 'collection') {
+  //   //   throw new Error(`You must use a documentsCollection type instead collection`);
+  //   //   //return this.$$request.saveCollection(moldPath, sourceParams);
+  //   // }
+  //   // else if (_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
+  //   //   throw new Error(`You can't send save request to primitive of "${schema.type}"!`);
+  //   // }
+  //   //
+  //   // throw new Error(`Unknown type!`);
+  // }
+
+  // /**
+  //  * Add change event handler on path.
+  //  * @param {string} moldPath - full path in mold
+  //  * @param {function} handler
+  //  */
+  // addListener(moldPath, handler) {
+  //   // Save listener
+  //   if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
+  //   this._handlers[moldPath].push(handler);
+  //
+  //   // Add listener
+  //   this._main.events.on('mold.update::' + moldPath, handler);
+  // }
+  //
+  // /**
+  //  * Remove change event handler from path.
+  //  * @param {string} moldPath - full path in mold
+  //  * @param {function} handler
+  //  */
+  // removeListener(moldPath, handler) {
+  //   // Remove listener
+  //   if (!this._handlers[moldPath]) return;
+  //   var index = _.indexOf(this._handlers[moldPath], handler);
+  //   if (index < 0) return;
+  //   this._handlers[moldPath].splice(index, 1);
+  //
+  //   // Unbind listener
+  //   this._main.events.removeListener('mold.update::' + moldPath, handler);
+  // }
 }

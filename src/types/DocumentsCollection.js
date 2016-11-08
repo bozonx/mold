@@ -39,12 +39,13 @@ export default class DocumentsCollection extends _PagedCollectionBase{
   }
 
   load(pageNum) {
-    // TODO: !!!!
+    // TODO: test it
+    return this._main.$$state.$$request.loadCollection(this._root, this.getSourceParams());
   }
 
   save() {
-    // TODO: !!!!
-
+    // TODO: test it
+    return this._main.$$state.$$request.saveCollection(this._root, this.getSourceParams());
 
   }
 
