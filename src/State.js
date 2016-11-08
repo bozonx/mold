@@ -73,7 +73,7 @@ export default class State {
    * @param {string} pathToCollection
    * @param {object} newItem
    */
-  addToBeginning(pathToCollection, newItem) {
+  unshift(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(pathToCollection);
 
@@ -87,7 +87,7 @@ export default class State {
     };
 
     this._checkNode(pathToCollection, preparedItem);
-    this._storage.addToBeginning(pathToCollection, preparedItem);
+    this._storage.unshift(pathToCollection, preparedItem);
 
     // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
     // add to collection of unsaved added items

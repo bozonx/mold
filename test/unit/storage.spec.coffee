@@ -90,12 +90,12 @@ describe 'Unit. Storage.', ->
       this.checkEvent('collection', 'change')
 
 
-  describe 'addToBeginning(pathToCollection, newItem)', ->
+  describe 'unshift(pathToCollection, newItem)', ->
     it 'to empty', ->
       this.storage._storage = {
         collection: []
       }
-      this.storage.addToBeginning('collection', {id: 1})
+      this.storage.unshift('collection', {id: 1})
 
       assert.deepEqual(this.storage.get('collection'), [
         {
@@ -113,7 +113,7 @@ describe 'Unit. Storage.', ->
           }
         ]
       }
-      this.storage.addToBeginning('collection', {id: 1})
+      this.storage.unshift('collection', {id: 1})
 
       assert.deepEqual(this.storage.get('collection'), [
         {

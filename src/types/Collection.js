@@ -44,8 +44,8 @@ export default class Collection extends _TypeBase {
    * Add item to beginning of list
    * @param item
    */
-  addToBeginning(item) {
-    this._main.$$state.addToBeginning(this._root, item);
+  unshift(item) {
+    this._main.$$state.unshift(this._root, item);
   }
 
   /**

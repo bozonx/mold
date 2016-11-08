@@ -57,7 +57,7 @@ export default class Storage {
    * @param {string} pathToCollection - it must be a path to array in storage.
    * @param {object} newItem
    */
-  addToBeginning(pathToCollection, newItem) {
+  unshift(pathToCollection, newItem) {
     if (!_.isObject(newItem)) return;
     var collection = this.get(pathToCollection);
 
