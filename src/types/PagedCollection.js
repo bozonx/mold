@@ -22,7 +22,7 @@ export default class PagedCollection extends _PagedCollectionBase {
    * @param {number|undefined} pageNum
    */
   setPage(page, pageNum) {
-    super.$setPage(page, pageNum);
+    super.__setPage(page, pageNum);
   }
 
   /**
@@ -31,6 +31,6 @@ export default class PagedCollection extends _PagedCollectionBase {
    */
   removePage(pageNum) {
     // TODO: test it
-    super.$removePage(pageNum);
+    super.__removePage(pageNum);
   }
 }

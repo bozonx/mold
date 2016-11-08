@@ -34,7 +34,7 @@ describe 'Functional. Paged Collection type.', ->
 
     it 'add to almost full page', ->
       page = [{name: 'newValue1'}]
-      this.pagedCollection.itemsPerPage = 2
+      this.pagedCollection.perPage = 2
       this.pagedCollection.setPage(page)
       this.pagedCollection.addItem(this.newItem)
 
@@ -55,7 +55,7 @@ describe 'Functional. Paged Collection type.', ->
 
     it 'add to full page and page unordered', ->
       page = [{name: 'newValue1'}, {name: 'newValue2'}]
-      this.pagedCollection.itemsPerPage = 2
+      this.pagedCollection.perPage = 2
       this.pagedCollection.setPage(page, 2)
       this.pagedCollection.addItem(this.newItem)
 

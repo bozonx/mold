@@ -29,24 +29,19 @@ export default class DocumentsCollection extends _PagedCollectionBase{
     // TODO: add save buffer request - но не в инстансе
   }
 
-  batchAdd() {
-    // TODO: !!!!
-  }
-
-  batchRemove() {
-    // TODO: !!!!
-    // TODO: можно удалять даже не загруженные элементы
-  }
-
+  /**
+   * Load the specified page.
+   * It updates mold automatically.
+   * @param pageNum
+   * @returns {Promise}
+   */
   load(pageNum) {
     // TODO: test it
-    return this._main.$$state.$$request.loadCollection(this._root, this.getSourceParams());
+    return this._main.$$state.$$request.loadCollection(concatPath(this._root, pageNum), this.getSourceParams());
   }
 
   save() {
     // TODO: test it
     return this._main.$$state.$$request.saveCollection(this._root, this.getSourceParams());
-
   }
-
 }

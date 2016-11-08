@@ -10,15 +10,15 @@ export default class _PagedCollectionBase extends _TypeBase {
     super(main);
 
     // TODO: значение по умолчанию брать из конфига
-    this._itemsPerPage = 10;
+    this._perPage = 10;
   }
 
-  get itemsPerPage() {
-    return this._itemsPerPage;
+  get perPage() {
+    return this._perPage;
   }
 
-  set itemsPerPage(value) {
-    this._itemsPerPage = value;
+  set perPage(value) {
+    this._perPage = value;
   }
 
   $init(root) {
@@ -69,7 +69,7 @@ export default class _PagedCollectionBase extends _TypeBase {
       let pageNum = 0;
       this._main.$$state.setPage(this._root, [item], pageNum);
     }
-    else if (_.last(this.mold).length >= this._itemsPerPage) {
+    else if (_.last(this.mold).length >= this._perPage) {
       let pageNum = this.mold.length;
       this._main.$$state.setPage(this._root, [item], pageNum);
     }
@@ -85,7 +85,7 @@ export default class _PagedCollectionBase extends _TypeBase {
    * @param {Array} page
    * @param {number|undefined} pageNum
    */
-  $setPage(page, pageNum) {
+  __setPage(page, pageNum) {
     if (_.isUndefined(pageNum)) {
       pageNum = (this.mold.length) ? this.mold.length : 0;
     }
@@ -102,23 +102,23 @@ export default class _PagedCollectionBase extends _TypeBase {
    * Remove page
    * @param {number} pageNum
    */
-  $removePage(pageNum) {
+  __removePage(pageNum) {
     // TODO: !!!!
   }
 
-  /**
-   * Add list of items. They will be separate to pages
-   * @param items
-   */
-  batchAdd(items) {
-    // TODO: test it
-    if (!_.isArray(items))
-      throw new Error(`You can add only items of array type!`);
-
-    // TODO: делать всё за одно изменение - должно подняться одно событие
-  }
-
-  batchRemove(items) {
-    // TODO: !!!!
-  }
+  // /**
+  //  * Add list of items. They will be spread to pages.
+  //  * @param items
+  //  */
+  // batchAdd(items) {
+  //   // TODO: test it
+  //   if (!_.isArray(items))
+  //     throw new Error(`You can add only items of array type!`);
+  //
+  //   // TODO: делать всё за одно изменение - должно подняться одно событие
+  // }
+  //
+  // batchRemove(items) {
+  //   // TODO: !!!!
+  // }
 }
