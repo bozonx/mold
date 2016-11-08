@@ -18,7 +18,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   load() {
-    return this._main.$$state.$$request.loadContainer(this._root, this.getSourceParams());
+    return this._main.$$state.$$request.loadDocument(this._root, this.getSourceParams());
     //return this._main.$$state.load(this._root, this.getSourceParams());
   }
 
@@ -27,7 +27,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   save() {
-    return this._main.$$state.$$request.saveContainer(this._root, this.getSourceParams());
+    return this._main.$$state.$$request.saveDocument(this._root, this.getSourceParams());
     //return this._main.$$state.save(this._root, this.getSourceParams());
   }
 

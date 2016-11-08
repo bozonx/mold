@@ -15,7 +15,7 @@ export default class Request {
    * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  loadContainer(pathToContainer, sourceParams) {
+  loadDocument(pathToContainer, sourceParams) {
     return new Promise((resolve, reject) => {
       this._startDriverRequest('get', pathToContainer, undefined, sourceParams).then((resp) => {
         // update mold with server response data
@@ -53,7 +53,7 @@ export default class Request {
    * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  saveContainer(pathToContainer, sourceParams) {
+  saveDocument(pathToContainer, sourceParams) {
     var payload = this._storage.get(pathToContainer);
 
     return new Promise((resolve, reject) => {
