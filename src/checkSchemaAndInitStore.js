@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { convertFromSchemaToLodash, eachSchema } from './helpers';
+import { eachSchema } from './helpers';
 
 // TODO: разъединить в отдельные ф-и
 
@@ -66,8 +66,8 @@ export default function(rawSchema) {
 
   // Init storage. Collection's init behavior if different than in schema init.
   eachSchema(rawSchema, (path, value) => {
-    var moldPath = convertFromSchemaToLodash(path);
-    console.log(1111, moldPath, value)
+    //  convert from schema to lodash
+    var moldPath = path.replace(/\.schema/g, '');
     if (value.type == 'document') {
       _.set(initialStorage, moldPath, {});
 
