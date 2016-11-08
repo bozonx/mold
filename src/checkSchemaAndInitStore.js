@@ -34,7 +34,9 @@ export default function(rawSchema) {
       // Go through inner param 'schema'
       return 'schema';
     }
-    else if (value.type == 'document') {
+
+
+    if (value.type == 'document') {
       if (!_.isPlainObject(value.schema))
         throw new Error(`Schema definition of document on "${newPath}" must have a "schema" param!`);
 
