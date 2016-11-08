@@ -40,6 +40,10 @@ export default class DocumentsCollection extends _PagedCollectionBase{
     return this._main.$$state.$$request.loadCollection(concatPath(this._root, pageNum), this.getSourceParams());
   }
 
+  /**
+   * Save unsaved added or removed items.
+   * @returns {Promise}
+   */
   save() {
     // TODO: test it
     return this._main.$$state.$$request.saveCollection(this._root, this.getSourceParams());

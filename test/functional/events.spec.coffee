@@ -56,10 +56,10 @@
 #        action: 'change'
 #      })
 #
-#    it 'on addMold and removeMold', ->
+#    it 'on addToBeginning and removeMold', ->
 #      this.mold.onMoldUpdate(this.handler)
 #      collection = this.mold.instance('collection')
-#      collection.addMold({id:1, name: 'value1'})
+#      collection.addToBeginning({id:1, name: 'value1'})
 #
 #      expect(this.handler).to.have.been.calledOnce
 #      expect(this.handler).to.have.been.calledWith({
@@ -139,7 +139,7 @@
 #      assert.deepEqual(this.container.mold, {stringParam: null})
 #
 #    it 'destroy collection - it must be clear', ->
-#      this.collection.addMold({id:1 , name: 'value1'})
+#      this.collection.addToBeginning({id:1 , name: 'value1'})
 #
 #      assert.deepEqual(this.collection.mold, [{id:1 , name: 'value1', $index: 0, $isNew: true}])
 #

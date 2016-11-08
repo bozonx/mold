@@ -73,9 +73,7 @@ export default class State {
    * @param {string} pathToCollection
    * @param {object} newItem
    */
-  addMold(pathToCollection, newItem) {
-    // TODO: переименовать в addToBeginning
-
+  addToBeginning(pathToCollection, newItem) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(pathToCollection);
 

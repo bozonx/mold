@@ -41,11 +41,11 @@
 #      assert.deepEqual(this.collectionParam.mold, testValues)
 #
 #    it 'child(0)', ->
-#      this.collectionParam.addMold({name: 'name0'})
+#      this.collectionParam.addToBeginning({name: 'name0'})
 #      assert.equal(this.collectionParam.child(0).mold.name, 'name0')
 #
 ##    it 'child(0).child("name") after add', ->
-##      this.collectionParam.addMold({name: 'name0'})
+##      this.collectionParam.addToBeginning({name: 'name0'})
 ##      collectionItem = this.collectionParam.child(0)
 ##      primitiveOfName = collectionItem.child('name')
 ##      assert.equal(primitiveOfName.mold, 'name0')
@@ -70,7 +70,7 @@
 ##        .notify(done)
 #
 ##    it 'child("0.name") after add', ->
-##      this.collectionParam.addMold({name: 'name0'})
+##      this.collectionParam.addToBeginning({name: 'name0'})
 ##      primitive = this.collectionParam.child('0.name')
 ##      assert.equal(primitive.mold, 'name0')
 #
@@ -124,24 +124,24 @@
 #      expect(this.collectionParam.load('0.name')).to.eventually
 #      .property('coocked').deep.equal(testValues[0].name)
 #
-#  describe 'addMold({...}), removeMold({...})', ->
+#  describe 'addToBeginning({...}), removeMold({...})', ->
 #    beforeEach () ->
 #      this.mold = mold( {}, testSchema() )
 #      this.collectionParam = this.mold.instance('inMemory.collectionParam')
 #
-#    it 'addMold() - check mold', ->
+#    it 'addToBeginning() - check mold', ->
 #      newItem = {name: 'name3'}
-#      this.collectionParam.addMold(newItem)
+#      this.collectionParam.addToBeginning(newItem)
 #      assert.deepEqual(this.collectionParam.mold, [
 #        {name: 'name3', $isNew: true, $index: 0},
 #      ])
 #
-#    it 'addMold() - after load', (done) ->
+#    it 'addToBeginning() - after load', (done) ->
 #      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
 #
 #      newItem = {name: 'name3'}
 #      expect(this.collectionParam.load()).to.eventually.notify =>
-#        this.collectionParam.addMold(newItem)
+#        this.collectionParam.addToBeginning(newItem)
 #        expect(Promise.resolve(this.collectionParam.mold)).to.eventually
 #        .deep.equal([
 #          {name: 'name3', $isNew: true, $index: 0},
@@ -168,14 +168,14 @@
 #    it 'save() added - check promise', ->
 #      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
 #
-#      this.collectionParam.addMold({name: 'name3'})
+#      this.collectionParam.addToBeginning({name: 'name3'})
 #
 #      expect(this.collectionParam.save()).to.eventually
 #      .property(0).property('resp').property('coocked').deep.equal({id: 1, name: 'name3'})
 #
 #    it 'save() added - check memory', (done) ->
 #      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-#      this.collectionParam.addMold({name: 'name3'})
+#      this.collectionParam.addToBeginning({name: 'name3'})
 #
 #      expect(this.collectionParam.save()).to.eventually.notify =>
 #        expect(Promise.resolve(this.mold.schemaManager.$defaultMemoryDb)).to.eventually
@@ -187,7 +187,7 @@
 #
 #    it 'save() added - check unsaved', (done) ->
 #      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-#      this.collectionParam.addMold({name: 'name3'})
+#      this.collectionParam.addToBeginning({name: 'name3'})
 #
 #      expect(this.collectionParam.save()).to.eventually.notify =>
 #        expect(Promise.resolve(this.mold.schemaManager.$defaultMemoryDb)).to.eventually.notify =>
@@ -221,9 +221,9 @@
 #      this.collectionParam = this.mold.instance('inMemory.collectionParam')
 #
 #    it 'Many manupulations with collection', (done) ->
-#      this.collectionParam.addMold({name: 'name0'})
-#      this.collectionParam.addMold({name: 'name1'})
-#      this.collectionParam.addMold({name: 'name2'})
+#      this.collectionParam.addToBeginning({name: 'name0'})
+#      this.collectionParam.addToBeginning({name: 'name1'})
+#      this.collectionParam.addToBeginning({name: 'name2'})
 #
 #      assert.deepEqual _.compact(this.collectionParam.mold), [
 #        {
