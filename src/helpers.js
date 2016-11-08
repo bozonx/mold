@@ -46,7 +46,6 @@ export function convertFromLodashToSchema(path) {
   // replace collection params [1]
   newPath =  newPath.replace(/\[\d+]/g, '!item!');
 
-  // TODO: use symbol
   // replace "." to ".schema."
   newPath = newPath.replace(/\./g, '.schema.');
 

@@ -16,6 +16,7 @@ export default class Request {
    * @returns {Promise}
    */
   loadDocument(pathToContainer, sourceParams) {
+    // TODO: не делать ещё промис - использовать промис драйвера
     return new Promise((resolve, reject) => {
       this._startDriverRequest('get', pathToContainer, undefined, sourceParams).then((resp) => {
         // update mold with server response data
@@ -92,6 +93,7 @@ export default class Request {
   }
 
   _saveUnsaved(unsavedList, pathToCollection, method, sourceParams, successCb) {
+    // TODO: пересмотреть
     var promises = [];
     _.each(_.reverse(unsavedList[pathToCollection]), (unsavedItem) => {
       // skip empty
@@ -140,28 +142,25 @@ export default class Request {
    */
   _startDriverRequest(method, moldPath, payload, sourceParams) {
     // TODO: !!!! pathToDocument не надо - он всегда = moldPath
+    // TODO: moldPath переименовать в storagePath
 
     var driver = this._main.$$schemaManager.getDriver(moldPath);
+    if (!driver)
+      throw new Error(`No-one driver did found!!!`);
 
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(moldPath);
 
     var clearPayload = (_.isPlainObject(payload)) ? _.omit(_.cloneDeep(payload), '$index', '$isNew', '$unsaved') : payload;
 
-    if (!driver)
-      throw new Error(`No-one driver did found!!!`);
-
-    var documentSchema = this._main.$$schemaManager.get(moldPath);
     // TODO: надо добавить ещё document params
     var documentParams = {
-      source: documentSchema.source,
+      source: schema.source,
       pathToDocument: moldPath,
     };
 
-    // var splits;
-    // if (documentParams && documentParams.pathToDocument && documentParams.pathToDocument != moldPath)
-    //   splits = splitLastParamPath(documentParams.pathToDocument);
-
+    // TODO: pickBy - убирает даже null и '' - что может быть не желательно
+    // TODO: вынести в отдельный метод
     var req = _.pickBy({
       method,
       moldPath,

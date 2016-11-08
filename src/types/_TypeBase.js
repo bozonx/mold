@@ -41,6 +41,15 @@ export default class _TypeBase {
     this._main.$$state.setSourceParams(this._root, params);
   }
 
+  updateMold() {
+    // TODO: ф-я не особо нужна без примитивов
+    this._mold = this._main.$$state.getMold(this._root);
+  }
+
+  destroy() {
+    this._main.$$state.destroy(this._root);
+  }
+
   // onChange(handler) {
   //   this._main.state.addListener(this._root, handler);
   // }
@@ -49,12 +58,4 @@ export default class _TypeBase {
   //   this._main.state.removeListener(this._root, handler);
   // }
 
-  destroy() {
-    this._main.$$state.destroy(this._root);
-  }
-
-  updateMold() {
-    // TODO: ф-я не особо нужна без примитивов
-    this._mold = this._main.$$state.getMold(this._root);
-  }
 }
