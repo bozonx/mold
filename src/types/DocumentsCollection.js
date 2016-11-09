@@ -41,7 +41,7 @@ export default class DocumentsCollection extends _PagedCollectionBase{
    * @returns {Promise}
    */
   load(pageNum) {
-    // TODO: test it
+    if (!_.isNumber(pageNum)) throw new Error(`The "pageNum" param is required!`);
     return this._main.$$state.$$request.loadCollection(concatPath(this._root, pageNum), this.getSourceParams());
   }
 

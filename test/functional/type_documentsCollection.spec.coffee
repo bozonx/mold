@@ -1,43 +1,43 @@
 mold = require('../../src/index').default
-Memory = require('../../src/drivers/Memory').default
+
+describe 'Functional. DocumentsCollection type.', ->
+  beforeEach () ->
+    this.testSchema = () ->
+      documentsCollection:
+        type: 'documentsCollection'
+        item:
+          type: 'collection'
+          item:
+            type: 'document'
+            schema:
+              id: {type: 'number', primary: true}
+    this.mold = mold( {}, this.testSchema() )
+    this.documentsCollection = this.mold.instance('documentsCollection')
+
+  # init, child and getFlat aren't testing. It's testing in paged_collection spec
+
+  it "addDocument", ->
+    # TODO: do it!
+
+  describe "load", ->
+    it 'load() - check promise', ->
+      page = [{id: 0}]
+      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', page)
+      expect(this.documentsCollection.load(0)).to.eventually
+        .property('coocked').deep.equal(page)
+
+    it 'load() - check mold', (done) ->
+      page = [{id: 0}]
+      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', page)
+      expect(this.documentsCollection.load(0)).to.eventually.notify =>
+        expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
+        .deep.equal([{ id: 0, $index: 0 }])
+        .notify(done)
+
+  describe "save", ->
+    # TODO: do it!
 
 
-#  describe 'load(), load(num), load(subpath)', ->
-#    beforeEach () ->
-#      this.mold = mold( {}, testSchema() )
-#      this.collectionParam = this.mold.instance('inMemory.collectionParam')
-#
-#    it 'load() - check promise', ->
-#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-#      expect(this.collectionParam.load()).to.eventually
-#      .property('coocked').deep.equal([testValues[0]])
-#
-#    it 'load() - check mold', (done) ->
-#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-#      expect(this.collectionParam.load()).to.eventually.notify =>
-#        expect(Promise.resolve(this.collectionParam.mold)).to.eventually
-#        .deep.equal([
-#          {id: 0, name: 'name0', $index: 0},
-#        ])
-#        .notify(done)
-#
-#    it 'load(0) - check promise', ->
-#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-#      expect(this.collectionParam.load(0)).to.eventually
-#      .property('coocked').deep.equal(testValues[0])
-#
-#    it 'load(0) - check mold', (done) ->
-#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-#      expect(this.collectionParam.load(0)).to.eventually.notify =>
-#        expect(Promise.resolve(this.collectionParam.mold)).to.eventually
-#        .deep.equal([{id: 0, name: 'name0', $index: 0}])
-#        .notify(done)
-#
-#    it 'load("0.name") - check promise', ->
-#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-#      expect(this.collectionParam.load('0.name')).to.eventually
-#      .property('coocked').deep.equal(testValues[0].name)
-#
 #  describe 'unshift({...}), removeMold({...})', ->
 #    beforeEach () ->
 #      this.mold = mold( {}, testSchema() )
