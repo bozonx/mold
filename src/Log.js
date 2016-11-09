@@ -8,4 +8,8 @@ export default class Log {
   info () {
     if (!this._isSilent) console.log(...arguments);
   }
+
+  error () {
+    if (!this._isSilent) console.erroe(...arguments);
+  }
 }

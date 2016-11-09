@@ -20,11 +20,13 @@ describe 'Functional. DocumentsCollection type.', ->
     # TODO: do it!
 
   describe "load", ->
-    it 'load() - check promise', ->
+    it 'load() - check promise', (done) ->
       page = [{id: 0}]
       _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', page)
-      expect(this.documentsCollection.load(0)).to.eventually
+      promise = this.documentsCollection.load(0)
+      expect(promise).to.eventually
         .property('coocked').deep.equal(page)
+        .notify(done)
 
 #    it 'load() - check mold', (done) ->
 #      page = [{id: 0}]

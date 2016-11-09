@@ -37,16 +37,19 @@ export default class Request {
    */
   loadCollection(pathToCollection, sourceParams) {
     // TODO: почему filter ???
-    return new Promise((resolve, reject) => {
-      this._startDriverRequest('filter', pathToCollection, undefined, sourceParams).then((resp) => {
-        // update mold with server response data
+    return this._startDriverRequest('filter', pathToCollection, undefined, sourceParams)
+      .then((resp) => {
+        console.log(1111, resp)
 
         this._main.$$log.info('---> finish load collection: ', resp);
 
+        // update mold with server response data
         this._storage.update(pathToCollection, resp.coocked);
-        resolve(resp);
-      }, reject);
-    });
+        return resp;
+      }, (err) => {
+        this._main.$$log.error('---> ERROR: failed collection loading: ', err);
+        return err;
+      });
   }
 
   /**
