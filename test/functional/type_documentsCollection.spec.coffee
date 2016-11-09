@@ -26,13 +26,13 @@ describe 'Functional. DocumentsCollection type.', ->
       expect(this.documentsCollection.load(0)).to.eventually
         .property('coocked').deep.equal(page)
 
-    it 'load() - check mold', (done) ->
-      page = [{id: 0}]
-      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', page)
-      expect(this.documentsCollection.load(0)).to.eventually.notify =>
-        expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
-        .deep.equal([{ id: 0, $index: 0 }])
-        .notify(done)
+#    it 'load() - check mold', (done) ->
+#      page = [{id: 0}]
+#      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', page)
+#      expect(this.documentsCollection.load(0)).to.eventually.notify =>
+#        expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
+#        .deep.equal([{ id: 0, $index: 0 }])
+#        .notify(done)
 
   describe "save", ->
     # TODO: do it!

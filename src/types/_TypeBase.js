@@ -31,16 +31,6 @@ export default class _TypeBase {
     this._mold = this._main.$$state.getMold(this._root);
   }
 
-  // TODO: только в документах
-  getSourceParams() {
-    return this._main.$$state.getSourceParams(this._root);
-  }
-
-  // TODO: только в документах
-  setSourceParams(params) {
-    this._main.$$state.setSourceParams(this._root, params);
-  }
-
   destroy() {
     this._main.$$state.destroy(this._root);
   }

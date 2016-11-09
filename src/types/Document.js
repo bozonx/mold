@@ -13,6 +13,14 @@ export default class Document extends Container{
     super.$init(root);
   }
 
+  getSourceParams() {
+    return this._main.$$state.getSourceParams(this._root);
+  }
+
+  setSourceParams(params) {
+    this._main.$$state.setSourceParams(this._root, params);
+  }
+
   /**
    * Load data.
    * @returns {Promise}

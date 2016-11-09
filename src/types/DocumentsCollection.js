@@ -17,6 +17,14 @@ export default class DocumentsCollection extends _PagedCollectionBase{
     super.$init(root);
   }
 
+  getSourceParams() {
+    return this._main.$$state.getSourceParams(this._root);
+  }
+
+  setSourceParams(params) {
+    this._main.$$state.setSourceParams(this._root, params);
+  }
+
   /**
    * add document to the end of last page.
    * It creates new page if last page was overflowed.
@@ -42,6 +50,7 @@ export default class DocumentsCollection extends _PagedCollectionBase{
    */
   load(pageNum) {
     if (!_.isNumber(pageNum)) throw new Error(`The "pageNum" param is required!`);
+
     return this._main.$$state.$$request.loadCollection(concatPath(this._root, pageNum), this.getSourceParams());
   }
 
