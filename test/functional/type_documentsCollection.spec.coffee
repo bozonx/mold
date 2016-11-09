@@ -37,12 +37,12 @@ describe 'Functional. DocumentsCollection type.', ->
       this.page = [{id: 0}]
       _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', this.page)
 
-    it 'save() added - check promise', ->
-      this.documentsCollection.addDocument({id: 1})
-
-      expect(this.documentsCollection.save()).to.eventually
-      .property(0).property('resp').property('coocked')
-      .deep.equal({id: 1})
+#    it 'save() added - check promise', ->
+#      this.documentsCollection.addDocument({id: 1})
+#
+#      expect(this.documentsCollection.save()).to.eventually
+#      .property(0).property('resp').property('coocked')
+#      .deep.equal({id: 1})
 
 #    it 'save() added - check memory', (done) ->
 #      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])

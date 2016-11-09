@@ -44,6 +44,16 @@ export default class Request {
   }
 
   /**
+   * Add new item to mold
+   * @param {string} pathToDocumentsCollection
+   * @param {object|null} sourceParams - dynamic part of source path
+   * @param {object} document
+   */
+  addDocument(pathToDocumentsCollection, sourceParams, document) {
+
+  }
+
+  /**
    * Save unsaved, removed or added items to driver.
    * @param {string} pathToCollection
    * @param {object|null} sourceParams - dynamic part of source path
@@ -81,8 +91,8 @@ export default class Request {
   }
 
   _saveUnsaved(unsavedList, pathToCollection, method, sourceParams, successCb) {
-    // TODO: пересмотреть
     var promises = [];
+
     _.each(_.reverse(unsavedList[pathToCollection]), (unsavedItem) => {
       // skip empty
       if (!unsavedItem) return;
@@ -90,27 +100,29 @@ export default class Request {
       this._saveBuffer.removeUnsavedItem(pathToCollection, unsavedItem, method);
 
       promises.push(new Promise((resolve) => {
-        this._startDriverRequest(method, pathToCollection, unsavedItem, sourceParams).then((resp) => {
-          if (successCb) successCb(unsavedItem, resp);
+        this._startDriverRequest(method, pathToCollection, unsavedItem, sourceParams)
+          .then((resp) => {
+            if (successCb) successCb(unsavedItem, resp);
 
-          delete unsavedItem.$addedUnsaved;
+            // remove $addedUnsaved prop from saved item
+            delete unsavedItem.$addedUnsaved;
 
-          resolve({
-            path: pathToCollection,
-            isOk: true,
-            resp,
+            resolve({
+              path: pathToCollection,
+              isOk: true,
+              resp,
+            });
+          }, (driverError) => {
+            // on error make item unsaved again
+            if (_.isUndefined(unsavedList[pathToCollection])) unsavedList[pathToCollection] = [];
+            unsavedList[pathToCollection].push(unsavedItem);
+
+            resolve({
+              path: pathToCollection,
+              isOk: false,
+              driverError,
+            });
           });
-        }, (driverError) => {
-          // on error make item unsaved again
-          if (_.isUndefined(unsavedList[pathToCollection])) unsavedList[pathToCollection] = [];
-          unsavedList[pathToCollection].push(unsavedItem);
-
-          resolve({
-            path: pathToCollection,
-            isOk: false,
-            driverError,
-          });
-        });
       }));
     });
 
