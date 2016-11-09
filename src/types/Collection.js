@@ -1,4 +1,4 @@
-// Simple collection
+// Simple collection. There're only add and remove methods.
 
 import _ from 'lodash';
 
@@ -53,19 +53,11 @@ export default class Collection extends _TypeBase {
   }
 
   /**
-   * Add to index. It replace item on index
-   * @param {object} item
-   * @param {number} index
-   */
-  addTo(item, index) {
-    this._main.$$state.addTo(this._root, item);
-  }
-
-  /**
    * Remove item by uniq key
    * @param item
    */
   remove(item) {
-    this._main.$$state.removeMold(this._root, item);
+    this._main.$$state.remove(this._root, item);
   }
+
 }

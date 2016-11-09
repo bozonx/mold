@@ -117,11 +117,11 @@ export default class State {
   }
 
   /**
-   * Remove from collection.
+   * Remove item from collection.
    * @param {string} pathToCollection
    * @param {object} itemToRemove
    */
-  removeMold(pathToCollection, itemToRemove) {
+  remove(pathToCollection, itemToRemove) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(pathToCollection);
 
