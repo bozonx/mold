@@ -107,7 +107,7 @@ export default class Request {
         this._startDriverRequest(method, pathToCollection, unsavedItem, sourceParams).then((resp) => {
           if (successCb) successCb(unsavedItem, resp);
 
-          delete unsavedItem.$isNew;
+          delete unsavedItem.$addedUnsaved;
 
           resolve({
             path: pathToCollection,
@@ -151,7 +151,7 @@ export default class Request {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(moldPath);
 
-    var clearPayload = (_.isPlainObject(payload)) ? _.omit(_.cloneDeep(payload), '$index', '$isNew', '$unsaved') : payload;
+    var clearPayload = (_.isPlainObject(payload)) ? _.omit(_.cloneDeep(payload), '$index', '$addedUnsaved', '$unsaved') : payload;
 
     // TODO: надо добавить ещё document params
     var documentParams = {

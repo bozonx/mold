@@ -26,7 +26,7 @@ export default class DocumentsCollection extends _PagedCollectionBase{
   addDocument(item) {
     var preparedItem = {
       ...item,
-      $isNew: true,
+      $addedUnsaved: true,
     };
 
     super.addItem(preparedItem);
