@@ -11,14 +11,6 @@ describe 'Functional. Collection type.', ->
           schema:
             id: {type: 'number', primary: true}
             name: {type: 'string'}
-    this.testValues = [
-      {
-        id: 0
-      },
-      {
-        id: 1
-      },
-    ]
     this.mold = mold( {}, this.testSchema() )
     this.mold.onMoldUpdate(this.onSpy)
     this.collection = this.mold.instance('collection')
