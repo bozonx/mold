@@ -35,12 +35,11 @@ export default class Request {
    * Save container and it's contents to driver.
    * @param {string} pathToContainer
    * @param {object|null} sourceParams - dynamic part of source path
+   * @param {object} actualMold - actual data by path
    * @returns {Promise}
    */
-  saveDocument(pathToContainer, sourceParams) {
-    var payload = this._storage.get(pathToContainer);
-
-    return this._startDriverRequest('set', pathToContainer, payload, sourceParams)
+  saveDocument(pathToContainer, sourceParams, actualMold) {
+    return this._startDriverRequest('set', pathToContainer, actualMold, sourceParams)
       .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 
@@ -51,21 +50,38 @@ export default class Request {
    * @returns {Promise}
    */
   saveCollection(pathToCollection, sourceParams) {
-    // Save all unsaved added or removed items
-    return new Promise((mainResolve) => {
-      var promises = [
-        ...this._saveUnsaved(this._saveBuffer.getAdded(), pathToCollection, 'add', sourceParams, (unsavedItem, resp) => {
-          // update item from mold with server response data
-          _.extend(unsavedItem, resp.coocked);
-        }),
-        ...this._saveUnsaved(this._saveBuffer.getRemoved(), pathToCollection, 'remove', sourceParams),
-      ];
+    // Save the all of unsaved added or removed items
 
-      Promise.all(promises).then(results => {
-        this._main.$$log.info('---> finish save collection: ', results);
-        mainResolve(results);
-      });
+    var promises = [
+      ...this._saveUnsaved(this._saveBuffer.getAdded(), pathToCollection, 'add', sourceParams, (unsavedItem, resp) => {
+        // update item from mold with server response data
+        _.extend(unsavedItem, resp.coocked);
+      }),
+      ...this._saveUnsaved(this._saveBuffer.getRemoved(), pathToCollection, 'remove', sourceParams),
+    ];
+
+    return Promise.all(promises).then((results) => {
+      this._main.$$log.info('---> finish save collection: ', results);
+      mainResolve(results);
+      return results;
     });
+
+
+    // return new Promise((mainResolve) => {
+    //   var promises = [
+    //     ...this._saveUnsaved(this._saveBuffer.getAdded(), pathToCollection, 'add', sourceParams, (unsavedItem, resp) => {
+    //       // update item from mold with server response data
+    //       _.extend(unsavedItem, resp.coocked);
+    //     }),
+    //     ...this._saveUnsaved(this._saveBuffer.getRemoved(), pathToCollection, 'remove', sourceParams),
+    //   ];
+    //
+    //   Promise.all(promises).then((results) => {
+    //     this._main.$$log.info('---> finish save collection: ', results);
+    //     mainResolve(results);
+    //     return results;
+    //   });
+    // });
   }
 
   _saveUnsaved(unsavedList, pathToCollection, method, sourceParams, successCb) {

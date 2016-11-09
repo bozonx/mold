@@ -22,7 +22,7 @@ export default class Document extends Container{
   }
 
   /**
-   * Load data.
+   * Load data from driver.
    * @returns {Promise}
    */
   load() {
@@ -30,11 +30,11 @@ export default class Document extends Container{
   }
 
   /**
-   * Save date.
+   * Save actual state.
    * @returns {Promise}
    */
   save() {
-    return this._main.$$state.$$request.saveDocument(this._root, this.getSourceParams());
+    return this._main.$$state.$$request.saveDocument(this._root, this.getSourceParams(), this.mold);
   }
 
 }
