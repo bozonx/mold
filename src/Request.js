@@ -62,7 +62,6 @@ export default class Request {
 
     return Promise.all(promises).then((results) => {
       this._main.$$log.info('---> finish save collection: ', results);
-      mainResolve(results);
       return results;
     });
 
@@ -79,7 +78,6 @@ export default class Request {
     //   Promise.all(promises).then((results) => {
     //     this._main.$$log.info('---> finish save collection: ', results);
     //     mainResolve(results);
-    //     return results;
     //   });
     // });
   }
