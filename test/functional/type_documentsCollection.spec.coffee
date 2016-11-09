@@ -20,21 +20,20 @@ describe 'Functional. DocumentsCollection type.', ->
     # TODO: do it!
 
   describe "load", ->
-    it 'load() - check promise', (done) ->
+    it 'load() - check promise', ->
       page = [{id: 0}]
       _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', page)
       promise = this.documentsCollection.load(0)
       expect(promise).to.eventually
         .property('coocked').deep.equal(page)
-        .notify(done)
 
-#    it 'load() - check mold', (done) ->
-#      page = [{id: 0}]
-#      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', page)
-#      expect(this.documentsCollection.load(0)).to.eventually.notify =>
-#        expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
-#        .deep.equal([{ id: 0, $index: 0 }])
-#        .notify(done)
+    it 'load() - check mold', (done) ->
+      page = [{id: 0}]
+      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', page)
+      expect(this.documentsCollection.load(0)).to.eventually.notify =>
+        expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
+        .deep.equal([[{ id: 0, $index: 0 }]])
+        .notify(done)
 
   describe "save", ->
     # TODO: do it!

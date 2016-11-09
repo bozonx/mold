@@ -126,7 +126,8 @@ class Mutate {
     var originalCollection = _.get(this.storage, root);
 
     if (_.isUndefined(originalCollection)) {
-      _.set(this.storage, root, newCollectionState);
+      originalCollection = _.cloneDeep(newCollectionState);
+      _.set(this.storage, root, originalCollection);
       isChanged = true;
     }
     else {
