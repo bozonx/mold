@@ -49,7 +49,7 @@ export default class Request {
    * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  saveCollection(pathToCollection, sourceParams) {
+  saveDocumetsCollection(pathToCollection, sourceParams) {
     // Save the all of unsaved added or removed items
 
     var promises = [

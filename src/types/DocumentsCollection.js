@@ -59,7 +59,6 @@ export default class DocumentsCollection extends _PagedCollectionBase{
    * @returns {Promise}
    */
   save() {
-    // TODO: test it
-    return this._main.$$state.$$request.saveCollection(this._root, this.getSourceParams());
+    return this._main.$$state.$$request.saveDocumetsCollection(this._root, this.getSourceParams());
   }
 }
