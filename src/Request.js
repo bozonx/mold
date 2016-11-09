@@ -145,12 +145,11 @@ export default class Request {
 
     var driver = this._main.$$schemaManager.getDriver(storagePath);
     if (!driver)
-      throw new Error(`No-one driver did found!!!`);
+      throw new Error(`No-one driver have found!!!`);
 
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(storagePath);
 
-    var clearPayload = (_.isPlainObject(payload)) ? _.omit(_.cloneDeep(payload), '$index', '$addedUnsaved', '$unsaved') : payload;
 
     // TODO: надо добавить ещё document params
     var documentParams = {
@@ -158,28 +157,53 @@ export default class Request {
       pathToDocument: storagePath,
     };
 
-    // TODO: pickBy - убирает даже null и '' - что может быть не желательно
     // TODO: вынести в отдельный метод
-    var req = _.pickBy({
+    var req = this._generateRequest(
       method,
       storagePath,
-      payload: !_.isEmpty(clearPayload) && clearPayload,
+      payload,
+      schema,
+      documentParams,
+      sourceParams
+    );
+
+    this._main.$$log.info('---> start request: ', req);
+
+    console.log(11111, req)
+
+    return driver.startRequest(req);
+  }
+
+  _generateRequest(method, storagePath, payload, schema, documentParams, sourceParams) {
+    var clearPayload = payload;
+    if (_.isPlainObject(clearPayload)) {
+      clearPayload = _.omit(_.cloneDeep(clearPayload), '$index', '$addedUnsaved');
+      clearPayload = _.omitBy(clearPayload, _.isUndefined);
+    }
+    // it clears an empty array or objects
+    clearPayload = !_.isEmpty(clearPayload) && clearPayload;
+    // Payload can't be other type then array or plainObject
+
+    // TODO: payload: false
+
+    var request = {
+      method,
+      storagePath,
+      payload: clearPayload,
       primaryKeyName: schema.item && findPrimary(schema.item),
       schemaBaseType: getSchemaBaseType(schema.type),
       document: documentParams,
-      driverPath: _.pickBy({
+      driverPath: _.omitBy({
         // path to document
         document: documentParams && this._convertToSource(documentParams.pathToDocument, documentParams.source, sourceParams),
         full: (documentParams) ? this._convertToSource(storagePath, documentParams.source, sourceParams) : storagePath,
         // TODO: не правильно работает если брать элемент коллекции
         // base: splits && splits.basePath,
         // sub: splits && splits.paramPath,
-      }),
-    });
-
-    this._main.$$log.info('---> start request: ', req);
-
-    return driver.startRequest(req);
+      }, _.isUndefined),
+    };
+    // clear undefined params
+    return _.omitBy(request, _.isUndefined);
   }
 
   _convertToSource(pathInSchema, realSource, sourceParams) {
