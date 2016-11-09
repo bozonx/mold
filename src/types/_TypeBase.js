@@ -28,7 +28,7 @@ export default class _TypeBase {
   $init(root) {
     this._root = root;
     // mold is just a link to the storage
-    this.updateMold();
+    this._mold = this._main.$$state.getMold(this._root);
   }
 
   // TODO: только в документах
@@ -39,11 +39,6 @@ export default class _TypeBase {
   // TODO: только в документах
   setSourceParams(params) {
     this._main.$$state.setSourceParams(this._root, params);
-  }
-
-  updateMold() {
-    // TODO: ф-я не особо нужна без примитивов
-    this._mold = this._main.$$state.getMold(this._root);
   }
 
   destroy() {
