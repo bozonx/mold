@@ -30,12 +30,12 @@ export default class Request {
   }
 
   /**
-   * Load collection from driver.
+   * Load list of documents from driver.
    * @param {string} pathToCollection
    * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
-  loadCollection(pathToCollection, sourceParams) {
+  loadDocumentsCollection(pathToCollection, sourceParams) {
     // TODO: почему filter ???
     return this._startDriverRequest('filter', pathToCollection, undefined, sourceParams)
       .then((resp) => {
