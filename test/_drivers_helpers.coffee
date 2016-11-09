@@ -3,7 +3,7 @@ helpers = require('../src/helpers')
 
 generateRequest = (pathToDoc, method, toExtend) ->
   _.defaultsDeep(toExtend, {
-    moldPath: pathToDoc
+    storagePath: pathToDoc
     driverPath:
       document: pathToDoc
       full: pathToDoc

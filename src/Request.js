@@ -134,36 +134,35 @@ export default class Request {
   /**
    * Send query to driver for data.
    * @param {string} method - one of: get, set, filter, add, remove
-   * @param {string} moldPath - path in mold or schena
+   * @param {string} storagePath - path in mold or schena
    * @param {*} [payload] - data to save
    * @param {object} sourceParams - dynamic part of source path
    * @returns {Promise}
    * @private
    */
-  _startDriverRequest(method, moldPath, payload, sourceParams) {
-    // TODO: !!!! pathToDocument не надо - он всегда = moldPath
-    // TODO: moldPath переименовать в storagePath
+  _startDriverRequest(method, storagePath, payload, sourceParams) {
+    // TODO: !!!! pathToDocument не надо - он всегда = storagePath
 
-    var driver = this._main.$$schemaManager.getDriver(moldPath);
+    var driver = this._main.$$schemaManager.getDriver(storagePath);
     if (!driver)
       throw new Error(`No-one driver did found!!!`);
 
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.$$schemaManager.get(moldPath);
+    var schema = this._main.$$schemaManager.get(storagePath);
 
     var clearPayload = (_.isPlainObject(payload)) ? _.omit(_.cloneDeep(payload), '$index', '$addedUnsaved', '$unsaved') : payload;
 
     // TODO: надо добавить ещё document params
     var documentParams = {
       source: schema.source,
-      pathToDocument: moldPath,
+      pathToDocument: storagePath,
     };
 
     // TODO: pickBy - убирает даже null и '' - что может быть не желательно
     // TODO: вынести в отдельный метод
     var req = _.pickBy({
       method,
-      moldPath,
+      storagePath,
       payload: !_.isEmpty(clearPayload) && clearPayload,
       primaryKeyName: schema.item && findPrimary(schema.item),
       schemaBaseType: getSchemaBaseType(schema.type),
@@ -171,7 +170,7 @@ export default class Request {
       driverPath: _.pickBy({
         // path to document
         document: documentParams && this._convertToSource(documentParams.pathToDocument, documentParams.source, sourceParams),
-        full: (documentParams) ? this._convertToSource(moldPath, documentParams.source, sourceParams) : moldPath,
+        full: (documentParams) ? this._convertToSource(storagePath, documentParams.source, sourceParams) : storagePath,
         // TODO: не правильно работает если брать элемент коллекции
         // base: splits && splits.basePath,
         // sub: splits && splits.paramPath,

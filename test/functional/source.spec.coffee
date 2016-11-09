@@ -35,7 +35,7 @@ describe 'Functional. Source.', ->
           document: 'collection.0'
           full: 'collection.0'
         method: 'get'
-        moldPath: 'details'
+        storagePath: 'details'
         schemaBaseType: 'container'
 
   it 'container.save()', (done) ->

@@ -21,25 +21,25 @@ export default class State {
 
   /**
    * Get parameters for source path template.
-   * @param {string} moldPath
+   * @param {string} storagePath
    * @returns {object}
    */
-  getSourceParams(moldPath) {
-    if (this._sourceParams[moldPath]) return this._sourceParams[moldPath];
+  getSourceParams(storagePath) {
+    if (this._sourceParams[storagePath]) return this._sourceParams[storagePath];
 
     // For primitives - find the closest parent
-    var findtheClosestParentPath = findTheClosestParentPath(moldPath, this._sourceParams);
+    var findtheClosestParentPath = findTheClosestParentPath(storagePath, this._sourceParams);
 
     return this._sourceParams[findtheClosestParentPath];
   }
 
   /**
    * Set parameters for source path template.
-   * @param {string} moldPath
+   * @param {string} storagePath
    * @param {object} params
    */
-  setSourceParams(moldPath, params) {
-    this._sourceParams[moldPath] = params;
+  setSourceParams(storagePath, params) {
+    this._sourceParams[storagePath] = params;
   }
 
   onMoldUpdate(handler) {
@@ -52,22 +52,22 @@ export default class State {
 
   /**
    * Get mold by path
-   * @param {string} moldPath
+   * @param {string} storagePath
    * @returns {*} - value from mold
    */
-  getMold(moldPath) {
-    return this._storage.get(moldPath);
+  getMold(storagePath) {
+    return this._storage.get(storagePath);
   }
 
   /**
    * Set primitive, container or collection to mold
-   * @param {string} moldPath
+   * @param {string} storagePath
    * @param {*} value - valid value
    */
-  setMold(moldPath, value) {
-    this._checkNode(moldPath, value);
+  setMold(storagePath, value) {
+    this._checkNode(storagePath, value);
 
-    this._storage.update(moldPath, value);
+    this._storage.update(storagePath, value);
   }
 
   /**
@@ -162,16 +162,16 @@ export default class State {
     this._storage.addTo(pathToPagedCollection, preparedPage, pageNum);
   }
 
-  destroy(moldPath) {
-    if (this._handlers[moldPath]) {
-      _.each(this._handlers[moldPath], (handler) => {
+  destroy(storagePath) {
+    if (this._handlers[storagePath]) {
+      _.each(this._handlers[storagePath], (handler) => {
         // TODO: странное название события
-        this._main.$$events.removeListener('mold.update::' + moldPath, handler);
+        this._main.$$events.removeListener('mold.update::' + storagePath, handler);
       });
-      this._handlers[moldPath] = [];
+      this._handlers[storagePath] = [];
     }
 
-    this._storage.clear(moldPath);
+    this._storage.clear(storagePath);
   }
 
   /**
@@ -245,45 +245,45 @@ export default class State {
     // Init storage. Collection's init behavior if different than in schema init.
     eachSchema(rawSchema, (path, value) => {
       //  convert from schema to lodash
-      var moldPath = path.replace(/\.schema/g, '');
+      var storagePath = path.replace(/\.schema/g, '');
       if (value.type == 'document') {
-        _.set(initialStorage, moldPath, {});
+        _.set(initialStorage, storagePath, {});
 
         // Go through inner param 'schema'
         //return 'schema';
       }
       else if (value.type == 'container') {
-        _.set(initialStorage, moldPath, {});
+        _.set(initialStorage, storagePath, {});
 
         // Go through inner param 'schema'
         //return 'schema';
       }
       else if (value.type == 'documentsCollection') {
-        _.set(initialStorage, moldPath, []);
+        _.set(initialStorage, storagePath, []);
 
         // don't go deeper
         return false;
       }
       else if (value.type == 'pagedCollection') {
-        _.set(initialStorage, moldPath, []);
+        _.set(initialStorage, storagePath, []);
 
         // don't go deeper
         return false;
       }
       else if (value.type == 'collection') {
-        _.set(initialStorage, moldPath, []);
+        _.set(initialStorage, storagePath, []);
 
         // don't go deeper
         return false;
       }
       else if (value.type == 'array') {
-        _.set(initialStorage, moldPath, []);
+        _.set(initialStorage, storagePath, []);
 
         // don't go deeper
         return false;
       }
       else if (_.includes(['boolean', 'string', 'number'], value.type)) {
-        _.set(initialStorage, moldPath, null);
+        _.set(initialStorage, storagePath, null);
 
         // don't go deeper
         return false;
@@ -295,31 +295,31 @@ export default class State {
 
   // /**
   //  * Add change event handler on path.
-  //  * @param {string} moldPath - full path in mold
+  //  * @param {string} storagePath - full path in mold
   //  * @param {function} handler
   //  */
-  // addListener(moldPath, handler) {
+  // addListener(storagePath, handler) {
   //   // Save listener
-  //   if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
-  //   this._handlers[moldPath].push(handler);
+  //   if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
+  //   this._handlers[storagePath].push(handler);
   //
   //   // Add listener
-  //   this._main.events.on('mold.update::' + moldPath, handler);
+  //   this._main.events.on('mold.update::' + storagePath, handler);
   // }
   //
   // /**
   //  * Remove change event handler from path.
-  //  * @param {string} moldPath - full path in mold
+  //  * @param {string} storagePath - full path in mold
   //  * @param {function} handler
   //  */
-  // removeListener(moldPath, handler) {
+  // removeListener(storagePath, handler) {
   //   // Remove listener
-  //   if (!this._handlers[moldPath]) return;
-  //   var index = _.indexOf(this._handlers[moldPath], handler);
+  //   if (!this._handlers[storagePath]) return;
+  //   var index = _.indexOf(this._handlers[storagePath], handler);
   //   if (index < 0) return;
-  //   this._handlers[moldPath].splice(index, 1);
+  //   this._handlers[storagePath].splice(index, 1);
   //
   //   // Unbind listener
-  //   this._main.events.removeListener('mold.update::' + moldPath, handler);
+  //   this._main.events.removeListener('mold.update::' + storagePath, handler);
   // }
 }
