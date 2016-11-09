@@ -19,6 +19,7 @@ class LocalMemory {
 
   get(request) {
     return new Promise((resolve, reject) => {
+      console.log(1111, request)
       var resp = _.get(this._db, request.driverPath.full);
       if (!_.isUndefined(resp)) {
         resolve({

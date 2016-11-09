@@ -36,6 +36,7 @@ export default class Request {
    * @returns {Promise}
    */
   loadCollection(pathToCollection, sourceParams) {
+    // TODO: почему filter ???
     return new Promise((resolve, reject) => {
       this._startDriverRequest('filter', pathToCollection, undefined, sourceParams).then((resp) => {
         // update mold with server response data
@@ -141,8 +142,6 @@ export default class Request {
    * @private
    */
   _startDriverRequest(method, storagePath, payload, sourceParams) {
-    // TODO: !!!! pathToDocument не надо - он всегда = storagePath
-
     var driver = this._main.$$schemaManager.getDriver(storagePath);
     if (!driver)
       throw new Error(`No-one driver have found!!!`);
@@ -150,57 +149,51 @@ export default class Request {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(storagePath);
 
+    var req = this._generateRequest(
+      method,
+      storagePath,
+      payload,
+      sourceParams,
+      schema
+    );
 
+    this._main.$$log.info('---> start request: ', req);
+
+    return driver.startRequest(req);
+  }
+
+  _generateRequest(method, storagePath, rawPayload, sourceParams, schema) {
+    var payload = rawPayload;
+    if (_.isPlainObject(payload)) {
+      payload = _.omit(_.cloneDeep(payload), '$index', '$addedUnsaved');
+      payload = _.omitBy(payload, _.isUndefined);
+    }
+    // it clears an empty array or objects
+    payload = (_.isEmpty(payload)) ? undefined : payload;
+    // Payload can't be other type then array or plainObject
+
+    // TODO: !!!! pathToDocument не надо - он всегда = storagePath
     // TODO: надо добавить ещё document params
     var documentParams = {
       source: schema.source,
       pathToDocument: storagePath,
     };
 
-    // TODO: вынести в отдельный метод
-    var req = this._generateRequest(
-      method,
-      storagePath,
-      payload,
-      schema,
-      documentParams,
-      sourceParams
-    );
-
-    this._main.$$log.info('---> start request: ', req);
-
-    console.log(11111, req)
-
-    return driver.startRequest(req);
-  }
-
-  _generateRequest(method, storagePath, payload, schema, documentParams, sourceParams) {
-    var clearPayload = payload;
-    if (_.isPlainObject(clearPayload)) {
-      clearPayload = _.omit(_.cloneDeep(clearPayload), '$index', '$addedUnsaved');
-      clearPayload = _.omitBy(clearPayload, _.isUndefined);
-    }
-    // it clears an empty array or objects
-    clearPayload = !_.isEmpty(clearPayload) && clearPayload;
-    // Payload can't be other type then array or plainObject
-
-    // TODO: payload: false
-
     var request = {
       method,
       storagePath,
-      payload: clearPayload,
+      payload: payload,
       primaryKeyName: schema.item && findPrimary(schema.item),
       schemaBaseType: getSchemaBaseType(schema.type),
       document: documentParams,
-      driverPath: _.omitBy({
+      driverPath: {
         // path to document
-        document: documentParams && this._convertToSource(documentParams.pathToDocument, documentParams.source, sourceParams),
+        document: this._convertToSource(documentParams.pathToDocument, documentParams.source, sourceParams),
         full: (documentParams) ? this._convertToSource(storagePath, documentParams.source, sourceParams) : storagePath,
         // TODO: не правильно работает если брать элемент коллекции
         // base: splits && splits.basePath,
         // sub: splits && splits.paramPath,
-      }, _.isUndefined),
+      },
     };
     // clear undefined params
     return _.omitBy(request, _.isUndefined);
