@@ -39,8 +39,6 @@ export default class Request {
     // TODO: почему filter ???
     return this._startDriverRequest('filter', pathToCollection, undefined, sourceParams)
       .then((resp) => {
-        console.log(1111, resp)
-
         this._main.$$log.info('---> finish load collection: ', resp);
 
         // update mold with server response data

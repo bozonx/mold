@@ -125,23 +125,29 @@ class Mutate {
     var isChanged = false;
     var originalCollection = _.get(this.storage, root);
 
-    // update each item
-    _.each(newCollectionState, (value, index) => {
-      if (_.isPlainObject(value)) {
-        // update item
-        let isItemChanged = this._updateContainer(concatPath(root, index), value);
-        if (!isChanged) isChanged = isItemChanged;
-      }
-      else {
-        // replace item to undefined
-        let isItemChanged = originalCollection[index] !== value;
-        if (!isChanged) isChanged = isItemChanged;
-        originalCollection.splice(index, 1, value);
-      }
-    });
+    if (_.isUndefined(originalCollection)) {
+      _.set(this.storage, root, newCollectionState);
+      isChanged = true;
+    }
+    else {
+      // update each item
+      _.each(newCollectionState, (value, index) => {
+        if (_.isPlainObject(value)) {
+          // update item
+          let isItemChanged = this._updateContainer(concatPath(root, index), value);
+          if (!isChanged) isChanged = isItemChanged;
+        }
+        else {
+          // replace item to undefined
+          let isItemChanged = originalCollection[index] !== value;
+          if (!isChanged) isChanged = isItemChanged;
+          originalCollection.splice(index, 1, value);
+        }
+      });
+      if (isChanged) this._removeOddFromRight(originalCollection, newCollectionState);
+    }
 
-    this._removeOddFromRight(originalCollection, newCollectionState);
-    updateIndexes(originalCollection);
+    if (isChanged) updateIndexes(originalCollection);
     return isChanged;
   }
 
