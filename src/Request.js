@@ -16,17 +16,13 @@ export default class Request {
    * @returns {Promise}
    */
   loadDocument(pathToContainer, sourceParams) {
-    // TODO: не делать ещё промис - использовать промис драйвера
-    return new Promise((resolve, reject) => {
-      this._startDriverRequest('get', pathToContainer, undefined, sourceParams).then((resp) => {
-        // update mold with server response data
-
+    return this._startDriverRequest('get', pathToContainer, undefined, sourceParams)
+      .then((resp) => {
         this._main.$$log.info('---> finish load container: ', resp);
-
+        // update mold with server response data
         this._storage.update(pathToContainer, resp.coocked);
-        resolve(resp);
-      }, reject);
-    });
+        return resp;
+      }, this._errorHandler);
   }
 
   /**
@@ -36,18 +32,13 @@ export default class Request {
    * @returns {Promise}
    */
   loadDocumentsCollection(pathToCollection, sourceParams) {
-    // TODO: почему filter ???
     return this._startDriverRequest('filter', pathToCollection, undefined, sourceParams)
       .then((resp) => {
         this._main.$$log.info('---> finish load collection: ', resp);
-
         // update mold with server response data
         this._storage.update(pathToCollection, resp.coocked);
         return resp;
-      }, (err) => {
-        this._main.$$log.error('---> ERROR: failed collection loading: ', err);
-        return err;
-      });
+      }, this._errorHandler);
   }
 
   /**
@@ -144,20 +135,10 @@ export default class Request {
    */
   _startDriverRequest(method, storagePath, payload, sourceParams) {
     var driver = this._main.$$schemaManager.getDriver(storagePath);
-    if (!driver)
-      throw new Error(`No-one driver have found!!!`);
-
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(storagePath);
 
-    var req = this._generateRequest(
-      method,
-      storagePath,
-      payload,
-      sourceParams,
-      schema
-    );
-
+    var req = this._generateRequest(method, storagePath, payload, sourceParams, schema);
     this._main.$$log.info('---> start request: ', req);
 
     return driver.startRequest(req);
@@ -204,6 +185,11 @@ export default class Request {
     if (!realSource) return pathInSchema;
 
     return _.template(realSource)(sourceParams);
+  }
+
+  _errorHandler(err) {
+    this._main.$$log.error('---> ERROR: failed request: ', err);
+    return err;
   }
 
 }

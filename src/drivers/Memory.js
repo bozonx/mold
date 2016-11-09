@@ -100,6 +100,7 @@ class LocalMemory {
 
       var item = _.find(collection, {[request.primaryKeyName]: request.payload[request.primaryKeyName]});
       if (!item || !_.isNumber(item[request.primaryKeyName])) {
+        // TODO: поидее не нужно. Либо возвращать new Error()
         reject({
           driverError: 'Item not found',
           request,
