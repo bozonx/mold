@@ -44,14 +44,12 @@ export default class Request {
   }
 
   /**
-   * Save unsaved removed or added items to driver.
+   * Save unsaved, removed or added items to driver.
    * @param {string} pathToCollection
    * @param {object|null} sourceParams - dynamic part of source path
    * @returns {Promise}
    */
   saveDocumetsCollection(pathToCollection, sourceParams) {
-    // Save the all of unsaved added or removed items
-
     var promises = [
       ...this._saveUnsaved(this._saveBuffer.getAdded(), pathToCollection, 'add', sourceParams, (unsavedItem, resp) => {
         // update item from mold with server response data
@@ -87,11 +85,9 @@ export default class Request {
     var promises = [];
     _.each(_.reverse(unsavedList[pathToCollection]), (unsavedItem) => {
       // skip empty
-      if (_.isUndefined(unsavedItem)) return;
+      if (!unsavedItem) return;
 
-      // remove item from unsaved list
-      _.remove(unsavedList[pathToCollection], unsavedItem);
-      if (_.isEmpty(unsavedList[pathToCollection])) delete unsavedList[pathToCollection];
+      this._saveBuffer.removeUnsavedItem(pathToCollection, unsavedItem, method);
 
       promises.push(new Promise((resolve) => {
         this._startDriverRequest(method, pathToCollection, unsavedItem, sourceParams).then((resp) => {

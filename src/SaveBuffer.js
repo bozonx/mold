@@ -8,7 +8,7 @@ export default class SaveBuffer {
     this._removedUnsavedItems = {};
   }
 
-  // TODO: если удалять добавленные не сохраненные элементы, если был запрос удаления
+  // TODO: если удалять добавленные не сохраненные элементы, если был запрос удаления - нужно удалять их из добавленных
 
   getAdded() {
     // TODO: запрашивать только элементы по определенному пути
@@ -43,5 +43,12 @@ export default class SaveBuffer {
     this._removedUnsavedItems[pathToCollection].push(item);
   }
 
+  removeUnsavedItem(pathToCollection, unsavedItem, method) {
+    var unsavedList = (method == 'add') ? this._addedUnsavedItems : this._removedUnsavedItems;
+    // remove item from unsaved list
+    _.remove(unsavedList[pathToCollection], unsavedItem);
+    // remove list if it's an empty
+    if (_.isEmpty(unsavedList[pathToCollection])) delete unsavedList[pathToCollection];
+  }
 
 }
