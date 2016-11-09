@@ -46,5 +46,3 @@ describe 'Functional. Document type.', ->
     this.document.setMold(this.testValues)
     expect(this.document.save()).to.eventually
     .property('coocked').deep.equal(this.testValues)
-
-# TODO: test save and load to nested document

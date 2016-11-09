@@ -17,12 +17,7 @@ export default class Request {
    */
   loadDocument(pathToContainer, sourceParams) {
     return this._startDriverRequest('get', pathToContainer, undefined, sourceParams)
-      .then((resp) => {
-        this._main.$$log.info('---> finish load container: ', resp);
-        // update mold with server response data
-        this._storage.update(pathToContainer, resp.coocked);
-        return resp;
-      }, this._errorHandler);
+      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 
   /**
@@ -33,12 +28,7 @@ export default class Request {
    */
   loadDocumentsCollection(pathToCollection, sourceParams) {
     return this._startDriverRequest('filter', pathToCollection, undefined, sourceParams)
-      .then((resp) => {
-        this._main.$$log.info('---> finish load collection: ', resp);
-        // update mold with server response data
-        this._storage.update(pathToCollection, resp.coocked);
-        return resp;
-      }, this._errorHandler);
+      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 
   /**
@@ -50,15 +40,8 @@ export default class Request {
   saveDocument(pathToContainer, sourceParams) {
     var payload = this._storage.get(pathToContainer);
 
-    return new Promise((resolve, reject) => {
-      this._startDriverRequest('set', pathToContainer, payload, sourceParams).then((resp) => {
-        this._main.$$log.info('---> finish save container: ', resp);
-
-        // update mold with server response data
-        this._storage.update(pathToContainer, resp.coocked);
-        resolve(resp);
-      }, reject);
-    });
+    return this._startDriverRequest('set', pathToContainer, payload, sourceParams)
+      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 
   /**
@@ -185,6 +168,13 @@ export default class Request {
     if (!realSource) return pathInSchema;
 
     return _.template(realSource)(sourceParams);
+  }
+
+  _successHandler(resp) {
+    this._main.$$log.info('---> finish request: ', resp);
+    // update mold with server response data
+    this._storage.update(resp.request.storagePath, resp.coocked);
+    return resp;
   }
 
   _errorHandler(err) {
