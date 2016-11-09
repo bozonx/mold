@@ -27,7 +27,6 @@ describe 'Functional. Paged Collection type.', ->
       assert.deepEqual(this.pagedCollection.mold, [[
         {
           $index: 0,
-          $isNew: true,
           name: 'newValue',
         }
       ]])
@@ -42,12 +41,10 @@ describe 'Functional. Paged Collection type.', ->
         [
           {
             $index: 0,
-            $isNew: true,
             name: 'newValue1',
           },
           {
             $index: 1,
-            $isNew: true,
             name: 'newValue',
           },
         ]
@@ -63,19 +60,16 @@ describe 'Functional. Paged Collection type.', ->
       result[2] = [
         {
           $index: 0,
-          $isNew: true,
           name: 'newValue1',
         },
         {
           $index: 1,
-          $isNew: true,
           name: 'newValue2',
         },
       ]
       result[3] = [
         {
           $index: 0,
-          $isNew: true,
           name: 'newValue',
         },
       ]
@@ -88,7 +82,6 @@ describe 'Functional. Paged Collection type.', ->
       assert.deepEqual(this.pagedCollection.mold, [[
         {
           $index: 0,
-          $isNew: true,
           name: 'newValue',
         }
       ]])
@@ -100,7 +93,6 @@ describe 'Functional. Paged Collection type.', ->
       result[2] = [
         {
           $index: 0,
-          $isNew: true,
           name: 'newValue',
         }
       ]
@@ -114,19 +106,15 @@ describe 'Functional. Paged Collection type.', ->
       this.pagedCollection.setPage(page2, 5)
       assert.deepEqual(this.pagedCollection.getFlat(), [
         {
-          $isNew: true,
           name: 'newValue1',
         },
         {
-          $isNew: true,
           name: 'newValue2',
         },
         {
-          $isNew: true,
           name: 'newValue3',
         },
         {
-          $isNew: true,
           name: 'newValue4',
         }
       ])
@@ -146,12 +134,10 @@ describe 'Functional. Paged Collection type.', ->
       assert.deepEqual(child.mold, [
         {
           $index: 0,
-          $isNew: true,
           name: 'newValue1',
         },
         {
           $index: 1,
-          $isNew: true,
           name: 'newValue2',
         },
       ])

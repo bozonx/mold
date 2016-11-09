@@ -83,10 +83,7 @@ export default class State {
     if (schema.type !== 'collection')
       throw new Error(`You can add new item only to collection!`);
 
-    var preparedItem = {
-      ...newItem,
-      $isNew: true,
-    };
+    var preparedItem = _.clone(newItem);
 
     this._checkNode(pathToCollection, preparedItem);
     this._storage.unshift(pathToCollection, preparedItem);
@@ -109,10 +106,7 @@ export default class State {
     if (schema.type !== 'collection')
       throw new Error(`You can add new item only to collection!`);
 
-    var preparedItem = {
-      ...newItem,
-      $isNew: true,
-    };
+    var preparedItem = _.clone(newItem);
 
     this._checkNode(pathToCollection, preparedItem);
     this._storage.push(pathToCollection, preparedItem);
@@ -162,12 +156,7 @@ export default class State {
     if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
       throw new Error(`You can add new item only to paged collection!`);
 
-    var preparedPage = _.map(page, (item) => {
-      return {
-        ...item,
-        $isNew: true,
-      };
-    });
+    var preparedPage = _.cloneDeep(page);
 
     //this._checkNode(pathToPagedCollection, page);
     this._storage.addTo(pathToPagedCollection, preparedPage, pageNum);
