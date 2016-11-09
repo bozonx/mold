@@ -1,7 +1,4 @@
 mold = require('../../src/index').default
-Memory = require('../../src/drivers/Memory').default
-
-
 
 describe 'Functional. Collection type.', ->
   beforeEach () ->
@@ -16,29 +13,44 @@ describe 'Functional. Collection type.', ->
     this.testValues = [
       {
         id: 0
-        name: 'name0'
       },
       {
         id: 1
-        name: 'name1'
       },
     ]
     this.mold = mold( {}, this.testSchema() )
-    this.collectionParam = this.mold.instance('collection')
+    this.collection = this.mold.instance('collection')
 
-  describe 'init, child(), child(num)', ->
-    it 'init value', ->
-      assert.deepEqual(this.collectionParam.mold, [])
+  it 'init value', ->
+    assert.deepEqual(this.collection.mold, [])
 
-    it 'child(0)', ->
-      this.collectionParam.unshift({name: 'name0'})
-      assert.deepEqual(this.collectionParam.child(0).mold, {
+  it 'child(0)', ->
+    this.collection.unshift({id: 0})
+    assert.deepEqual(this.collection.child(0).mold, {
+      $index: 0,
+      id: 0,
+    })
+
+  it 'unshift', ->
+    this.collection.unshift({id: 0})
+    this.collection.unshift({id: 1})
+    assert.deepEqual(this.collection.mold, [
+      {
         $index: 0,
-        $isNew: true,
-        name: 'name0',
-      })
+        id: 1,
+      }
+      {
+        $index: 1,
+        id: 0,
+      }
+    ])
+    # TODO: listen to change event twice
 
+  it 'push', ->
 
+  it 'addTo', ->
+
+  it 'remove', ->
 
 
 

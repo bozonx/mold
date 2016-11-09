@@ -18,13 +18,18 @@ export default class DocumentsCollection extends _PagedCollectionBase{
   }
 
   /**
-   * add item to the end of last page.
+   * add document to the end of last page.
    * It creates new page if last page was overflowed.
    *
    * It add item to save buffer. It's saving after calling save().
    */
-  addItem(item) {
-    super.addItem(main);
+  addDocument(item) {
+    var preparedItem = {
+      ...item,
+      $isNew: true,
+    };
+
+    super.addItem(preparedItem);
 
     // TODO: add save buffer request - но не в инстансе
   }

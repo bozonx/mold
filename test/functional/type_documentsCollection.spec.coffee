@@ -1,3 +1,7 @@
+mold = require('../../src/index').default
+Memory = require('../../src/drivers/Memory').default
+
+
 #  describe 'load(), load(num), load(subpath)', ->
 #    beforeEach () ->
 #      this.mold = mold( {}, testSchema() )

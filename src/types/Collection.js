@@ -37,20 +37,35 @@ export default class Collection extends _TypeBase {
   }
 
   /**
-   * Add item to beginning of list
-   * @param item
+   * Add item to beginning of a collection.
+   * @param {object} item
    */
   unshift(item) {
     this._main.$$state.unshift(this._root, item);
   }
 
   /**
+   * Add to the end of a collection.
+   * @param {object} item
+   */
+  push(item) {
+    this._main.$$state.push(this._root, item);
+  }
+
+  /**
+   * Add to index. It replace item on index
+   * @param {object} item
+   * @param {number} index
+   */
+  addTo(item, index) {
+    this._main.$$state.addTo(this._root, item);
+  }
+
+  /**
    * Remove item by uniq key
    * @param item
    */
-  // TODO: переименовать в remove
-  removeMold(item) {
+  remove(item) {
     this._main.$$state.removeMold(this._root, item);
   }
-
 }
