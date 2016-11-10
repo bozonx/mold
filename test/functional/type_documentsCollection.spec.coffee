@@ -40,8 +40,6 @@ describe 'Functional. DocumentsCollection type.', ->
     it "check response", ->
       this.documentsCollection.unshift(this.newDoc)
       promise = this.documentsCollection.createDocument(this.newDoc)
-      assert.isTrue(this.newDoc.$adding)
-      assert.isTrue(this.newDoc.$addedUnsaved)
       expect(promise).to.eventually.property('coocked').deep.equal({
         id: 0,
         name: 'a'
@@ -49,7 +47,13 @@ describe 'Functional. DocumentsCollection type.', ->
 
     it "check mold", (done) ->
       this.documentsCollection.unshift(this.newDoc)
-      expect(this.documentsCollection.createDocument(this.newDoc)).to.eventually.notify =>
+      promise = this.documentsCollection.createDocument(this.newDoc)
+
+      assert.isTrue(this.newDoc.$addedUnsaved)
+      assert.isTrue(this.newDoc.$adding)
+      expect(promise).to.eventually.notify =>
+        assert.isUndefined(this.newDoc.$addedUnsaved)
+        assert.isUndefined(this.newDoc.$adding)
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
           .deep.equal([[
             {
@@ -63,11 +67,28 @@ describe 'Functional. DocumentsCollection type.', ->
 
   describe "deleteDocument", ->
     beforeEach () ->
-      it "check response", ->
-        promise = this.documentsCollection.deleteDocument(this.newDoc)
+      this.doc = {id: 0, name: 'a', $index: 0}
 
-      #it "check mold", (done) ->
+    it "check response", (done) ->
+      expect(this.documentsCollection.createDocument(this.doc)).to.eventually.notify =>
+        promise = this.documentsCollection.deleteDocument(this.doc)
+        expect(promise).to.eventually.property('coocked').deep.equal({
+          id: 0,
+          name: 'a'
+        })
+        .notify(done)
 
+    it "check mold", (done) ->
+      this.documentsCollection.unshift(this.doc)
+      expect(this.documentsCollection.createDocument(this.doc)).to.eventually.notify =>
+        promise = this.documentsCollection.deleteDocument(this.doc)
+
+        assert.isTrue(this.doc.$deletting)
+        expect(promise).to.eventually.notify =>
+          assert.isUndefined(this.doc.$deletting)
+          expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
+            .deep.equal([[]])
+            .notify(done)
 
 #  describe 'unshift({...}), removeMold({...})', ->
 #    beforeEach () ->

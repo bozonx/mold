@@ -44,6 +44,7 @@ export default class DocumentsCollection extends PagedCollection{
    * @returns {Promise}
    */
   createDocument(document) {
+    // TODO: менять статус через storage с подъемом события
     document.$adding = true;
     return this._main.$$state.$$request.createDocument(this._root, this.getSourceParams(), document)
       .then((resp) => {
@@ -64,6 +65,7 @@ export default class DocumentsCollection extends PagedCollection{
    * @returns {Promise}
    */
   deleteDocument(document) {
+    // TODO: менять статус через storage с подъемом события
     document.$deletting = true;
     return this._main.$$state.$$request.deleteDocument(this._root, this.getSourceParams(), document)
       .then((resp) => {
