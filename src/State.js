@@ -3,15 +3,13 @@ import _ from 'lodash';
 
 import { findTheClosestParentPath, eachSchema } from './helpers';
 import Request from './Request';
-import SaveBuffer from './SaveBuffer';
 
 
 export default class State {
   init(main, storage) {
     this._main = main;
     this._storage = storage;
-    this._saveBuffer = new SaveBuffer();
-    this.$$request = new Request(this._main, storage, this._saveBuffer);
+    this.$$request = new Request(this._main, storage);
     this._handlers = {};
     this._sourceParams = {};
 
@@ -86,10 +84,6 @@ export default class State {
 
     this._checkNode(pathToCollection, newItem);
     this._storage.unshift(pathToCollection, newItem);
-
-    // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
-    // add to collection of unsaved added items
-    this._saveBuffer.addUnsavedAddedItem(pathToCollection, newItem);
   }
 
   /**
@@ -108,10 +102,6 @@ export default class State {
 
     this._checkNode(pathToCollection, newItem);
     this._storage.push(pathToCollection, newItem);
-
-    // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
-    // add to collection of unsaved added items
-    this._saveBuffer.addUnsavedAddedItem(pathToCollection, newItem);
   }
 
   /**
@@ -133,10 +123,6 @@ export default class State {
     if (!realItem) return;
 
     this._storage.remove(pathToCollection, realItem.$index);
-
-    // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
-    // add to collection of unsaved removed items
-    this._saveBuffer.addUnsavedRemovedItem(pathToCollection, realItem);
   }
 
   /**

@@ -3,10 +3,9 @@ import _ from 'lodash';
 import { findPrimary, getSchemaBaseType } from './helpers';
 
 export default class Request {
-  constructor(main, storage, saveBuffer) {
+  constructor(main, storage) {
     this._main = main;
     this._storage = storage;
-    this._saveBuffer = saveBuffer;
   }
 
   /**

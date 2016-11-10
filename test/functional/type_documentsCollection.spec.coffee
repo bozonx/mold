@@ -61,54 +61,13 @@ describe 'Functional. DocumentsCollection type.', ->
           ]])
           .notify(done)
 
-#    it 'save() added - check promise', ->
-#      this.documentsCollection.addDocument({id: 1})
-#
-#      expect(this.documentsCollection.save()).to.eventually
-#      .property(0).property('resp').property('coocked')
-#      .deep.equal({id: 1})
+  describe "deleteDocument", ->
+    beforeEach () ->
+      it "check response", ->
+        promise = this.documentsCollection.deleteDocument(this.newDoc)
 
-#    it 'save() added - check memory', (done) ->
-#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-#      this.collectionParam.unshift({name: 'name3'})
-#
-#      expect(this.collectionParam.save()).to.eventually.notify =>
-#        expect(Promise.resolve(this.mold.schemaManager.$defaultMemoryDb)).to.eventually
-#        .deep.equal({inMemory: {collectionParam: [
-#          testValues[0],
-#          {name: 'name3', id: 1}
-#        ]}})
-#        .notify(done)
-#
-#    it 'save() added - check unsaved', (done) ->
-#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0]])
-#      this.collectionParam.unshift({name: 'name3'})
-#
-#      expect(this.collectionParam.save()).to.eventually.notify =>
-#        expect(Promise.resolve(this.mold.schemaManager.$defaultMemoryDb)).to.eventually.notify =>
-#          expect(Promise.resolve(this.collectionParam._main.state._request._addedUnsavedItems)).to.eventually
-#          .deep.equal({})
-#          .notify(done)
-#
-#    it 'save() removed - check memory', (done) ->
-#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', [testValues[0], testValues[1]])
-#      expect(this.collectionParam.load()).to.eventually.notify =>
-#        this.collectionParam.removeMold(this.collectionParam.mold[0])
-#
-#        expect(this.collectionParam.save()).to.eventually.notify =>
-#          expect(Promise.resolve(this.mold.schemaManager.$defaultMemoryDb)).to.eventually
-#          .deep.equal({inMemory: {collectionParam: [testValues[1]]}})
-#          .notify(done)
-#
-#    it 'save() removed - check unsaved', (done) ->
-#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'inMemory.collectionParam', testValues)
-#      expect(this.collectionParam.load()).to.eventually.notify =>
-#        this.collectionParam.removeMold(this.collectionParam.mold[0])
-#
-#        expect(this.collectionParam.save()).to.eventually.notify =>
-#          expect(Promise.resolve(this.collectionParam._main.state._request._removedUnsavedItems)).to.eventually
-#          .deep.equal({})
-#          .notify(done)
+      #it "check mold", (done) ->
+
 
 #  describe 'unshift({...}), removeMold({...})', ->
 #    beforeEach () ->
