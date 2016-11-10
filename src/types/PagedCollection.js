@@ -90,8 +90,11 @@ export default class PagedCollection extends _TypeBase {
    */
   unshift(newItem) {
     // TODO: test it
+    // TODO: don't clone it
     if (!_.isPlainObject(newItem))
       throw new Error(`You can add item only of plain object type!`);
+
+    newItem.$addedUnsaved = true;
 
     this.__checkEmptyPage();
     this._main.$$state.unshift(concatPath(this._root, 0), newItem);
@@ -104,8 +107,11 @@ export default class PagedCollection extends _TypeBase {
    */
   push(newItem) {
     // TODO: test it
+    // TODO: don't clone it
     if (!_.isPlainObject(newItem))
       throw new Error(`You can add item only of plain object type!`);
+
+    newItem.$addedUnsaved = true;
 
     this.__checkEmptyPage();
     let pageNum = this.mold.length - 1;

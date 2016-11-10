@@ -44,7 +44,16 @@ export default class DocumentsCollection extends PagedCollection{
    * @returns {Promise}
    */
   createDocument(document) {
-
+    document.$adding = true;
+    return this._main.$$state.$$request.createDocument(this._root, this.getSourceParams(), document)
+      .then((resp) => {
+        delete document.$addedUnsaved;
+        delete document.$adding;
+        return resp;
+      }, (err) => {
+        delete document.$adding;
+        return err;
+      });
   }
 
   /**
@@ -55,7 +64,15 @@ export default class DocumentsCollection extends PagedCollection{
    * @returns {Promise}
    */
   deleteDocument(document) {
-
+    document.$deletting = true;
+    return this._main.$$state.$$request.deleteDocument(this._root, this.getSourceParams(), document)
+      .then((resp) => {
+        delete document.$deletting;
+        return resp;
+      }, (err) => {
+        delete document.$deletting;
+        return err;
+      });
   }
 
 

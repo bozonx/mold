@@ -51,7 +51,7 @@ class LocalMemory {
     });
   }
 
-  add(request) {
+  create(request) {
     return new Promise((resolve) => {
       var collection = _.get(this._db, request.driverPath.full);
       var primaryId = 0;
@@ -87,7 +87,7 @@ class LocalMemory {
     });
   }
 
-  remove(request) {
+  delete(request) {
     return new Promise((resolve, reject) => {
       var collection = _.get(this._db, request.driverPath.full);
 

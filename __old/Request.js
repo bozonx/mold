@@ -44,42 +44,94 @@ export default class Request {
   }
 
   /**
-   * Create document
+   * Add new item to mold
    * @param {string} pathToDocumentsCollection
    * @param {object|null} sourceParams - dynamic part of source path
    * @param {object} document
    */
-  createDocument(pathToDocumentsCollection, sourceParams, document) {
-    return this._startDriverRequest('create', pathToDocumentsCollection, document, sourceParams)
-      .then((resp) => {
-        this._main.$$log.info('---> finish request: ', resp);
-        // update mold with server response data
-        // TODO: обновить сам элемент
-        //this._storage.update(resp.request.storagePath, resp.coocked);
-        return resp;
-      }, this._errorHandler.bind(this));
+  addDocument(pathToDocumentsCollection, sourceParams, document) {
+
   }
 
   /**
-   * Delete document and remove it from mold
-   * @param {string} pathToDocumentsCollection
+   * Save unsaved, removed or added items to driver.
+   * @param {string} pathToCollection
    * @param {object|null} sourceParams - dynamic part of source path
-   * @param {object} document
+   * @returns {Promise}
    */
-  deleteDocument(pathToDocumentsCollection, sourceParams, document) {
-    return this._startDriverRequest('delete', pathToDocumentsCollection, document, sourceParams)
-      .then((resp) => {
-        this._main.$$log.info('---> finish request: ', resp);
-        // update mold with server response data
-        // TODO: удалить элемент
-        //this._storage.update(resp.request.storagePath, resp.coocked);
-        return resp;
-      }, this._errorHandler.bind(this));
+  saveDocumetsCollection(pathToCollection, sourceParams) {
+    var promises = [
+      ...this._saveUnsaved(this._saveBuffer.getAdded(), pathToCollection, 'add', sourceParams, (unsavedItem, resp) => {
+        // update item from mold with server response data
+        _.extend(unsavedItem, resp.coocked);
+      }),
+      ...this._saveUnsaved(this._saveBuffer.getRemoved(), pathToCollection, 'remove', sourceParams),
+    ];
+
+    return Promise.all(promises).then((results) => {
+      this._main.$$log.info('---> finish save collection: ', results);
+      return results;
+    });
+
+
+    // return new Promise((mainResolve) => {
+    //   var promises = [
+    //     ...this._saveUnsaved(this._saveBuffer.getAdded(), pathToCollection, 'add', sourceParams, (unsavedItem, resp) => {
+    //       // update item from mold with server response data
+    //       _.extend(unsavedItem, resp.coocked);
+    //     }),
+    //     ...this._saveUnsaved(this._saveBuffer.getRemoved(), pathToCollection, 'remove', sourceParams),
+    //   ];
+    //
+    //   Promise.all(promises).then((results) => {
+    //     this._main.$$log.info('---> finish save collection: ', results);
+    //     mainResolve(results);
+    //   });
+    // });
+  }
+
+  _saveUnsaved(unsavedList, pathToCollection, method, sourceParams, successCb) {
+    var promises = [];
+
+    _.each(_.reverse(unsavedList[pathToCollection]), (unsavedItem) => {
+      // skip empty
+      if (!unsavedItem) return;
+
+      this._saveBuffer.removeUnsavedItem(pathToCollection, unsavedItem, method);
+
+      promises.push(new Promise((resolve) => {
+        this._startDriverRequest(method, pathToCollection, unsavedItem, sourceParams)
+          .then((resp) => {
+            if (successCb) successCb(unsavedItem, resp);
+
+            // remove $addedUnsaved prop from saved item
+            delete unsavedItem.$addedUnsaved;
+
+            resolve({
+              path: pathToCollection,
+              isOk: true,
+              resp,
+            });
+          }, (driverError) => {
+            // on error make item unsaved again
+            if (_.isUndefined(unsavedList[pathToCollection])) unsavedList[pathToCollection] = [];
+            unsavedList[pathToCollection].push(unsavedItem);
+
+            resolve({
+              path: pathToCollection,
+              isOk: false,
+              driverError,
+            });
+          });
+      }));
+    });
+
+    return promises;
   }
 
   /**
    * Send query to driver for data.
-   * @param {string} method - one of: get, set, filter, create, delete
+   * @param {string} method - one of: get, set, filter, add, remove
    * @param {string} storagePath - path in mold or schena
    * @param {*} [payload] - data to save
    * @param {object} sourceParams - dynamic part of source path

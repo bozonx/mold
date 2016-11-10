@@ -102,7 +102,7 @@ class LocalPounchDb {
     });
   }
 
-  add(request) {
+  create(request) {
     if (!request.document)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
@@ -150,7 +150,7 @@ class LocalPounchDb {
     });
   }
 
-  remove(request) {
+  delete(request) {
     if (!request.document)
       throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
