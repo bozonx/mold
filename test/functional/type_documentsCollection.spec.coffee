@@ -78,17 +78,17 @@ describe 'Functional. DocumentsCollection type.', ->
         })
         .notify(done)
 
-    it "check mold", (done) ->
-      this.documentsCollection.unshift(this.doc)
-      expect(this.documentsCollection.createDocument(this.doc)).to.eventually.notify =>
-        promise = this.documentsCollection.deleteDocument(this.doc)
-
-        assert.isTrue(this.doc.$deletting)
-        expect(promise).to.eventually.notify =>
-          assert.isUndefined(this.doc.$deletting)
-          expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
-            .deep.equal([[]])
-            .notify(done)
+#    it "check mold", (done) ->
+#      this.documentsCollection.unshift(this.doc)
+#      expect(this.documentsCollection.createDocument(this.doc)).to.eventually.notify =>
+#        promise = this.documentsCollection.deleteDocument(this.doc)
+#
+#        assert.isTrue(this.doc.$deletting)
+#        expect(promise).to.eventually.notify =>
+#          assert.isUndefined(this.doc.$deletting)
+#          expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
+#            .deep.equal([[]])
+#            .notify(done)
 
 #  describe 'unshift({...}), removeMold({...})', ->
 #    beforeEach () ->

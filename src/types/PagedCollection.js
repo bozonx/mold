@@ -56,32 +56,33 @@ export default class PagedCollection extends _TypeBase {
     return _.flatMap(_.cloneDeep(this.mold), (page) => {
       return _.map(page, (item) => {
         delete item.$index;
+        delete item.$pageIndex;
         return item;
       })
     });
   }
 
-  /**
-   * add item to the end of last page.
-   * It creates new page if last page was overflowed
-   */
-  addItem(item) {
-    // TODO: не нужно
-
-    if (!_.isPlainObject(item))
-      throw new Error(`You can add item only of plain object type!`);
-
-    this.__checkEmptyPage();
-
-    if (_.last(this.mold).length >= this._perPage) {
-      let pageNum = this.mold.length;
-      this._main.$$state.setPage(this._root, [item], pageNum);
-    }
-    else {
-      let pageNum = this.mold.length - 1;
-      this._main.$$state.push(concatPath(this._root, pageNum), item);
-    }
-  }
+  // /**
+  //  * add item to the end of last page.
+  //  * It creates new page if last page was overflowed
+  //  */
+  // addItem(item) {
+  //   // TODO: не нужно
+  //
+  //   if (!_.isPlainObject(item))
+  //     throw new Error(`You can add item only of plain object type!`);
+  //
+  //   this.__checkEmptyPage();
+  //
+  //   if (_.last(this.mold).length >= this._perPage) {
+  //     let pageNum = this.mold.length;
+  //     this._main.$$state.setPage(this._root, [item], pageNum);
+  //   }
+  //   else {
+  //     let pageNum = this.mold.length - 1;
+  //     this._main.$$state.push(concatPath(this._root, pageNum), item);
+  //   }
+  // }
 
   /**
    * Add item to beginning of first page.
@@ -90,10 +91,10 @@ export default class PagedCollection extends _TypeBase {
    */
   unshift(newItem) {
     // TODO: test it
-    // TODO: don't clone it
     if (!_.isPlainObject(newItem))
       throw new Error(`You can add item only of plain object type!`);
 
+    // TODO: менять статус через storage с подъемом события
     newItem.$addedUnsaved = true;
 
     this.__checkEmptyPage();
@@ -107,10 +108,10 @@ export default class PagedCollection extends _TypeBase {
    */
   push(newItem) {
     // TODO: test it
-    // TODO: don't clone it
     if (!_.isPlainObject(newItem))
       throw new Error(`You can add item only of plain object type!`);
 
+    // TODO: менять статус через storage с подъемом события
     newItem.$addedUnsaved = true;
 
     this.__checkEmptyPage();
@@ -141,13 +142,13 @@ export default class PagedCollection extends _TypeBase {
 
   /**
    * Set page to mold.
-   * It doesn't mark items as unsaved.
+   * If pageNum hasn't passed it means add to the end.
    * @param {Array} page
    * @param {number|undefined} pageNum
    */
   setPage(page, pageNum) {
     if (_.isUndefined(pageNum)) {
-      pageNum = (this.mold.length) ? this.mold.length : 0;
+      pageNum = this.mold.length;
     }
     else if (!_.isNumber(pageNum)) {
       throw new Error(`The pageNum must be type of number!`);

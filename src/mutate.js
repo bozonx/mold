@@ -5,16 +5,22 @@ import { concatPath } from './helpers';
 export function updateIndexes(collectionInStorage) {
   if (_.isArray(_.last(collectionInStorage))) {
     // for paged collections
-    _.each(collectionInStorage, (page) => {
+    _.each(collectionInStorage, (page, pageIndex) => {
       _.each(page, (value, index) => {
-        if (_.isPlainObject(value)) value.$index = index;
+        if (_.isPlainObject(value)) {
+          value.$index = index;
+          value.$pageIndex = pageIndex;
+        }
       });
     });
   }
   else {
     // for simple collections
     _.each(collectionInStorage, (value, index) => {
-      if (_.isPlainObject(value)) value.$index = index;
+      if (_.isPlainObject(value)) {
+        value.$index = index;
+        delete value.$pageIndex;
+      }
     });
   }
 }
@@ -69,6 +75,7 @@ class Mutate {
   }
 
   _updateContainer(root, newContainerState) {
+    // TODO: в старом контейнере может быть несохраняемый стейт. Не нужно его удалять
     return _.reduce(newContainerState, (sum, value, name) => {
       var haveChanges = this._crossroads(concatPath(root, name), value);
       return (!sum) ? haveChanges : sum;
@@ -124,6 +131,9 @@ class Mutate {
   _updateCollection(root, newCollectionState) {
     var isChanged = false;
     var originalCollection = _.get(this.storage, root);
+
+    // TODO: переделать - порядок элементов бедем из новых данных
+    // TODO: - ищем по primaryKey старые элементы, и берем из старых элементов данные, на которые накладываем новые
 
     if (_.isUndefined(originalCollection)) {
       originalCollection = _.cloneDeep(newCollectionState);
