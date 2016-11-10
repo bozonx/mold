@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
 import { concatPath } from '../helpers';
-import _PagedCollectionBase from './_PagedCollectionBase';
+import PagedCollection from './PagedCollection';
 
 
-export default class DocumentsCollection extends _PagedCollectionBase{
+export default class DocumentsCollection extends PagedCollection{
   constructor(main) {
     super(main);
   }
