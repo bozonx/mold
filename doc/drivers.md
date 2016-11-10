@@ -16,7 +16,7 @@ receive
 returns
 
 * return promise with generated response
-* response data placed in 'coocked' param
+* response data placed in 'body' param
 
 ### set
 
@@ -28,7 +28,7 @@ receive
 returns
 
 * return promise with generated response
-* response data placed in 'coocked' param. It must be a correct data to set to storage
+* response data placed in 'body' param. It must be a correct data to set to storage
 
 
 ## Request format

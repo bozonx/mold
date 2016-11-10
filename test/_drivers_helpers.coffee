@@ -29,11 +29,11 @@ module.exports =
     expect(driverInstance.startRequest(setRequest)).to.eventually.notify =>
       promise = driverInstance.startRequest(getRequest).then (resp) ->
         _.defaults({
-          coocked: _.omit(resp.coocked, '_id', '_rev')
+          body: _.omit(resp.body, '_id', '_rev')
         }, resp)
 
       expect(Promise.all([
-        expect(promise).to.eventually.property('coocked').deep.equal(setRequest.payload),
+        expect(promise).to.eventually.property('body').deep.equal(setRequest.payload),
         expect(promise).to.eventually.property('request').deep.equal(getRequest),
       ])).to.eventually.notify(done)
 
@@ -50,11 +50,11 @@ module.exports =
 
     promise = driverInstance.startRequest(setRequest).then (resp) ->
       _.defaults({
-        coocked: _.omit(resp.coocked, '_id', '_rev')
+        body: _.omit(resp.body, '_id', '_rev')
       }, resp)
 
     expect(Promise.all([
-      expect(promise).to.eventually.property('coocked').deep.equal(setRequest.payload),
+      expect(promise).to.eventually.property('body').deep.equal(setRequest.payload),
       expect(promise).to.eventually.property('request').deep.equal(setRequest),
     ])).to.eventually.notify(done)
 
@@ -72,11 +72,11 @@ module.exports =
       filterRequest = generateRequest(pathToDoc, 'filter')
       promise = driverInstance.startRequest(filterRequest).then (resp) ->
         _.defaults({
-          coocked: _.map(resp.coocked, (value) => _.omit(value, '_id', '_rev'))
+          body: _.map(resp.body, (value) => _.omit(value, '_id', '_rev'))
         }, resp)
 
       expect(Promise.all([
-        expect(promise).to.eventually.property('coocked').deep.equal([{id: 0, name: 'name1'}]),
+        expect(promise).to.eventually.property('body').deep.equal([{id: 0, name: 'name1'}]),
         expect(promise).to.eventually.property('request').deep.equal(filterRequest),
       ])).to.eventually.notify(done)
 
@@ -90,11 +90,11 @@ module.exports =
 
     promise = driverInstance.startRequest(addRequest).then (resp) ->
       _.defaults({
-        coocked: _.omit(resp.coocked, '_id', '_rev')
+        body: _.omit(resp.body, '_id', '_rev')
       }, resp)
 
     expect(Promise.all([
-      expect(promise).to.eventually.property('coocked').deep.equal({id: 0, name: 'name1'}),
+      expect(promise).to.eventually.property('body').deep.equal({id: 0, name: 'name1'}),
       expect(promise).to.eventually.property('request').deep.equal(addRequest),
     ])).to.eventually.notify(done)
 
@@ -123,10 +123,10 @@ module.exports =
           filterRequest = generateRequest(pathToDoc, 'filter')
           promise = driverInstance.startRequest(filterRequest).then (resp) ->
             _.defaults({
-              coocked: _.map(resp.coocked, (value) => _.omit(value, '_id', '_rev'))
+              body: _.map(resp.body, (value) => _.omit(value, '_id', '_rev'))
             }, resp)
 
           expect(Promise.all([
-            expect(promise).to.eventually.property('coocked').deep.equal([{id: 1, name: 'name2'}]),
+            expect(promise).to.eventually.property('body').deep.equal([{id: 1, name: 'name2'}]),
             expect(promise).to.eventually.property('request').deep.equal(filterRequest),
           ])).to.eventually.notify(done)

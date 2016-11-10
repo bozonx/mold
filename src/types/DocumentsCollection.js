@@ -113,10 +113,10 @@ export default class DocumentsCollection extends PagedCollection{
   //
   //   return this._main.$$state.$$request.addDocument(this._root, this.getSourceParams(), item)
   //     .then((resp) => {
-  //       if (resp.coocked && resp.coocked.itemPosition) {
+  //       if (resp.body && resp.body.itemPosition) {
   //         // TODO: мы не можем точно значть страницу и позицию, так как это зависит от сортировки
-  //         //var page = resp.coocked.itemPosition.page;
-  //         //var position = resp.coocked.itemPosition.position;
+  //         //var page = resp.body.itemPosition.page;
+  //         //var position = resp.body.itemPosition.position;
   //
   //         // TODO: пометить все, ранее загруженные страницы, как не актуальные
   //         // TODO: при последующей запросе mold сделать запрос на обновление страницы

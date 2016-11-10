@@ -25,7 +25,7 @@ describe 'Functional. DocumentsCollection type.', ->
     it 'load(page) - check promise', ->
       promise = this.documentsCollection.load(0)
       expect(promise).to.eventually
-        .property('coocked').deep.equal(this.page)
+        .property('body').deep.equal(this.page)
 
     it 'load(page) - check mold', (done) ->
       expect(this.documentsCollection.load(0)).to.eventually.notify =>
@@ -40,7 +40,7 @@ describe 'Functional. DocumentsCollection type.', ->
     it "check response", ->
       this.documentsCollection.unshift(this.newDoc)
       promise = this.documentsCollection.createDocument(this.newDoc)
-      expect(promise).to.eventually.property('coocked').deep.equal({
+      expect(promise).to.eventually.property('body').deep.equal({
         id: 0,
         name: 'a'
       })
@@ -72,7 +72,7 @@ describe 'Functional. DocumentsCollection type.', ->
     it "check response", (done) ->
       expect(this.documentsCollection.createDocument(this.doc)).to.eventually.notify =>
         promise = this.documentsCollection.deleteDocument(this.doc)
-        expect(promise).to.eventually.property('coocked').deep.equal({
+        expect(promise).to.eventually.property('body').deep.equal({
           id: 0,
           name: 'a'
         })

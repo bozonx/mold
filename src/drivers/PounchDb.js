@@ -39,7 +39,7 @@ class LocalPounchDb {
     return this._db.allDocs(getAllQuery)
       .then((resp) => {
         return {
-          coocked: _.map(resp.rows, (value) => {
+          body: _.map(resp.rows, (value) => {
             return value.doc;
           }),
           driverResponse: resp,
@@ -63,7 +63,7 @@ class LocalPounchDb {
             if (!resp.ok) reject(this._rejectHandler.bind(request, err));
 
             resolve({
-              coocked: {
+              body: {
                 ...request.payload,
                 _id: resp.id,
                 _rev: resp.rev,
@@ -87,7 +87,7 @@ class LocalPounchDb {
             if (!resp.ok) reject(this._rejectHandler.bind(request, err));
 
             resolve({
-              coocked: {
+              body: {
                 ...request.payload,
                 _id: resp.id,
                 _rev: resp.rev,
@@ -131,7 +131,7 @@ class LocalPounchDb {
           })
           .then((resp) => {
             resolve({
-              coocked: {
+              body: {
                 ...request.payload,
                 _id: resp.id,
                 _rev: resp.rev,
@@ -160,7 +160,7 @@ class LocalPounchDb {
       this._db.get(docId).then((getResp) => {
         this._db.remove(getResp).then((resp) => {
           resolve({
-            coocked: _.omit(getResp, '_id', '_rev'),
+            body: _.omit(getResp, '_id', '_rev'),
             driverResponse: resp,
             request,
           });
@@ -182,7 +182,7 @@ class LocalPounchDb {
 
   _resolveHandler(request, resp) {
     return {
-      coocked: resp,
+      body: resp,
       driverResponse: resp,
       request,
     };

@@ -40,9 +40,9 @@ describe 'Functional. Document type.', ->
   it 'load() and check response', ->
     _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'document', this.testValues)
 
-    expect(this.document.load()).to.eventually.property('coocked').deep.equal(this.testValues)
+    expect(this.document.load()).to.eventually.property('body').deep.equal(this.testValues)
 
   it 'setMold and save', ->
     this.document.setMold(this.testValues)
     expect(this.document.save()).to.eventually
-    .property('coocked').deep.equal(this.testValues)
+    .property('body').deep.equal(this.testValues)

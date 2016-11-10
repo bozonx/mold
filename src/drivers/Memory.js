@@ -22,7 +22,7 @@ class LocalMemory {
       var resp = _.get(this._db, request.driverPath.full);
       if (!_.isUndefined(resp)) {
         resolve({
-          coocked: resp,
+          body: resp,
           driverResponse: resp,
           request,
         });
@@ -44,7 +44,7 @@ class LocalMemory {
     return new Promise((resolve) => {
       _.set(this._db, request.driverPath.full, request.payload);
       resolve({
-        coocked: request.payload,
+        body: request.payload,
         driverResponse: request.payload,
         request,
       });
@@ -80,7 +80,7 @@ class LocalMemory {
       collection[primaryId] = newValue;
 
       resolve({
-        coocked: newValue,
+        body: newValue,
         driverResponse: newValue,
         request,
       });
@@ -111,7 +111,7 @@ class LocalMemory {
       _.remove(collection, item);
 
       resolve({
-        coocked: item,
+        body: item,
         driverResponse: item,
         request,
       });

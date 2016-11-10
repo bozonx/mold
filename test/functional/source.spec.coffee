@@ -21,7 +21,7 @@ describe 'Functional. Source.', ->
     document.setSourceParams({itemId: 0});
     expect(document.load()).to.eventually
     .deep.equal
-      coocked:
+      body:
         id: 0
         name: 'value0'
       driverResponse:
