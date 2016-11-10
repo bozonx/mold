@@ -35,7 +35,7 @@ describe 'Functional. Memory driver.', ->
     driverHelpers.container_set2(this.mold, 'inMemory.document', done)
 
   it 'collection_filter', (done) ->
-    driverHelpers.collection_filter(this.mold, 'inMemory.documentsCollection', done)
+    driverHelpers.collection_filter2(this.mold, 'inMemory.documentsCollection', done)
 
   it 'collection_add', (done) ->
     driverHelpers.collection_add(this.mold, 'inMemory.documentsCollection', done)

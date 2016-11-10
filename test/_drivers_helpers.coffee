@@ -49,6 +49,10 @@ module.exports =
       expect(promise).to.eventually.property('request').deep.equal(request),
     ])).to.eventually.notify(done)
 
+  collection_filter2: (mold, pathToDocColl, done) ->
+    collection = mold.instance(pathToDocColl)
+
+  # TODO: pounch не работает!!!!
 
 
 ####################################
