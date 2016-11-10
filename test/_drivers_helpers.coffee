@@ -61,8 +61,8 @@ module.exports =
   collection_filter: (mold, pathToDoc, done) ->
     driverInstance = mold.$$schemaManager.getDriver(pathToDoc)
 
-    # add one
-    addOneRequest = generateRequest(pathToDoc, 'add', {
+    # create one
+    addOneRequest = generateRequest(pathToDoc, 'create', {
       payload:
         name: 'name1'
     })
@@ -83,7 +83,7 @@ module.exports =
   collection_add: (mold, pathToDoc, done) ->
     driverInstance = mold.$$schemaManager.getDriver(pathToDoc)
 
-    addRequest = generateRequest(pathToDoc, 'add', {
+    addRequest = generateRequest(pathToDoc, 'create', {
       payload:
         name: 'name1'
     })
@@ -102,19 +102,19 @@ module.exports =
     driverInstance = mold.$$schemaManager.getDriver(pathToDoc)
 
     # add one
-    addOneRequest = generateRequest(pathToDoc, 'add', {
+    addOneRequest = generateRequest(pathToDoc, 'create', {
       payload:
         name: 'name1'
     })
     expect(driverInstance.startRequest(addOneRequest)).to.eventually.notify =>
       # add two
-      addTwoRequest = generateRequest(pathToDoc, 'add', {
+      addTwoRequest = generateRequest(pathToDoc, 'create', {
         payload:
           name: 'name2'
       })
       expect(driverInstance.startRequest(addTwoRequest)).to.eventually.notify =>
         # remove first
-        removeRequest = generateRequest(pathToDoc, 'remove', {
+        removeRequest = generateRequest(pathToDoc, 'delete', {
           payload:
             id: 0
         })

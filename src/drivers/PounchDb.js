@@ -216,12 +216,22 @@ export default function(driverConfig) {
   this.db = driverConfig.db;
 
   /**
+   * Get instance
+   * @param {object} instanceConfig
+   * @returns {LocalPounchDb}
+   */
+  this.instance = (instanceConfig) => {
+    return new LocalPounchDb(this.driverConfig, instanceConfig, this.db);
+  };
+
+  /**
    * Schema helper
    * @param {object} instanceConfig
    * @param {object} schema
    * @returns {{driver: LocalPounchDb, schema: *}}
    */
   this.schema = (instanceConfig, schema) => {
+    // TODO: не нужно
     return {
       driver: new LocalPounchDb(this.driverConfig, instanceConfig, this.db),
       schema: schema,
