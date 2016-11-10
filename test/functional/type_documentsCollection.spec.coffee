@@ -11,6 +11,7 @@ describe 'Functional. DocumentsCollection type.', ->
             type: 'document'
             schema:
               id: {type: 'number', primary: true}
+              name: {type: 'string'}
     this.mold = mold( {}, this.testSchema() )
     this.documentsCollection = this.mold.instance('documentsCollection')
 
@@ -32,10 +33,37 @@ describe 'Functional. DocumentsCollection type.', ->
         .deep.equal([[{ id: 0, $index: 0 }]])
         .notify(done)
 
-  describe "save and addDocument", ->
+  describe "createDocument", ->
     beforeEach () ->
-      this.page = [{id: 0}]
-      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', this.page)
+#      this.page = [{id: 0}]
+#      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', this.page)
+
+    it "check response", ->
+      doc = {name: 'a', $addedUnsaved: true}
+      promise = this.documentsCollection.createDocument(doc)
+      assert.isTrue(doc.$adding)
+      expect(promise).to.eventually.property('coocked').deep.equal({
+        id: 0,
+        name: 'a'
+      })
+
+    it "check mold", (done) ->
+      doc = {name: 'a'}
+      this.documentsCollection.unshift(doc)
+      promise = this.documentsCollection.createDocument(doc)
+      assert.isTrue(doc.$adding)
+      assert.isTrue(doc.$addedUnsaved)
+      expect(promise).to.eventually.notify =>
+        expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
+          .deep.equal([[
+            {
+              # TODO: раскомментировать, когда будет сделанно обновление элемента в request
+              #id: 0,
+              name: 'a',
+              $index: 0
+            }
+          ]])
+          .notify(done)
 
 #    it 'save() added - check promise', ->
 #      this.documentsCollection.addDocument({id: 1})

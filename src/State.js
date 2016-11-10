@@ -72,6 +72,7 @@ export default class State {
 
   /**
    * Add to beginning of a collection in store by user action.
+   * It add item as is, not clones it.
    * @param {string} pathToCollection
    * @param {object} newItem
    */
@@ -83,18 +84,17 @@ export default class State {
     if (schema.type !== 'collection')
       throw new Error(`You can add new item only to collection!`);
 
-    var preparedItem = _.clone(newItem);
-
-    this._checkNode(pathToCollection, preparedItem);
-    this._storage.unshift(pathToCollection, preparedItem);
+    this._checkNode(pathToCollection, newItem);
+    this._storage.unshift(pathToCollection, newItem);
 
     // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
     // add to collection of unsaved added items
-    this._saveBuffer.addUnsavedAddedItem(pathToCollection, preparedItem);
+    this._saveBuffer.addUnsavedAddedItem(pathToCollection, newItem);
   }
 
   /**
    * Add to end of collection in store by user action.
+   * It add item as is, not clones it.
    * @param {string} pathToCollection
    * @param {object} newItem
    */
@@ -106,14 +106,12 @@ export default class State {
     if (schema.type !== 'collection')
       throw new Error(`You can add new item only to collection!`);
 
-    var preparedItem = _.clone(newItem);
-
-    this._checkNode(pathToCollection, preparedItem);
-    this._storage.push(pathToCollection, preparedItem);
+    this._checkNode(pathToCollection, newItem);
+    this._storage.push(pathToCollection, newItem);
 
     // TODO: наверное помечаются только добавленые элементы через document, либо имеющие документ выше
     // add to collection of unsaved added items
-    this._saveBuffer.addUnsavedAddedItem(pathToCollection, preparedItem);
+    this._saveBuffer.addUnsavedAddedItem(pathToCollection, newItem);
   }
 
   /**

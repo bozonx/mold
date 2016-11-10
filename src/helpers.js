@@ -32,7 +32,20 @@ export function eachSchema(fullSchema, cb) {
 
 export function findPrimary(schema) {
   var primary;
-  _.find(schema, (value, name) => {
+
+  var schemaToFind;
+
+  if (schema.schema) {
+    schemaToFind = schema.schema;
+  }
+  else if (schema.item && schema.item.schema) {
+    schemaToFind = schema.item.schema;
+  }
+  else {
+    return;
+  }
+
+  _.find(schemaToFind, (value, name) => {
     if (_.isPlainObject(value) && value.primary) {
       primary = name;
       return true;

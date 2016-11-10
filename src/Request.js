@@ -56,6 +56,7 @@ export default class Request {
         // update mold with server response data
         // TODO: обновить сам элемент
         //this._storage.update(resp.request.storagePath, resp.coocked);
+
         return resp;
       }, this._errorHandler.bind(this));
   }
@@ -100,7 +101,7 @@ export default class Request {
   _generateRequest(method, storagePath, rawPayload, sourceParams, schema) {
     var payload = rawPayload;
     if (_.isPlainObject(payload)) {
-      payload = _.omit(_.cloneDeep(payload), '$index', '$addedUnsaved');
+      payload = _.omit(_.cloneDeep(payload), '$index', '$adding', '$addedUnsaved', '$deletting');
       payload = _.omitBy(payload, _.isUndefined);
     }
     // it clears an empty array or objects
