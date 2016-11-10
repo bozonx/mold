@@ -109,10 +109,10 @@ export default class Request {
 
     // TODO: !!!! pathToDocument не надо - он всегда = storagePath
     // TODO: надо добавить ещё document params
-    var documentParams = {
+    var documentParams = _.omitBy({
       source: schema.source,
       pathToDocument: storagePath,
-    };
+    }, _.isUndefined);
 
     var request = {
       method,

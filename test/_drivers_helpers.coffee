@@ -7,12 +7,51 @@ generateRequest = (pathToDoc, method, toExtend) ->
     driverPath:
       document: pathToDoc
       full: pathToDoc
-    document: { pathToDocument: pathToDoc }
+    document: {
+      pathToDocument: pathToDoc
+    }
     method: method
-    primaryKeyName: 'id'
   })
 
 module.exports =
+  container_get2: (mold, pathToDoc, done) ->
+    payload =
+      booleanParam: true
+      stringParam: 'newValue'
+      numberParam: 5
+      arrayParam: ['value1']
+    container = mold.instance(pathToDoc)
+    container.setMold(payload)
+    container.save()
+    promise = container.load()
+
+    request = generateRequest(pathToDoc, 'get', {schemaBaseType: 'container'})
+
+    expect(Promise.all([
+      expect(promise).to.eventually.property('body').deep.equal(payload),
+      expect(promise).to.eventually.property('request').deep.equal(request),
+    ])).to.eventually.notify(done)
+
+  container_set2: (mold, pathToDoc, done) ->
+    payload =
+      booleanParam: true
+      stringParam: 'newValue'
+      numberParam: 5
+      arrayParam: ['value1']
+    container = mold.instance(pathToDoc)
+    container.setMold(payload)
+    promise = container.save()
+
+    request = generateRequest(pathToDoc, 'set', {schemaBaseType: 'container', payload: payload})
+
+    expect(Promise.all([
+      expect(promise).to.eventually.property('body').deep.equal(payload),
+      expect(promise).to.eventually.property('request').deep.equal(request),
+    ])).to.eventually.notify(done)
+
+
+
+####################################
   container_get: (mold, pathToDoc, done) ->
     driverInstance = mold.$$schemaManager.getDriver(pathToDoc)
 
@@ -63,6 +102,7 @@ module.exports =
 
     # create one
     addOneRequest = generateRequest(pathToDoc, 'create', {
+      primaryKeyName: 'id'
       payload:
         name: 'name1'
     })
@@ -84,6 +124,7 @@ module.exports =
     driverInstance = mold.$$schemaManager.getDriver(pathToDoc)
 
     addRequest = generateRequest(pathToDoc, 'create', {
+      primaryKeyName: 'id'
       payload:
         name: 'name1'
     })
@@ -103,24 +144,27 @@ module.exports =
 
     # add one
     addOneRequest = generateRequest(pathToDoc, 'create', {
+      primaryKeyName: 'id'
       payload:
         name: 'name1'
     })
     expect(driverInstance.startRequest(addOneRequest)).to.eventually.notify =>
       # add two
       addTwoRequest = generateRequest(pathToDoc, 'create', {
+        primaryKeyName: 'id'
         payload:
           name: 'name2'
       })
       expect(driverInstance.startRequest(addTwoRequest)).to.eventually.notify =>
         # remove first
         removeRequest = generateRequest(pathToDoc, 'delete', {
+          primaryKeyName: 'id'
           payload:
             id: 0
         })
         expect(driverInstance.startRequest(removeRequest)).to.eventually.notify =>
           # get all
-          filterRequest = generateRequest(pathToDoc, 'filter')
+          filterRequest = generateRequest(pathToDoc, 'filter', {primaryKeyName: 'id'})
           promise = driverInstance.startRequest(filterRequest).then (resp) ->
             _.defaults({
               body: _.map(resp.body, (value) => _.omit(value, '_id', '_rev'))

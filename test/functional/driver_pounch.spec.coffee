@@ -37,11 +37,11 @@ describe 'Functional. PounchDb driver.', ->
 
   it 'container_get', (done) ->
     this.init('container_get')
-    driverHelpers.container_get(this.mold, 'inPounch.document', done)
+    driverHelpers.container_get2(this.mold, 'inPounch.document', done)
 
   it 'container_set', (done) ->
     this.init('container_set')
-    driverHelpers.container_set(this.mold, 'inPounch.document', done)
+    driverHelpers.container_set2(this.mold, 'inPounch.document', done)
 
   it 'collection_filter', (done) ->
     this.init('filter')

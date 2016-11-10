@@ -29,10 +29,10 @@ describe 'Functional. Memory driver.', ->
     this.mold = mold( {}, this.testSchema )
 
   it 'container_get', (done) ->
-    driverHelpers.container_get(this.mold, 'inMemory.container', done)
+    driverHelpers.container_get2(this.mold, 'inMemory.document', done)
 
   it 'container_set', (done) ->
-    driverHelpers.container_set(this.mold, 'inMemory.container', done)
+    driverHelpers.container_set2(this.mold, 'inMemory.document', done)
 
   it 'collection_filter', (done) ->
     driverHelpers.collection_filter(this.mold, 'inMemory.documentsCollection', done)
