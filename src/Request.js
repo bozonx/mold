@@ -54,7 +54,7 @@ export default class Request {
       .then((resp) => {
         this._main.$$log.info('---> finish request: ', resp);
         // update mold with server response data
-        // TODO: обновить сам элемент
+        // TODO: обновить сам элемент. Поправить тест
         //this._storage.update(resp.request.storagePath, resp.coocked);
 
         return resp;

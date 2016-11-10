@@ -35,25 +35,21 @@ describe 'Functional. DocumentsCollection type.', ->
 
   describe "createDocument", ->
     beforeEach () ->
-#      this.page = [{id: 0}]
-#      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', this.page)
+      this.newDoc = {name: 'a'}
 
     it "check response", ->
-      doc = {name: 'a', $addedUnsaved: true}
-      promise = this.documentsCollection.createDocument(doc)
-      assert.isTrue(doc.$adding)
+      this.documentsCollection.unshift(this.newDoc)
+      promise = this.documentsCollection.createDocument(this.newDoc)
+      assert.isTrue(this.newDoc.$adding)
+      assert.isTrue(this.newDoc.$addedUnsaved)
       expect(promise).to.eventually.property('coocked').deep.equal({
         id: 0,
         name: 'a'
       })
 
     it "check mold", (done) ->
-      doc = {name: 'a'}
-      this.documentsCollection.unshift(doc)
-      promise = this.documentsCollection.createDocument(doc)
-      assert.isTrue(doc.$adding)
-      assert.isTrue(doc.$addedUnsaved)
-      expect(promise).to.eventually.notify =>
+      this.documentsCollection.unshift(this.newDoc)
+      expect(this.documentsCollection.createDocument(this.newDoc)).to.eventually.notify =>
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
           .deep.equal([[
             {
