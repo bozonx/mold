@@ -122,12 +122,7 @@ export default class Request {
 
       // TODO: убрать
       driverPath: {
-        // path to document
         document: this._convertToSource(storagePath, schema.source, sourceParams),
-        full: this._convertToSource(storagePath, schema.source, sourceParams),
-        // TODO: не правильно работает если брать элемент коллекции
-        // base: splits && splits.basePath,
-        // sub: splits && splits.paramPath,
       },
     };
     // clear undefined params
