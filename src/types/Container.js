@@ -23,8 +23,7 @@ export default class Container extends _TypeBase{
    * @returns {object} - instance of param or list or container
    */
   child(path) {
-    // TODO: number не должен поддерживаться
-    if (!_.isString(path) && !_.isNumber(path))
+    if (!_.isString(path))
       throw new Error(`You must pass a path argument.`);
 
     return this._main.$$schemaManager.getInstance(concatPath(this._root, path));

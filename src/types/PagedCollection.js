@@ -35,6 +35,7 @@ export default class PagedCollection extends _TypeBase {
    * @returns {object|undefined} - instance of Collection of undefined if page not found.
    */
   child(pageNum) {
+    // TODO: должен работать с любым путем, можно получить потомка любой глубины
     if (!_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
 
     if (_.isUndefined(this.mold[pageNum])) return undefined;
