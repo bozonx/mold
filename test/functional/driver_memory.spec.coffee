@@ -37,12 +37,8 @@ describe 'Functional. Memory driver.', ->
   it 'collection_create', (done) ->
     driverHelpers.collection_create(this.mold, 'root.documentsCollection', done)
 
+#  it 'collection_delete', (done) ->
+#    driverHelpers.collection_delete(this.mold, 'root.documentsCollection', done)
 
   it 'collection_filter', (done) ->
     driverHelpers.collection_filter2(this.mold, 'root.documentsCollection', done)
-
-#  it 'collection_add', (done) ->
-#    driverHelpers.collection_add(this.mold, 'root.documentsCollection', done)
-#
-#  it 'collection_remove', (done) ->
-#    driverHelpers.collection_remove(this.mold, 'root.documentsCollection', done)

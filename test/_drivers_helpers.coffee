@@ -69,8 +69,6 @@ module.exports =
 
     promise = collection.load(0)
 
-    # TODO: не правильно запрашивается - путь должен быть root.documentsCollection
-
     request = generateRequest(pathToDocColl, 'filter', {
       schemaBaseType: 'collection', primaryKeyName: 'id'})
 
@@ -79,24 +77,22 @@ module.exports =
       expect(promise).to.eventually.property('request').deep.equal(request),
     ])).to.eventually.notify(done)
 
-#    expect(driverInstance.startRequest(addOneRequest)).to.eventually.notify =>
-## get all
-#      filterRequest = generateRequest(pathToDoc, 'filter')
-#      promise = driverInstance.startRequest(filterRequest).then (resp) ->
-#        _.defaults({
-#          body: _.map(resp.body, (value) => _.omit(value, '_id', '_rev'))
-#        }, resp)
-#
-#      expect(Promise.all([
-#        expect(promise).to.eventually.property('body').deep.equal([{id: 0, name: 'name1'}]),
-#        expect(promise).to.eventually.property('request').deep.equal(filterRequest),
-#      ])).to.eventually.notify(done)
-#
-#collect
+  collection_delete: (mold, pathToDocColl, done) ->
+    collection = mold.instance(pathToDocColl)
+    collection.createDocument({name: 'value1'})
+    collection.createDocument({name: 'value2'})
 
-  # TODO: test paged request
+    promise = collection.deleteDocument({id: 0})
 
-  # TODO: pounch не работает!!!!
+    request = generateRequest(pathToDocColl, 'delete', {
+      schemaBaseType: 'collection', primaryKeyName: 'id'})
+
+    expect(Promise.all([
+      expect(promise).to.eventually.property('body').deep.equal([{name: 'value', id: 0}]),
+      expect(promise).to.eventually.property('request').deep.equal(request),
+    ])).to.eventually.notify(done)
+
+    # TODO: !!!!
 
 
 ####################################

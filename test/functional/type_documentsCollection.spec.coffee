@@ -20,7 +20,7 @@ describe 'Functional. DocumentsCollection type.', ->
   describe "load", ->
     beforeEach () ->
       this.page = [{id: 0}]
-      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection[0]', this.page)
+      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', this.page)
 
     it 'load(page) - check promise', ->
       promise = this.documentsCollection.load(0)

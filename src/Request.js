@@ -27,7 +27,10 @@ export default class Request {
    */
   loadDocumentsCollection(pathToCollection, sourceParams) {
     return this._startDriverRequest('filter', pathToCollection, undefined, sourceParams)
-      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
+      .then((resp) => {
+        this._main.$$log.info('---> finish request: ', resp);
+        return resp;
+      }, this._errorHandler.bind(this));
   }
 
   /**
