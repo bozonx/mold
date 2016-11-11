@@ -29,10 +29,10 @@ describe 'Functional. Memory driver.', ->
     this.mold = mold( {}, this.testSchema )
 
   it 'container_get', (done) ->
-    driverHelpers.container_get2(this.mold, 'root.document', done)
+    driverHelpers.container_get(this.mold, 'root.document', done)
 
   it 'container_set', (done) ->
-    driverHelpers.container_set2(this.mold, 'root.document', done)
+    driverHelpers.container_set(this.mold, 'root.document', done)
 
   it 'collection_create', (done) ->
     driverHelpers.collection_create(this.mold, 'root.documentsCollection', done)
@@ -41,4 +41,4 @@ describe 'Functional. Memory driver.', ->
 #    driverHelpers.collection_delete(this.mold, 'root.documentsCollection', done)
 
   it 'collection_filter', (done) ->
-    driverHelpers.collection_filter2(this.mold, 'root.documentsCollection', done)
+    driverHelpers.collection_filter(this.mold, 'root.documentsCollection', done)
