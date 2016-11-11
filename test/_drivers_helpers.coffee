@@ -6,8 +6,6 @@ generateRequest = (pathToDoc, method, toExtend) ->
     storagePath: pathToDoc
     # TODO: url то source
     url: pathToDoc
-    driverPath:
-      document: pathToDoc
     method: method
   })
 

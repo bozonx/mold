@@ -23,7 +23,7 @@ class LocalPounchDb {
     // if (!request.document)
     //   throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
-    return this._db.get(request.driverPath.document)
+    return this._db.get(request.url)
       .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
   }
 
@@ -33,7 +33,7 @@ class LocalPounchDb {
 
     var getAllQuery = {
       include_docs: true,
-      startkey: request.driverPath.document,
+      startkey: request.url,
     };
 
     return this._db.allDocs(getAllQuery)
@@ -53,7 +53,7 @@ class LocalPounchDb {
     //   throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     return new Promise((resolve, reject) => {
-      this._db.get(request.driverPath.document).then((resp) => {
+      this._db.get(request.url).then((resp) => {
         // update
         this._db.put({
           ...resp,
@@ -81,7 +81,7 @@ class LocalPounchDb {
         // create
         this._db.put({
           ...request.payload,
-          _id: request.driverPath.document,
+          _id: request.url,
         })
           .then((resp) => {
             if (!resp.ok) reject(this._rejectHandler.bind(request, err));
@@ -108,7 +108,7 @@ class LocalPounchDb {
 
     var getAllQuery = {
       include_docs: true,
-      startkey: request.driverPath.document,
+      startkey: request.url,
     };
 
     return new Promise((resolve, reject) => {
@@ -127,7 +127,7 @@ class LocalPounchDb {
         this._db.put({
             ...request.payload,
             [request.primaryKeyName]: primaryId,
-            _id: `${request.driverPath.document}.${primaryId}`,
+            _id: `${request.url}.${primaryId}`,
           })
           .then((resp) => {
             resolve({
@@ -154,7 +154,7 @@ class LocalPounchDb {
     // if (!request.document)
     //   throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
-    var docId = `${request.driverPath.document}.${request.payload[request.primaryKeyName]}`;
+    var docId = `${request.url}.${request.payload[request.primaryKeyName]}`;
 
     return new Promise((resolve, reject) => {
       this._db.get(docId).then((getResp) => {

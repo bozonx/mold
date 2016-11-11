@@ -19,7 +19,7 @@ class LocalMemory {
 
   get(request) {
     return new Promise((resolve, reject) => {
-      var resp = _.get(this._db, request.driverPath.document);
+      var resp = _.get(this._db, request.url);
       if (!_.isUndefined(resp)) {
         resolve({
           body: resp,
@@ -42,7 +42,7 @@ class LocalMemory {
 
   set(request) {
     return new Promise((resolve) => {
-      _.set(this._db, request.driverPath.document, request.payload);
+      _.set(this._db, request.url, request.payload);
       resolve({
         body: request.payload,
         driverResponse: request.payload,
@@ -53,13 +53,13 @@ class LocalMemory {
 
   create(request) {
     return new Promise((resolve) => {
-      var collection = _.get(this._db, request.driverPath.document);
+      var collection = _.get(this._db, request.url);
       var primaryId = 0;
 
       // create new collection if need
       if (_.isUndefined(collection)) {
         collection = [];
-        _.set(this._db, request.driverPath.document, collection);
+        _.set(this._db, request.url, collection);
       }
 
       if (_.isNumber(request.payload[request.primaryKeyName])) {
@@ -89,7 +89,7 @@ class LocalMemory {
 
   delete(request) {
     return new Promise((resolve, reject) => {
-      var collection = _.get(this._db, request.driverPath.document);
+      var collection = _.get(this._db, request.url);
 
       if (!collection) {
         reject({

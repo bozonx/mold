@@ -101,7 +101,7 @@ export default class Request {
   }
 
   _generateRequest(method, storagePath, rawPayload, sourceParams, schema) {
-    var payload = rawPayload;
+    let payload = rawPayload;
     if (_.isPlainObject(payload)) {
       payload = _.omit(_.cloneDeep(payload), '$index', '$adding', '$addedUnsaved', '$deleting');
       payload = _.omitBy(payload, _.isUndefined);
@@ -112,18 +112,14 @@ export default class Request {
 
     var request = {
       method,
+      payload,
       storagePath,
-      // TODO: url - сформированный url с подставленными параметрами
       url: this._convertToSource(storagePath, schema.source, sourceParams),
-      payload: payload,
       primaryKeyName: schema.item && findPrimary(schema.item),
+      // One of: container or collection
       nodeType: getSchemaBaseType(schema.type),
-      // TODO: add params - доп параметры, передаваемые драйверу - или воткнуть их в payload
-
-      // TODO: убрать
-      driverPath: {
-        document: this._convertToSource(storagePath, schema.source, sourceParams),
-      },
+      // TODO: params - доп параметры, передаваемые драйверу - или воткнуть их в payload
+      //params: undefined,
     };
     // clear undefined params
     return _.omitBy(request, _.isUndefined);

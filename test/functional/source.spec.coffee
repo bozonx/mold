@@ -31,8 +31,8 @@ describe 'Functional. Source.', ->
 #        document:
 #          pathToDocument: 'details'
 #          source: 'collection.${itemId}'
-        driverPath:
-          document: 'collection.0'
+#        driverPath:
+#          document: 'collection.0'
         url: 'collection.0'
         method: 'get'
         storagePath: 'details'
