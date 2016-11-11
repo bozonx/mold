@@ -20,16 +20,16 @@ class LocalPounchDb {
   }
 
   get(request) {
-    if (!request.document)
-      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
+    // if (!request.document)
+    //   throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     return this._db.get(request.driverPath.document)
       .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
   }
 
   filter(request) {
-    if (!request.document)
-      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
+    // if (!request.document)
+    //   throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     var getAllQuery = {
       include_docs: true,
@@ -49,8 +49,8 @@ class LocalPounchDb {
   }
 
   set(request) {
-    if (!request.document)
-      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
+    // if (!request.document)
+    //   throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     return new Promise((resolve, reject) => {
       this._db.get(request.driverPath.document).then((resp) => {
@@ -103,8 +103,8 @@ class LocalPounchDb {
   }
 
   create(request) {
-    if (!request.document)
-      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
+    // if (!request.document)
+    //   throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     var getAllQuery = {
       include_docs: true,
@@ -151,8 +151,8 @@ class LocalPounchDb {
   }
 
   delete(request) {
-    if (!request.document)
-      throw new Error(`PounchDb can't work without specified "document" in your schema!`);
+    // if (!request.document)
+    //   throw new Error(`PounchDb can't work without specified "document" in your schema!`);
 
     var docId = `${request.driverPath.document}.${request.payload[request.primaryKeyName]}`;
 

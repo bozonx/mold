@@ -120,10 +120,11 @@ export default class Request {
     var request = {
       method,
       storagePath,
+      // TODO: url - сформированный url с подставленными параметрами
+      //url: this._convertToSource(storagePath, schema.source, sourceParams),
       payload: payload,
       primaryKeyName: schema.item && findPrimary(schema.item),
       nodeType: getSchemaBaseType(schema.type),
-      // TODO: add url - сформированный url с подставленными параметрами
       // TODO: add params - доп параметры, передаваемые драйверу - или воткнуть их в payload
 
       // TODO: убрать

@@ -38,15 +38,6 @@ State manager generate request like:
 * payload - Data to save. There is different data for different methods
 * nodeType - primitive|container|collection
 * moldPath - path in state and schema
-* document
-  * pathToDocument - It's path to document defined in schema.
-           It will be unefined, if document isn't defined in schema.
-  * ... - parameters of document from schema
-* driverPath
-  * document - path to document in schema
-  * full - full request path: base + sub. Usually it's like moldPath
-  * base - path to container or collection. Usually it's path to document.
-  * sub - path to container or collection child
 
 Driver path example:
 
