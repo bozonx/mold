@@ -36,7 +36,7 @@ describe 'Functional. Source.', ->
           full: 'collection.0'
         method: 'get'
         storagePath: 'details'
-        schemaBaseType: 'container'
+        nodeType: 'container'
 
   it 'container.save()', (done) ->
     container = this.mold.instance('details');

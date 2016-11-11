@@ -36,7 +36,7 @@ State manager generate request like:
 
 * method - one of: get, set, filter, add, remove
 * payload - Data to save. There is different data for different methods
-* schemaBaseType - primitive|container|collection
+* nodeType - primitive|container|collection
 * moldPath - path in state and schema
 * document
   * pathToDocument - It's path to document defined in schema.

@@ -33,7 +33,7 @@ module.exports =
       stringParam: 'newValue'
       numberParam: 5
       arrayParam: ['value1']
-    request = generateRequest(pathToDoc, 'get', {schemaBaseType: 'container'})
+    request = generateRequest(pathToDoc, 'get', {nodeType: 'container'})
 
     container = mold.instance(pathToDoc)
     container.setMold(payload)
@@ -47,7 +47,7 @@ module.exports =
       stringParam: 'newValue'
       numberParam: 5
       arrayParam: ['value1']
-    request = generateRequest(pathToDoc, 'set', {schemaBaseType: 'container', payload: payload})
+    request = generateRequest(pathToDoc, 'set', {nodeType: 'container', payload: payload})
 
     container = mold.instance(pathToDoc)
     container.setMold(payload)
@@ -59,7 +59,7 @@ module.exports =
     payload =
       name: 'value'
     request = generateRequest(pathToDocColl, 'create', {
-      schemaBaseType: 'collection', payload: payload, primaryKeyName: 'id'})
+      nodeType: 'collection', payload: payload, primaryKeyName: 'id'})
 
     promise = cleanPromise( collection.createDocument(payload) )
     expect(promise).to.eventually.deep.equal({body: {name: 'value', id: 0}, request: request}).notify(done)
@@ -67,7 +67,7 @@ module.exports =
   collection_filter: (mold, pathToDocColl, done) ->
     collection = mold.instance(pathToDocColl)
     request = generateRequest(pathToDocColl, 'filter', {
-      schemaBaseType: 'collection', primaryKeyName: 'id'})
+      nodeType: 'collection', primaryKeyName: 'id'})
 
     expect(collection.createDocument({name: 'value'})).to.eventually.notify =>
       promise = cleanPromise( collection.load(0) )
@@ -76,7 +76,7 @@ module.exports =
   collection_delete: (mold, pathToDocColl, done) ->
     collection = mold.instance(pathToDocColl)
     request = generateRequest(pathToDocColl, 'delete', {
-      schemaBaseType: 'collection', primaryKeyName: 'id'})
+      nodeType: 'collection', primaryKeyName: 'id'})
 
     collection.createDocument({name: 'value1'})
     collection.createDocument({name: 'value2'})

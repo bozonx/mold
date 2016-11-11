@@ -120,6 +120,7 @@ export function getSchemaBaseType(schemaType) {
   else if (schemaType == 'documentsCollection') {
     return 'collection';
   }
+  // TODO: primitive doesn't support
   else if (_.includes(['boolean', 'string', 'number', 'array'], schemaType)) {
     return 'primitive';
   }

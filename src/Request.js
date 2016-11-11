@@ -122,8 +122,13 @@ export default class Request {
       storagePath,
       payload: payload,
       primaryKeyName: schema.item && findPrimary(schema.item),
-      schemaBaseType: getSchemaBaseType(schema.type),
+      nodeType: getSchemaBaseType(schema.type),
+      // TODO: add url - сформированный url с подставленными параметрами
+      // TODO: add params - доп параметры, передаваемые драйверу - или воткнуть их в payload
+
+      // TODO: убрать
       document: documentParams,
+      // TODO: убрать
       driverPath: {
         // path to document
         document: this._convertToSource(documentParams.pathToDocument, documentParams.source, sourceParams),
