@@ -38,8 +38,8 @@ describe 'Functional. Memory driver.', ->
     driverHelpers.collection_create(this.mold, 'root.documentsCollection', done)
 
 
-#  it 'collection_filter', (done) ->
-#    driverHelpers.collection_filter2(this.mold, 'root.documentsCollection', done)
+  it 'collection_filter', (done) ->
+    driverHelpers.collection_filter2(this.mold, 'root.documentsCollection', done)
 
 #  it 'collection_add', (done) ->
 #    driverHelpers.collection_add(this.mold, 'root.documentsCollection', done)

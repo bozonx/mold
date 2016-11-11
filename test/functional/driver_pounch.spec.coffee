@@ -48,9 +48,9 @@ describe 'Functional. PounchDb driver.', ->
     driverHelpers.collection_create(this.mold, 'root.documentsCollection', done)
 
 
-#  it 'collection_filter', (done) ->
-#    this.init('filter')
-#    driverHelpers.collection_filter2(this.mold, 'root.documentsCollection', done)
+  it 'collection_filter', (done) ->
+    this.init('filter')
+    driverHelpers.collection_filter2(this.mold, 'root.documentsCollection', done)
 
 #  it 'collection_add', (done) ->
 #    this.init('add')
