@@ -83,9 +83,9 @@ describe 'Functional. DocumentsCollection type.', ->
 #      expect(this.documentsCollection.createDocument(this.doc)).to.eventually.notify =>
 #        promise = this.documentsCollection.deleteDocument(this.doc)
 #
-#        assert.isTrue(this.doc.$deletting)
+#        assert.isTrue(this.doc.$deleting)
 #        expect(promise).to.eventually.notify =>
-#          assert.isUndefined(this.doc.$deletting)
+#          assert.isUndefined(this.doc.$deleting)
 #          expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
 #            .deep.equal([[]])
 #            .notify(done)

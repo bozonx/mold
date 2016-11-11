@@ -103,19 +103,12 @@ export default class Request {
   _generateRequest(method, storagePath, rawPayload, sourceParams, schema) {
     var payload = rawPayload;
     if (_.isPlainObject(payload)) {
-      payload = _.omit(_.cloneDeep(payload), '$index', '$adding', '$addedUnsaved', '$deletting');
+      payload = _.omit(_.cloneDeep(payload), '$index', '$adding', '$addedUnsaved', '$deleting');
       payload = _.omitBy(payload, _.isUndefined);
     }
     // it clears an empty array or objects
     payload = (_.isEmpty(payload)) ? undefined : payload;
     // Payload can't be other type then array or plainObject
-
-    // TODO: !!!! pathToDocument не надо - он всегда = storagePath
-    // TODO: надо добавить ещё document params
-    var documentParams = _.omitBy({
-      source: schema.source,
-      pathToDocument: storagePath,
-    }, _.isUndefined);
 
     var request = {
       method,
@@ -128,12 +121,10 @@ export default class Request {
       // TODO: add params - доп параметры, передаваемые драйверу - или воткнуть их в payload
 
       // TODO: убрать
-      document: documentParams,
-      // TODO: убрать
       driverPath: {
         // path to document
-        document: this._convertToSource(documentParams.pathToDocument, documentParams.source, sourceParams),
-        full: (documentParams) ? this._convertToSource(storagePath, documentParams.source, sourceParams) : storagePath,
+        document: this._convertToSource(storagePath, schema.source, sourceParams),
+        full: this._convertToSource(storagePath, schema.source, sourceParams),
         // TODO: не правильно работает если брать элемент коллекции
         // base: splits && splits.basePath,
         // sub: splits && splits.paramPath,

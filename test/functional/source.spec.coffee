@@ -28,9 +28,9 @@ describe 'Functional. Source.', ->
         id: 0
         name: 'value0'
       request:
-        document:
-          pathToDocument: 'details'
-          source: 'collection.${itemId}'
+#        document:
+#          pathToDocument: 'details'
+#          source: 'collection.${itemId}'
         driverPath:
           document: 'collection.0'
           full: 'collection.0'

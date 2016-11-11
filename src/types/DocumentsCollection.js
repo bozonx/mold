@@ -72,13 +72,13 @@ export default class DocumentsCollection extends PagedCollection{
    */
   deleteDocument(document) {
     // TODO: менять статус через storage с подъемом события
-    document.$deletting = true;
+    document.$deleting = true;
     return this._main.$$state.$$request.deleteDocument(this._root, this.getSourceParams(), document)
       .then((resp) => {
-        delete document.$deletting;
+        delete document.$deleting;
         return resp;
       }, (err) => {
-        delete document.$deletting;
+        delete document.$deleting;
         return err;
       });
   }

@@ -7,9 +7,6 @@ generateRequest = (pathToDoc, method, toExtend) ->
     driverPath:
       document: pathToDoc
       full: pathToDoc
-    document: {
-      pathToDocument: pathToDoc
-    }
     method: method
   })
 
