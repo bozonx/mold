@@ -15,7 +15,7 @@ generateRequest = (pathToDoc, method, toExtend) ->
 
 cleanPromise = (promise) ->
   return promise.then (resp) ->
-    #delete resp.
+    delete resp.driverResponse
     if (_.isArray(resp.body))
       return _.defaults({
         body: _.map resp.body, (item) =>
@@ -39,11 +39,7 @@ module.exports =
     container.setMold(payload)
     expect(container.save()).to.eventually.notify =>
       promise = cleanPromise( container.load() )
-
-      expect(Promise.all([
-        expect(promise).to.eventually.property('body').deep.equal(payload),
-        expect(promise).to.eventually.property('request').deep.equal(request),
-      ])).to.eventually.notify(done)
+      expect(promise).to.eventually.deep.equal({body: payload, request: request}).notify(done)
 
   container_set: (mold, pathToDoc, done) ->
     payload =
@@ -56,11 +52,7 @@ module.exports =
     container = mold.instance(pathToDoc)
     container.setMold(payload)
     promise = cleanPromise( container.save() )
-
-    expect(Promise.all([
-      expect(promise).to.eventually.property('body').deep.equal(payload),
-      expect(promise).to.eventually.property('request').deep.equal(request),
-    ])).to.eventually.notify(done)
+    expect(promise).to.eventually.deep.equal({body: payload, request: request}).notify(done)
 
   collection_create: (mold, pathToDocColl, done) ->
     collection = mold.instance(pathToDocColl)
@@ -70,11 +62,7 @@ module.exports =
       schemaBaseType: 'collection', payload: payload, primaryKeyName: 'id'})
 
     promise = cleanPromise( collection.createDocument(payload) )
-
-    expect(Promise.all([
-      expect(promise).to.eventually.property('body').deep.equal({name: 'value', id: 0}),
-      expect(promise).to.eventually.property('request').deep.equal(request),
-    ])).to.eventually.notify(done)
+    expect(promise).to.eventually.deep.equal({body: {name: 'value', id: 0}, request: request}).notify(done)
 
   collection_filter: (mold, pathToDocColl, done) ->
     collection = mold.instance(pathToDocColl)
@@ -83,11 +71,7 @@ module.exports =
 
     expect(collection.createDocument({name: 'value'})).to.eventually.notify =>
       promise = cleanPromise( collection.load(0) )
-
-      expect(Promise.all([
-        expect(promise).to.eventually.property('body').deep.equal([{name: 'value', id: 0}]),
-        expect(promise).to.eventually.property('request').deep.equal(request),
-      ])).to.eventually.notify(done)
+      expect(promise).to.eventually.deep.equal({body: [{name: 'value', id: 0}], request: request}).notify(done)
 
   collection_delete: (mold, pathToDocColl, done) ->
     collection = mold.instance(pathToDocColl)
@@ -98,11 +82,7 @@ module.exports =
     collection.createDocument({name: 'value2'})
 
     promise = collection.deleteDocument({id: 0})
-
-    expect(Promise.all([
-      expect(promise).to.eventually.property('body').deep.equal([{name: 'value', id: 0}]),
-      expect(promise).to.eventually.property('request').deep.equal(request),
-    ])).to.eventually.notify(done)
+    expect(promise).to.eventually.deep.equal({body: [{name: 'value', id: 0}], request: request}).notify(done)
 
     # TODO: !!!!
 
