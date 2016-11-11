@@ -42,7 +42,13 @@ module.exports =
     container.setMold(payload)
     promise = container.save()
 
+    promise = promise.then (resp) ->
+      return _.defaults({
+        body: _.omit(resp.body, '_id', '_rev')
+      }, resp)
+
     request = generateRequest(pathToDoc, 'set', {schemaBaseType: 'container', payload: payload})
+
 
     expect(Promise.all([
       expect(promise).to.eventually.property('body').deep.equal(payload),
@@ -54,6 +60,11 @@ module.exports =
     payload =
       name: 'value'
     promise = collection.createDocument(payload)
+
+    promise = promise.then (resp) ->
+      return _.defaults({
+        body: _.omit(resp.body, '_id', '_rev')
+      }, resp)
 
     request = generateRequest(pathToDocColl, 'create', {
       schemaBaseType: 'collection', payload: payload, primaryKeyName: 'id'})
@@ -68,6 +79,11 @@ module.exports =
     collection.createDocument({name: 'value'})
 
     promise = collection.load(0)
+
+#    promise = promise.then (resp) ->
+#      return _.defaults({
+#        body: _.omit(resp.body, '_id', '_rev')
+#      }, resp)
 
     request = generateRequest(pathToDocColl, 'filter', {
       schemaBaseType: 'collection', primaryKeyName: 'id'})
