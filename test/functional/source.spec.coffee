@@ -17,7 +17,7 @@ describe 'Functional. Source.', ->
     })
 
   it 'document.load()', ->
-    document = this.mold.instance('details');
+    document = this.mold.child('details');
     document.setUrlParams({itemId: 0});
     expect(document.load()).to.eventually
     .deep.equal
@@ -39,7 +39,7 @@ describe 'Functional. Source.', ->
         nodeType: 'container'
 
   it 'container.save()', (done) ->
-    container = this.mold.instance('details');
+    container = this.mold.child('details');
     container.setUrlParams({itemId: 0});
     container.setMold('id', 0)
     container.setMold('name', 'new value')

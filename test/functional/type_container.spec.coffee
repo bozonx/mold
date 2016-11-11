@@ -27,7 +27,7 @@ describe 'Functional. Container type.', ->
 
     this.testSchema = testSchema()
     this.mold = mold( {}, this.testSchema )
-    this.container = this.mold.instance('container')
+    this.container = this.mold.child('container')
 
   it "Initial values", ->
     assert.deepEqual(this.container.mold, {

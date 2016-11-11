@@ -13,7 +13,7 @@ describe 'Functional. DocumentsCollection type.', ->
               id: {type: 'number', primary: true}
               name: {type: 'string'}
     this.mold = mold( {}, this.testSchema() )
-    this.documentsCollection = this.mold.instance('documentsCollection')
+    this.documentsCollection = this.mold.child('documentsCollection')
 
   # init, child and getFlat aren't testing. It's testing in paged_collection spec
 

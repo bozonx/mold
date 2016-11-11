@@ -31,7 +31,7 @@ module.exports =
       arrayParam: ['value1']
     request = generateRequest(pathToDoc, 'get', {nodeType: 'container'})
 
-    container = mold.instance(pathToDoc)
+    container = mold.child(pathToDoc)
     container.setMold(payload)
     expect(container.save()).to.eventually.notify =>
       promise = cleanPromise( container.load() )
@@ -45,13 +45,13 @@ module.exports =
       arrayParam: ['value1']
     request = generateRequest(pathToDoc, 'set', {nodeType: 'container', payload: payload})
 
-    container = mold.instance(pathToDoc)
+    container = mold.child(pathToDoc)
     container.setMold(payload)
     promise = cleanPromise( container.save() )
     expect(promise).to.eventually.deep.equal({body: payload, request: request}).notify(done)
 
   collection_create: (mold, pathToDocColl, done) ->
-    collection = mold.instance(pathToDocColl)
+    collection = mold.child(pathToDocColl)
     payload =
       name: 'value'
     request = generateRequest(pathToDocColl, 'create', {
@@ -61,7 +61,7 @@ module.exports =
     expect(promise).to.eventually.deep.equal({body: {name: 'value', id: 0}, request: request}).notify(done)
 
   collection_filter: (mold, pathToDocColl, done) ->
-    collection = mold.instance(pathToDocColl)
+    collection = mold.child(pathToDocColl)
     request = generateRequest(pathToDocColl, 'filter', {
       nodeType: 'collection', primaryKeyName: 'id'})
 
@@ -70,7 +70,7 @@ module.exports =
       expect(promise).to.eventually.deep.equal({body: [{name: 'value', id: 0}], request: request}).notify(done)
 
   collection_delete: (mold, pathToDocColl, done) ->
-    collection = mold.instance(pathToDocColl)
+    collection = mold.child(pathToDocColl)
     request = generateRequest(pathToDocColl, 'delete', {
       nodeType: 'collection', primaryKeyName: 'id'})
 

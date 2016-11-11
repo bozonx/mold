@@ -27,7 +27,7 @@ describe 'Functional. Document type.', ->
 
     this.testSchema = testSchema()
     this.mold = mold( {}, this.testSchema )
-    this.document = this.mold.instance('document')
+    this.document = this.mold.child('document')
 
   it 'load() and check mold', (done) ->
     _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'document', this.testValues)

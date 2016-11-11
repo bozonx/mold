@@ -44,7 +44,7 @@ export default class Main {
    * @param {string} path - absolute path
    * @returns {object} - instance of one of the types
    */
-  instance(path) {
+  child(path) {
     return this.$$schemaManager.getInstance(path);
   }
 

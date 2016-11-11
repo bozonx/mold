@@ -13,7 +13,7 @@ describe 'Functional. Collection type.', ->
             name: {type: 'string'}
     this.mold = mold( {}, this.testSchema() )
     this.mold.onMoldUpdate(this.onSpy)
-    this.collection = this.mold.instance('collection')
+    this.collection = this.mold.child('collection')
 
   it 'init value', ->
     assert.deepEqual(this.collection.mold, [])
