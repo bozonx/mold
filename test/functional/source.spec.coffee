@@ -18,7 +18,7 @@ describe 'Functional. Source.', ->
 
   it 'document.load()', ->
     document = this.mold.instance('details');
-    document.setSourceParams({itemId: 0});
+    document.setUrlParams({itemId: 0});
     expect(document.load()).to.eventually
     .deep.equal
       body:
@@ -40,7 +40,7 @@ describe 'Functional. Source.', ->
 
   it 'container.save()', (done) ->
     container = this.mold.instance('details');
-    container.setSourceParams({itemId: 0});
+    container.setUrlParams({itemId: 0});
     container.setMold('id', 0)
     container.setMold('name', 'new value')
     expect(container.save()).to.eventually.notify =>

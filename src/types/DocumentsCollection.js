@@ -17,12 +17,12 @@ export default class DocumentsCollection extends PagedCollection{
     super.$init(root);
   }
 
-  getSourceParams() {
-    return this._main.$$state.getSourceParams(this._root);
+  getUrlParams() {
+    return this._main.$$state.getUrlParams(this._root);
   }
 
-  setSourceParams(params) {
-    this._main.$$state.setSourceParams(this._root, params);
+  setUrlParams(params) {
+    this._main.$$state.setUrlParams(this._root, params);
   }
 
   /**
@@ -34,7 +34,7 @@ export default class DocumentsCollection extends PagedCollection{
   load(pageNum) {
     if (!_.isNumber(pageNum)) throw new Error(`The "pageNum" param is required!`);
     // TODO: номер страницы надо передать в sourceParams или в documentsParams
-    return this._main.$$state.$$request.loadDocumentsCollection(this._root, this.getSourceParams())
+    return this._main.$$state.$$request.loadDocumentsCollection(this._root, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
         // TODO: нужно вставлять только в нужную страницу
@@ -52,7 +52,7 @@ export default class DocumentsCollection extends PagedCollection{
   createDocument(document) {
     // TODO: менять статус через storage с подъемом события
     document.$adding = true;
-    return this._main.$$state.$$request.createDocument(this._root, this.getSourceParams(), document)
+    return this._main.$$state.$$request.createDocument(this._root, this.getUrlParams(), document)
       .then((resp) => {
         delete document.$addedUnsaved;
         delete document.$adding;
@@ -73,7 +73,7 @@ export default class DocumentsCollection extends PagedCollection{
   deleteDocument(document) {
     // TODO: менять статус через storage с подъемом события
     document.$deleting = true;
-    return this._main.$$state.$$request.deleteDocument(this._root, this.getSourceParams(), document)
+    return this._main.$$state.$$request.deleteDocument(this._root, this.getUrlParams(), document)
       .then((resp) => {
         delete document.$deleting;
         return resp;

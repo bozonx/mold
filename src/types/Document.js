@@ -13,12 +13,12 @@ export default class Document extends Container{
     super.$init(root);
   }
 
-  getSourceParams() {
-    return this._main.$$state.getSourceParams(this._root);
+  getUrlParams() {
+    return this._main.$$state.getUrlParams(this._root);
   }
 
-  setSourceParams(params) {
-    this._main.$$state.setSourceParams(this._root, params);
+  setUrlParams(params) {
+    this._main.$$state.setUrlParams(this._root, params);
   }
 
   /**
@@ -26,7 +26,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   load() {
-    return this._main.$$state.$$request.loadDocument(this._root, this.getSourceParams());
+    return this._main.$$state.$$request.loadDocument(this._root, this.getUrlParams());
   }
 
   /**
@@ -34,7 +34,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   save() {
-    return this._main.$$state.$$request.saveDocument(this._root, this.getSourceParams(), this.mold);
+    return this._main.$$state.$$request.saveDocument(this._root, this.getUrlParams(), this.mold);
   }
 
 }

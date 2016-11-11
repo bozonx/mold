@@ -11,7 +11,7 @@ export default class State {
     this._storage = storage;
     this.$$request = new Request(this._main, storage);
     this._handlers = {};
-    this._sourceParams = {};
+    this._urlParams = {};
 
     var initialStorage = this._getInitialStorage(this._main.$$schemaManager.getFullSchema());
     this._storage.$init(initialStorage);
@@ -22,13 +22,13 @@ export default class State {
    * @param {string} storagePath
    * @returns {object}
    */
-  getSourceParams(storagePath) {
-    if (this._sourceParams[storagePath]) return this._sourceParams[storagePath];
+  getUrlParams(storagePath) {
+    if (this._urlParams[storagePath]) return this._urlParams[storagePath];
 
     // For primitives - find the closest parent
-    var findtheClosestParentPath = findTheClosestParentPath(storagePath, this._sourceParams);
+    var findtheClosestParentPath = findTheClosestParentPath(storagePath, this._urlParams);
 
-    return this._sourceParams[findtheClosestParentPath];
+    return this._urlParams[findtheClosestParentPath];
   }
 
   /**
@@ -36,8 +36,8 @@ export default class State {
    * @param {string} storagePath
    * @param {object} params
    */
-  setSourceParams(storagePath, params) {
-    this._sourceParams[storagePath] = params;
+  setUrlParams(storagePath, params) {
+    this._urlParams[storagePath] = params;
   }
 
   onMoldUpdate(handler) {
