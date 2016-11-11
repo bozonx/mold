@@ -33,8 +33,9 @@ export default class DocumentsCollection extends PagedCollection{
    */
   load(pageNum) {
     if (!_.isNumber(pageNum)) throw new Error(`The "pageNum" param is required!`);
-
-    return this._main.$$state.$$request.loadDocumentsCollection(concatPath(this._root, pageNum), this.getSourceParams());
+    //concatPath(this._root, pageNum)
+    // TODO: номер страницы надо передать в sourceParams или в documentsParams
+    return this._main.$$state.$$request.loadDocumentsCollection(this._root, this.getSourceParams());
   }
 
   /**

@@ -65,7 +65,7 @@ module.exports =
 
   collection_filter2: (mold, pathToDocColl, done) ->
     collection = mold.instance(pathToDocColl)
-    collection.createDocument({name: 'value1'})
+    collection.createDocument({name: 'value'})
 
     promise = collection.load(0)
 
@@ -75,7 +75,7 @@ module.exports =
       schemaBaseType: 'collection', primaryKeyName: 'id'})
 
     expect(Promise.all([
-      expect(promise).to.eventually.property('body').deep.equal({name: 'value1', id: 0}),
+      expect(promise).to.eventually.property('body').deep.equal([{name: 'value', id: 0}]),
       expect(promise).to.eventually.property('request').deep.equal(request),
     ])).to.eventually.notify(done)
 
