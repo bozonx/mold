@@ -4,6 +4,8 @@ helpers = require('../src/helpers')
 generateRequest = (pathToDoc, method, toExtend) ->
   _.defaultsDeep(toExtend, {
     storagePath: pathToDoc
+    # TODO: url то source
+    url: pathToDoc
     driverPath:
       document: pathToDoc
     method: method

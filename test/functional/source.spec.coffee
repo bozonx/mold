@@ -33,6 +33,7 @@ describe 'Functional. Source.', ->
 #          source: 'collection.${itemId}'
         driverPath:
           document: 'collection.0'
+        url: 'collection.0'
         method: 'get'
         storagePath: 'details'
         nodeType: 'container'
