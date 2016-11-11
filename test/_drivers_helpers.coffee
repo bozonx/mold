@@ -13,6 +13,19 @@ generateRequest = (pathToDoc, method, toExtend) ->
     method: method
   })
 
+cleanPromise = (promise) ->
+  return promise.then (resp) ->
+    #delete resp.
+    if (_.isArray(resp.body))
+      return _.defaults({
+        body: _.map resp.body, (item) =>
+          _.omit(item, '_id', '_rev')
+      }, resp)
+    else if (_.isPlainObject(resp.body))
+      return _.defaults({
+        body: _.omit(resp.body, '_id', '_rev')
+      }, resp)
+
 module.exports =
   container_get: (mold, pathToDoc, done) ->
     payload =
@@ -20,17 +33,17 @@ module.exports =
       stringParam: 'newValue'
       numberParam: 5
       arrayParam: ['value1']
-    container = mold.instance(pathToDoc)
-    container.setMold(payload)
-    container.save()
-    promise = container.load()
-
     request = generateRequest(pathToDoc, 'get', {schemaBaseType: 'container'})
 
-    expect(Promise.all([
-      expect(promise).to.eventually.property('body').deep.equal(payload),
-      expect(promise).to.eventually.property('request').deep.equal(request),
-    ])).to.eventually.notify(done)
+    container = mold.instance(pathToDoc)
+    container.setMold(payload)
+    expect(container.save()).to.eventually.notify =>
+      promise = cleanPromise( container.load() )
+
+      expect(Promise.all([
+        expect(promise).to.eventually.property('body').deep.equal(payload),
+        expect(promise).to.eventually.property('request').deep.equal(request),
+      ])).to.eventually.notify(done)
 
   container_set: (mold, pathToDoc, done) ->
     payload =
@@ -38,17 +51,11 @@ module.exports =
       stringParam: 'newValue'
       numberParam: 5
       arrayParam: ['value1']
-    container = mold.instance(pathToDoc)
-    container.setMold(payload)
-    promise = container.save()
-
-    promise = promise.then (resp) ->
-      return _.defaults({
-        body: _.omit(resp.body, '_id', '_rev')
-      }, resp)
-
     request = generateRequest(pathToDoc, 'set', {schemaBaseType: 'container', payload: payload})
 
+    container = mold.instance(pathToDoc)
+    container.setMold(payload)
+    promise = cleanPromise( container.save() )
 
     expect(Promise.all([
       expect(promise).to.eventually.property('body').deep.equal(payload),
@@ -59,15 +66,10 @@ module.exports =
     collection = mold.instance(pathToDocColl)
     payload =
       name: 'value'
-    promise = collection.createDocument(payload)
-
-    promise = promise.then (resp) ->
-      return _.defaults({
-        body: _.omit(resp.body, '_id', '_rev')
-      }, resp)
-
     request = generateRequest(pathToDocColl, 'create', {
       schemaBaseType: 'collection', payload: payload, primaryKeyName: 'id'})
+
+    promise = cleanPromise( collection.createDocument(payload) )
 
     expect(Promise.all([
       expect(promise).to.eventually.property('body').deep.equal({name: 'value', id: 0}),
@@ -76,32 +78,26 @@ module.exports =
 
   collection_filter: (mold, pathToDocColl, done) ->
     collection = mold.instance(pathToDocColl)
-    collection.createDocument({name: 'value'})
-
-    promise = collection.load(0)
-
-#    promise = promise.then (resp) ->
-#      return _.defaults({
-#        body: _.omit(resp.body, '_id', '_rev')
-#      }, resp)
-
     request = generateRequest(pathToDocColl, 'filter', {
       schemaBaseType: 'collection', primaryKeyName: 'id'})
 
-    expect(Promise.all([
-      expect(promise).to.eventually.property('body').deep.equal([{name: 'value', id: 0}]),
-      expect(promise).to.eventually.property('request').deep.equal(request),
-    ])).to.eventually.notify(done)
+    expect(collection.createDocument({name: 'value'})).to.eventually.notify =>
+      promise = cleanPromise( collection.load(0) )
+
+      expect(Promise.all([
+        expect(promise).to.eventually.property('body').deep.equal([{name: 'value', id: 0}]),
+        expect(promise).to.eventually.property('request').deep.equal(request),
+      ])).to.eventually.notify(done)
 
   collection_delete: (mold, pathToDocColl, done) ->
     collection = mold.instance(pathToDocColl)
+    request = generateRequest(pathToDocColl, 'delete', {
+      schemaBaseType: 'collection', primaryKeyName: 'id'})
+
     collection.createDocument({name: 'value1'})
     collection.createDocument({name: 'value2'})
 
     promise = collection.deleteDocument({id: 0})
-
-    request = generateRequest(pathToDocColl, 'delete', {
-      schemaBaseType: 'collection', primaryKeyName: 'id'})
 
     expect(Promise.all([
       expect(promise).to.eventually.property('body').deep.equal([{name: 'value', id: 0}]),
