@@ -97,8 +97,9 @@ export default class SchemaManager {
 
     var matchPath = getTheBestMatchPath(storagePath, _.keys(this._drivers));
 
-    if (matchPath)
+    if (matchPath) {
       return this._drivers[matchPath];
+    }
 
     // no-one = memory driver
     return this.mainMemoryDriver;
@@ -107,9 +108,11 @@ export default class SchemaManager {
   _checkSchema(rawSchema) {
     // Validate schema
     eachSchema(rawSchema, (schemaPath, value) => {
-      if (_.includes(['documentsCollection', 'document'],value.type) && value.driver) {
-        this._drivers[schemaPath] = value.driver.init(
-          convertFromSchemaToLodash(schemaPath), this._main);
+      if (_.includes(
+          ['documentsCollection', 'document', 'container', 'collection'], value.type)
+          && value.driver) {
+        value.driver.init(convertFromSchemaToLodash(schemaPath), this._main);
+        this._drivers[schemaPath] = value.driver;
       }
       if (value.type == 'document') {
         if (!_.isPlainObject(value.schema))

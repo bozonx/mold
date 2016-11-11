@@ -37,7 +37,7 @@ describe 'Functional. PounchDb driver.', ->
 
   it 'container_get', (done) ->
     this.init('container_get')
-    driverHelpers.container_get(this.mold, 'root.document', done)
+    driverHelpers.container_get(this.mold, 'root.document')
 
   it 'container_set', (done) ->
     this.init('container_set')

@@ -177,8 +177,6 @@ class LocalPounchDb {
   }
 
   startRequest(request) {
-    console.log(1111, request)
-
     return this[request.method](request);
   }
 
