@@ -6,7 +6,7 @@ PounchDbDriver = require('../../src/drivers/PounchDb').default
 driverHelpers = require('../_drivers_helpers.coffee')
 
 testSchema = (pounch) ->
-  inPounch:
+  root:
     type: 'container'
     driver: pounch.instance({})
     schema:
@@ -37,20 +37,25 @@ describe 'Functional. PounchDb driver.', ->
 
   it 'container_get', (done) ->
     this.init('container_get')
-    driverHelpers.container_get2(this.mold, 'inPounch.document', done)
+    driverHelpers.container_get2(this.mold, 'root.document', done)
 
   it 'container_set', (done) ->
     this.init('container_set')
-    driverHelpers.container_set2(this.mold, 'inPounch.document', done)
+    driverHelpers.container_set2(this.mold, 'root.document', done)
 
-  it 'collection_filter', (done) ->
-    this.init('filter')
-    driverHelpers.collection_filter(this.mold, 'inPounch.documentsCollection', done)
+  it 'collection_create', (done) ->
+    this.init('collection_create')
+    driverHelpers.collection_create(this.mold, 'root.documentsCollection', done)
 
-  it 'collection_add', (done) ->
-    this.init('add')
-    driverHelpers.collection_add(this.mold, 'inPounch.documentsCollection', done)
 
-  it 'collection_remove', (done) ->
-    this.init('remove')
-    driverHelpers.collection_remove(this.mold, 'inPounch.documentsCollection', done)
+#  it 'collection_filter', (done) ->
+#    this.init('filter')
+#    driverHelpers.collection_filter2(this.mold, 'root.documentsCollection', done)
+
+#  it 'collection_add', (done) ->
+#    this.init('add')
+#    driverHelpers.collection_add(this.mold, 'root.documentsCollection', done)
+#
+#  it 'collection_remove', (done) ->
+#    this.init('remove')
+#    driverHelpers.collection_remove(this.mold, 'root.documentsCollection', done)

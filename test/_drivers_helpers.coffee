@@ -49,8 +49,19 @@ module.exports =
       expect(promise).to.eventually.property('request').deep.equal(request),
     ])).to.eventually.notify(done)
 
-  collection_filter2: (mold, pathToDocColl, done) ->
+  collection_create: (mold, pathToDocColl, done) ->
     collection = mold.instance(pathToDocColl)
+    payload =
+      name: 'value'
+    promise = collection.createDocument(payload)
+
+    request = generateRequest(pathToDocColl, 'create', {
+      schemaBaseType: 'collection', payload: payload, primaryKeyName: 'id'})
+
+    expect(Promise.all([
+      expect(promise).to.eventually.property('body').deep.equal({name: 'value', id: 0}),
+      expect(promise).to.eventually.property('request').deep.equal(request),
+    ])).to.eventually.notify(done)
 
   # TODO: pounch не работает!!!!
 

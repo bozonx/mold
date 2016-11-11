@@ -3,7 +3,7 @@ Memory = require('../../src/drivers/Memory').default
 driverHelpers = require('../_drivers_helpers.coffee')
 
 testSchema = (memory) ->
-  inMemory:
+  root:
     type: 'container'
     driver: memory.instance({})
     schema:
@@ -29,16 +29,20 @@ describe 'Functional. Memory driver.', ->
     this.mold = mold( {}, this.testSchema )
 
   it 'container_get', (done) ->
-    driverHelpers.container_get2(this.mold, 'inMemory.document', done)
+    driverHelpers.container_get2(this.mold, 'root.document', done)
 
   it 'container_set', (done) ->
-    driverHelpers.container_set2(this.mold, 'inMemory.document', done)
+    driverHelpers.container_set2(this.mold, 'root.document', done)
 
-  it 'collection_filter', (done) ->
-    driverHelpers.collection_filter2(this.mold, 'inMemory.documentsCollection', done)
+  it 'collection_create', (done) ->
+    driverHelpers.collection_create(this.mold, 'root.documentsCollection', done)
 
-  it 'collection_add', (done) ->
-    driverHelpers.collection_add(this.mold, 'inMemory.documentsCollection', done)
 
-  it 'collection_remove', (done) ->
-    driverHelpers.collection_remove(this.mold, 'inMemory.documentsCollection', done)
+#  it 'collection_filter', (done) ->
+#    driverHelpers.collection_filter2(this.mold, 'root.documentsCollection', done)
+
+#  it 'collection_add', (done) ->
+#    driverHelpers.collection_add(this.mold, 'root.documentsCollection', done)
+#
+#  it 'collection_remove', (done) ->
+#    driverHelpers.collection_remove(this.mold, 'root.documentsCollection', done)
