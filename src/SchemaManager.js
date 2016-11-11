@@ -5,7 +5,7 @@ import Collection from './types/Collection';
 import Container from './types/Container';
 import Document from './types/Document';
 import DocumentsCollection from './types/DocumentsCollection';
-import { convertFromLodashToSchema, getTheBestMatchPath } from './helpers';
+import { convertFromLodashToSchema, convertFromSchemaToLodash, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
 import { eachSchema } from './helpers';
 
@@ -21,6 +21,7 @@ export default class SchemaManager {
     this._schema = schema;
     this._main = main;
     this.$defaultMemoryDb = {};
+    this._drivers = {};
 
     var memoryDriver = new Memory({
       db: this.$defaultMemoryDb,
@@ -28,9 +29,6 @@ export default class SchemaManager {
     this.mainMemoryDriver = memoryDriver.schema({}, {}).driver;
 
     this._checkSchema(this._schema);
-
-    // var drivers = checkSchemaAndInitStore(this._schema);
-    // this._drivers = drivers;
   }
 
   /**
@@ -89,17 +87,15 @@ export default class SchemaManager {
   }
 
   /**
-   * Get driver. If it doesnt exists, returns undefined
-   * @param {string} path - absolute path for driver or its child
-   * @returns {object|undefined}
+   * Get driver by path.
+   * @param {string} storagePath - absolute path in storage format for driver
+   * @returns {object|undefined} If driver doesnt exists, returns undefined
    */
-  getDriver(path) {
-    // TODO: драйверы в списке должны быть просто ссылками на драйверы в схеме
-
-    if (!_.isString(path))
+  getDriver(storagePath) {
+    if (!_.isString(storagePath))
       throw new Error(`You must pass the path argument!`);
 
-    var matchPath = getTheBestMatchPath(path, _.keys(this._drivers));
+    var matchPath = getTheBestMatchPath(storagePath, _.keys(this._drivers));
 
     if (matchPath)
       return this._drivers[matchPath];
@@ -109,30 +105,12 @@ export default class SchemaManager {
   }
 
   _checkSchema(rawSchema) {
-    var drivers = {};
-
     // Validate schema
     eachSchema(rawSchema, (schemaPath, value) => {
-      if (value.driver) {
-        // TODO: разобраться
-        //drivers[newPath] = this._initDriver(newPath, value);
-
-        // _initDriver(path, value) {
-        //   if (!_.isPlainObject(value.schema))
-        //     throw new Error(`On a path "${path}" driver must has a "schema" param.`);
-        //
-        //   // Init driver
-        //   value.driver.init(path, this._main);
-        //
-        //   // Set driver to drivers list
-        //   return value.driver;
-        //
-        //   //_.set(this.schema, path, value.schema);
-        // }
-
+      if (_.includes(['documentsCollection', 'document'],value.type) && value.driver) {
+        this._drivers[schemaPath] = value.driver.init(
+          convertFromSchemaToLodash(schemaPath), this._main);
       }
-
-
       if (value.type == 'document') {
         if (!_.isPlainObject(value.schema))
           throw new Error(`Schema definition of document on "${schemaPath}" must have a "schema" param!`);

@@ -67,6 +67,10 @@ export function convertFromLodashToSchema(path) {
   return newPath;
 }
 
+export function convertFromSchemaToLodash(path) {
+  return path.replace(/\.schema/g, '');
+}
+
 export function getTheBestMatchPath(sourcePath, pathsList) {
   var matchList = _.map(pathsList, (path) => {
     if (sourcePath.indexOf(path) === 0) return path;

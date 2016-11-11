@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { findTheClosestParentPath, eachSchema } from './helpers';
+import { findTheClosestParentPath, eachSchema, convertFromSchemaToLodash } from './helpers';
 import Request from './Request';
 
 
@@ -229,7 +229,7 @@ export default class State {
     // Init storage. Collection's init behavior if different than in schema init.
     eachSchema(rawSchema, (path, value) => {
       //  convert from schema to lodash
-      var storagePath = path.replace(/\.schema/g, '');
+      var storagePath = convertFromSchemaToLodash(path);
       if (value.type == 'document') {
         _.set(initialStorage, storagePath, {});
 
