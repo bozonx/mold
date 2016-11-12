@@ -19,18 +19,29 @@ describe 'Functional. DocumentsCollection type.', ->
 
   describe "load", ->
     beforeEach () ->
-      this.page = [{id: 0}]
-      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', this.page)
+      this.items = [{id: 0}]
+      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', this.items)
 
     it 'load(page) - check promise', ->
       promise = this.documentsCollection.load(0)
       expect(promise).to.eventually
-        .property('body').deep.equal(this.page)
+        .property('body').deep.equal(this.items)
 
     it 'load(page) - check mold', (done) ->
       expect(this.documentsCollection.load(0)).to.eventually.notify =>
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
         .deep.equal([[{ id: 0, $index: 0, $pageIndex: 0 }]])
+        .notify(done)
+
+    it 'load(1) - load second page', (done) ->
+      this.items = [{id: 0}, {id: 1}, {id: 2}]
+      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', this.items)
+
+      this.documentsCollection.perPage = 2
+
+      expect(this.documentsCollection.load(1)).to.eventually.notify =>
+        expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
+        .deep.equal([[{ id: 1, $index: 0, $pageIndex: 1 }]])
         .notify(done)
 
   describe "createDocument", ->
