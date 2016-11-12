@@ -87,21 +87,21 @@ export default class SchemaManager {
 
   /**
    * Get driver by path.
-   * @param {string} storagePath - absolute path in storage format for driver
+   * @param {string} driverPath - absolute path to driver
    * @returns {object|undefined} If driver doesnt exists, returns undefined
    */
-  getDriver(storagePath) {
-    if (!_.isString(storagePath))
-      throw new Error(`You must pass the path argument!`);
-
-    var matchPath = getTheBestMatchPath(storagePath, _.keys(this._drivers));
-
-    if (matchPath) {
-      return this._drivers[matchPath];
-    }
+  getDriver(driverPath) {
+    if (driverPath) return this._drivers[driverPath];
 
     // no-one === default memory driver
     return this.mainMemoryDriver;
+  }
+
+  getClosestDriverPath(storagePath) {
+    if (!_.isString(storagePath))
+      throw new Error(`You must pass the storagePath argument!`);
+
+    return getTheBestMatchPath(storagePath, _.keys(this._drivers));
   }
 
   _checkSchema(rawSchema) {

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { findPrimary, getSchemaBaseType } from './helpers';
+import { findPrimary, getSchemaBaseType, convertFromLodashToUrl } from './helpers';
 
 export default class Request {
   constructor(main, storage) {
@@ -93,17 +93,19 @@ export default class Request {
    * @private
    */
   _startDriverRequest(method, storagePath, payload, urlParams, metaParams) {
-    var driver = this._main.$$schemaManager.getDriver(storagePath);
-    // It rise an error if path doesn't consist with schema
-    var schema = this._main.$$schemaManager.get(storagePath);
+    let driverRoot = this._main.$$schemaManager.getClosestDriverPath(storagePath);
 
-    var req = this._generateRequest(method, storagePath, payload, urlParams, schema, metaParams);
+    let driver = this._main.$$schemaManager.getDriver(driverRoot);
+    // It rise an error if path doesn't consist with schema
+    let schema = this._main.$$schemaManager.get(storagePath);
+
+    let req = this._generateRequest(method, storagePath, payload, urlParams, schema, driverRoot, metaParams);
     this._main.$$log.info('---> start request: ', req);
 
     return driver.startRequest(req);
   }
 
-  _generateRequest(method, storagePath, rawPayload, urlParams, schema, meta) {
+  _generateRequest(method, storagePath, rawPayload, urlParams, schema, driverRoot, meta) {
     let payload = rawPayload;
     if (_.isPlainObject(payload)) {
       payload = _.omit(_.cloneDeep(payload), '$index', '$pageIndex', '$adding', '$addedUnsaved', '$deleting');
@@ -117,6 +119,7 @@ export default class Request {
       method,
       payload,
       storagePath,
+      driverRoot,
       meta,
       url: '',
       primaryKeyName: schema.item && findPrimary(schema.item),
@@ -125,16 +128,21 @@ export default class Request {
       // TODO: params - доп параметры, передаваемые драйверу - или воткнуть их в payload
       //params: undefined,
     };
-    request.url = this._prepareUrl(storagePath, schema.source, urlParams, request);
+    request.url = this._prepareUrl(schema.source, urlParams, request, driverRoot);
 
     // clear undefined params
     return _.omitBy(request, _.isUndefined);
   }
 
-  _prepareUrl(storagePath, urlTemplate, urlTemplateParams, request) {
-    if (!urlTemplate) return storagePath;
+  _prepareUrl(urlTemplate, urlTemplateParams, request, driverRoot) {
+    if (urlTemplate) return _.template(urlTemplate)({...urlTemplateParams, request});
 
-    return _.template(urlTemplate)({...urlTemplateParams, request});
+    // TODO: strip driver path to its root
+
+    var defaultUrl = _.trimStart(request.storagePath, driverRoot);
+    defaultUrl = convertFromLodashToUrl(defaultUrl);
+
+    return defaultUrl;
   }
 
   _successHandler(resp) {

@@ -71,6 +71,11 @@ export function convertFromSchemaToLodash(path) {
   return path.replace(/\.schema/g, '');
 }
 
+export function convertFromLodashToUrl(path) {
+  let preUrl = path.replace(/\[(\d+)]/g, '.$1');
+  return preUrl.replace(/\./g, '/');
+}
+
 export function getTheBestMatchPath(sourcePath, pathsList) {
   var matchList = _.map(pathsList, (path) => {
     if (sourcePath.indexOf(path) === 0) return path;
