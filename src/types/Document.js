@@ -3,6 +3,9 @@ import Container from './Container';
 export default class Document extends Container{
   constructor(main) {
     super(main);
+
+    // TODO: должен ли тип сам устанавливать себе mold???
+    this._mold = {};
   }
 
   get type() {
@@ -10,7 +13,20 @@ export default class Document extends Container{
   }
 
   $init(root) {
+    // TODO: неправильно - mold создается и в обычном хранилище
     super.$init(root);
+    this._root = root;
+
+    // TODO: ??? запросить schemaManager чтобы он выдал mold
+    //this._main.$$state.updateResponse(this._root, this._mold);
+    this._mold = this._main.$$state.initResponse(this._root, this._mold);
+
+    console.log(3333, this._mold)
+  }
+
+  child(path) {
+    // !!! пока не разрешаем получать потомков, так как придется мого переделывать если
+    //     потомки будут коллекциями
   }
 
   getUrlParams() {
@@ -21,6 +37,11 @@ export default class Document extends Container{
     this._main.$$state.setUrlParams(this._root, params);
   }
 
+  update(newState) {
+    // TODO: нужно использовать универсальный метод, чтобы нормально работал container
+    this._main.$$state.updateResponse(this._root, _.cloneDeep(newState));
+  }
+
   /**
    * Load data from driver.
    * @returns {Promise}
@@ -28,10 +49,11 @@ export default class Document extends Container{
   load() {
     return this._main.$$state.$$request.loadDocument(this._root, this.getUrlParams()).then((resp) => {
       // update mold with server response data
-      // TODO: если документ находится в documents collection то :
-      //        * не втыкать документ на страницу, так как мы не знаем на какой он страницу
 
-      this._main.$$state.update(resp.request.storagePath, resp.body);
+      this._main.$$state.updateResponse(this._root, resp.body);
+      // TODO: не надо здесь устанавливать mold - он уже должен был установлен
+      this._mold = this._main.$$state.getResponse(this._root);
+
       return resp;
     });
   }
@@ -41,6 +63,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   save() {
+    console.log(111111, this.mold)
     return this._main.$$state.$$request.saveDocument(this._root, this.mold, this.getUrlParams());
   }
 

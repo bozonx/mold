@@ -58,7 +58,7 @@ export default class State {
   }
 
   /**
-   * Set primitive, container or collection to mold
+   * Set container or collection to mold
    * @param {string} storagePath
    * @param {*} value - valid value
    */
@@ -67,6 +67,28 @@ export default class State {
 
     this._storage.update(storagePath, value);
   }
+
+  initResponse(url, initial) {
+    // TODO: зачем делать через State??
+    return this._storage.initResponse(url, initial);
+  }
+
+  getResponse(url) {
+    // TODO: зачем делать через State??
+    return this._storage.getResponse(url);
+  }
+
+  /**
+   * Set document to __requests
+   * @param {string} url
+   * @param {object} value - valid value
+   */
+  updateResponse(url, value) {
+    // TODO: зачем делать через State??
+    // this._checkNode(storagePath, value);
+    this._storage.updateResponse(url, value);
+  }
+
 
   /**
    * Add to beginning of a collection in store by user action.

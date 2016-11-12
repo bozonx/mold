@@ -39,21 +39,20 @@ describe 'Integration.', ->
         }),
       ])).to.eventually.notify(done)
 
-    # TODO: test it!!!
-#    it 'load - check mold of document', (done) ->
-#      expect(this.document.load()).to.eventually.notify =>
-#        expect(Promise.resolve(this.document.mold)).to.eventually
-#        .deep.equal({$index: 0, $pageIndex:0 , id: 0})
-#        .notify(done)
+    it 'load - check mold of document', (done) ->
+      expect(this.document.load()).to.eventually.notify =>
+        expect(Promise.resolve(this.document.mold)).to.eventually
+        .deep.equal({id: 0})
+        .notify(done)
 
     it 'load - check storage', (done) ->
       expect(this.document.load()).to.eventually.notify =>
         expect(Promise.resolve(this.document._main.$getWholeStorageState())).to.eventually
-        .deep.equal({documentsCollection: [
-          [
-            {$index: 0, $pageIndex:0 , id: 0}
-          ]
-        ]})
+        .deep.equal({
+          __responses:
+            'documentsCollection[0]': {id: 0}
+          documentsCollection: []
+        })
         .notify(done)
 
 #      expect(this.document.load()).to.eventually.notify =>

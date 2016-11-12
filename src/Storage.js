@@ -7,6 +7,7 @@ export default class Storage {
   constructor(events) {
     this._events = events;
     this._storage = null;
+    this._responses = null;
   }
 
   /**
@@ -17,6 +18,9 @@ export default class Storage {
    */
   $init(newStorage) {
     this._storage = newStorage;
+    // TODO: может придумать получше место для их хранения???
+    this._storage.__responses = {};
+    this._responses = this._storage.__responses;
   }
 
   $getWholeStorageState() {
@@ -49,6 +53,41 @@ export default class Storage {
 
     // run update event
     if (wereChanges) this._riseEvents(path, 'change');
+  }
+
+  initResponse(url, initial) {
+    if (_.isUndefined(this._responses[url])) {
+      this._responses[url] = initial;
+    }
+
+    return this._responses[url];
+  }
+
+  getResponse(url) {
+    return this._responses[url];
+  }
+
+  updateResponse(url, newValue) {
+    console.log(111111, this._responses[url])
+
+    var wereChanges;
+    // run mutates and get list of changes
+    if (!this._responses[url]) {
+      this._responses[url] = newValue;
+      wereChanges = true;
+    }
+    else {
+      wereChanges = mutate(this._responses[url], '').update(newValue);
+    }
+
+    //let wereChanges = mutate(this._responses[url], '').update(newValue);
+
+    // run update event
+    if (wereChanges) this._riseEvents(url, 'change');
+  }
+
+  clearResponse(url) {
+    delete this._responses[url];
   }
 
   /**
