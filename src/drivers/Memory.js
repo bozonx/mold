@@ -37,7 +37,30 @@ class LocalMemory {
   }
 
   filter(request) {
-    return this.get(request);
+    if (!request.meta) {
+      return this.get(request);
+    }
+
+    return new Promise((resolve, reject) => {
+      let start = request.meta.pageNum * request.meta.perPage;
+      let end = (request.meta.pageNum + 1) * request.meta.perPage;
+      let collection = _.get(this._db, request.url);
+      let result = collection.slice(start, end);
+
+      if (_.isEmpty(result)) {
+        reject({
+          driverError: 'Item not found',
+          request,
+        });
+      }
+      else {
+        resolve({
+          body: result,
+          driverResponse: result,
+          request,
+        });
+      }
+    });
   }
 
   set(request) {

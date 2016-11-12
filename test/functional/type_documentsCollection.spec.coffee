@@ -34,14 +34,17 @@ describe 'Functional. DocumentsCollection type.', ->
         .notify(done)
 
     it 'load(1) - load second page', (done) ->
-      this.items = [{id: 0}, {id: 1}, {id: 2}]
+      this.items = [{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}]
       _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', this.items)
 
       this.documentsCollection.perPage = 2
 
       expect(this.documentsCollection.load(1)).to.eventually.notify =>
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
-        .deep.equal([[{ id: 1, $index: 0, $pageIndex: 1 }]])
+        .property(1).deep.equal([
+          { id: 2, $index: 0, $pageIndex: 1 },
+          { id: 3, $index: 1, $pageIndex: 1 },
+        ])
         .notify(done)
 
   describe "createDocument", ->

@@ -36,6 +36,8 @@ class LocalPounchDb {
       startkey: request.url,
     };
 
+    // TODO: use reuqest.meta to get paged result like in Memory.js
+
     return this._db.allDocs(getAllQuery)
       .then((resp) => {
         return {
