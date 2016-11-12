@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { findTheClosestParentPath, eachSchema, convertFromSchemaToLodash } from './helpers';
+import { findTheClosestParentPath, eachSchema, convertFromSchemaToLodash, concatPath } from './helpers';
 import Request from './Request';
 
 
@@ -144,6 +144,21 @@ export default class State {
 
     //this._checkNode(pathToPagedCollection, page);
     this._storage.addTo(pathToPagedCollection, preparedPage, pageNum);
+  }
+
+  /**
+   * Set undefined instead page. It doesn't reduce pagedCollection length.
+   * @param pathToPagedCollection
+   * @param pageNum
+   */
+  removePage(pathToPagedCollection, pageNum) {
+    // It rise an error if path doesn't consist with schema
+    var schema = this._main.$$schemaManager.get(pathToPagedCollection);
+
+    if (!_.includes(['pagedCollection', 'documentsCollection'], schema.type))
+      throw new Error(`You can remove  page only from pagedCollection of documentsCollection!`);
+
+    this._storage.update(concatPath(pathToPagedCollection, pageNum), undefined);
   }
 
   destroy(storagePath) {

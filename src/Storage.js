@@ -112,6 +112,7 @@ export default class Storage {
 
   /**
    * Remove item from collection by its $index.
+   * After it, array will reduce.
    * @param {string} pathToCollection
    * @param {number} $index
    */
@@ -129,7 +130,7 @@ export default class Storage {
   }
 
   /**
-   * Clear storage on path
+   * Clear storage on path. But it doesn't remove container or array itself.
    * @param path
    */
   clear(path) {

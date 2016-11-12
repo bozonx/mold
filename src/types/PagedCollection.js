@@ -143,7 +143,11 @@ export default class PagedCollection extends _TypeBase {
    * @param {number} pageNum
    */
   removePage(pageNum) {
-    // TODO: !!!!
+    if (!_.isNumber(pageNum)) {
+      throw new Error(`The pageNum must be type of number!`);
+    }
+
+    this._main.$$state.removePage(this._root, pageNum);
   }
 
   /**

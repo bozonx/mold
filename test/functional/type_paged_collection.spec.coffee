@@ -110,6 +110,23 @@ describe 'Functional. Paged Collection type.', ->
       ]
       assert.deepEqual(this.pagedCollection.mold, result)
 
+
+  describe 'removePage(pageNum)', ->
+    it 'remove last page', ->
+      this.pagedCollection.setPage([{name: 'newValue'}], 0)
+      this.pagedCollection.removePage(0)
+      assert.deepEqual(this.pagedCollection.mold, [undefined])
+
+    it 'remove first page', ->
+      this.pagedCollection.setPage([{name: 'newValue0'}], 0)
+      this.pagedCollection.setPage([{name: 'newValue1'}], 1)
+      this.pagedCollection.removePage(0)
+      assert.deepEqual(this.pagedCollection.mold, [undefined , [{
+        $index: 0
+        $pageIndex: 1
+        name: 'newValue1'
+      }]])
+
   describe 'getFlat()', ->
     it 'unordered', ->
       page1 = [{name: 'newValue1'}, {name: 'newValue2'}]
@@ -156,14 +173,11 @@ describe 'Functional. Paged Collection type.', ->
         },
       ])
 
-  describe 'removePage(pageNum)', ->
-    it 'common', ->
-    #TODO: !!!! do it!
 
-  describe 'batchAdd(items)', ->
-    it 'common', ->
-      #TODO: !!!! do it!
-
-  describe 'batchRemove(items)', ->
-    it 'common', ->
-    #TODO: !!!! do it!
+#  describe 'batchAdd(items)', ->
+#    it 'common', ->
+#      #TODO: !!!! do it!
+#
+#  describe 'batchRemove(items)', ->
+#    it 'common', ->
+#    #TODO: !!!! do it!
