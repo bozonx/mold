@@ -15,14 +15,22 @@ describe 'Functional. Paged Collection type.', ->
   beforeEach () ->
     this.mold = mold( {}, testSchema() )
     this.pagedCollection = this.mold.child('pagedCollection')
-    this.newItem = {name: 'newValue'}
 
   it 'init value', ->
     assert.deepEqual(this.pagedCollection.mold, [])
 
   # TODO: test push, unshift
-  # TODO: test rearrange
-  # TODO: removePage
+
+  describe 'unshift()', ->
+    it "common", ->
+      this.pagedCollection.unshift({name: 'newValue1'})
+      this.pagedCollection.unshift({name: 'newValue2'})
+      assert.deepEqual(this.pagedCollection.mold, [[
+        {$addedUnsaved: true, $index: 0, $pageIndex: 0, name: 'newValue2'}
+        {$addedUnsaved: true, $index: 1, $pageIndex: 0,name: 'newValue1'}
+      ]])
+
+
 
 #  describe 'addItem()', ->
 #    it 'add to an empty collection', ->
