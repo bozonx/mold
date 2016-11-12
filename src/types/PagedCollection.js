@@ -63,28 +63,6 @@ export default class PagedCollection extends _TypeBase {
     });
   }
 
-  // /**
-  //  * add item to the end of last page.
-  //  * It creates new page if last page was overflowed
-  //  */
-  // addItem(item) {
-  //   // TODO: не нужно
-  //
-  //   if (!_.isPlainObject(item))
-  //     throw new Error(`You can add item only of plain object type!`);
-  //
-  //   this.__checkEmptyPage();
-  //
-  //   if (_.last(this.mold).length >= this._perPage) {
-  //     let pageNum = this.mold.length;
-  //     this._main.$$state.setPage(this._root, [item], pageNum);
-  //   }
-  //   else {
-  //     let pageNum = this.mold.length - 1;
-  //     this._main.$$state.push(concatPath(this._root, pageNum), item);
-  //   }
-  // }
-
   /**
    * Add item to beginning of first page.
    * It add item as is, not clones it.
