@@ -81,6 +81,7 @@ export default class DocumentsCollection extends PagedCollection{
     document.$deleting = true;
     return this._main.$$state.$$request.deleteDocument(this._root, document, this.getUrlParams())
       .then((resp) => {
+        // TODO: remove item!!!!!!
         delete document.$deleting;
         return resp;
       }, (err) => {

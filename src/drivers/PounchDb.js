@@ -162,7 +162,8 @@ class LocalPounchDb {
       this._db.get(docId).then((getResp) => {
         this._db.remove(getResp).then((resp) => {
           resolve({
-            body: _.omit(getResp, '_id', '_rev'),
+            //body: _.omit(getResp, '_id', '_rev'),
+            body: undefined,
             driverResponse: resp,
             request,
           });

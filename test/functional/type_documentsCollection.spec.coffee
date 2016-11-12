@@ -87,10 +87,7 @@ describe 'Functional. DocumentsCollection type.', ->
     it "check response", (done) ->
       expect(this.documentsCollection.createDocument(this.doc)).to.eventually.notify =>
         promise = this.documentsCollection.deleteDocument(this.doc)
-        expect(promise).to.eventually.property('body').deep.equal({
-          id: 0,
-          name: 'a'
-        })
+        expect(promise).to.eventually.property('body').equal(undefined)
         .notify(done)
 
 #    it "check mold", (done) ->

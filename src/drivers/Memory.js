@@ -134,7 +134,7 @@ class LocalMemory {
       _.remove(collection, item);
 
       resolve({
-        body: item,
+        body: undefined,
         driverResponse: item,
         request,
       });
