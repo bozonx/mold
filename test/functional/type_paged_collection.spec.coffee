@@ -141,12 +141,3 @@ describe 'Functional. Paged Collection type.', ->
           name: 'newValue2',
         },
       ])
-
-
-#  describe 'batchAdd(items)', ->
-#    it 'common', ->
-#      #TODO: !!!! do it!
-#
-#  describe 'batchRemove(items)', ->
-#    it 'common', ->
-#    #TODO: !!!! do it!

@@ -72,10 +72,10 @@ export default class PagedCollection extends _TypeBase {
     if (!_.isPlainObject(newItem))
       throw new Error(`You can add item only of plain object type!`);
 
-    // TODO: менять статус через storage с подъемом события
+    // there is no matter to up change event, because event will rise after inserting.
     newItem.$addedUnsaved = true;
 
-    this.__checkEmptyPage();
+    this._checkEmptyPage();
     this._main.$$state.unshift(concatPath(this._root, 0), newItem);
   }
 
@@ -88,33 +88,12 @@ export default class PagedCollection extends _TypeBase {
     if (!_.isPlainObject(newItem))
       throw new Error(`You can add item only of plain object type!`);
 
-    // TODO: менять статус через storage с подъемом события
+    // there is no matter to up change event, because event will rise after inserting.
     newItem.$addedUnsaved = true;
 
-    this.__checkEmptyPage();
+    this._checkEmptyPage();
     let pageNum = this.mold.length - 1;
     this._main.$$state.push(concatPath(this._root, pageNum), newItem);
-  }
-
-  /**
-   * It rearrange items
-   */
-  rearrange() {
-    // TODO: test it
-    // TODO: оптимизировать производительность
-    var items = this.getFlat();
-    var pages = [[]];
-    _.each(items, (item) => {
-      var currentPage = pages.length - 1;
-      var currentPageLength = pages[currentPage].length;
-      if (currentPageLength >= this._perPage) {
-        pages.push([]);
-        currentPage++;
-      }
-      pages[currentPage].push(item);
-    });
-
-    // TODO: воткнуть это в mold и удалить лишние страницы - хотя mutate должет сделать это сам
   }
 
   /**
@@ -149,10 +128,31 @@ export default class PagedCollection extends _TypeBase {
   }
 
   /**
+   * It rearrange items
+   */
+  rearrange() {
+    // TODO: test it
+    // TODO: оптимизировать производительность
+    var items = this.getFlat();
+    var pages = [[]];
+    _.each(items, (item) => {
+      var currentPage = pages.length - 1;
+      var currentPageLength = pages[currentPage].length;
+      if (currentPageLength >= this._perPage) {
+        pages.push([]);
+        currentPage++;
+      }
+      pages[currentPage].push(item);
+    });
+
+    // TODO: воткнуть это в mold и удалить лишние страницы - хотя mutate должет сделать это сам
+  }
+
+  /**
    * It create first page if it doesn't exist.
    * @private
    */
-  __checkEmptyPage() {
+  _checkEmptyPage() {
     if (_.isEmpty(this.mold)) {
       let pageNum = 0;
       this._main.$$state.setPage(this._root, [], pageNum);
