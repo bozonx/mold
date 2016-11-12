@@ -81,8 +81,6 @@ export default class Request {
       .then((resp) => {
         this._main.$$log.info('---> finish request: ', resp);
         // update mold with server response data
-        // TODO: удалить элемент
-        //this._storage.update(resp.request.storagePath, resp.body);
         return resp;
       }, this._errorHandler.bind(this));
   }

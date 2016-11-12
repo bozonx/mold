@@ -60,10 +60,12 @@ export default class DocumentsCollection extends PagedCollection{
     document.$adding = true;
     return this._main.$$state.$$request.createDocument(this._root, document, this.getUrlParams())
       .then((resp) => {
+        // TODO: менять статус через storage с подъемом события
         delete document.$addedUnsaved;
         delete document.$adding;
         return resp;
       }, (err) => {
+        // TODO: менять статус через storage с подъемом события
         delete document.$adding;
         return err;
       });
@@ -81,10 +83,14 @@ export default class DocumentsCollection extends PagedCollection{
     document.$deleting = true;
     return this._main.$$state.$$request.deleteDocument(this._root, document, this.getUrlParams())
       .then((resp) => {
-        // TODO: remove item!!!!!!
         delete document.$deleting;
+        // remove from page
+        if (_.isNumber(document.$pageIndex)) {
+          this._main.$$state.remove(concatPath(this._root, document.$pageIndex), document);
+        }
         return resp;
       }, (err) => {
+        // TODO: менять статус через storage с подъемом события
         delete document.$deleting;
         return err;
       });
