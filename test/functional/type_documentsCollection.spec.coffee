@@ -75,7 +75,7 @@ describe 'Functional. DocumentsCollection type.', ->
               $index: 0,
               name: 'a',
               # TODO: раскомментировать, когда будет сделанно обновление элемента в request
-              #id: 0,
+              id: 0,
             }
           ]])
           .notify(done)

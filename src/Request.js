@@ -60,9 +60,6 @@ export default class Request {
     return this._startDriverRequest('create', pathToDocumentsCollection, document, urlParams, metaParams)
       .then((resp) => {
         this._main.$$log.info('---> finish request: ', resp);
-        // update mold with server response data
-        // TODO: обновить сам элемент. Поправить тест
-        //this._storage.update(resp.request.storagePath, resp.body);
 
         return resp;
       }, this._errorHandler.bind(this));

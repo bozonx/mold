@@ -60,12 +60,23 @@ export default class DocumentsCollection extends PagedCollection{
     document.$adding = true;
     return this._main.$$state.$$request.createDocument(this._root, document, this.getUrlParams())
       .then((resp) => {
-        // TODO: менять статус через storage с подъемом события
+        // update document if it's in storage
+        // TODO: после обновления $adding === undefined, но на самом деле он не удаляется
+        this._updateDoc(document, {
+          ...resp.body,
+          $addedUnsaved: undefined,
+          $adding: undefined,
+        });
+
+        // remove for any way
         delete document.$addedUnsaved;
         delete document.$adding;
+
         return resp;
       }, (err) => {
-        // TODO: менять статус через storage с подъемом события
+        this._updateDoc(document, {
+          $adding: undefined,
+        });
         delete document.$adding;
         return err;
       });
@@ -90,10 +101,18 @@ export default class DocumentsCollection extends PagedCollection{
         }
         return resp;
       }, (err) => {
-        // TODO: менять статус через storage с подъемом события
+        this._updateDoc(document, {
+          $deleting: undefined,
+        });
         delete document.$deleting;
         return err;
       });
+  }
+
+  _updateDoc(document, newState) {
+    if (!_.isNumber(document.$pageIndex) || !_.isNumber(document.$index)) return;
+    let pathToDoc = concatPath(concatPath(this._root, document.$pageIndex), document.$index);
+    this._main.$$state.update(pathToDoc, newState);
   }
 
 }
