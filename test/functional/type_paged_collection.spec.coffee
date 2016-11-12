@@ -19,10 +19,9 @@ describe 'Functional. Paged Collection type.', ->
   it 'init value', ->
     assert.deepEqual(this.pagedCollection.mold, [])
 
-  # TODO: test push, unshift
-
   describe 'unshift()', ->
-    it "common", ->
+    it "to empty pagedCollection", ->
+      this.pagedCollection.perPage = 1
       this.pagedCollection.unshift({name: 'newValue1'})
       this.pagedCollection.unshift({name: 'newValue2'})
       assert.deepEqual(this.pagedCollection.mold, [[
@@ -30,68 +29,30 @@ describe 'Functional. Paged Collection type.', ->
         {$addedUnsaved: true, $index: 1, $pageIndex: 0,name: 'newValue1'}
       ]])
 
+  describe 'push()', ->
+    it "to empty pagedCollection", ->
+      this.pagedCollection.perPage = 1
+      this.pagedCollection.push({name: 'newValue1'})
+      this.pagedCollection.push({name: 'newValue2'})
+      assert.deepEqual(this.pagedCollection.mold, [[
+        {$addedUnsaved: true, $index: 0, $pageIndex: 0, name: 'newValue1'}
+        {$addedUnsaved: true, $index: 1, $pageIndex: 0,name: 'newValue2'}
+      ]])
 
-
-#  describe 'addItem()', ->
-#    it 'add to an empty collection', ->
-#      this.pagedCollection.addItem(this.newItem)
-#
-#      assert.deepEqual(this.pagedCollection.mold, [[
-#        {
-#          $pageIndex: 0,
-#          $index: 0,
-#          name: 'newValue',
-#        }
-#      ]])
-#
-#    it 'add to almost full page', ->
-#      page = [{name: 'newValue1'}]
-#      this.pagedCollection.perPage = 2
-#      this.pagedCollection.setPage(page)
-#      this.pagedCollection.addItem(this.newItem)
-#
-#      assert.deepEqual(this.pagedCollection.mold, [
-#        [
-#          {
-#            $pageIndex: 0,
-#            $index: 0,
-#            name: 'newValue1',
-#          },
-#          {
-#            $pageIndex: 0,
-#            $index: 1,
-#            name: 'newValue',
-#          },
-#        ]
-#      ])
-#
-#    it 'add to full page and page unordered', ->
-#      page = [{name: 'newValue1'}, {name: 'newValue2'}]
-#      this.pagedCollection.perPage = 2
-#      this.pagedCollection.setPage(page, 2)
-#      this.pagedCollection.addItem(this.newItem)
-#
-#      result = []
-#      result[2] = [
-#        {
-#          $pageIndex: 2,
-#          $index: 0,
-#          name: 'newValue1',
-#        },
-#        {
-#          $pageIndex: 2,
-#          $index: 1,
-#          name: 'newValue2',
-#        },
-#      ]
-#      result[3] = [
-#        {
-#          $pageIndex: 3,
-#          $index: 0,
-#          name: 'newValue',
-#        },
-#      ]
-#      assert.deepEqual(this.pagedCollection.mold, result)
+    it "to empty pagedCollection", ->
+      this.pagedCollection.perPage = 1
+      this.pagedCollection.setPage([{name: 'newValue1'}], 0)
+      this.pagedCollection.setPage([{name: 'newValue2'}], 1)
+      this.pagedCollection.push({name: 'newValue3'})
+      assert.deepEqual(this.pagedCollection.mold, [
+        [
+          {$index: 0, $pageIndex: 0, name: 'newValue1'}
+        ],
+        [
+          {$index: 0, $pageIndex: 1, name: 'newValue2'}
+          {$addedUnsaved: true, $index: 1, $pageIndex: 1, name: 'newValue3'}
+        ]
+      ])
 
   describe 'setPage()', ->
     it 'common', ->

@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { concatPath } from './helpers';
 
-export function updateIndexes(collectionInStorage) {
+export function updateIndexes(collectionInStorage, pageIndex = NaN) {
   if (_.isArray(_.last(collectionInStorage))) {
     // for paged collections
     _.each(collectionInStorage, (page, pageIndex) => {
@@ -19,7 +19,12 @@ export function updateIndexes(collectionInStorage) {
     _.each(collectionInStorage, (value, index) => {
       if (_.isPlainObject(value)) {
         value.$index = index;
-        delete value.$pageIndex;
+        if (_.isNaN(pageIndex)) {
+          delete value.$pageIndex;
+        }
+        else {
+          value.$pageIndex = pageIndex;
+        }
       }
     });
   }

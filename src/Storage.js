@@ -64,7 +64,9 @@ export default class Storage {
     // add to beginning
     collection.splice(0, 0, newItem);
 
-    updateIndexes(collection);
+    let pageIndex = pathToCollection.replace(/.*\[(\d+)]$/, '$1');
+    pageIndex = _.toNumber(pageIndex);
+    updateIndexes(collection, pageIndex);
 
     // run update event
     this._riseEvents(pathToCollection, 'add');
@@ -93,19 +95,22 @@ export default class Storage {
     var collection = this.get(pathToCollection);
     var oldCollectionLength = collection.length;
 
+    let pageIndex = pathToCollection.replace(/.*\[(\d+)]$/, '$1');
+    pageIndex = _.toNumber(pageIndex);
+
     if (index + 1 > oldCollectionLength) {
       // add to the end
       // extend array
       collection[index] = null;
       collection.splice(index, 1, newItem);
-      updateIndexes(collection);
+      updateIndexes(collection, pageIndex);
       // run update event
       this._riseEvents(pathToCollection, 'add');
     }
     else {
       // change existent item
       let wereChanges = mutate(this._storage, concatPath(pathToCollection, index)).update(newItem);
-      updateIndexes(collection);
+      updateIndexes(collection, pageIndex);
       if (wereChanges) this._riseEvents(pathToCollection, 'change');
     }
   }

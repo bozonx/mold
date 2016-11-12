@@ -111,7 +111,7 @@ export default class Request {
   _generateRequest(method, storagePath, rawPayload, urlParams, schema, meta) {
     let payload = rawPayload;
     if (_.isPlainObject(payload)) {
-      payload = _.omit(_.cloneDeep(payload), '$index', '$adding', '$addedUnsaved', '$deleting');
+      payload = _.omit(_.cloneDeep(payload), '$index', '$pageIndex', '$adding', '$addedUnsaved', '$deleting');
       payload = _.omitBy(payload, _.isUndefined);
     }
     // it clears an empty array or objects

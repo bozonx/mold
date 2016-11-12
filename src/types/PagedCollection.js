@@ -69,7 +69,6 @@ export default class PagedCollection extends _TypeBase {
    * @param {object} newItem
    */
   unshift(newItem) {
-    // TODO: test it
     if (!_.isPlainObject(newItem))
       throw new Error(`You can add item only of plain object type!`);
 
@@ -86,7 +85,6 @@ export default class PagedCollection extends _TypeBase {
    * @param {object} newItem
    */
   push(newItem) {
-    // TODO: test it
     if (!_.isPlainObject(newItem))
       throw new Error(`You can add item only of plain object type!`);
 

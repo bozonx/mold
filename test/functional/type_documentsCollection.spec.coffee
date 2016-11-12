@@ -71,10 +71,11 @@ describe 'Functional. DocumentsCollection type.', ->
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
           .deep.equal([[
             {
+              $pageIndex: 0,
+              $index: 0,
+              name: 'a',
               # TODO: раскомментировать, когда будет сделанно обновление элемента в request
               #id: 0,
-              name: 'a',
-              $index: 0,
             }
           ]])
           .notify(done)
