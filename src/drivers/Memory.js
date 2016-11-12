@@ -150,7 +150,6 @@ class LocalMemory {
     converted = converted.replace(/\/(\d+)/g, '[$1]');
     converted = converted.replace(/\//g, '.');
     converted = _.trim(converted, '.');
-    console.log(1111, url, converted)
     return converted;
   }
 }

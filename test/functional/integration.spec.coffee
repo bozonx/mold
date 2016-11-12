@@ -18,28 +18,48 @@ describe 'Integration.', ->
       _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', [
         {id: 0}
       ])
-
-    it 'document unstance', ->
       this.document = this.mold.child('documentsCollection[0]')
+
+    it 'document instance', ->
       assert.equal(this.document.root, 'documentsCollection[0]')
+      # TODO: test it!!!
+      #assert.equal(this.document.mold, {})
 
     it 'load - check responce', (done) ->
-      this.document = this.mold.child('documentsCollection[0]')
       promise = this.document.load()
-#      expect(this.document.load()).to.eventually.notify =>
-#        expect(Promise.resolve(this.document.mold)).to.eventually
-#        .property('body')
-#        .deep.equal(this.testValues)
 
       expect(Promise.all([
-        expect(promise).to.eventually.property('body').deep.equal({}),
+        expect(promise).to.eventually.property('body').deep.equal({id: 0}),
         expect(promise).to.eventually.property('request').deep.equal({
           method: 'get',
           nodeType: 'container',
           storagePath: 'documentsCollection[0]',
+          # TODO: is it correct? - without slash
           url: 'documentsCollection/0',
         }),
       ])).to.eventually.notify(done)
+
+    # TODO: test it!!!
+#    it 'load - check mold of document', (done) ->
+#      expect(this.document.load()).to.eventually.notify =>
+#        expect(Promise.resolve(this.document.mold)).to.eventually
+#        .deep.equal({$index: 0, $pageIndex:0 , id: 0})
+#        .notify(done)
+
+    it 'load - check storage', (done) ->
+      expect(this.document.load()).to.eventually.notify =>
+        expect(Promise.resolve(this.document._main.$getWholeStorageState())).to.eventually
+        .deep.equal({documentsCollection: [
+          [
+            {$index: 0, $pageIndex:0 , id: 0}
+          ]
+        ]})
+        .notify(done)
+
+#      expect(this.document.load()).to.eventually.notify =>
+#        expect(Promise.resolve(this.document.mold)).to.eventually
+#        .property('body')
+#        .deep.equal(this.testValues)
 
 #      expect(this.document.load()).to.eventually.notify =>
 #        expect(Promise.resolve(this.document.mold)).to.eventually
