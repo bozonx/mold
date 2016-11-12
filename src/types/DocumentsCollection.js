@@ -59,7 +59,7 @@ export default class DocumentsCollection extends PagedCollection{
   createDocument(document) {
     // TODO: менять статус через storage с подъемом события
     document.$adding = true;
-    return this._main.$$state.$$request.createDocument(this._root, this.getUrlParams(), document)
+    return this._main.$$state.$$request.createDocument(this._root, document, this.getUrlParams())
       .then((resp) => {
         delete document.$addedUnsaved;
         delete document.$adding;
@@ -80,7 +80,7 @@ export default class DocumentsCollection extends PagedCollection{
   deleteDocument(document) {
     // TODO: менять статус через storage с подъемом события
     document.$deleting = true;
-    return this._main.$$state.$$request.deleteDocument(this._root, this.getUrlParams(), document)
+    return this._main.$$state.$$request.deleteDocument(this._root, document, this.getUrlParams())
       .then((resp) => {
         delete document.$deleting;
         return resp;

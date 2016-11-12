@@ -37,7 +37,7 @@ export default class Storage {
   }
 
   /**
-   * Update value. It use _.defaultsDeep method.
+   * Update container or collection.
    * This method deeply mutates existent object or arrays.
    * It rises an event only if were any changes
    * @param {string} path

@@ -38,12 +38,12 @@ export default class Request {
   /**
    * Save container and it's contents to driver.
    * @param {string} pathToContainer
-   * @param {object|null} urlParams - dynamic part of source path
    * @param {object} actualMold - actual data by path
+   * @param {object|null} urlParams - dynamic part of source path
    * @param {object|undefined} metaParams
    * @returns {Promise}
    */
-  saveDocument(pathToContainer, urlParams, actualMold, metaParams) {
+  saveDocument(pathToContainer, actualMold, urlParams, metaParams) {
     return this._startDriverRequest('set', pathToContainer, actualMold, urlParams, metaParams)
       .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
@@ -51,12 +51,12 @@ export default class Request {
   /**
    * Create document
    * @param {string} pathToDocumentsCollection
-   * @param {object|null} urlParams - dynamic part of source path
    * @param {object} document
+   * @param {object|null} urlParams - dynamic part of source path
    * @param {object|undefined} metaParams
    * @returns {Promise}
    */
-  createDocument(pathToDocumentsCollection, urlParams, document, metaParams) {
+  createDocument(pathToDocumentsCollection, document, urlParams, metaParams) {
     return this._startDriverRequest('create', pathToDocumentsCollection, document, urlParams, metaParams)
       .then((resp) => {
         this._main.$$log.info('---> finish request: ', resp);
@@ -71,12 +71,12 @@ export default class Request {
   /**
    * Delete document and remove it from mold
    * @param {string} pathToDocumentsCollection
-   * @param {object|null} urlParams - dynamic part of source path
    * @param {object} document
+   * @param {object|null} urlParams - dynamic part of source path
    * @param {object|undefined} metaParams
    * @returns {Promise}
    */
-  deleteDocument(pathToDocumentsCollection, urlParams, document, metaParams) {
+  deleteDocument(pathToDocumentsCollection, document, urlParams, metaParams) {
     return this._startDriverRequest('delete', pathToDocumentsCollection, document, urlParams, metaParams)
       .then((resp) => {
         this._main.$$log.info('---> finish request: ', resp);

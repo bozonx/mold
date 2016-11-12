@@ -34,7 +34,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   save() {
-    return this._main.$$state.$$request.saveDocument(this._root, this.getUrlParams(), this.mold);
+    return this._main.$$state.$$request.saveDocument(this._root, this.mold, this.getUrlParams());
   }
 
 }
