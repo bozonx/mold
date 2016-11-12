@@ -9,7 +9,6 @@ import { convertFromLodashToSchema, convertFromSchemaToLodash, getTheBestMatchPa
 import Memory from './drivers/Memory';
 import { eachSchema } from './helpers';
 
-
 /**
  * It's schema manager
  * You can set schema only once on creating instance
@@ -101,7 +100,7 @@ export default class SchemaManager {
       return this._drivers[matchPath];
     }
 
-    // no-one = memory driver
+    // no-one === default memory driver
     return this.mainMemoryDriver;
   }
 

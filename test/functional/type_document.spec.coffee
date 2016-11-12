@@ -42,7 +42,7 @@ describe 'Functional. Document type.', ->
 
     expect(this.document.load()).to.eventually.property('body').deep.equal(this.testValues)
 
-  it 'setMold and save', ->
-    this.document.setMold(this.testValues)
+  it 'update() and save', ->
+    this.document.update(this.testValues)
     expect(this.document.save()).to.eventually
     .property('body').deep.equal(this.testValues)

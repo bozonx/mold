@@ -32,7 +32,7 @@ module.exports =
     request = generateRequest(pathToDoc, 'get', {nodeType: 'container'})
 
     container = mold.child(pathToDoc)
-    container.setMold(payload)
+    container.update(payload)
     expect(container.save()).to.eventually.notify =>
       promise = cleanPromise( container.load() )
       expect(promise).to.eventually.deep.equal({body: payload, request: request}).notify(done)
@@ -46,7 +46,7 @@ module.exports =
     request = generateRequest(pathToDoc, 'set', {nodeType: 'container', payload: payload})
 
     container = mold.child(pathToDoc)
-    container.setMold(payload)
+    container.update(payload)
     promise = cleanPromise( container.save() )
     expect(promise).to.eventually.deep.equal({body: payload, request: request}).notify(done)
 

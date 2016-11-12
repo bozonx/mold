@@ -62,7 +62,7 @@ export default class State {
    * @param {string} storagePath
    * @param {*} value - valid value
    */
-  setMold(storagePath, value) {
+  update(storagePath, value) {
     this._checkNode(storagePath, value);
 
     this._storage.update(storagePath, value);

@@ -44,7 +44,25 @@ describe 'Functional. Container type.', ->
     assert.equal(nested.root, 'container.nested')
     assert.deepEqual(nested.mold, {nestedStringParam: null})
 
-  it "setMold()", ->
-    this.container.setMold(this.testValues)
-    this.container.setMold({stringParam: 'newerValue'})
+  it "update()", ->
+    this.container.update(this.testValues)
+    this.container.update({stringParam: 'newerValue'})
     assert.deepEqual(this.container.mold, _.defaultsDeep({stringParam: 'newerValue'}, this.testValues))
+
+  it "update() partly", ->
+    this.container.update({
+      stringParam: 'newerValue',
+      numberParam: 5,
+    })
+    this.container.update({
+      boolParam: true,
+      numberParam: 6,
+    })
+    assert.deepEqual(this.container.mold, {
+      stringParam: 'newerValue',
+      numberParam: 6,
+      boolParam: true,
+      arrayParam: [],
+      nested:
+        nestedStringParam: null
+    })

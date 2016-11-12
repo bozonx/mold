@@ -29,26 +29,8 @@ export default class Container extends _TypeBase{
     return this._main.$$schemaManager.getInstance(concatPath(this._root, path));
   }
 
-  setMold(pathOrValue, valueOrNothing) {
-    // TODO: отказаться от формата path, value
-    var path = pathOrValue;
-    var value = valueOrNothing;
-    var payload;
-
-    if (_.isPlainObject(pathOrValue)) {
-      path = '';
-      value = pathOrValue;
-    }
-
-    if (path) {
-      payload = _.set(_.cloneDeep(this.mold), path, value);
-    }
-    else {
-      // set whole container
-      payload = _.defaultsDeep(value, _.cloneDeep(this.mold));
-    }
-
-    this._main.$$state.setMold(this._root, payload);
+  update(newState) {
+    this._main.$$state.update(this._root, _.cloneDeep(newState));
   }
 
 }

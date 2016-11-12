@@ -23,7 +23,7 @@ export default class Main {
   }
 
   /**
-   * Get real storage. Use it only for binding to react or other fremeworks.
+   * Get real storage. Use it only for binding to frameworks.
    * For other ways use exportStorage.
    * @returns {*}
    */
