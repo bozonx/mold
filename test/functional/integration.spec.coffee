@@ -1,3 +1,53 @@
+mold = require('../../src/index').default
+
+describe 'Integration.', ->
+  describe 'documentsCollection => nested document.', ->
+    beforeEach () ->
+      testSchema = () ->
+        documentsCollection:
+          type: 'documentsCollection'
+          item:
+            type: 'document'
+            schema:
+              id: {type: 'number', primary: true}
+
+      # TODO: use pounch
+
+      this.testSchema = testSchema()
+      this.mold = mold( {}, this.testSchema )
+      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', [
+        {id: 0}
+      ])
+
+    it 'document unstance', ->
+      this.document = this.mold.child('documentsCollection[0]')
+      assert.equal(this.document.root, 'documentsCollection[0]')
+
+    it 'load - check responce', (done) ->
+      this.document = this.mold.child('documentsCollection[0]')
+      promise = this.document.load()
+#      expect(this.document.load()).to.eventually.notify =>
+#        expect(Promise.resolve(this.document.mold)).to.eventually
+#        .property('body')
+#        .deep.equal(this.testValues)
+
+      expect(Promise.all([
+        expect(promise).to.eventually.property('body').deep.equal({}),
+        expect(promise).to.eventually.property('request').deep.equal({
+          method: 'get',
+          nodeType: 'container',
+          storagePath: 'documentsCollection[0]',
+          url: 'documentsCollection/0',
+        }),
+      ])).to.eventually.notify(done)
+
+#      expect(this.document.load()).to.eventually.notify =>
+#        expect(Promise.resolve(this.document.mold)).to.eventually
+#        .deep.equal(this.testValues)
+#        .notify(done)
+
+
+
 
 #  describe 'complex collection', ->
 #    beforeEach () ->

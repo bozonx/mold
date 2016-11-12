@@ -19,7 +19,7 @@ class LocalMemory {
 
   get(request) {
     return new Promise((resolve, reject) => {
-      var resp = _.get(this._db, request.url);
+      var resp = _.get(this._db, this._convertToLodash(request.url));
       if (!_.isUndefined(resp)) {
         resolve({
           body: resp,
@@ -44,7 +44,7 @@ class LocalMemory {
     return new Promise((resolve, reject) => {
       let start = request.meta.pageNum * request.meta.perPage;
       let end = (request.meta.pageNum + 1) * request.meta.perPage;
-      let collection = _.get(this._db, request.url);
+      let collection = _.get(this._db, this._convertToLodash(request.url));
       let result = collection.slice(start, end);
 
       if (_.isEmpty(result)) {
@@ -65,7 +65,7 @@ class LocalMemory {
 
   set(request) {
     return new Promise((resolve) => {
-      _.set(this._db, request.url, request.payload);
+      _.set(this._db, this._convertToLodash(request.url), request.payload);
       resolve({
         body: request.payload,
         driverResponse: request.payload,
@@ -76,13 +76,13 @@ class LocalMemory {
 
   create(request) {
     return new Promise((resolve) => {
-      var collection = _.get(this._db, request.url);
+      var collection = _.get(this._db, this._convertToLodash(request.url));
       var primaryId = 0;
 
       // create new collection if need
       if (_.isUndefined(collection)) {
         collection = [];
-        _.set(this._db, request.url, collection);
+        _.set(this._db, this._convertToLodash(request.url), collection);
       }
 
       if (_.isNumber(request.payload[request.primaryKeyName])) {
@@ -112,7 +112,7 @@ class LocalMemory {
 
   delete(request) {
     return new Promise((resolve, reject) => {
-      var collection = _.get(this._db, request.url);
+      var collection = _.get(this._db, this._convertToLodash(request.url));
 
       if (!collection) {
         reject({
@@ -145,6 +145,14 @@ class LocalMemory {
     return this[request.method](request);
   }
 
+  _convertToLodash(url) {
+    let converted = url;
+    converted = converted.replace(/\/(\d+)/g, '[$1]');
+    converted = converted.replace(/\//g, '.');
+    converted = _.trim(converted, '.');
+    console.log(1111, url, converted)
+    return converted;
+  }
 }
 
 /**

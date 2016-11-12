@@ -31,22 +31,32 @@ export default class PagedCollection extends _TypeBase {
 
   /**
    * Get instance of page.
-   * @param {number} pageNum
+   * @param {string|number} path
    * @returns {object|undefined} - instance of Collection of undefined if page not found.
    */
-  child(pageNum) {
+  child(path) {
+    if (!_.isString(path) || !_.isNumber(path))
+      throw new Error(`You must pass a path argument.`);
+
+
+
+    // TODO: !!!! мы не знаем на какой страницу находится элемента
+    // TODO: ОТДАВАТЬ ЭЛЕМЕНТ А НЕ СТРАНИЦУ
     // TODO: должен работать с любым путем, можно получить потомка любой глубины
-    if (!_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
 
-    if (_.isUndefined(this.mold[pageNum])) return undefined;
 
-    var pathToChild = concatPath(this._root, pageNum);
-    // get container instance
-    var instance = this._main.$$schemaManager.getInstance(pathToChild);
-    // reinit container instance with correct path
-    instance.$init(pathToChild);
 
-    return instance;
+    // if (!_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
+    //
+    // if (_.isUndefined(this.mold[pageNum])) return undefined;
+    //
+    // var pathToChild = concatPath(this._root, pageNum);
+    // // get container instance
+    // var instance = this._main.$$schemaManager.getInstance(pathToChild);
+    // // reinit container instance with correct path
+    // instance.$init(pathToChild);
+    //
+    // return instance;
   }
 
   /**

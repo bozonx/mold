@@ -3,7 +3,7 @@ mold = require('../../src/index').default
 testSchema = () ->
   details:
     type: 'document',
-    source: 'collection.${itemId}',
+    source: 'collection/${itemId}',
     schema:
       id: {type: 'number'}
       name: {type: 'string'}
@@ -28,12 +28,7 @@ describe 'Functional. Source.', ->
         id: 0
         name: 'value0'
       request:
-#        document:
-#          pathToDocument: 'details'
-#          source: 'collection.${itemId}'
-#        driverPath:
-#          document: 'collection.0'
-        url: 'collection.0'
+        url: 'collection/0'
         method: 'get'
         storagePath: 'details'
         nodeType: 'container'
