@@ -17,7 +17,10 @@ export default class Request {
    */
   loadDocument(pathToContainer, urlParams, metaParams) {
     return this._startDriverRequest('get', pathToContainer, undefined, urlParams, metaParams)
-      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
+      .then((resp) => {
+        this._main.$$log.info('---> finish request: ', resp);
+        return resp;
+      }, this._errorHandler.bind(this));
   }
 
   /**

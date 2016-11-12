@@ -26,7 +26,14 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   load() {
-    return this._main.$$state.$$request.loadDocument(this._root, this.getUrlParams());
+    return this._main.$$state.$$request.loadDocument(this._root, this.getUrlParams()).then((resp) => {
+      // update mold with server response data
+      // TODO: если документ находится в documents collection то :
+      //        * не втыкать документ на страницу, так как мы не знаем на какой он страницу
+
+      this._main.$$state.update(resp.request.storagePath, resp.body);
+      return resp;
+    });
   }
 
   /**
