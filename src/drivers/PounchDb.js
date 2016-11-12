@@ -129,7 +129,7 @@ class LocalPounchDb {
         this._db.put({
             ...request.payload,
             [request.primaryKeyName]: primaryId,
-            _id: `${request.url}.${primaryId}`,
+            _id: `${request.url}/${primaryId}`,
           })
           .then((resp) => {
             resolve({
