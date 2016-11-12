@@ -76,7 +76,7 @@ export default class PagedCollection extends _TypeBase {
     newItem.$addedUnsaved = true;
 
     this._checkEmptyPage();
-    this._main.$$state.unshift(concatPath(this._root, 0), newItem);
+    this._main.$$state.unshift(this._root, newItem, 0);
   }
 
   /**
@@ -93,7 +93,7 @@ export default class PagedCollection extends _TypeBase {
 
     this._checkEmptyPage();
     let pageNum = this.mold.length - 1;
-    this._main.$$state.push(concatPath(this._root, pageNum), newItem);
+    this._main.$$state.push(this._root, newItem, pageNum);
   }
 
   /**

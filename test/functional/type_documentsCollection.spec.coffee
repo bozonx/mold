@@ -6,12 +6,10 @@ describe 'Functional. DocumentsCollection type.', ->
       documentsCollection:
         type: 'documentsCollection'
         item:
-          type: 'collection'
-          item:
-            type: 'document'
-            schema:
-              id: {type: 'number', primary: true}
-              name: {type: 'string'}
+          type: 'document'
+          schema:
+            id: {type: 'number', primary: true}
+            name: {type: 'string'}
     this.mold = mold( {}, this.testSchema() )
     this.documentsCollection = this.mold.child('documentsCollection')
 
@@ -52,7 +50,7 @@ describe 'Functional. DocumentsCollection type.', ->
       this.newDoc = {name: 'a'}
 
     it "check response", ->
-      this.documentsCollection.unshift(this.newDoc)
+      #this.documentsCollection.unshift(this.newDoc)
       promise = this.documentsCollection.createDocument(this.newDoc)
       expect(promise).to.eventually.property('body').deep.equal({
         id: 0,

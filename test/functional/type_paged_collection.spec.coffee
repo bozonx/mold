@@ -4,12 +4,10 @@ testSchema = () ->
   pagedCollection:
     type: 'pagedCollection'
     item:
-      type: 'collection'
-      item:
-        type: 'container'
-        schema:
-          id: {type: 'number', primary: true}
-          name: {type: 'string'}
+      type: 'container'
+      schema:
+        id: {type: 'number', primary: true}
+        name: {type: 'string'}
 
 describe 'Functional. Paged Collection type.', ->
   beforeEach () ->

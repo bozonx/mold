@@ -99,7 +99,7 @@ export default class DocumentsCollection extends PagedCollection{
         delete document.$deleting;
         // remove from page
         if (_.isNumber(document.$pageIndex)) {
-          this._main.$$state.remove(concatPath(this._root, document.$pageIndex), document);
+          this._main.$$state.remove(this._root, document, document.$pageIndex);
         }
         return resp;
       }, (err) => {

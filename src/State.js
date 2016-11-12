@@ -73,17 +73,23 @@ export default class State {
    * It add item as is, not clones it.
    * @param {string} pathToCollection
    * @param {object} newItem
+   * @param {number|undefined} pageNum
    */
-  unshift(pathToCollection, newItem) {
+  unshift(pathToCollection, newItem, pageNum = undefined) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(pathToCollection);
 
     // TODO: перенести это в checkNode
-    if (schema.type !== 'collection')
+    if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
       throw new Error(`You can add new item only to collection!`);
 
     this._checkNode(pathToCollection, newItem);
-    this._storage.unshift(pathToCollection, newItem);
+    if (_.isNumber(pageNum)) {
+      this._storage.unshift(concatPath(pathToCollection, pageNum), newItem);
+    }
+    else {
+      this._storage.unshift(pathToCollection, newItem);
+    }
   }
 
   /**
@@ -91,38 +97,47 @@ export default class State {
    * It add item as is, not clones it.
    * @param {string} pathToCollection
    * @param {object} newItem
+   * @param {number|undefined} pageNum
    */
-  push(pathToCollection, newItem) {
+  push(pathToCollection, newItem, pageNum = undefined) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(pathToCollection);
 
     // TODO: перенести это в checkNode
-    if (schema.type !== 'collection')
+    if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
       throw new Error(`You can add new item only to collection!`);
 
     this._checkNode(pathToCollection, newItem);
-    this._storage.push(pathToCollection, newItem);
+
+    if (_.isNumber(pageNum)) {
+      this._storage.push(concatPath(pathToCollection, pageNum), newItem);
+    }
+    else {
+      this._storage.push(pathToCollection, newItem);
+    }
   }
 
   /**
    * Remove item from collection.
    * @param {string} pathToCollection
    * @param {object} itemToRemove
+   * @param {number|undefined} pageNum
    */
-  remove(pathToCollection, itemToRemove) {
+  remove(pathToCollection, itemToRemove, pageNum = undefined) {
     // It rise an error if path doesn't consist with schema
     var schema = this._main.$$schemaManager.get(pathToCollection);
 
-    if (schema.type !== 'collection')
+    if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
       throw new Error(`You can remove only from collection!`);
     if (!_.isNumber(itemToRemove.$index))
       throw new Error(`Deleted item must has an $index param.`);
 
-    var realItem = _.find(this._storage.get(pathToCollection), itemToRemove);
-    // do nothing if item isn't exist
-    if (!realItem) return;
-
-    this._storage.remove(pathToCollection, realItem.$index);
+    if (_.isNumber(pageNum)) {
+      this._storage.remove(concatPath(pathToCollection, pageNum), itemToRemove.$index);
+    }
+    else {
+      this._storage.remove(pathToCollection, itemToRemove.$index);
+    }
   }
 
   /**
