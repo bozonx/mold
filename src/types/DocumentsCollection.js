@@ -43,9 +43,8 @@ export default class DocumentsCollection extends PagedCollection{
       .loadDocumentsCollection(this._root, this.getUrlParams(), metaParams)
       .then((resp) => {
         // update mold with server response data
-        // TODO: нужно вставлять только в нужную страницу
-        // TODO: use setPage()
-        this._main.$$state.update(concatPath(this._root, 0), resp.body);
+        this.setPage(resp.body, pageNum);
+
         return resp;
       });
   }

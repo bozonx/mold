@@ -30,7 +30,7 @@ describe 'Functional. DocumentsCollection type.', ->
     it 'load(page) - check mold', (done) ->
       expect(this.documentsCollection.load(0)).to.eventually.notify =>
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
-        .deep.equal([[{ id: 0, $index: 0 }]])
+        .deep.equal([[{ id: 0, $index: 0, $pageIndex: 0 }]])
         .notify(done)
 
   describe "createDocument", ->
@@ -60,7 +60,7 @@ describe 'Functional. DocumentsCollection type.', ->
               # TODO: раскомментировать, когда будет сделанно обновление элемента в request
               #id: 0,
               name: 'a',
-              $index: 0
+              $index: 0,
             }
           ]])
           .notify(done)
