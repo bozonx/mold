@@ -63,7 +63,9 @@ module.exports =
   collection_filter: (mold, pathToDocColl, done) ->
     collection = mold.child(pathToDocColl)
     request = generateRequest(pathToDocColl, 'filter', {
-      nodeType: 'collection', primaryKeyName: 'id'})
+      nodeType: 'collection', primaryKeyName: 'id'
+      meta: {pageNum: 0, perPage: 10}
+    })
 
     expect(collection.createDocument({name: 'value'})).to.eventually.notify =>
       promise = cleanPromise( collection.load(0) )

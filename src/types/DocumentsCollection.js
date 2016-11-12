@@ -33,8 +33,14 @@ export default class DocumentsCollection extends PagedCollection{
    */
   load(pageNum) {
     if (!_.isNumber(pageNum)) throw new Error(`The "pageNum" param is required!`);
-    // TODO: номер страницы надо передать в sourceParams или в documentsParams
-    return this._main.$$state.$$request.loadDocumentsCollection(this._root, this.getUrlParams())
+
+    let metaParams = {
+      pageNum: pageNum,
+      perPage: this._perPage,
+    };
+
+    return this._main.$$state.$$request
+      .loadDocumentsCollection(this._root, this.getUrlParams(), metaParams)
       .then((resp) => {
         // update mold with server response data
         // TODO: нужно вставлять только в нужную страницу
