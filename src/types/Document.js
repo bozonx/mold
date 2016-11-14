@@ -57,7 +57,11 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   save() {
-    return this._main.$$state.$$request.saveDocument(this._root, this._mold, this.getUrlParams());
+    return this._main.$$state.$$request.saveDocument(this._root, this._mold, this.getUrlParams()).then((resp) => {
+      // update mold with server response data
+      this._main.$$state.updateResponse(this._root, resp.body);
+      return resp;
+    });
   }
 
 }

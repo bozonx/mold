@@ -3,9 +3,8 @@ import _ from 'lodash';
 import { findPrimary, getSchemaBaseType, convertFromLodashToUrl } from './helpers';
 
 export default class Request {
-  constructor(main, storage) {
+  constructor(main) {
     this._main = main;
-    this._storage = storage;
   }
 
   /**
@@ -42,13 +41,7 @@ export default class Request {
    */
   saveDocument(pathToContainer, actualMold, urlParams, metaParams) {
     return this._startDriverRequest('set', pathToContainer, actualMold, urlParams, metaParams)
-      .then((resp) => {
-        this._main.$$log.info('---> finish request: ', resp);
-        // update mold with server response data
-        // TODO: вынести от сюда
-        this._storage.update(resp.request.storagePath, resp.body);
-        return resp;
-      }, this._errorHandler.bind(this));
+      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 
   /**

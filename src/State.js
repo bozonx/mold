@@ -9,7 +9,7 @@ export default class State {
   init(main, storage) {
     this._main = main;
     this._storage = storage;
-    this.$$request = new Request(this._main, storage);
+    this.$$request = new Request(this._main);
     this._handlers = {};
     this._urlParams = {};
 
