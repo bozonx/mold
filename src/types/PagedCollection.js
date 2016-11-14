@@ -8,11 +8,13 @@ export default class PagedCollection extends _TypeBase {
   constructor(main) {
     super(main);
 
-    // TODO: значение по умолчанию брать из конфига
-    this._perPage = 10;
+    this._perPage = undefined;
   }
 
   get perPage() {
+    // TODO: значение по умолчанию брать из конфига
+    if (_.isUndefined(this._perPage)) return 10;
+
     return this._perPage;
   }
 

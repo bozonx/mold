@@ -83,7 +83,7 @@ module.exports =
     collection = mold.child(pathToDocColl)
     request = generateRequest(pathToDocColl, 'filter', {
       nodeType: 'collection', primaryKeyName: 'id'
-      meta: {pageNum: 0, perPage: 10}
+      meta: {pageNum: 0}
     })
 
     expect(collection.createDocument({name: 'value'})).to.eventually.notify =>

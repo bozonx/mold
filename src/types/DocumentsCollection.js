@@ -34,10 +34,10 @@ export default class DocumentsCollection extends PagedCollection{
   load(pageNum) {
     if (!_.isNumber(pageNum)) throw new Error(`The "pageNum" param is required!`);
 
-    let metaParams = {
+    let metaParams = _.omitBy({
       pageNum: pageNum,
       perPage: this._perPage,
-    };
+    }, _.isUndefined);
 
     return this._main.$$state.$$request
       .loadDocumentsCollection(this._root, this.getUrlParams(), metaParams)
