@@ -40,7 +40,7 @@ export default class Request {
    * @returns {Promise}
    */
   saveDocument(pathToContainer, actualMold, urlParams, metaParams) {
-    return this._startDriverRequest('set', pathToContainer, actualMold, urlParams, metaParams)
+    return this._startDriverRequest('patch', pathToContainer, actualMold, urlParams, metaParams)
       .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 

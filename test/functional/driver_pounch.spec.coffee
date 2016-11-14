@@ -35,13 +35,13 @@ describe 'Functional. PounchDb driver.', ->
       this.testSchema = testSchema(pounch)
       this.mold = mold( {}, this.testSchema )
 
-  it 'container_get', (done) ->
+  it 'document_get', (done) ->
     this.init('document_get')
     driverHelpers.document_get(this.mold, 'root.document', done)
 
-  it 'container_set', (done) ->
-    this.init('document_set')
-    driverHelpers.document_set(this.mold, 'root.document', done)
+  it 'document_patch', (done) ->
+    this.init('document_patch')
+    driverHelpers.document_patch(this.mold, 'root.document', done)
 
   it 'documentsCollection_create', (done) ->
     this.init('collection_create')

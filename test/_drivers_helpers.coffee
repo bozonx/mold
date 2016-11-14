@@ -40,13 +40,13 @@ module.exports =
       expect(promise).to.eventually
       .deep.equal({body: payload, request: request}).notify(done)
 
-  document_set: (mold, pathToDoc, done) ->
+  document_patch: (mold, pathToDoc, done) ->
     payload =
       booleanParam: true
       stringParam: 'newValue'
       numberParam: 5
       arrayParam: ['value1']
-    request = generateRequest(pathToDoc, 'set', {nodeType: 'container', payload: payload})
+    request = generateRequest(pathToDoc, 'patch', {nodeType: 'container', payload: payload})
 
     container = mold.child(pathToDoc)
     container.update(payload)

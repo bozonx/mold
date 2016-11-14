@@ -44,7 +44,14 @@ class LocalPounchDb {
       }, this._rejectHandler.bind(this, request));
   }
 
-  set(request) {
+  /**
+   * It patches existent document.
+   * If document doesn't exist it rises an error.
+   * @param {object} request
+   * @returns {Promise}
+   */
+  patch(request) {
+    // TODO: remake it - нужно чтобы патчило!!!
     return new Promise((resolve, reject) => {
       this._db.get(request.url).then((resp) => {
         // update
