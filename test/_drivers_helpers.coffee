@@ -22,6 +22,7 @@ cleanPromise = (promise) ->
       return _.defaults({
         body: _.omit(resp.body, '_id', '_rev')
       }, resp)
+    return resp
 
 module.exports =
   document_get: (mold, pathToDoc, done) ->
@@ -76,15 +77,23 @@ module.exports =
   documentsCollection_delete: (mold, pathToDocColl, done) ->
     collection = mold.child(pathToDocColl)
     request = generateRequest(pathToDocColl, 'delete', {
-      nodeType: 'collection', primaryKeyName: 'id'})
+      nodeType: 'collection', primaryKeyName: 'id', payload: {id: 0}})
 
-    collection.createDocument({name: 'value1'})
-    collection.createDocument({name: 'value2'})
+    expect(collection.createDocument({name: 'value1'})).to.eventually.notify =>
+      expect(collection.createDocument({name: 'value2'})).to.eventually.notify =>
+        promise = cleanPromise( collection.deleteDocument({id: 0}) )
+        expect(promise).to.eventually
+        .property('request').deep.equal(request)
+        .notify(done)
+        # TODO: test load() after it
 
-    promise = collection.deleteDocument({id: 0})
-    expect(promise).to.eventually.deep.equal({body: [{name: 'value', id: 0}], request: request}).notify(done)
 
-    # TODO: !!!!
+
+
+
+
+
+
 
 #
 #####################################

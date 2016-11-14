@@ -48,7 +48,7 @@ describe 'Functional. PounchDb driver.', ->
     driverHelpers.documentsCollection_create(this.mold, 'root.documentsCollection', done)
 
 #  it 'documentsCollection_delete', (done) ->
-#    this.init('remove')
+#    this.init('delete')
 #    driverHelpers.documentsCollection_delete(this.mold, 'root.documentsCollection', done)
 
   it 'documentsCollection_filter', (done) ->
