@@ -42,3 +42,6 @@ describe 'Functional. Memory driver.', ->
 
   it 'documentsCollection_filter', (done) ->
     driverHelpers.documentsCollection_filter(this.mold, 'root.documentsCollection', done)
+
+  it 'documentsCollection_filter_paged', (done) ->
+    driverHelpers.documentsCollection_filter_paged(this.mold, 'root.documentsCollection', done)

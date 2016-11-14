@@ -63,17 +63,6 @@ module.exports =
     promise = cleanPromise( collection.createDocument(payload) )
     expect(promise).to.eventually.deep.equal({body: {name: 'value', id: 0}, request: request}).notify(done)
 
-  documentsCollection_filter: (mold, pathToDocColl, done) ->
-    collection = mold.child(pathToDocColl)
-    request = generateRequest(pathToDocColl, 'filter', {
-      nodeType: 'collection', primaryKeyName: 'id'
-      meta: {pageNum: 0, perPage: 10}
-    })
-
-    expect(collection.createDocument({name: 'value'})).to.eventually.notify =>
-      promise = cleanPromise( collection.load(0) )
-      expect(promise).to.eventually.deep.equal({body: [{name: 'value', id: 0}], request: request}).notify(done)
-
   documentsCollection_delete: (mold, pathToDocColl, done) ->
     collection = mold.child(pathToDocColl)
     request = generateRequest(pathToDocColl, 'delete', {
@@ -89,6 +78,38 @@ module.exports =
             expect(deletePromise).to.eventually.property('request').deep.equal(request),
             expect(loadPromise).to.eventually.property('body').deep.equal([{id: 1, name: 'value2'}]),
           ])).to.eventually.notify(done)
+
+  documentsCollection_filter: (mold, pathToDocColl, done) ->
+    collection = mold.child(pathToDocColl)
+    request = generateRequest(pathToDocColl, 'filter', {
+      nodeType: 'collection', primaryKeyName: 'id'
+      meta: {pageNum: 0, perPage: 10}
+    })
+
+    expect(collection.createDocument({name: 'value'})).to.eventually.notify =>
+      promise = cleanPromise( collection.load(0) )
+      expect(promise).to.eventually.deep.equal({body: [{name: 'value', id: 0}], request: request}).notify(done)
+
+  documentsCollection_filter_paged: (mold, pathToDocColl, done) ->
+    collection = mold.child(pathToDocColl)
+    collection.perPage = 2
+    request = generateRequest(pathToDocColl, 'filter', {
+      nodeType: 'collection', primaryKeyName: 'id'
+      meta: {pageNum: 1, perPage: 2}
+    })
+
+    expect(collection.createDocument({name: 'item0'})).to.eventually.notify =>
+      expect(collection.createDocument({name: 'item1'})).to.eventually.notify =>
+        expect(collection.createDocument({name: 'item2'})).to.eventually.notify =>
+          expect(collection.createDocument({name: 'item3'})).to.eventually.notify =>
+            promise = cleanPromise( collection.load(1) )
+            expect(promise).to.eventually
+            .deep.equal({body: [
+              {name: 'item2', id: 2}
+              {name: 'item3', id: 3}
+            ], request: request})
+            .notify(done)
+
 
 
 

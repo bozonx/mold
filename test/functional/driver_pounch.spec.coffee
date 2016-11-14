@@ -54,3 +54,7 @@ describe 'Functional. PounchDb driver.', ->
   it 'documentsCollection_filter', (done) ->
     this.init('filter')
     driverHelpers.documentsCollection_filter(this.mold, 'root.documentsCollection', done)
+
+  it 'documentsCollection_filter_paged', (done) ->
+    this.init('paged')
+    driverHelpers.documentsCollection_filter_paged(this.mold, 'root.documentsCollection', done)

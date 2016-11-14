@@ -1,5 +1,10 @@
 import _ from 'lodash';
 
+// db.post(doc) - сам генерирует id
+
+
+
+
 // TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
 
 class LocalPounchDb {
@@ -32,17 +37,19 @@ class LocalPounchDb {
   }
 
   filter(request) {
-    // TODO: сделать поддержку постраничного вывода
-    // TODO: ??? учитывать meta при запросе. В meta может быть id
     var getAllQuery = {
       include_docs: true,
       startkey: request.url,
-      // TODO: может использовать startKey и endKey для постраничного доступа.
-      //options.limit: Maximum number of documents to return.
-      //options.skip: Number of docs to skip before returning (warning: poor performance on IndexedDB/LevelDB!).
     };
 
-    // TODO: use reuqest.meta to get paged result like in Memory.js
+    if (_.isNumber(request.meta.perPage) && _.isNumber(request.meta.pageNum)) {
+      getAllQuery = {
+        ...getAllQuery,
+        // skip is slowly
+        skip: request.meta.pageNum * request.meta.perPage,
+        limit: (request.meta.pageNum + 1) * request.meta.perPage,
+      }
+    }
 
     return this._db.allDocs(getAllQuery)
       .then((resp) => {

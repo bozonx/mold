@@ -37,8 +37,7 @@ class LocalMemory {
   }
 
   filter(request) {
-    // TODO: сделать поддержку постраничного вывода
-    if (!request.meta) {
+    if (!request.meta || !_.isNumber(request.meta.perPage) || !_.isNumber(request.meta.pageNum)) {
       return this.get(request);
     }
 
