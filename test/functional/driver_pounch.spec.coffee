@@ -36,21 +36,21 @@ describe 'Functional. PounchDb driver.', ->
       this.mold = mold( {}, this.testSchema )
 
   it 'container_get', (done) ->
-    this.init('container_get')
-    driverHelpers.container_get(this.mold, 'root.document', done)
+    this.init('document_get')
+    driverHelpers.document_get(this.mold, 'root.document', done)
 
   it 'container_set', (done) ->
-    this.init('container_set')
-    driverHelpers.container_set(this.mold, 'root.document', done)
+    this.init('document_set')
+    driverHelpers.document_set(this.mold, 'root.document', done)
 
-  it 'collection_create', (done) ->
+  it 'documentsCollection_create', (done) ->
     this.init('collection_create')
-    driverHelpers.collection_create(this.mold, 'root.documentsCollection', done)
+    driverHelpers.documentsCollection_create(this.mold, 'root.documentsCollection', done)
 
-#  it 'collection_delete', (done) ->
+#  it 'documentsCollection_delete', (done) ->
 #    this.init('remove')
-#    driverHelpers.collection_delete(this.mold, 'root.documentsCollection', done)
+#    driverHelpers.documentsCollection_delete(this.mold, 'root.documentsCollection', done)
 
-  it 'collection_filter', (done) ->
+  it 'documentsCollection_filter', (done) ->
     this.init('filter')
-    driverHelpers.collection_filter(this.mold, 'root.documentsCollection', done)
+    driverHelpers.documentsCollection_filter(this.mold, 'root.documentsCollection', done)

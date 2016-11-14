@@ -28,17 +28,17 @@ describe 'Functional. Memory driver.', ->
     this.testSchema = testSchema(memory)
     this.mold = mold( {}, this.testSchema )
 
-  it 'container_get', (done) ->
-    driverHelpers.container_get(this.mold, 'root.document', done)
+  it 'document_get', (done) ->
+    driverHelpers.document_get(this.mold, 'root.document', done)
 
-  it 'container_set', (done) ->
-    driverHelpers.container_set(this.mold, 'root.document', done)
+  it 'document_set', (done) ->
+    driverHelpers.document_set(this.mold, 'root.document', done)
 
-  it 'collection_create', (done) ->
-    driverHelpers.collection_create(this.mold, 'root.documentsCollection', done)
+  it 'documentsCollection_create', (done) ->
+    driverHelpers.documentsCollection_create(this.mold, 'root.documentsCollection', done)
 
-#  it 'collection_delete', (done) ->
-#    driverHelpers.collection_delete(this.mold, 'root.documentsCollection', done)
+#  it 'documentsCollection_delete', (done) ->
+#    driverHelpers.documentsCollection_delete(this.mold, 'root.documentsCollection', done)
 
-  it 'collection_filter', (done) ->
-    driverHelpers.collection_filter(this.mold, 'root.documentsCollection', done)
+  it 'documentsCollection_filter', (done) ->
+    driverHelpers.documentsCollection_filter(this.mold, 'root.documentsCollection', done)
