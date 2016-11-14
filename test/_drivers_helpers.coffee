@@ -81,11 +81,13 @@ module.exports =
 
     expect(collection.createDocument({name: 'value1'})).to.eventually.notify =>
       expect(collection.createDocument({name: 'value2'})).to.eventually.notify =>
-        promise = cleanPromise( collection.deleteDocument({id: 0}) )
-        expect(promise).to.eventually
-        .property('request').deep.equal(request)
-        .notify(done)
-        # TODO: test load() after it
+        deletePromise = cleanPromise( collection.deleteDocument({id: 0}) )
+        loadPromise = cleanPromise( collection.load(0) )
+
+        expect(Promise.all([
+          expect(deletePromise).to.eventually.property('request').deep.equal(request),
+          expect(loadPromise).to.eventually.property('body').deep.equal([{id: 1, name: 'value2'}]),
+        ])).to.eventually.notify(done)
 
 
 
