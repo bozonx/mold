@@ -84,7 +84,6 @@ export default class State {
    * @param {object} value - valid value
    */
   updateResponse(url, value) {
-    // TODO: зачем делать через State??
     // this._checkNode(storagePath, value);
     this._storage.updateResponse(url, value);
   }

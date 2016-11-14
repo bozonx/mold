@@ -36,7 +36,8 @@ module.exports =
     container.update(payload)
     expect(container.save()).to.eventually.notify =>
       promise = cleanPromise( container.load() )
-      expect(promise).to.eventually.deep.equal({body: payload, request: request}).notify(done)
+      expect(promise).to.eventually
+      .deep.equal({body: payload, request: request}).notify(done)
 
   container_set: (mold, pathToDoc, done) ->
     payload =

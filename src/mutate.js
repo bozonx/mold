@@ -80,7 +80,7 @@ class Mutate {
   }
 
   _updateContainer(root, newContainerState) {
-    // TODO: в старом контейнере может быть несохраняемый стейт. Не нужно его удалять
+    // в старом контейнере может быть несохраняемый стейт. Не нужно его удалять
     return _.reduce(newContainerState, (sum, value, name) => {
       var haveChanges = this._crossroads(concatPath(root, name), value);
       return (!sum) ? haveChanges : sum;
@@ -112,8 +112,12 @@ class Mutate {
    * @private
    */
   _updatePrimitiveArray(root, newPrimitiveArrayState) {
-    var originalArray = _.get(this.storage, root);
+    let originalArray = _.get(this.storage, root);
     if (_.isEqual(originalArray, newPrimitiveArrayState)) return false;
+    if (_.isUndefined(originalArray)) {
+      originalArray = [];
+      _.set(this.storage, root, originalArray);
+    }
 
     _.each(newPrimitiveArrayState, (value, index) => {
       originalArray.splice(index, 1, value);

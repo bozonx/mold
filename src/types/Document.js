@@ -3,9 +3,6 @@ import Container from './Container';
 export default class Document extends Container{
   constructor(main) {
     super(main);
-
-    // TODO: должен ли тип сам устанавливать себе mold???
-    this._mold = {};
   }
 
   get type() {
@@ -14,14 +11,11 @@ export default class Document extends Container{
 
   $init(root) {
     // TODO: неправильно - mold создается и в обычном хранилище
-    super.$init(root);
+    //super.$init(root);
     this._root = root;
 
     // TODO: ??? запросить schemaManager чтобы он выдал mold
-    //this._main.$$state.updateResponse(this._root, this._mold);
-    this._mold = this._main.$$state.initResponse(this._root, this._mold);
-
-    console.log(3333, this._mold)
+    this._mold = this._main.$$state.initResponse(this._root, {});
   }
 
   child(path) {
@@ -63,8 +57,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   save() {
-    console.log(111111, this.mold)
-    return this._main.$$state.$$request.saveDocument(this._root, this.mold, this.getUrlParams());
+    return this._main.$$state.$$request.saveDocument(this._root, this._mold, this.getUrlParams());
   }
 
 }
