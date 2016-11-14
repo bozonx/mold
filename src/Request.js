@@ -17,10 +17,7 @@ export default class Request {
    */
   loadDocument(pathToContainer, urlParams, metaParams) {
     return this._startDriverRequest('get', pathToContainer, undefined, urlParams, metaParams)
-      .then((resp) => {
-        this._main.$$log.info('---> finish request: ', resp);
-        return resp;
-      }, this._errorHandler.bind(this));
+      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 
   /**
@@ -32,10 +29,7 @@ export default class Request {
    */
   loadDocumentsCollection(pathToCollection, urlParams, metaParams) {
     return this._startDriverRequest('filter', pathToCollection, undefined, urlParams, metaParams)
-      .then((resp) => {
-        this._main.$$log.info('---> finish request: ', resp);
-        return resp;
-      }, this._errorHandler.bind(this));
+      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 
   /**
@@ -48,7 +42,13 @@ export default class Request {
    */
   saveDocument(pathToContainer, actualMold, urlParams, metaParams) {
     return this._startDriverRequest('set', pathToContainer, actualMold, urlParams, metaParams)
-      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
+      .then((resp) => {
+        this._main.$$log.info('---> finish request: ', resp);
+        // update mold with server response data
+        // TODO: вынести от сюда
+        this._storage.update(resp.request.storagePath, resp.body);
+        return resp;
+      }, this._errorHandler.bind(this));
   }
 
   /**
@@ -61,11 +61,7 @@ export default class Request {
    */
   createDocument(pathToDocumentsCollection, document, urlParams, metaParams) {
     return this._startDriverRequest('create', pathToDocumentsCollection, document, urlParams, metaParams)
-      .then((resp) => {
-        this._main.$$log.info('---> finish request: ', resp);
-
-        return resp;
-      }, this._errorHandler.bind(this));
+      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 
   /**
@@ -78,11 +74,7 @@ export default class Request {
    */
   deleteDocument(pathToDocumentsCollection, document, urlParams, metaParams) {
     return this._startDriverRequest('delete', pathToDocumentsCollection, document, urlParams, metaParams)
-      .then((resp) => {
-        this._main.$$log.info('---> finish request: ', resp);
-        // update mold with server response data
-        return resp;
-      }, this._errorHandler.bind(this));
+      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 
   /**
@@ -150,8 +142,6 @@ export default class Request {
 
   _successHandler(resp) {
     this._main.$$log.info('---> finish request: ', resp);
-    // update mold with server response data
-    this._storage.update(resp.request.storagePath, resp.body);
     return resp;
   }
 
