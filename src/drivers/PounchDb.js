@@ -20,14 +20,26 @@ class LocalPounchDb {
   }
 
   get(request) {
+    // TODO: ??? учитывать meta при запросе. В meta может быть id
     return this._db.get(request.url)
-      .then(this._resolveHandler.bind(this, request), this._rejectHandler.bind(this, request));
+      .then((resp) => {
+        return {
+          body: resp,
+          driverResponse: resp,
+          request,
+        };
+      }, this._rejectHandler.bind(this, request));
   }
 
   filter(request) {
+    // TODO: сделать поддержку постраничного вывода
+    // TODO: ??? учитывать meta при запросе. В meta может быть id
     var getAllQuery = {
       include_docs: true,
       startkey: request.url,
+      // TODO: может использовать startKey и endKey для постраничного доступа.
+      //options.limit: Maximum number of documents to return.
+      //options.skip: Number of docs to skip before returning (warning: poor performance on IndexedDB/LevelDB!).
     };
 
     // TODO: use reuqest.meta to get paged result like in Memory.js
@@ -35,9 +47,7 @@ class LocalPounchDb {
     return this._db.allDocs(getAllQuery)
       .then((resp) => {
         return {
-          body: _.map(resp.rows, (value) => {
-            return value.doc;
-          }),
+          body: _.map(resp.rows, value => value.doc),
           driverResponse: resp,
           request,
         }
@@ -108,43 +118,43 @@ class LocalPounchDb {
       startkey: request.url,
     };
 
-    return new Promise((resolve, reject) => {
-      this._db.allDocs(getAllQuery).then((getAllResp) => {
-        var primaryId = 0;
+    // TODO: не использовать allDocs!!!! надо генерировать ключ
+    return this._db.allDocs(getAllQuery).then((getAllResp) => {
+      var primaryId = 0;
 
-        if (_.isNumber(request.payload[request.primaryKeyName])) {
-          // use id from payload
-          primaryId = request.payload[request.primaryKeyName];
-        }
-        else if (!_.isEmpty(getAllResp.rows)) {
-          // increment id
-          primaryId = _.last(getAllResp.rows).doc[request.primaryKeyName] + 1;
-        }
+      // TODO: не использовать id из payload - всегда генерировать!!!!
+      if (_.isNumber(request.payload[request.primaryKeyName])) {
+        // use id from payload
+        primaryId = request.payload[request.primaryKeyName];
+      }
+      else if (!_.isEmpty(getAllResp.rows)) {
+        // increment id
+        primaryId = _.last(getAllResp.rows).doc[request.primaryKeyName] + 1;
+      }
 
-        this._db.put({
-            ...request.payload,
-            [request.primaryKeyName]: primaryId,
-            _id: `${request.url}/${primaryId}`,
-          })
-          .then((resp) => {
-            resolve({
-              body: {
-                ...request.payload,
-                _id: resp.id,
-                _rev: resp.rev,
-                id: primaryId,
-              },
-              driverResponse: resp,
-              request,
-            });
-          }, (err) => {
-            reject(this._rejectHandler(request, err));
-          });
+      // add id param
+      var newValue = {
+        ...request.payload,
+        [request.primaryKeyName]: primaryId,
+        _id: `${request.url}/${primaryId}`,
+      };
 
-      }).catch((err) => {
-        reject(this._rejectHandler.bind(request, err))
-      });
-    });
+      return this._db.put(newValue)
+        .then((resp) => {
+          return {
+            body: {
+              ...request.payload,
+              _id: resp.id,
+              _rev: resp.rev,
+              id: primaryId,
+            },
+            driverResponse: resp,
+            request,
+          };
+        }, this._rejectHandler.bind(this, request));
+
+    }, this._rejectHandler.bind(this, request));
+
   }
 
   delete(request) {
@@ -172,14 +182,6 @@ class LocalPounchDb {
 
   startRequest(request) {
     return this[request.method](request);
-  }
-
-  _resolveHandler(request, resp) {
-    return {
-      body: resp,
-      driverResponse: resp,
-      request,
-    };
   }
 
   _rejectHandler(request, err) {

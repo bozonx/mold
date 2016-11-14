@@ -37,6 +37,7 @@ class LocalMemory {
   }
 
   filter(request) {
+    // TODO: сделать поддержку постраничного вывода
     if (!request.meta) {
       return this.get(request);
     }
@@ -75,12 +76,12 @@ class LocalMemory {
     });
   }
 
-  /**
-   * It patches existent document.
-   * If document doesn't exist it rises an error.
-   * @param {object} request
-   * @returns {Promise}
-   */
+  // /**
+  //  * It patches existent document.
+  //  * If document doesn't exist it rises an error.
+  //  * @param {object} request
+  //  * @returns {Promise}
+  //  */
   // patch(request) {
   //   return new Promise((resolve, reject) => {
   //     let document = _.get(this._db, this._convertToLodash(request.url));
@@ -104,15 +105,17 @@ class LocalMemory {
 
   create(request) {
     return new Promise((resolve) => {
-      var collection = _.get(this._db, this._convertToLodash(request.url));
-      var primaryId = 0;
+      let lodashPath = this._convertToLodash(request.url);
+      let collection = _.get(this._db, lodashPath);
+      let primaryId = 0;
 
       // create new collection if need
       if (_.isUndefined(collection)) {
         collection = [];
-        _.set(this._db, this._convertToLodash(request.url), collection);
+        _.set(this._db, lodashPath, collection);
       }
 
+      // TODO: не использовать id из payload - всегда генерировать!!!!
       if (_.isNumber(request.payload[request.primaryKeyName])) {
         // use id from payload
         primaryId = request.payload[request.primaryKeyName];
@@ -122,12 +125,13 @@ class LocalMemory {
         primaryId = _.last(collection)[request.primaryKeyName] + 1;
       }
 
+      // add id param
       var newValue = {
         ...request.payload,
         [request.primaryKeyName]: primaryId,
       };
 
-      // add item to existent collection
+      // set item to existent collection
       collection[primaryId] = newValue;
 
       resolve({
@@ -137,6 +141,7 @@ class LocalMemory {
       });
     });
   }
+
 
   delete(request) {
     return new Promise((resolve, reject) => {
