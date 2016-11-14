@@ -41,7 +41,9 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   load() {
-    return this._main.$$state.$$request.loadDocument(this._root, this.getUrlParams()).then((resp) => {
+    let metaParams = undefined;
+    return this._main.$$state.$$request.sendRequest(
+        'get', this._root, undefined, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
 
       this._main.$$state.updateResponse(this._root, resp.body);
@@ -57,7 +59,9 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   save() {
-    return this._main.$$state.$$request.saveDocument(this._root, this._mold, this.getUrlParams()).then((resp) => {
+    let metaParams = undefined;
+    return this._main.$$state.$$request.sendRequest(
+        'patch', this._root, this._mold, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.updateResponse(this._root, resp.body);
       return resp;

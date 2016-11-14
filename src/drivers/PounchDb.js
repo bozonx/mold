@@ -162,7 +162,6 @@ class LocalPounchDb {
     let docId = `${request.url}/${request.payload[request.primaryKeyName]}`;
 
     // first - find the element
-    // TODO: наверное db.get не нужен
     return this._db.get(docId).then((getResp) => {
       // remove item
       return this._db.remove(getResp).then((resp) => {

@@ -39,8 +39,8 @@ export default class DocumentsCollection extends PagedCollection{
       perPage: this._perPage,
     }, _.isUndefined);
 
-    return this._main.$$state.$$request
-      .loadDocumentsCollection(this._root, this.getUrlParams(), metaParams)
+    return this._main.$$state.$$request.sendRequest(
+        'filter', this._root, undefined, metaParams, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
         this.setPage(resp.body, pageNum);
@@ -56,10 +56,12 @@ export default class DocumentsCollection extends PagedCollection{
    * @returns {Promise}
    */
   createDocument(document) {
+    let metaParams = undefined;
     // change with event rising
     this._updateDoc(document, { $adding: true });
     document.$adding = true;
-    return this._main.$$state.$$request.createDocument(this._root, document, this.getUrlParams())
+    return this._main.$$state.$$request.sendRequest(
+        'create', this._root, document, metaParams, this.getUrlParams())
       .then((resp) => {
         // update document if it's in storage
         // TODO: после обновления $adding === undefined, но на самом деле он не удаляется
@@ -91,10 +93,12 @@ export default class DocumentsCollection extends PagedCollection{
    * @returns {Promise}
    */
   deleteDocument(document) {
+    let metaParams = undefined;
     // change with event rising
     this._updateDoc(document, { $deleting: true });
     document.$deleting = true;
-    return this._main.$$state.$$request.deleteDocument(this._root, document, this.getUrlParams())
+    return this._main.$$state.$$request.sendRequest(
+        'delete', this._root, document, metaParams, this.getUrlParams())
       .then((resp) => {
         delete document.$deleting;
         // remove from page

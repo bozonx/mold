@@ -8,65 +8,16 @@ export default class Request {
   }
 
   /**
-   * Load container and it's contents from driver.
-   * @param {string} pathToContainer
-   * @param {object|null} urlParams - dynamic part of source path
-   * @param {object|undefined} metaParams
+   * Send request to driver
+   * @param {string} method - one of: get, put, patch, filter, create, delete
+   * @param {string} moldPath - path in mold
+   * @param {object|array|undefined} payload - data to save
+   * @param {object|undefined} metaParams - parameters to pass to driver
+   * @param {object|undefined} urlParams
    * @returns {Promise}
    */
-  loadDocument(pathToContainer, urlParams, metaParams) {
-    return this._startDriverRequest('get', pathToContainer, undefined, urlParams, metaParams)
-      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
-  }
-
-  /**
-   * Load list of documents from driver.
-   * @param {string} pathToCollection
-   * @param {object|null} urlParams - dynamic part of source path
-   * @param {object|undefined} metaParams
-   * @returns {Promise}
-   */
-  loadDocumentsCollection(pathToCollection, urlParams, metaParams) {
-    return this._startDriverRequest('filter', pathToCollection, undefined, urlParams, metaParams)
-      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
-  }
-
-  /**
-   * Save container and it's contents to driver.
-   * @param {string} pathToContainer
-   * @param {object} actualMold - actual data by path
-   * @param {object|null} urlParams - dynamic part of source path
-   * @param {object|undefined} metaParams
-   * @returns {Promise}
-   */
-  saveDocument(pathToContainer, actualMold, urlParams, metaParams) {
-    return this._startDriverRequest('patch', pathToContainer, actualMold, urlParams, metaParams)
-      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
-  }
-
-  /**
-   * Create document
-   * @param {string} pathToDocumentsCollection
-   * @param {object} document
-   * @param {object|null} urlParams - dynamic part of source path
-   * @param {object|undefined} metaParams
-   * @returns {Promise}
-   */
-  createDocument(pathToDocumentsCollection, document, urlParams, metaParams) {
-    return this._startDriverRequest('create', pathToDocumentsCollection, document, urlParams, metaParams)
-      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
-  }
-
-  /**
-   * Delete document and remove it from mold
-   * @param {string} pathToDocumentsCollection
-   * @param {object} document
-   * @param {object|null} urlParams - dynamic part of source path
-   * @param {object|undefined} metaParams
-   * @returns {Promise}
-   */
-  deleteDocument(pathToDocumentsCollection, document, urlParams, metaParams) {
-    return this._startDriverRequest('delete', pathToDocumentsCollection, document, urlParams, metaParams)
+  sendRequest(method, moldPath, payload, metaParams, urlParams) {
+    return this._startDriverRequest(method, moldPath, payload, urlParams, metaParams)
       .then(this._successHandler.bind(this), this._errorHandler.bind(this));
   }
 
@@ -124,8 +75,6 @@ export default class Request {
 
   _prepareUrl(urlTemplate, urlTemplateParams, request, driverRoot) {
     if (urlTemplate) return _.template(urlTemplate)({...urlTemplateParams, request});
-
-    // TODO: strip driver path to its root
 
     var defaultUrl = _.trimStart(request.storagePath, driverRoot);
     defaultUrl = convertFromLodashToUrl(defaultUrl);
