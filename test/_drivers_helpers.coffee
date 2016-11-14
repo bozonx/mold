@@ -35,22 +35,23 @@ module.exports =
 
     container = mold.child(pathToDoc)
     container.update(payload)
-    expect(container.save()).to.eventually.notify =>
+    expect(container.put()).to.eventually.notify =>
       promise = cleanPromise( container.load() )
       expect(promise).to.eventually
       .deep.equal({body: payload, request: request}).notify(done)
 
-  document_patch: (mold, pathToDoc, done) ->
+  document_put: (mold, pathToDoc, done) ->
+    # TODO: пересмотреть
     payload =
       booleanParam: true
       stringParam: 'newValue'
       numberParam: 5
       arrayParam: ['value1']
-    request = generateRequest(pathToDoc, 'patch', {nodeType: 'container', payload: payload})
+    request = generateRequest(pathToDoc, 'put', {nodeType: 'container', payload: payload})
 
     container = mold.child(pathToDoc)
     container.update(payload)
-    promise = cleanPromise( container.save() )
+    promise = cleanPromise( container.put() )
     expect(promise).to.eventually.deep.equal({body: payload, request: request}).notify(done)
 
   documentsCollection_create: (mold, pathToDocColl, done) ->

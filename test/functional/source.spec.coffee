@@ -38,7 +38,7 @@ describe 'Functional. Source.', ->
     container.setUrlParams({itemId: 0});
     container.update({id: 0})
     container.update({name: 'new value'})
-    expect(container.save()).to.eventually.notify =>
+    expect(container.put()).to.eventually.notify =>
       expect(Promise.resolve(_.get(this.mold.$$schemaManager.$defaultMemoryDb, 'collection[0]'))).to.eventually
       .deep.equal({
         id: 0

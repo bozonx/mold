@@ -63,7 +63,7 @@ class LocalMemory {
     });
   }
 
-  patch(request) {
+  put(request) {
     // TODO: remove it
     return new Promise((resolve) => {
       _.set(this._db, this._convertToLodash(request.url), request.payload);
@@ -75,32 +75,32 @@ class LocalMemory {
     });
   }
 
-  // /**
-  //  * It patches existent document.
-  //  * If document doesn't exist it rises an error.
-  //  * @param {object} request
-  //  * @returns {Promise}
-  //  */
-  // patch(request) {
-  //   return new Promise((resolve, reject) => {
-  //     let document = _.get(this._db, this._convertToLodash(request.url));
-  //
-  //     if (document) {
-  //       let newState = _.defaultsDeep(_.clone(request.payload), document);
-  //       _.set(this._db, this._convertToLodash(request.url), newState);
-  //       resolve({
-  //         body: newState,
-  //         driverResponse: request.payload,
-  //         request,
-  //       });
-  //     }
-  //     else {
-  //       reject({
-  //         driverError: 'Document not found',
-  //       });
-  //     }
-  //   });
-  // }
+  /**
+   * It patches existent document.
+   * If document doesn't exist it rises an error.
+   * @param {object} request
+   * @returns {Promise}
+   */
+  patch(request) {
+    return new Promise((resolve, reject) => {
+      let document = _.get(this._db, this._convertToLodash(request.url));
+
+      if (document) {
+        let newState = _.defaultsDeep(_.clone(request.payload), document);
+        _.set(this._db, this._convertToLodash(request.url), newState);
+        resolve({
+          body: newState,
+          driverResponse: request.payload,
+          request,
+        });
+      }
+      else {
+        reject({
+          driverError: 'Document not found',
+        });
+      }
+    });
+  }
 
   create(request) {
     return new Promise((resolve) => {

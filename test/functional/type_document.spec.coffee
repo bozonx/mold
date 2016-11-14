@@ -42,7 +42,7 @@ describe 'Functional. Document type.', ->
 
     expect(this.document.load()).to.eventually.property('body').deep.equal(this.testValues)
 
-  it 'update() and save', ->
+  it 'update() and put()', ->
     this.document.update(this.testValues)
-    expect(this.document.save()).to.eventually
+    expect(this.document.put()).to.eventually
     .property('body').deep.equal(this.testValues)

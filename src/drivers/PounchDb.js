@@ -56,6 +56,63 @@ class LocalPounchDb {
   }
 
   /**
+   * It create or save(all fields) document.
+   * @param {object} request
+   * @returns {Promise}
+   */
+  put(request) {
+    // TODO: remake it - нужно чтобы патчило!!!
+    return new Promise((resolve, reject) => {
+      this._db.get(request.url).then((resp) => {
+        // update
+        this._db.put({
+          ...resp,
+          ..._.omit(request.payload, '_rev'),
+        })
+          .then((resp) => {
+            if (!resp.ok) reject(this._rejectHandler.bind(request, err));
+
+            resolve({
+              body: {
+                ...request.payload,
+                _id: resp.id,
+                _rev: resp.rev,
+              },
+              driverResponse: resp,
+              request,
+            });
+          }, (err) => {
+            reject(this._rejectHandler.bind(request, err));
+          });
+      }).catch((err) => {
+        if (err.status != 404)
+          return reject(this._rejectHandler.bind(request, err));
+
+        // create
+        this._db.put({
+          ...request.payload,
+          _id: request.url,
+        })
+          .then((resp) => {
+            if (!resp.ok) reject(this._rejectHandler.bind(request, err));
+
+            resolve({
+              body: {
+                ...request.payload,
+                _id: resp.id,
+                _rev: resp.rev,
+              },
+              driverResponse: resp,
+              request,
+            });
+          }, (err) => {
+            reject(this._rejectHandler.bind(request, err));
+          });
+      });
+    });
+  }
+
+  /**
    * It patches existent document.
    * If document doesn't exist it rises an error.
    * @param {object} request

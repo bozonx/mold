@@ -10,15 +10,13 @@ export default class Document extends Container{
   }
 
   $init(root) {
-    // TODO: неправильно - mold создается и в обычном хранилище
-    //super.$init(root);
     this._root = root;
 
-    // TODO: ??? запросить schemaManager чтобы он выдал mold
     this._mold = this._main.$$state.initResponse(this._root, {});
   }
 
   child(path) {
+    // TODO: ???
     // !!! пока не разрешаем получать потомков, так как придется мого переделывать если
     //     потомки будут коллекциями
   }
@@ -32,7 +30,7 @@ export default class Document extends Container{
   }
 
   update(newState) {
-    // TODO: нужно использовать универсальный метод, чтобы нормально работал container
+    // TODO: формировать правильно url
     this._main.$$state.updateResponse(this._root, _.cloneDeep(newState));
   }
 
@@ -46,6 +44,7 @@ export default class Document extends Container{
         'get', this._root, undefined, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
 
+      // TODO: формировать правильно url
       this._main.$$state.updateResponse(this._root, resp.body);
       // TODO: не надо здесь устанавливать mold - он уже должен был установлен
       this._mold = this._main.$$state.getResponse(this._root);
@@ -58,10 +57,10 @@ export default class Document extends Container{
    * Save actual state.
    * @returns {Promise}
    */
-  save() {
+  put() {
     let metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
-        'patch', this._root, this._mold, metaParams, this.getUrlParams()).then((resp) => {
+        'put', this._root, this._mold, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.updateResponse(this._root, resp.body);
       return resp;
