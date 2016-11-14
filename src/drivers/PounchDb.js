@@ -162,6 +162,7 @@ class LocalPounchDb {
     let docId = `${request.url}/${request.payload[request.primaryKeyName]}`;
 
     // first - find the element
+    // TODO: наверное db.get не нужен
     return this._db.get(docId).then((getResp) => {
       // remove item
       return this._db.remove(getResp).then((resp) => {
@@ -220,17 +221,4 @@ export default function(driverConfig) {
     return new LocalPounchDb(this.driverConfig, instanceConfig, this.db);
   };
 
-  // /**
-  //  * Schema helper
-  //  * @param {object} instanceConfig
-  //  * @param {object} schema
-  //  * @returns {{driver: LocalPounchDb, schema: *}}
-  //  */
-  // this.schema = (instanceConfig, schema) => {
-  //   // TODO: не нужно
-  //   return {
-  //     driver: new LocalPounchDb(this.driverConfig, instanceConfig, this.db),
-  //     schema: schema,
-  //   }
-  // }
 }

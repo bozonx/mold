@@ -207,17 +207,5 @@ export default function (driverConfig) {
     return new LocalMemory(this.driverConfig, instanceConfig, this.db);
   };
 
-  /**
-   * Schema helper
-   * @param {object} instanceConfig
-   * @param {object} schema
-   * @returns {{driver: LocalMemory, schema: *}}
-   */
-  this.schema = (instanceConfig, schema) => {
-    // TODO: не нужно
-    return {
-      driver: new LocalMemory(this.driverConfig, instanceConfig, this.db),
-      schema: schema,
-    }
-  }
 }
+
