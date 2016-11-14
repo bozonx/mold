@@ -55,7 +55,7 @@ export default class DocumentsCollection extends PagedCollection{
    * @param {object} document
    * @returns {Promise}
    */
-  createDocument(document) {
+  create(document) {
     let metaParams = undefined;
     // change with event rising
     this._updateDoc(document, { $adding: true });

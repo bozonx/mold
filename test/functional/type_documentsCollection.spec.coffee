@@ -45,13 +45,13 @@ describe 'Functional. DocumentsCollection type.', ->
         ])
         .notify(done)
 
-  describe "createDocument", ->
+  describe "create()", ->
     beforeEach () ->
       this.newDoc = {name: 'a'}
 
     it "check response", ->
       #this.documentsCollection.unshift(this.newDoc)
-      promise = this.documentsCollection.createDocument(this.newDoc)
+      promise = this.documentsCollection.create(this.newDoc)
       expect(promise).to.eventually.property('body').deep.equal({
         id: 0,
         name: 'a'
@@ -59,7 +59,7 @@ describe 'Functional. DocumentsCollection type.', ->
 
     it "check mold", (done) ->
       this.documentsCollection.unshift(this.newDoc)
-      promise = this.documentsCollection.createDocument(this.newDoc)
+      promise = this.documentsCollection.create(this.newDoc)
 
       assert.isTrue(this.newDoc.$addedUnsaved)
       assert.isTrue(this.newDoc.$adding)
@@ -83,14 +83,14 @@ describe 'Functional. DocumentsCollection type.', ->
       this.doc = {id: 0, name: 'a', $index: 0}
 
     it "check response", (done) ->
-      expect(this.documentsCollection.createDocument(this.doc)).to.eventually.notify =>
+      expect(this.documentsCollection.create(this.doc)).to.eventually.notify =>
         promise = this.documentsCollection.deleteDocument(this.doc)
         expect(promise).to.eventually.property('body').equal(undefined)
         .notify(done)
 
     it "check mold", (done) ->
       this.documentsCollection.unshift(this.doc)
-      expect(this.documentsCollection.createDocument(this.doc)).to.eventually.notify =>
+      expect(this.documentsCollection.create(this.doc)).to.eventually.notify =>
         promise = this.documentsCollection.deleteDocument(this.doc)
 
         assert.isTrue(this.doc.$deleting)
