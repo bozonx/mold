@@ -1,10 +1,5 @@
 import _ from 'lodash';
 
-// db.post(doc) - сам генерирует id
-
-
-
-
 // TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
 
 class LocalPounchDb {
@@ -25,7 +20,6 @@ class LocalPounchDb {
   }
 
   get(request) {
-    // TODO: ??? учитывать meta при запросе. В meta может быть id
     return this._db.get(request.url)
       .then((resp) => {
         return {
@@ -211,7 +205,6 @@ class LocalPounchDb {
  */
 export default function(driverConfig) {
   this.driverConfig = driverConfig;
-  // TODO: брать из конфига root - чтобы обрезать path
 
   if (!driverConfig.db)
     throw new Error(`The "db" field in config is required!`);
@@ -227,17 +220,17 @@ export default function(driverConfig) {
     return new LocalPounchDb(this.driverConfig, instanceConfig, this.db);
   };
 
-  /**
-   * Schema helper
-   * @param {object} instanceConfig
-   * @param {object} schema
-   * @returns {{driver: LocalPounchDb, schema: *}}
-   */
-  this.schema = (instanceConfig, schema) => {
-    // TODO: не нужно
-    return {
-      driver: new LocalPounchDb(this.driverConfig, instanceConfig, this.db),
-      schema: schema,
-    }
-  }
+  // /**
+  //  * Schema helper
+  //  * @param {object} instanceConfig
+  //  * @param {object} schema
+  //  * @returns {{driver: LocalPounchDb, schema: *}}
+  //  */
+  // this.schema = (instanceConfig, schema) => {
+  //   // TODO: не нужно
+  //   return {
+  //     driver: new LocalPounchDb(this.driverConfig, instanceConfig, this.db),
+  //     schema: schema,
+  //   }
+  // }
 }
