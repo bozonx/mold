@@ -68,22 +68,10 @@ export default class Storage {
   }
 
   updateResponse(url, newValue) {
-    // var wereChanges;
-    // // run mutates and get list of changes
-    // if (!this._responses[url]) {
-    //   this._responses[url] = newValue;
-    //   wereChanges = true;
-    // }
-    // else {
-    //   wereChanges = mutate(this._responses[url], '').update(newValue);
-    // }
-
     let wereChanges = mutate(this._responses[url]).update(newValue);
 
-    //_.extend(this._responses[url], newValue)
-
     // run update event
-    //if (wereChanges) this._riseEvents(url, 'change');
+    if (wereChanges) this._riseEvents(url, 'change');
   }
 
   clearResponse(url) {

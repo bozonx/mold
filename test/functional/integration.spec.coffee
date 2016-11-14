@@ -22,8 +22,7 @@ describe 'Integration.', ->
 
     it 'document instance', ->
       assert.equal(this.document.root, 'documentsCollection[0]')
-      # TODO: test it!!!
-      #assert.equal(this.document.mold, {})
+      assert.deepEqual(this.document.mold, {})
 
     it 'load - check responce', (done) ->
       promise = this.document.load()
@@ -34,7 +33,6 @@ describe 'Integration.', ->
           method: 'get',
           nodeType: 'container',
           storagePath: 'documentsCollection[0]',
-          # TODO: is it correct? - without slash
           url: 'documentsCollection/0',
         }),
       ])).to.eventually.notify(done)
@@ -55,19 +53,11 @@ describe 'Integration.', ->
         })
         .notify(done)
 
-#      expect(this.document.load()).to.eventually.notify =>
-#        expect(Promise.resolve(this.document.mold)).to.eventually
-#        .property('body')
-#        .deep.equal(this.testValues)
-
-#      expect(this.document.load()).to.eventually.notify =>
-#        expect(Promise.resolve(this.document.mold)).to.eventually
-#        .deep.equal(this.testValues)
-#        .notify(done)
 
 
 
 
+########################################
 #  describe 'complex collection', ->
 #    beforeEach () ->
 #      this.mold = mold( {}, testSchema() )
