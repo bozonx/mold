@@ -141,26 +141,25 @@ class LocalPounchDb {
   }
 
   delete(request) {
-    var docId = `${request.url}.${request.payload[request.primaryKeyName]}`;
+    let docId = `${request.url}/${request.payload[request.primaryKeyName]}`;
 
-    return new Promise((resolve, reject) => {
-      this._db.get(docId).then((getResp) => {
-        this._db.remove(getResp).then((resp) => {
-          resolve({
-            //body: _.omit(getResp, '_id', '_rev'),
-            body: undefined,
-            driverResponse: resp,
-            request,
-          });
-        }).catch(function (err) {
-          reject({
-            driverError: err,
-            request,
-          });
+    // first - find the element
+    return this._db.get(docId).then((getResp) => {
+      // remove item
+      return this._db.remove(getResp).then((resp) => {
+        return {
+          body: undefined,
+          driverResponse: resp,
+          request,
+        };
+      }, (err) => {
+        return ({
+          driverError: err,
+          request,
         });
-      }).catch((err) => {
-        reject(this._rejectHandler.bind(request, err))
       });
+    }, (err) => {
+      return this._rejectHandler(request, err);
     });
   }
 
