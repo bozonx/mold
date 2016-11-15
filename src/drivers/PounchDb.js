@@ -123,14 +123,24 @@ class LocalPounchDb {
   patch(request) {
     return this._db.get(request.url).then((resp) => {
       // TODO: primitive array должны всегда полностью переписываться
-      let payload = _.defaultsDeep(_.clone(resp), _.omit(request.payload, '_id', '_rev'));
+      let payload = _.defaultsDeep(_.omit(_.cloneDeep(request.payload), '_id', '_rev'), resp);
+      // fix primitive array update. It must update all the items
+      // TODO: нужно поддерживать массивы в глубине
+      _.each(request.payload, (item, name) => {
+        // TODO: compact будет тормозить - оптимизировать.
+        if (_.isArray(item) && !_.isPlainObject( _.head(_.compact(item)) )) {
+          payload[name] = item;
+        }
+      });
+
 
       // update
       return this._db.put(payload).then((resp) => {
         //if (!resp.ok) reject(this._rejectHandler.bind(request, err));
+
         return {
           body: {
-            ...request.payload,
+            ...payload,
             _id: resp.id,
             _rev: resp.rev,
           },

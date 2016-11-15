@@ -86,7 +86,16 @@ class LocalMemory {
       let document = _.get(this._db, this._convertToLodash(request.url));
 
       if (document) {
-        let newState = _.defaultsDeep(_.clone(request.payload), document);
+        let newState = _.defaultsDeep(_.cloneDeep(request.payload), document);
+        // fix primitive array update. It must update all the items
+        // TODO: нужно поддерживать массивы в глубине
+        _.each(request.payload, (item, name) => {
+          // TODO: compact будет тормозить - оптимизировать.
+          if (_.isArray(item) && !_.isPlainObject( _.head(_.compact(item)) )) {
+            newState[name] = item;
+          }
+        });
+
         _.set(this._db, this._convertToLodash(request.url), newState);
         resolve({
           body: newState,

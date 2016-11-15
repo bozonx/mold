@@ -30,6 +30,18 @@ export function eachSchema(fullSchema, cb) {
   });
 }
 
+export function correctUpdatePayload(currentData, newData) {
+  let newState = _.defaultsDeep(_.cloneDeep(request.payload), document);
+  // fix primitive array update. It must update all the items
+  // TODO: нужно поддерживать массивы в глубине
+  _.each(request.payload, (item, name) => {
+    // TODO: compact будет тормозить - оптимизировать.
+    if (_.isArray(item) && !_.isPlainObject( _.head(_.compact(item)) )) {
+      newState[name] = item;
+    }
+  });
+}
+
 export function findPrimary(schema) {
   var primary;
 
@@ -144,6 +156,8 @@ export function findTheClosestParentPath(path, assoc) {
     return (n.length > sum.length) ? n : sum;
   });
 }
+
+
 
 // export function getUniqPartOfPaths(paths) {
 //   if(_.isArray(paths) && paths.length == 1) {

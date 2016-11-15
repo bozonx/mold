@@ -59,10 +59,10 @@ module.exports =
       booleanParam: true
       stringParam: 'oldValue'
       numberParam: 5
-      arrayParam: ['value1']
+      arrayParam: ['value1', 'value2']
     updatedData =
       stringParam: 'newValue'
-      arrayParam: ['value2', 'value1']
+      arrayParam: ['value3']
     resultData = _.defaults(_.clone(updatedData), firstData)
     document = mold.child(pathToDoc)
     request = generateRequest(pathToDoc, 'patch', {nodeType: 'container', payload: updatedData})
