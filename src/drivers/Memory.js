@@ -121,13 +121,7 @@ class LocalMemory {
         _.set(this._db, lodashPath, collection);
       }
 
-      // TODO: не использовать id из payload - всегда генерировать!!!!
-      if (_.isNumber(request.payload[request.primaryKeyName])) {
-        // use id from payload
-        primaryId = request.payload[request.primaryKeyName];
-      }
-      if (!_.isEmpty(collection)) {
-        // increment primary id if it isn't first element in collection
+      if (collection.length) {
         primaryId = _.last(collection)[request.primaryKeyName] + 1;
       }
 
