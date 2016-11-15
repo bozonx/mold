@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import { correctUpdatePayload } from '../helpers';
 import Container from './Container';
 
 export default class Document extends Container{
@@ -34,16 +35,7 @@ export default class Document extends Container{
   }
 
   update(newState) {
-    this._changesFromLastSave = _.defaultsDeep(_.clone(newState), this._changesFromLastSave);
-    // fix primitive array update. It must update all the items
-    // TODO: нужно поддерживать массивы в глубине
-    _.each(newState, (item, name) => {
-      // TODO: compact будет тормозить - оптимизировать.
-      if (_.isArray(item) && !_.isPlainObject( _.head(_.compact(item)) )) {
-        this._changesFromLastSave[name] = item;
-      }
-    });
-
+    this._changesFromLastSave = correctUpdatePayload(this._changesFromLastSave, newState);
     // TODO: формировать правильно url
     this._main.$$state.updateResponse(this._root, _.cloneDeep(newState));
   }

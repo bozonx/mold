@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { correctUpdatePayload } from '../helpers';
+
 class LocalMemory {
   constructor(driverConfig, instanceConfig, db) {
     this._driverConfig = driverConfig;
@@ -64,7 +66,7 @@ class LocalMemory {
   }
 
   put(request) {
-    // TODO: remove it
+    // TODO: проверить
     return new Promise((resolve) => {
       _.set(this._db, this._convertToLodash(request.url), request.payload);
       resolve({
@@ -86,15 +88,7 @@ class LocalMemory {
       let document = _.get(this._db, this._convertToLodash(request.url));
 
       if (document) {
-        let newState = _.defaultsDeep(_.cloneDeep(request.payload), document);
-        // fix primitive array update. It must update all the items
-        // TODO: нужно поддерживать массивы в глубине
-        _.each(request.payload, (item, name) => {
-          // TODO: compact будет тормозить - оптимизировать.
-          if (_.isArray(item) && !_.isPlainObject( _.head(_.compact(item)) )) {
-            newState[name] = item;
-          }
-        });
+        let newState = correctUpdatePayload(document, request.payload);
 
         _.set(this._db, this._convertToLodash(request.url), newState);
         resolve({

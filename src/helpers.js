@@ -31,15 +31,16 @@ export function eachSchema(fullSchema, cb) {
 }
 
 export function correctUpdatePayload(currentData, newData) {
-  let newState = _.defaultsDeep(_.cloneDeep(request.payload), document);
+  let newerState = _.defaultsDeep(_.cloneDeep(newData), currentData);
   // fix primitive array update. It must update all the items
   // TODO: нужно поддерживать массивы в глубине
-  _.each(request.payload, (item, name) => {
+  _.each(newData, (item, name) => {
     // TODO: compact будет тормозить - оптимизировать.
     if (_.isArray(item) && !_.isPlainObject( _.head(_.compact(item)) )) {
-      newState[name] = item;
+      newerState[name] = item;
     }
   });
+  return newerState;
 }
 
 export function findPrimary(schema) {
