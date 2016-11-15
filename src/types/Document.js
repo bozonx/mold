@@ -7,11 +7,19 @@ export default class Document extends Container{
   constructor(main) {
     super(main);
 
-    this._changesFromLastSave = {};
+    this._lastChanges = {};
   }
 
   get type() {
     return 'document';
+  }
+
+  /**
+   * Get changes from last save to the moment.
+   * @returns {object}
+   */
+  get lastChanges() {
+    return this._lastChanges;
   }
 
   $init(root) {
@@ -35,7 +43,7 @@ export default class Document extends Container{
   }
 
   update(newState) {
-    this._changesFromLastSave = correctUpdatePayload(this._changesFromLastSave, newState);
+    this._lastChanges = correctUpdatePayload(this._lastChanges, newState);
     // TODO: формировать правильно url
     this._main.$$state.updateResponse(this._root, _.cloneDeep(newState));
   }
@@ -54,7 +62,7 @@ export default class Document extends Container{
       this._main.$$state.updateResponse(this._root, resp.body);
       // TODO: не надо здесь устанавливать mold - он уже должен был установлен
       this._mold = this._main.$$state.getResponse(this._root);
-      this._changesFromLastSave = {};
+      this._lastChanges = {};
 
       return resp;
     });
@@ -70,7 +78,7 @@ export default class Document extends Container{
         'put', this._root, this._mold, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.updateResponse(this._root, resp.body);
-      this._changesFromLastSave = {};
+      this._lastChanges = {};
 
       return resp;
     });
@@ -83,10 +91,10 @@ export default class Document extends Container{
   patch() {
     let metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
-      'patch', this._root, this._changesFromLastSave, metaParams, this.getUrlParams()).then((resp) => {
+      'patch', this._root, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.updateResponse(this._root, resp.body);
-      this._changesFromLastSave = {};
+      this._lastChanges = {};
 
       return resp;
     });

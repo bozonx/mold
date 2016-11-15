@@ -63,7 +63,6 @@ class LocalPounchDb {
    * @returns {Promise}
    */
   put(request) {
-    // TODO: refacotr - remove Promise
     return new Promise((resolve, reject) => {
       this._db.get(request.url).then((resp) => {
         // full update

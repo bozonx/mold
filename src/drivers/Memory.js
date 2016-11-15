@@ -65,8 +65,12 @@ class LocalMemory {
     });
   }
 
+  /**
+   * It set new data or create a document.
+   * @param request
+   * @returns {Promise}
+   */
   put(request) {
-    // TODO: проверить
     return new Promise((resolve) => {
       _.set(this._db, this._convertToLodash(request.url), request.payload);
       resolve({
