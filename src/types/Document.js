@@ -1,8 +1,12 @@
+import _ from 'lodash';
+
 import Container from './Container';
 
 export default class Document extends Container{
   constructor(main) {
     super(main);
+
+    this._changesFromLastSave = {};
   }
 
   get type() {
@@ -30,6 +34,8 @@ export default class Document extends Container{
   }
 
   update(newState) {
+    this._changesFromLastSave = _.defaultsDeep(_.clone(newState), this._changesFromLastSave);
+
     // TODO: формировать правильно url
     this._main.$$state.updateResponse(this._root, _.cloneDeep(newState));
   }
@@ -48,6 +54,7 @@ export default class Document extends Container{
       this._main.$$state.updateResponse(this._root, resp.body);
       // TODO: не надо здесь устанавливать mold - он уже должен был установлен
       this._mold = this._main.$$state.getResponse(this._root);
+      this._changesFromLastSave = {};
 
       return resp;
     });
@@ -63,6 +70,8 @@ export default class Document extends Container{
         'put', this._root, this._mold, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.updateResponse(this._root, resp.body);
+      this._changesFromLastSave = {};
+
       return resp;
     });
   }
@@ -74,9 +83,11 @@ export default class Document extends Container{
   patch() {
     let metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
-      'patch', this._root, this._mold, metaParams, this.getUrlParams()).then((resp) => {
+      'patch', this._root, this._changesFromLastSave, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.updateResponse(this._root, resp.body);
+      this._changesFromLastSave = {};
+
       return resp;
     });
   }
