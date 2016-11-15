@@ -45,6 +45,7 @@ export default class Request {
   }
 
   _generateRequest(method, storagePath, rawPayload, urlParams, schema, driverRoot, meta) {
+    // TODO: refactor
     let payload = rawPayload;
     if (_.isPlainObject(payload)) {
       payload = _.omit(_.cloneDeep(payload), '$index', '$pageIndex', '$adding', '$addedUnsaved', '$deleting');

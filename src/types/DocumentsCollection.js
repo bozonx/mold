@@ -64,7 +64,6 @@ export default class DocumentsCollection extends PagedCollection{
         'create', this._root, document, metaParams, this.getUrlParams())
       .then((resp) => {
         // update document if it's in storage
-        // TODO: после обновления $adding === undefined, но на самом деле он не удаляется
         this._updateDoc(document, {
           ...resp.body,
           $addedUnsaved: undefined,

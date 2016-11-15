@@ -161,13 +161,6 @@ class LocalPounchDb {
 
     // TODO: не использовать allDocs!!!!
     return this._db.allDocs(getAllQuery).then((getAllResp) => {
-      // TODO: use pounch conflict generator
-      // TODO: надо генерировать ключ
-      let uniqId = makeid();
-      let uniqDocId = `${request.url}::${uniqId}`;
-
-
-
       let primaryId = 0;
 
       // increment primary id
@@ -175,13 +168,17 @@ class LocalPounchDb {
         primaryId = _.last(getAllResp.rows).doc[request.primaryKeyName] + 1;
       }
 
-      let newId = `${request.url}/${primaryId}`;
+      // TODO: use pounch conflict generator
+      let uniqId = 'doc' + primaryId + makeid();
+      let uniqDocId = `${request.url}/${uniqId}`;
 
       // add id param
       var newValue = {
         ...request.payload,
-        [request.primaryKeyName]: primaryId,
-        _id: newId,
+        //[request.primaryKeyName]: primaryId,
+        [request.primaryKeyName]: uniqId,
+        //_id: newId,
+        _id: uniqDocId,
       };
 
       return this._db.put(newValue)
@@ -191,7 +188,8 @@ class LocalPounchDb {
               ...request.payload,
               _id: resp.id,
               _rev: resp.rev,
-              id: primaryId,
+              //id: primaryId,
+              id: uniqId,
             },
             driverResponse: resp,
             request,
