@@ -34,6 +34,9 @@ describe 'Functional. Memory driver.', ->
   it 'document_put', (done) ->
     driverHelpers.document_put(this.mold, 'root.document', done)
 
+  it 'document_patch', (done) ->
+    driverHelpers.document_patch(this.mold, 'root.document', done)
+
   it 'documentsCollection_create', (done) ->
     driverHelpers.documentsCollection_create(this.mold, 'root.documentsCollection', done)
 

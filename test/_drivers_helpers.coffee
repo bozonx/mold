@@ -33,26 +33,46 @@ module.exports =
       arrayParam: ['value1']
     request = generateRequest(pathToDoc, 'get', {nodeType: 'container'})
 
-    container = mold.child(pathToDoc)
-    container.update(payload)
-    expect(container.put()).to.eventually.notify =>
-      promise = cleanPromise( container.load() )
+    document = mold.child(pathToDoc)
+    document.update(payload)
+    expect(document.put()).to.eventually.notify =>
+      promise = cleanPromise( document.load() )
       expect(promise).to.eventually
       .deep.equal({body: payload, request: request}).notify(done)
 
   document_put: (mold, pathToDoc, done) ->
-    # TODO: пересмотреть
     payload =
       booleanParam: true
       stringParam: 'newValue'
       numberParam: 5
       arrayParam: ['value1']
     request = generateRequest(pathToDoc, 'put', {nodeType: 'container', payload: payload})
+    document = mold.child(pathToDoc)
+    document.update(payload)
 
-    container = mold.child(pathToDoc)
-    container.update(payload)
-    promise = cleanPromise( container.put() )
+    promise = cleanPromise( document.put() )
     expect(promise).to.eventually.deep.equal({body: payload, request: request}).notify(done)
+
+  document_patch: (mold, pathToDoc, done) ->
+    # TODO: пересмотреть
+    firstData =
+      booleanParam: true
+      stringParam: 'oldValue'
+      numberParam: 5
+      arrayParam: ['value1']
+    updatedData =
+      stringParam: 'newValue'
+      arrayParam: ['value2', 'value1']
+    resultData = _.defaults(_.clone(updatedData), firstData)
+    document = mold.child(pathToDoc)
+    request = generateRequest(pathToDoc, 'patch', {nodeType: 'container', payload: updatedData})
+
+    document.update(firstData)
+    expect(document.put()).to.eventually.notify =>
+      document.update(updatedData)
+      promise = cleanPromise( document.patch() )
+      expect(promise).to.eventually.deep.equal({body: resultData, request: request})
+      .notify(done)
 
   documentsCollection_create: (mold, pathToDocColl, done) ->
     collection = mold.child(pathToDocColl)

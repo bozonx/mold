@@ -67,4 +67,18 @@ export default class Document extends Container{
     });
   }
 
+  /**
+   * Save actual state.
+   * @returns {Promise}
+   */
+  patch() {
+    let metaParams = undefined;
+    return this._main.$$state.$$request.sendRequest(
+      'patch', this._root, this._mold, metaParams, this.getUrlParams()).then((resp) => {
+      // update mold with server response data
+      this._main.$$state.updateResponse(this._root, resp.body);
+      return resp;
+    });
+  }
+
 }

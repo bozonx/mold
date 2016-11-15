@@ -13,7 +13,7 @@ describe 'Functional. DocumentsCollection type.', ->
     this.mold = mold( {}, this.testSchema() )
     this.documentsCollection = this.mold.child('documentsCollection')
 
-  # init, child and getFlat aren't testing. It's testing in paged_collection spec
+  # init, child and getFlat aren't testing here. It's testing in paged_collection spec
 
   describe "load", ->
     beforeEach () ->
@@ -50,7 +50,6 @@ describe 'Functional. DocumentsCollection type.', ->
       this.newDoc = {name: 'a'}
 
     it "check response", ->
-      #this.documentsCollection.unshift(this.newDoc)
       promise = this.documentsCollection.create(this.newDoc)
       expect(promise).to.eventually.property('body').deep.equal({
         id: 0,
@@ -72,7 +71,6 @@ describe 'Functional. DocumentsCollection type.', ->
               $pageIndex: 0,
               $index: 0,
               name: 'a',
-              # TODO: раскомментировать, когда будет сделанно обновление элемента в request
               id: 0,
             }
           ]])
