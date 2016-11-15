@@ -43,9 +43,9 @@ describe 'Functional. PounchDb driver.', ->
     this.init('document_put')
     driverHelpers.document_put(this.mold, 'root.document', done)
 
-#  it 'document_patch', (done) ->
-#    this.init('document_patch')
-#    driverHelpers.document_patch(this.mold, 'root.document', done)
+  it 'document_patch', (done) ->
+    this.init('document_patch')
+    driverHelpers.document_patch(this.mold, 'root.document', done)
 
   it 'documentsCollection_create', (done) ->
     this.init('collection_create')

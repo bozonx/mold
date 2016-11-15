@@ -34,6 +34,7 @@ export default class Document extends Container{
   }
 
   update(newState) {
+    // TODO: primitive array должны всегда полностью переписываться
     this._changesFromLastSave = _.defaultsDeep(_.clone(newState), this._changesFromLastSave);
 
     // TODO: формировать правильно url
