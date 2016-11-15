@@ -22,8 +22,9 @@ testSchema = (pounch) ->
         item:
           type: 'document'
           schema:
-            id: {type: 'number', primary: true}
+            id: {type: 'string', primary: true}
             name: {type: 'string'}
+            created: {type: 'number', secondary: true}
 
 describe 'Functional. PounchDb driver.', ->
   beforeEach ->

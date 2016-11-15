@@ -13,3 +13,4 @@ global.expect = chai.expect
 global.sinon = sinon
 
 global._ = require('lodash')
+global.moment = require('moment')

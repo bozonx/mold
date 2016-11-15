@@ -21,6 +21,7 @@ testSchema = (memory) ->
           schema:
             id: {type: 'number', primary: true}
             name: {type: 'string'}
+            created: {type: 'number', secondary: true}
 
 describe 'Functional. Memory driver.', ->
   beforeEach ->

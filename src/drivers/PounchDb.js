@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import pouchCollate from 'pouchdb-collate';
 
 import { correctUpdatePayload } from '../helpers';
 
@@ -158,7 +159,7 @@ class LocalPounchDb {
       include_docs: true,
       startkey: request.url,
     };
-
+//pouchCollate
     // TODO: не использовать allDocs!!!!
     return this._db.allDocs(getAllQuery).then((getAllResp) => {
       let primaryId = 0;
@@ -168,7 +169,14 @@ class LocalPounchDb {
         primaryId = _.last(getAllResp.rows).doc[request.primaryKeyName] + 1;
       }
 
-      // TODO: use pounch conflict generator
+
+
+      // console.log(11111, pouchCollate.toIndexableString([0]))
+      // console.log(11111, pouchCollate.toIndexableString([1]))
+      // console.log(11111, pouchCollate.toIndexableString([0]))
+
+
+      // TODO: generate really uniq id!!!
       let uniqId = 'doc' + primaryId + makeid();
       let uniqDocId = `${request.url}/${uniqId}`;
 

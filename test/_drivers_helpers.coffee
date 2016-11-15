@@ -111,10 +111,21 @@ module.exports =
       nodeType: 'collection', primaryKeyName: 'id'
       meta: {pageNum: 0}
     })
+    earlyItem = {
+      name: 'value'
+      created: moment().format('x')
+    }
+    olderItem = {
+      name: 'value'
+      created: moment().format('x') + 10000
+    }
 
-    expect(collection.create({name: 'value'})).to.eventually.notify =>
-      promise = cleanPromise( collection.load(0) )
-      expect(promise).to.eventually.deep.equal({body: [{name: 'value'}], request: request}).notify(done)
+    expect(collection.create(earlyItem)).to.eventually.notify =>
+      expect(collection.create(olderItem)).to.eventually.notify =>
+        promise = cleanPromise( collection.load(0) )
+        expect(promise).to.eventually
+        .deep.equal({body: [earlyItem, olderItem], request: request})
+        .notify(done)
 
   documentsCollection_filter_paged: (mold, pathToDocColl, done) ->
     collection = mold.child(pathToDocColl)
