@@ -4,6 +4,17 @@ import { correctUpdatePayload } from '../helpers';
 
 // TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
 
+
+function makeid() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for( var i=0; i < 10; i++ )
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
 class LocalPounchDb {
   constructor(driverConfig, instanceConfig, db) {
     this._driverConfig = driverConfig;
@@ -148,20 +159,29 @@ class LocalPounchDb {
       startkey: request.url,
     };
 
-    // TODO: не использовать allDocs!!!! надо генерировать ключ
+    // TODO: не использовать allDocs!!!!
     return this._db.allDocs(getAllQuery).then((getAllResp) => {
-      var primaryId = 0;
+      // TODO: use pounch conflict generator
+      // TODO: надо генерировать ключ
+      let uniqId = makeid();
+      let uniqDocId = `${request.url}::${uniqId}`;
+
+
+
+      let primaryId = 0;
 
       // increment primary id
       if (getAllResp.rows.length) {
         primaryId = _.last(getAllResp.rows).doc[request.primaryKeyName] + 1;
       }
 
+      let newId = `${request.url}/${primaryId}`;
+
       // add id param
       var newValue = {
         ...request.payload,
         [request.primaryKeyName]: primaryId,
-        _id: `${request.url}/${primaryId}`,
+        _id: newId,
       };
 
       return this._db.put(newValue)
