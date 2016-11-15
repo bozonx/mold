@@ -121,6 +121,7 @@ class LocalMemory {
         _.set(this._db, lodashPath, collection);
       }
 
+      // increment primary id
       if (collection.length) {
         primaryId = _.last(collection)[request.primaryKeyName] + 1;
       }
@@ -141,7 +142,6 @@ class LocalMemory {
       });
     });
   }
-
 
   delete(request) {
     return new Promise((resolve, reject) => {
