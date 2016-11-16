@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import pouchCollate from 'pouchdb-collate';
 
 import { correctUpdatePayload } from '../helpers';
 
@@ -155,57 +154,37 @@ class LocalPounchDb {
   }
 
   create(request) {
-    var getAllQuery = {
-      include_docs: true,
-      startkey: request.url,
+    // TODO: generate really uniq id!!!
+    let uniqPart = makeid();
+    let timePart = moment().format('x');
+    let uniqId = '$id' + timePart + uniqPart;
+    let uniqDocId = `${request.url}/${uniqId}`;
+
+    // TODO: get real secondary indexes from meta
+    if (request.payload.created) {
+      uniqDocId += `::${request.payload.created}`
+    }
+
+    // add id param
+    var newValue = {
+      ...request.payload,
+      [request.primaryKeyName]: uniqId,
+      _id: uniqDocId,
     };
-//pouchCollate
-    // TODO: не использовать allDocs!!!!
-    return this._db.allDocs(getAllQuery).then((getAllResp) => {
-      let primaryId = 0;
 
-      // increment primary id
-      if (getAllResp.rows.length) {
-        primaryId = _.last(getAllResp.rows).doc[request.primaryKeyName] + 1;
-      }
-
-
-
-      // console.log(11111, pouchCollate.toIndexableString([0]))
-      // console.log(11111, pouchCollate.toIndexableString([1]))
-      // console.log(11111, pouchCollate.toIndexableString([0]))
-
-
-      // TODO: generate really uniq id!!!
-      let uniqId = 'doc' + primaryId + makeid();
-      let uniqDocId = `${request.url}/${uniqId}`;
-
-      // add id param
-      var newValue = {
-        ...request.payload,
-        //[request.primaryKeyName]: primaryId,
-        [request.primaryKeyName]: uniqId,
-        //_id: newId,
-        _id: uniqDocId,
+    return this._db.put(newValue)
+    .then((resp) => {
+      return {
+        body: {
+          ...request.payload,
+          _id: resp.id,
+          _rev: resp.rev,
+          [request.primaryKeyName]: uniqId,
+        },
+        driverResponse: resp,
+        request,
       };
-
-      return this._db.put(newValue)
-        .then((resp) => {
-          return {
-            body: {
-              ...request.payload,
-              _id: resp.id,
-              _rev: resp.rev,
-              //id: primaryId,
-              id: uniqId,
-            },
-            driverResponse: resp,
-            request,
-          };
-        }, this._rejectHandler.bind(this, request));
-
     }, this._rejectHandler.bind(this, request));
-
   }
 
   delete(request) {

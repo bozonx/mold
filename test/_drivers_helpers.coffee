@@ -106,6 +106,7 @@ module.exports =
           ])).to.eventually.notify(done)
 
   documentsCollection_filter: (mold, pathToDocColl, done) ->
+    # TODO: не особо нужно
     collection = mold.child(pathToDocColl)
     request = generateRequest(pathToDocColl, 'filter', {
       nodeType: 'collection', primaryKeyName: 'id'
@@ -113,11 +114,11 @@ module.exports =
     })
     earlyItem = {
       name: 'value'
-      created: moment().format('x')
+      created: parseInt(moment().format('x'))
     }
     olderItem = {
       name: 'value'
-      created: moment().format('x') + 10000
+      created: parseInt(moment().format('x')) + 10000
     }
 
     expect(collection.create(earlyItem)).to.eventually.notify =>
@@ -132,18 +133,25 @@ module.exports =
     collection.perPage = 2
     request = generateRequest(pathToDocColl, 'filter', {
       nodeType: 'collection', primaryKeyName: 'id'
-      meta: {pageNum: 1, perPage: 2}
+      meta: {
+        pageNum: 1,
+        perPage: 2,
+      }
     })
+    item0 = { name: 'item0', created: parseInt(moment().format('x')) }
+    item1 = { name: 'item1', created: parseInt(moment().format('x')) + 10000 }
+    item2 = { name: 'item2', created: parseInt(moment().format('x')) + 20000 }
+    item3 = { name: 'item3', created: parseInt(moment().format('x')) + 30000 }
 
-    expect(collection.create({name: 'item0'})).to.eventually.notify =>
-      expect(collection.create({name: 'item1'})).to.eventually.notify =>
-        expect(collection.create({name: 'item2'})).to.eventually.notify =>
-          expect(collection.create({name: 'item3'})).to.eventually.notify =>
-            promise = cleanPromise( collection.load(1) )
+    expect(collection.create(item0)).to.eventually.notify =>
+      expect(collection.create(item1)).to.eventually.notify =>
+        expect(collection.create(item2)).to.eventually.notify =>
+          expect(collection.create(item3)).to.eventually.notify =>
+            promise = cleanPromise( collection.load(1, {sort: 'created'}) )
             expect(promise).to.eventually
             .deep.equal({body: [
-              {name: 'item2'}
-              {name: 'item3'}
+              item2,
+              item3,
             ], request: request})
             .notify(done)
 
