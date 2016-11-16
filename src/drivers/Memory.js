@@ -21,7 +21,7 @@ class LocalMemory {
 
   get(request) {
     return new Promise((resolve, reject) => {
-      var resp = _.get(this._db, this._convertToLodash(request.url));
+      const resp = _.get(this._db, this._convertToLodash(request.url));
       if (!_.isUndefined(resp)) {
         resolve({
           body: resp,
@@ -44,10 +44,10 @@ class LocalMemory {
     }
 
     return new Promise((resolve, reject) => {
-      let start = request.meta.pageNum * request.meta.perPage;
-      let end = (request.meta.pageNum + 1) * request.meta.perPage;
-      let collection = _.get(this._db, this._convertToLodash(request.url));
-      let result = collection.slice(start, end);
+      const start = request.meta.pageNum * request.meta.perPage;
+      const end = (request.meta.pageNum + 1) * request.meta.perPage;
+      const collection = _.get(this._db, this._convertToLodash(request.url));
+      const result = collection.slice(start, end);
 
       if (_.isEmpty(result)) {
         reject({
@@ -89,10 +89,10 @@ class LocalMemory {
    */
   patch(request) {
     return new Promise((resolve, reject) => {
-      let document = _.get(this._db, this._convertToLodash(request.url));
+      const document = _.get(this._db, this._convertToLodash(request.url));
 
       if (document) {
-        let newState = correctUpdatePayload(document, request.payload);
+        const newState = correctUpdatePayload(document, request.payload);
 
         _.set(this._db, this._convertToLodash(request.url), newState);
         resolve({
@@ -111,7 +111,7 @@ class LocalMemory {
 
   create(request) {
     return new Promise((resolve) => {
-      let lodashPath = this._convertToLodash(request.url);
+      const lodashPath = this._convertToLodash(request.url);
       let collection = _.get(this._db, lodashPath);
       let primaryId = 0;
 
@@ -127,7 +127,7 @@ class LocalMemory {
       }
 
       // add id param
-      var newValue = {
+      const newValue = {
         ...request.payload,
         [request.primaryKeyName]: primaryId,
       };
@@ -145,7 +145,7 @@ class LocalMemory {
 
   delete(request) {
     return new Promise((resolve, reject) => {
-      var collection = _.get(this._db, this._convertToLodash(request.url));
+      const collection = _.get(this._db, this._convertToLodash(request.url));
 
       if (!collection) {
         reject({
@@ -154,7 +154,7 @@ class LocalMemory {
         return;
       }
 
-      var item = _.find(collection, {[request.primaryKeyName]: request.payload[request.primaryKeyName]});
+      const item = _.find(collection, {[request.primaryKeyName]: request.payload[request.primaryKeyName]});
       if (!item || !_.isNumber(item[request.primaryKeyName])) {
         reject({
           driverError: 'Item not found',

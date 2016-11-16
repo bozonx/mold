@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { correctUpdatePayload } from '../helpers';
 
 // from 0 to 19
-var uniqCreatedId = Math.floor(Math.random() * 20);
+let uniqCreatedId = Math.floor(Math.random() * 20);
 
 // function makeid() {
 //   var text = "";
@@ -44,7 +44,8 @@ class LocalPounchDb {
   }
 
   filter(request) {
-    var getAllQuery = {
+    // simple query without paging
+    let getAllQuery = {
       include_docs: true,
       startkey: request.url,
     };
@@ -125,15 +126,11 @@ class LocalPounchDb {
    * @returns {Promise}
    */
   patch(request) {
-    // TODO: пересмотреть - должен поддерживать новый формат url
-
     return this._db.get(request.url).then((resp) => {
-      let payload = correctUpdatePayload(resp, _.omit(request.payload, '_id', '_rev'));
+      const payload = correctUpdatePayload(resp, _.omit(request.payload, '_id', '_rev'));
 
       // update
       return this._db.put(payload).then((resp) => {
-        //if (!resp.ok) reject(this._rejectHandler.bind(request, err));
-
         return {
           body: {
             ...payload,
@@ -154,20 +151,19 @@ class LocalPounchDb {
    * @returns {Promise}
    */
   create(request) {
-    let timePart = parseInt(moment().format('x'));
-    let itemId = timePart + uniqCreatedId;
-    let uniqDocId = `${request.url}/${itemId}`;
+    const timePart = parseInt(moment().format('x'));
+    const itemId = timePart + uniqCreatedId;
+    const uniqDocId = `${request.url}/${itemId}`;
     // increment by random int from 1 to 10
     uniqCreatedId += Math.ceil(Math.random() * 10);
 
-    // add id param
-    var newValue = {
+    const payload = {
       ...request.payload,
       [request.primaryKeyName]: itemId,
       _id: uniqDocId,
     };
 
-    return this._db.put(newValue)
+    return this._db.put(payload)
     .then((resp) => {
       return {
         body: {
@@ -180,13 +176,10 @@ class LocalPounchDb {
         request,
       };
     }, this._rejectHandler.bind(this, request));
-
   }
 
   delete(request) {
-    // TODO: пересмотреть - должен поддерживать новый формат url
-
-    let docId = `${request.url}/${request.payload[request.primaryKeyName]}`;
+    const docId = `${request.url}/${request.payload[request.primaryKeyName]}`;
 
     // first - find the element
     return this._db.get(docId).then((getResp) => {
