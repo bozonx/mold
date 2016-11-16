@@ -32,13 +32,13 @@ export default class Request {
    * @private
    */
   _startDriverRequest(method, storagePath, payload, urlParams, metaParams) {
-    let driverRoot = this._main.$$schemaManager.getClosestDriverPath(storagePath);
+    const driverRoot = this._main.$$schemaManager.getClosestDriverPath(storagePath);
 
-    let driver = this._main.$$schemaManager.getDriver(driverRoot);
+    const driver = this._main.$$schemaManager.getDriver(driverRoot);
     // It rise an error if path doesn't consist with schema
-    let schema = this._main.$$schemaManager.get(storagePath);
+    const schema = this._main.$$schemaManager.get(storagePath);
 
-    let req = this._generateRequest(method, storagePath, payload, urlParams, schema, driverRoot, metaParams);
+    const req = this._generateRequest(method, storagePath, payload, urlParams, schema, driverRoot, metaParams);
     this._main.$$log.info('---> start request: ', req);
 
     return driver.startRequest(req);
@@ -55,7 +55,7 @@ export default class Request {
     payload = (_.isEmpty(payload)) ? undefined : payload;
     // Payload can't be other type then array or plainObject
 
-    var request = {
+    const request = {
       method,
       payload,
       storagePath,
@@ -77,7 +77,7 @@ export default class Request {
   _prepareUrl(urlTemplate, urlTemplateParams, request, driverRoot) {
     if (urlTemplate) return _.template(urlTemplate)({...urlTemplateParams, request});
 
-    var defaultUrl = _.trimStart(request.storagePath, driverRoot);
+    let defaultUrl = _.trimStart(request.storagePath, driverRoot);
     defaultUrl = convertFromLodashToUrl(defaultUrl);
 
     return defaultUrl;

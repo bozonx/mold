@@ -8,7 +8,7 @@ import Log from './Log';
 
 export default class Main {
   constructor(config, schema) {
-    var configInstance = new Config(config);
+    const configInstance = new Config(config);
     this.$$config = configInstance.get();
     this.$$events = this.$$config.eventEmitter;
     this.$$log = new Log({silent: this.$$config.silent});

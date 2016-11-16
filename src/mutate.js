@@ -82,20 +82,20 @@ class Mutate {
   _updateContainer(root, newContainerState) {
     // в старом контейнере может быть несохраняемый стейт. Не нужно его удалять
     return _.reduce(newContainerState, (sum, value, name) => {
-      var haveChanges = this._crossroads(concatPath(root, name), value);
+      const haveChanges = this._crossroads(concatPath(root, name), value);
       return (!sum) ? haveChanges : sum;
     }, false);
   }
 
   _updatePrimitive(root, newPrimitiveState) {
-    var oldValue = _.get(this.storage, root);
+    const oldValue = _.get(this.storage, root);
     // set to storage
     _.set(this.storage, root, newPrimitiveState);
     return oldValue !== newPrimitiveState;
   }
 
   _cleanArray(root) {
-    var originalArray = _.get(this.storage, root);
+    const originalArray = _.get(this.storage, root);
 
     if (_.isEmpty(originalArray)) return false;
 
@@ -138,8 +138,8 @@ class Mutate {
    * @private
    */
   _updateCollection(root, newCollectionState) {
-    var isChanged = false;
-    var originalCollection = _.get(this.storage, root);
+    let isChanged = false;
+    let originalCollection = _.get(this.storage, root);
 
     // TODO: переделать - порядок элементов бедем из новых данных
     // TODO: - ищем по primaryKey старые элементы, и берем из старых элементов данные, на которые накладываем новые
@@ -154,12 +154,12 @@ class Mutate {
       _.each(newCollectionState, (value, index) => {
         if (_.isPlainObject(value)) {
           // update item
-          let isItemChanged = this._updateContainer(concatPath(root, index), value);
+          const isItemChanged = this._updateContainer(concatPath(root, index), value);
           if (!isChanged) isChanged = isItemChanged;
         }
         else {
           // replace item to undefined
-          let isItemChanged = originalCollection[index] !== value;
+          const isItemChanged = originalCollection[index] !== value;
           if (!isChanged) isChanged = isItemChanged;
           originalCollection.splice(index, 1, value);
         }

@@ -27,9 +27,9 @@ export default class Collection extends _TypeBase {
     if (_.isUndefined(primaryIdOrPath))
       throw new Error(`You must pass a path argument.`);
 
-    var pathToChild = concatPath(this._root, primaryIdOrPath);
+    const pathToChild = concatPath(this._root, primaryIdOrPath);
     // get container instance
-    var instance = this._main.$$schemaManager.getInstance(pathToChild);
+    const instance = this._main.$$schemaManager.getInstance(pathToChild);
     // reinit container instance with correct path
     instance.$init(pathToChild);
 

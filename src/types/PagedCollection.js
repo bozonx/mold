@@ -104,7 +104,7 @@ export default class PagedCollection extends _TypeBase {
     newItem.$addedUnsaved = true;
 
     this._checkEmptyPage();
-    let pageNum = this.mold.length - 1;
+    const pageNum = this.mold.length - 1;
     this._main.$$state.push(this._root, newItem, pageNum);
   }
 
@@ -145,8 +145,8 @@ export default class PagedCollection extends _TypeBase {
   rearrange() {
     // TODO: test it
     // TODO: оптимизировать производительность
-    var items = this.getFlat();
-    var pages = [[]];
+    const items = this.getFlat();
+    const pages = [[]];
     _.each(items, (item) => {
       var currentPage = pages.length - 1;
       var currentPageLength = pages[currentPage].length;
@@ -166,7 +166,7 @@ export default class PagedCollection extends _TypeBase {
    */
   _checkEmptyPage() {
     if (_.isEmpty(this.mold)) {
-      let pageNum = 0;
+      const pageNum = 0;
       this._main.$$state.setPage(this._root, [], pageNum);
     }
   }

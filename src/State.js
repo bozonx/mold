@@ -170,13 +170,13 @@ export default class State {
    */
   setPage(pathToPagedCollection, page, pageNum) {
     // It rises an error if path doesn't consist with schema
-    var schema = this._main.$$schemaManager.get(pathToPagedCollection);
+    const schema = this._main.$$schemaManager.get(pathToPagedCollection);
 
     // TODO: перенести это в checkNode
     if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
       throw new Error(`You can add new item only to paged collection!`);
 
-    var preparedPage = _.cloneDeep(page);
+    const preparedPage = _.cloneDeep(page);
 
     //this._checkNode(pathToPagedCollection, page);
     this._storage.addTo(pathToPagedCollection, preparedPage, pageNum);
@@ -189,7 +189,7 @@ export default class State {
    */
   removePage(pathToPagedCollection, pageNum) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.$$schemaManager.get(pathToPagedCollection);
+    const schema = this._main.$$schemaManager.get(pathToPagedCollection);
 
     if (!_.includes(['pagedCollection', 'documentsCollection'], schema.type))
       throw new Error(`You can remove  page only from pagedCollection of documentsCollection!`);
@@ -227,13 +227,13 @@ export default class State {
 
 
 
-    var _checkRecursively = function(path, value, childPath, childSchema) {
+    const _checkRecursively = function(path, value, childPath, childSchema) {
       if (childSchema.type) {
         // param
-        var valuePath = childPath;
+        let valuePath = childPath;
         if (path !== '') valuePath = childPath.replace(path + '.', '');
 
-        var childValue = _.get(value, valuePath);
+        const childValue = _.get(value, valuePath);
 
         // If value doesn't exist for this schema branch - do nothing
         if (_.isUndefined(childValue)) return false;
@@ -275,12 +275,12 @@ export default class State {
   }
 
   _getInitialStorage(rawSchema) {
-    var initialStorage = {};
+    const initialStorage = {};
 
     // Init storage. Collection's init behavior if different than in schema init.
     eachSchema(rawSchema, (path, value) => {
       //  convert from schema to lodash
-      var storagePath = convertFromSchemaToLodash(path);
+      const storagePath = convertFromSchemaToLodash(path);
       if (value.type == 'document') {
         _.set(initialStorage, storagePath, {});
 

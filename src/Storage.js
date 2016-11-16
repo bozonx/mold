@@ -68,7 +68,7 @@ export default class Storage {
   }
 
   updateResponse(url, newValue) {
-    let wereChanges = mutate(this._responses[url]).update(newValue);
+    const wereChanges = mutate(this._responses[url]).update(newValue);
 
     // run update event
     if (wereChanges) this._riseEvents(url, 'change');
@@ -105,7 +105,7 @@ export default class Storage {
    * @param {object} newItem
    */
   push(pathToCollection, newItem) {
-    var collection = this.get(pathToCollection);
+    const collection = this.get(pathToCollection);
     this.addTo(pathToCollection, newItem, collection.length);
   }
 
@@ -119,8 +119,8 @@ export default class Storage {
   addTo(pathToCollection, newItem, index) {
     if (!_.isObject(newItem)) return;
     if (!_.isNumber(index)) return;
-    var collection = this.get(pathToCollection);
-    var oldCollectionLength = collection.length;
+    const collection = this.get(pathToCollection);
+    const oldCollectionLength = collection.length;
 
     let pageIndex = pathToCollection.replace(/.*\[(\d+)]$/, '$1');
     pageIndex = _.toNumber(pageIndex);
@@ -136,7 +136,7 @@ export default class Storage {
     }
     else {
       // change existent item
-      let wereChanges = mutate(this._storage, concatPath(pathToCollection, index)).update(newItem);
+      const wereChanges = mutate(this._storage, concatPath(pathToCollection, index)).update(newItem);
       updateIndexes(collection, pageIndex);
       if (wereChanges) this._riseEvents(pathToCollection, 'change');
     }
@@ -150,7 +150,7 @@ export default class Storage {
    */
   remove(pathToCollection, $index) {
     if (!_.isNumber($index)) return;
-    var collection = this.get(pathToCollection);
+    const collection = this.get(pathToCollection);
 
     if ($index > collection.length - 1) return;
 
@@ -166,8 +166,8 @@ export default class Storage {
    * @param path
    */
   clear(path) {
-    var containerOrArray = _.get(this._storage, path);
-    var isItEmpty = _.isEmpty(containerOrArray);
+    const containerOrArray = _.get(this._storage, path);
+    const isItEmpty = _.isEmpty(containerOrArray);
 
     this._clearRecursive(containerOrArray);
     if (!isItEmpty) this._riseEvents(path, 'change');

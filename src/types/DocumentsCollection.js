@@ -34,7 +34,7 @@ export default class DocumentsCollection extends PagedCollection{
   load(pageNum) {
     if (!_.isNumber(pageNum)) throw new Error(`The "pageNum" param is required!`);
 
-    let metaParams = _.omitBy({
+    const metaParams = _.omitBy({
       pageNum: pageNum,
       perPage: this._perPage,
     }, _.isUndefined);
@@ -56,7 +56,7 @@ export default class DocumentsCollection extends PagedCollection{
    * @returns {Promise}
    */
   create(document) {
-    let metaParams = undefined;
+    const metaParams = undefined;
     // change with event rising
     this._updateDoc(document, { $adding: true });
     document.$adding = true;
@@ -92,7 +92,7 @@ export default class DocumentsCollection extends PagedCollection{
    * @returns {Promise}
    */
   deleteDocument(document) {
-    let metaParams = undefined;
+    const metaParams = undefined;
     // change with event rising
     this._updateDoc(document, { $deleting: true });
     document.$deleting = true;
@@ -116,7 +116,7 @@ export default class DocumentsCollection extends PagedCollection{
 
   _updateDoc(document, newState) {
     if (!_.isNumber(document.$pageIndex) || !_.isNumber(document.$index)) return;
-    let pathToDoc = concatPath(concatPath(this._root, document.$pageIndex), document.$index);
+    const pathToDoc = concatPath(concatPath(this._root, document.$pageIndex), document.$index);
     this._main.$$state.update(pathToDoc, newState);
   }
 

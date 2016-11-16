@@ -10,6 +10,6 @@ export default class Log {
   }
 
   error () {
-    if (!this._isSilent) console.erroe(...arguments);
+    if (!this._isSilent) console.error(...arguments);
   }
 }

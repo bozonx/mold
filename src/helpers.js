@@ -10,7 +10,7 @@ export function eachSchema(fullSchema, cb) {
     // Do nothing if its isn't a plain object
     if (!_.isPlainObject(curSchema)) return;
 
-    var isGoDeeper = cb(curPath, curSchema);
+    const isGoDeeper = cb(curPath, curSchema);
     if (isGoDeeper === false) return;
 
     if (curSchema.item) {
@@ -31,7 +31,7 @@ export function eachSchema(fullSchema, cb) {
 }
 
 export function correctUpdatePayload(currentData, newData) {
-  let newerState = _.defaultsDeep(_.cloneDeep(newData), currentData);
+  const newerState = _.defaultsDeep(_.cloneDeep(newData), currentData);
   // fix primitive array update. It must update all the items
   // TODO: нужно поддерживать массивы в глубине
   _.each(newData, (item, name) => {
@@ -44,9 +44,8 @@ export function correctUpdatePayload(currentData, newData) {
 }
 
 export function findPrimary(schema) {
-  var primary;
-
-  var schemaToFind;
+  let primary;
+  let schemaToFind;
 
   if (schema.schema) {
     schemaToFind = schema.schema;
@@ -68,9 +67,9 @@ export function findPrimary(schema) {
 }
 
 export function convertFromLodashToSchema(path) {
-  var newPath = path;
+  let newPath = path;
   // replace collection params [1]
-  newPath =  newPath.replace(/\[\d+]/g, '!item!');
+  newPath = newPath.replace(/\[\d+]/g, '!item!');
 
   // replace "." to ".schema."
   newPath = newPath.replace(/\./g, '.schema.');
@@ -85,12 +84,12 @@ export function convertFromSchemaToLodash(path) {
 }
 
 export function convertFromLodashToUrl(path) {
-  let preUrl = path.replace(/\[(\d+)]/g, '.$1');
+  const preUrl = path.replace(/\[(\d+)]/g, '.$1');
   return preUrl.replace(/\./g, '/');
 }
 
 export function getTheBestMatchPath(sourcePath, pathsList) {
-  var matchList = _.map(pathsList, (path) => {
+  let matchList = _.map(pathsList, (path) => {
     if (sourcePath.indexOf(path) === 0) return path;
   });
   matchList = _.compact(matchList);
@@ -149,7 +148,7 @@ export function findTheClosestParentPath(path, assoc) {
 
   if (_.isEmpty(assoc)) return;
 
-  var parents = _.compact(_.map(assoc, (value, name) => {
+  const parents = _.compact(_.map(assoc, (value, name) => {
     if (path.indexOf(name) === 0) return name;
   }));
 

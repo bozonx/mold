@@ -22,7 +22,7 @@ export default class SchemaManager {
     this.$defaultMemoryDb = {};
     this._drivers = {};
 
-    var memoryDriver = new Memory({
+    const memoryDriver = new Memory({
       db: this.$defaultMemoryDb,
     });
     this.mainMemoryDriver = memoryDriver.instance({});
@@ -38,8 +38,8 @@ export default class SchemaManager {
   get(path) {
     if (path === '') return this.getFullSchema();
 
-    var schemaPath = convertFromLodashToSchema(path);
-    var schema = _.get(this._schema, schemaPath);
+    const schemaPath = convertFromLodashToSchema(path);
+    const schema = _.get(this._schema, schemaPath);
 
     if (_.isUndefined(schema)) throw new Error(`Schema on path "${schemaPath}" doesn't exists`);
 
@@ -60,9 +60,9 @@ export default class SchemaManager {
    * @returns {object} - instance of type
    */
   getInstance(path) {
-    var instance;
+    let instance;
     // It rise an error if path doesn't consist with schema
-    var schema = this.get(path);
+    const schema = this.get(path);
 
     if (schema.type == 'container')                 instance = new Container(this._main);
     else if (schema.type == 'collection')           instance = new Collection(this._main);

@@ -53,7 +53,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   load() {
-    let metaParams = undefined;
+    const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
         'get', this._root, undefined, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
@@ -73,7 +73,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   put() {
-    let metaParams = undefined;
+    const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
         'put', this._root, this._mold, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
@@ -89,7 +89,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   patch() {
-    let metaParams = undefined;
+    const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
       'patch', this._root, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
