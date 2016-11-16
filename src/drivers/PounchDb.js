@@ -70,62 +70,50 @@ class LocalPounchDb {
 
   /**
    * It create or save(all fields) document.
+   * It doesn't generate id, it uses whole url.
    * @param {object} request
    * @returns {Promise}
    */
   put(request) {
-    // TODO: пересмотреть - должен поддерживать новый формат url
+    const sendPut = (payload, resolve, reject) => {
+      return this._db.put(payload).then((resp) => {
+        //if (!resp.ok) reject(this._rejectHandler.bind(request, err));
+
+        resolve({
+          body: {
+            ...payload,
+            _id: resp.id,
+            _rev: resp.rev,
+          },
+          driverResponse: resp,
+          request,
+        });
+      }, (err) => {
+        reject(this._rejectHandler(request, err));
+      });
+    };
+
     return new Promise((resolve, reject) => {
+      // get first because we need to '_rev' for update document
       this._db.get(request.url).then((resp) => {
         // full update
-        let payload = {
+        const payload = {
           ..._.omit(request.payload, '_id', '_rev'),
           ..._.pick(resp, '_id', '_rev'),
         };
 
         // update
-        this._db.put(payload).then((resp) => {
-          if (!resp.ok) reject(this._rejectHandler.bind(request, err));
-
-          resolve({
-            body: {
-              ...request.payload,
-              _id: resp.id,
-              _rev: resp.rev,
-            },
-            driverResponse: resp,
-            request,
-          });
-        }, (err) => {
-          reject(this._rejectHandler.bind(request, err));
-        });
-      }).catch((err) => {
+        sendPut(payload, resolve, reject);
+      }, (err) => {
         if (err.status != 404)
-          return reject(this._rejectHandler.bind(request, err));
+          return reject(this._rejectHandler(request, err));
 
-        // create
-        //this.create(request).then(resolve, reject);
-
-
-        this._db.put({
+        const payload = {
           ...request.payload,
           _id: request.url,
-        })
-        .then((resp) => {
-          if (!resp.ok) reject(this._rejectHandler.bind(request, err));
+        };
 
-          resolve({
-            body: {
-              ...request.payload,
-              _id: resp.id,
-              _rev: resp.rev,
-            },
-            driverResponse: resp,
-            request,
-          });
-        }, (err) => {
-          reject(this._rejectHandler.bind(request, err));
-        });
+        sendPut(payload, resolve, reject);
       });
     });
   }
