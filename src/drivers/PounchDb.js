@@ -2,20 +2,18 @@ import _ from 'lodash';
 
 import { correctUpdatePayload } from '../helpers';
 
-// TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
+// from 0 to 19
+var uniqCreatedId = Math.floor(Math.random() * 20);
 
-// from 0 to 99
-var uniqCreatedId = Math.floor(Math.random() * 100);
-
-function makeid() {
-  var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-  for( var i=0; i < 10; i++ )
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-  return text;
-}
+// function makeid() {
+//   var text = "";
+//   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+//
+//   for( var i=0; i < 10; i++ )
+//     text += possible.charAt(Math.floor(Math.random() * possible.length));
+//
+//   return text;
+// }
 
 class LocalPounchDb {
   constructor(driverConfig, instanceConfig, db) {
@@ -76,6 +74,7 @@ class LocalPounchDb {
    * @returns {Promise}
    */
   put(request) {
+    // TODO: пересмотреть - должен поддерживать новый формат url
     return new Promise((resolve, reject) => {
       this._db.get(request.url).then((resp) => {
         // full update
@@ -105,25 +104,28 @@ class LocalPounchDb {
           return reject(this._rejectHandler.bind(request, err));
 
         // create
+        //this.create(request).then(resolve, reject);
+
+
         this._db.put({
           ...request.payload,
           _id: request.url,
         })
-          .then((resp) => {
-            if (!resp.ok) reject(this._rejectHandler.bind(request, err));
+        .then((resp) => {
+          if (!resp.ok) reject(this._rejectHandler.bind(request, err));
 
-            resolve({
-              body: {
-                ...request.payload,
-                _id: resp.id,
-                _rev: resp.rev,
-              },
-              driverResponse: resp,
-              request,
-            });
-          }, (err) => {
-            reject(this._rejectHandler.bind(request, err));
+          resolve({
+            body: {
+              ...request.payload,
+              _id: resp.id,
+              _rev: resp.rev,
+            },
+            driverResponse: resp,
+            request,
           });
+        }, (err) => {
+          reject(this._rejectHandler.bind(request, err));
+        });
       });
     });
   }
@@ -135,6 +137,8 @@ class LocalPounchDb {
    * @returns {Promise}
    */
   patch(request) {
+    // TODO: пересмотреть - должен поддерживать новый формат url
+
     return this._db.get(request.url).then((resp) => {
       let payload = correctUpdatePayload(resp, _.omit(request.payload, '_id', '_rev'));
 
@@ -155,23 +159,23 @@ class LocalPounchDb {
     }, this._rejectHandler.bind(this, request));
   }
 
+  /**
+   * Create new item.
+   * It generates an uniq id.
+   * @param {object} request
+   * @returns {Promise}
+   */
   create(request) {
     let timePart = parseInt(moment().format('x'));
-    let uniqId = '$id' + (timePart + uniqCreatedId);
-    let uniqDocId = `${request.url}/${uniqId}`;
-
+    let itemId = timePart + uniqCreatedId;
+    let uniqDocId = `${request.url}/${itemId}`;
     // increment by random int from 1 to 10
     uniqCreatedId += Math.ceil(Math.random() * 10);
-
-    // TODO: get real secondary indexes from meta
-    // if (request.payload.created) {
-    //   uniqDocId += `::${request.payload.created}`
-    // }
 
     // add id param
     var newValue = {
       ...request.payload,
-      [request.primaryKeyName]: uniqId,
+      [request.primaryKeyName]: itemId,
       _id: uniqDocId,
     };
 
@@ -182,7 +186,7 @@ class LocalPounchDb {
           ...request.payload,
           _id: resp.id,
           _rev: resp.rev,
-          [request.primaryKeyName]: uniqId,
+          [request.primaryKeyName]: itemId,
         },
         driverResponse: resp,
         request,
@@ -192,6 +196,8 @@ class LocalPounchDb {
   }
 
   delete(request) {
+    // TODO: пересмотреть - должен поддерживать новый формат url
+
     let docId = `${request.url}/${request.payload[request.primaryKeyName]}`;
 
     // first - find the element

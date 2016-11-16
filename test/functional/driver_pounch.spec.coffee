@@ -22,7 +22,7 @@ testSchema = (pounch) ->
         item:
           type: 'document'
           schema:
-            id: {type: 'string', primary: true}
+            id: {type: 'number', primary: true}
             name: {type: 'string'}
             created: {type: 'number', secondary: true}
 
