@@ -4,6 +4,8 @@ import { correctUpdatePayload } from '../helpers';
 
 // TODO: add db.changes - при изменениях в базе поднимать событие или как-то самому менять значение
 
+// TODO: можно умножит на произвольное число от 2 до 10
+var createCount = 0;
 
 function makeid() {
   var text = "";
@@ -155,10 +157,14 @@ class LocalPounchDb {
 
   create(request) {
     // TODO: generate really uniq id!!!
-    let uniqPart = makeid();
-    let timePart = moment().format('x');
-    let uniqId = '$id' + timePart + uniqPart;
+    //let uniqPart = makeid();
+    let uniqPart = createCount;
+    let timePart = parseInt(moment().format('x'));
+    let uniqId = '$id' + (timePart + uniqPart);
     let uniqDocId = `${request.url}/${uniqId}`;
+
+    // TODO: можно умножать на произвольное число от 2 до 10
+    createCount++;
 
     // TODO: get real secondary indexes from meta
     if (request.payload.created) {
@@ -185,6 +191,7 @@ class LocalPounchDb {
         request,
       };
     }, this._rejectHandler.bind(this, request));
+
   }
 
   delete(request) {
