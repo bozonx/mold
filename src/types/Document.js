@@ -55,17 +55,18 @@ export default class Document extends Container{
   load() {
     const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
-        'get', this._root, undefined, metaParams, this.getUrlParams()).then((resp) => {
-      // update mold with server response data
+        'get', this._root, undefined, metaParams, this.getUrlParams())
+      .then((resp) => {
+        // update mold with server response data
 
-      // TODO: формировать правильно url
-      this._main.$$state.updateResponse(this._root, resp.body);
-      // TODO: не надо здесь устанавливать mold - он уже должен был установлен
-      this._mold = this._main.$$state.getResponse(this._root);
-      this._lastChanges = {};
+        // TODO: формировать правильно url
+        this._main.$$state.updateResponse(this._root, resp.body);
+        // TODO: не надо здесь устанавливать mold - он уже должен был установлен
+        this._mold = this._main.$$state.getResponse(this._root);
+        this._lastChanges = {};
 
-      return resp;
-    });
+        return resp;
+      });
   }
 
   /**
