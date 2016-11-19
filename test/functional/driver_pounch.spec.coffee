@@ -40,6 +40,10 @@ describe 'Functional. PounchDb driver.', ->
     this.init('document_get')
     driverHelpers.document_get(this.mold, 'root.document', done)
 
+  it 'document_get_error', (done) ->
+    this.init('document_get_error')
+    driverHelpers.document_get_error(this.mold, 'root.document', done)
+
   it 'document_put', (done) ->
     this.init('document_put')
     driverHelpers.document_put(this.mold, 'root.document', done)

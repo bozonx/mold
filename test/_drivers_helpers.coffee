@@ -41,6 +41,17 @@ module.exports =
       expect(promise).to.eventually
       .deep.equal({body: payload, request: request}).notify(done)
 
+  document_get_error: (mold, pathToDoc, done) ->
+    err = ['driverError', 'request']
+    document = mold.child(pathToDoc)
+    document.load()
+      .then () =>
+        throw new Error('it was fulfilled')
+      .catch (errResp) =>
+        expect(Promise.resolve(_.keys(errResp))).to.eventually
+        .deep.equal(err)
+        .notify(done)
+
   document_put: (mold, pathToDoc, done) ->
     payload =
       booleanParam: true
