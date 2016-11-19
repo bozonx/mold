@@ -158,12 +158,12 @@ module.exports =
       expect(collection.create(item1)).to.eventually.notify =>
         expect(collection.create(item2)).to.eventually.notify =>
           expect(collection.create(item3)).to.eventually.notify =>
-            promise = cleanPromise( collection.load(1, {sort: 'created'}) )
+            promise = cleanPromise( collection.load(1) )
             expect(promise).to.eventually
             .deep.equal({body: [
               item2,
               item3,
-            ], request: request})
+            ], request: request, meta: {lastPage: true}})
             .notify(done)
 
 

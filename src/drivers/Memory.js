@@ -44,8 +44,10 @@ class LocalMemory {
     }
 
     return new Promise((resolve, reject) => {
+      const lastItemIndex = (request.meta.pageNum + 1) * request.meta.perPage;
+
       const start = request.meta.pageNum * request.meta.perPage;
-      const end = (request.meta.pageNum + 1) * request.meta.perPage;
+      const end = lastItemIndex;
       const collection = _.get(this._db, this._convertToLodash(request.url));
       const result = collection.slice(start, end);
 
@@ -60,6 +62,10 @@ class LocalMemory {
           body: result,
           driverResponse: result,
           request,
+          meta: {
+            // TODO: проверить нужно ли отнимать 1 от collection.length
+            lastPage: lastItemIndex >= collection.length,
+          },
         });
       }
     });

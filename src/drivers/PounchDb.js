@@ -45,6 +45,7 @@ class LocalPounchDb {
   }
 
   filter(request) {
+    const usePaged = _.isNumber(request.meta.perPage) && _.isNumber(request.meta.pageNum);
     const preparedUrl = _.trimEnd(request.url, '/') + '/';
     // simple query without paging
     let query = {
@@ -54,9 +55,7 @@ class LocalPounchDb {
       endkey: preparedUrl + '\uffff',
     };
 
-    //total_rows
-
-    if (_.isNumber(request.meta.perPage) && _.isNumber(request.meta.pageNum)) {
+    if (usePaged) {
       query = {
         ...query,
         // skip is slowly
@@ -67,15 +66,18 @@ class LocalPounchDb {
 
     return this._db.allDocs(query)
       .then((resp) => {
-        const lastItemIndex = (request.meta.pageNum + 1) * request.meta.perPage;
-        return {
+        const response = {
           body: _.map(resp.rows, value => value.doc),
-          meta: {
-            lastPage: lastItemIndex >= resp.total_rows,
-          },
           driverResponse: resp,
           request,
+        };
+        if (usePaged) {
+          const lastItemIndex = (request.meta.pageNum + 1) * request.meta.perPage;
+          response.meta = {
+            lastPage: lastItemIndex >= resp.total_rows,
+          };
         }
+        return response;
       }, this._rejectHandler.bind(this, request));
   }
 
