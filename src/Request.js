@@ -89,8 +89,8 @@ export default class Request {
   }
 
   _errorHandler(err) {
-    this._main.$$log.error('---> ERROR: failed request: ', err);
-    return err;
+    this._main.$$log.info('---> failed request: ', err);
+    return Promise.reject(err);
   }
 
 }

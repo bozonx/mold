@@ -35,13 +35,13 @@ class LocalPounchDb {
 
   get(request) {
     return this._db.get(request.url)
-      .then((resp) => {
-        return {
-          body: resp,
-          driverResponse: resp,
-          request,
-        };
-      }, this._rejectHandler.bind(this, request));
+    .then((resp) => {
+      return {
+        body: resp,
+        driverResponse: resp,
+        request,
+      };
+    }, this._rejectHandler.bind(this, request));
   }
 
   filter(request) {
@@ -200,18 +200,10 @@ class LocalPounchDb {
   }
 
   _rejectHandler(request, err) {
-    // Return undefined if data hasn't found.
-    // TODO: !!!!???
-    // if (err.status == 404)
-    //   return {
-    //     driverError: err,
-    //     request,
-    //   };
-
-    return {
+    return Promise.reject({
       driverError: err,
       request,
-    };
+    });
   }
 }
 
