@@ -45,22 +45,25 @@ class LocalPounchDb {
   }
 
   filter(request) {
+    const preparedUrl = _.trimEnd(request.url, '/') + '/'
     // simple query without paging
-    let getAllQuery = {
+    let query = {
       include_docs: true,
-      startkey: request.url,
+      startkey: preparedUrl,
+      // \uffff - is high character
+      endkey: preparedUrl + '\uffff',
     };
 
     if (_.isNumber(request.meta.perPage) && _.isNumber(request.meta.pageNum)) {
-      getAllQuery = {
-        ...getAllQuery,
+      query = {
+        ...query,
         // skip is slowly
         skip: request.meta.pageNum * request.meta.perPage,
         limit: (request.meta.pageNum + 1) * request.meta.perPage,
       }
     }
 
-    return this._db.allDocs(getAllQuery)
+    return this._db.allDocs(query)
       .then((resp) => {
         return {
           body: _.map(resp.rows, value => value.doc),
