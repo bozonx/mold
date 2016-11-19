@@ -17,8 +17,15 @@ export default class Request {
    * @returns {Promise}
    */
   sendRequest(method, moldPath, payload, metaParams, urlParams) {
-    return this._startDriverRequest(method, moldPath, payload, urlParams, metaParams)
-      .then(this._successHandler.bind(this), this._errorHandler.bind(this));
+    const promise = this._startDriverRequest(method, moldPath, payload, urlParams, metaParams)
+    promise.then((resp) => {
+      this._main.$$log.info('---> finish request: ', resp);
+      return resp;
+    }).catch((err) => {
+      this._main.$$log.info('---> failed request: ', err);
+    });
+
+    return promise;
   }
 
   /**
@@ -81,16 +88,6 @@ export default class Request {
     defaultUrl = convertFromLodashToUrl(defaultUrl);
 
     return defaultUrl;
-  }
-
-  _successHandler(resp) {
-    this._main.$$log.info('---> finish request: ', resp);
-    return resp;
-  }
-
-  _errorHandler(err) {
-    this._main.$$log.info('---> failed request: ', err);
-    return Promise.reject(err);
   }
 
 }
