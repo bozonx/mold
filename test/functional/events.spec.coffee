@@ -1,36 +1,57 @@
-#mold = require('../../src/index').default
-#
-#testSchema = () ->
-#  container:
-#    type: 'container'
-#    schema:
-#      stringParam: {type: 'string'}
-#  document:
-#    type: 'document'
-#    schema:
-#      stringParam: {type: 'string'}
-#      numberParam: {type: 'number'}
-#      booleanParam: {type: 'boolean'}
-#  nested:
-#    type: 'container'
-#    schema:
-#      container:
-#        type: 'container'
-#        schema:
-#          stringParam: {type: 'string'}
-#          numberParam: {type: 'number'}
-#  collection:
-#    type: 'collection'
-#    item:
-#      id: {type: 'number', primary: true}
-#      name: {type: 'string'}
-#
-#describe 'Functional. Events.', ->
-#  describe 'change', ->
-#    beforeEach () ->
-#      this.mold = mold( {}, testSchema() )
-#      this.handler = sinon.spy();
-#
+mold = require('../../src/index').default
+
+testSchema = () ->
+  container:
+    type: 'container'
+    schema:
+      stringParam: {type: 'string'}
+      nested:
+        type: 'container'
+        schema:
+          nestedParam: {type: 'string'}
+
+describe 'Functional. Events.', ->
+  beforeEach () ->
+    this.mold = mold( {}, testSchema() )
+    this.handlerContainer = sinon.spy();
+    this.handlerNested = sinon.spy();
+
+  describe 'container.', ->
+
+    it 'mold.onMoldUpdate()', ->
+      this.mold.onMoldUpdate(this.handlerContainer)
+      container = this.mold.child('container')
+      container.update({
+        stringParam: 'new string'
+        numberParam: 5
+      })
+
+      expect(this.handlerContainer).to.have.been.calledOnce
+      expect(this.handlerContainer).to.have.been.calledWith({
+        path: 'container'
+        action: 'change'
+      })
+
+    it 'container.onChange()', ->
+      container = this.mold.child('container')
+      container.onChange(this.handlerContainer)
+      nested = this.mold.child('container.nested')
+      nested.onChange(this.handlerNested)
+
+      container.update({
+        stringParam: 'new string'
+        numberParam: 5
+      })
+
+      expect(this.handlerContainer).to.have.been.calledOnce
+      expect(this.handlerContainer).to.have.been.calledWith({
+        path: 'container'
+        action: 'change'
+      })
+      expect(this.handlerNested).to.not.have.been.called
+
+  # TODO: check collection, paged collection
+
 ##    it 'primitive', ->
 ##      this.mold.onMoldUpdate(this.handler)
 ##      primitive = this.mold.instance('container.stringParam')
@@ -88,7 +109,7 @@
 #        })
 #        done()
 
-  describe 'watch', ->
+#  describe 'watch', ->
 #    beforeEach () ->
 #      this.mold = mold( {}, testSchema() )
 #      this.container = this.mold.instance('container')

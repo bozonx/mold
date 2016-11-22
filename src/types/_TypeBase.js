@@ -32,7 +32,7 @@ export default class _TypeBase {
   }
 
   onChange(handler) {
-    this._main.state.addListener(this._root, handler);
+    this._main.$$state.addListener(this._root, handler);
   }
 
   onChangeDeep(handler) {
