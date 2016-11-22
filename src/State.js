@@ -197,8 +197,81 @@ export default class State {
     this._storage.update(concatPath(pathToPagedCollection, pageNum), undefined);
   }
 
+  /**
+   * Add change event handler on path.
+   * @param {string} storagePath - full path in mold
+   * @param {function} userHandler
+   */
+  addListener(storagePath, userHandler) {
+    const wrapperHandler = (event) => {
+      if (event.path == storagePath) userHandler(event);
+    };
+
+    // Save listener
+    if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
+    this._handlers[storagePath].push({
+      wrapperHandler,
+      userHandler,
+    });
+
+    // Add listener
+    this._main.$$events.on('change', wrapperHandler);
+  }
+
+  /**
+   * Add change event handler on path deeply.
+   * It means it rises on each change of any child of any deep.
+   * @param {string} storagePath - full path in mold
+   * @param {function} userHandler
+   */
+  addDeepListener(storagePath, userHandler) {
+    const wrapperHandler = (event) => {
+      if (event.path.startsWith(storagePath)) userHandler(event);
+    };
+
+    // Save listener
+    if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
+    this._handlers[storagePath].push({
+      wrapperHandler,
+      userHandler,
+    });
+
+    // Add listener
+    this._main.$$events.on('change', wrapperHandler);
+  }
+
+  /**
+   * Remove change event handler from path.
+   * @param {string} storagePath - full path in mold
+   * @param {function} handler
+   */
+  removeListener(storagePath, handler) {
+    if (!this._handlers[storagePath]) return;
+
+    let itemIndex;
+
+    var found = _.find(this._handlers[storagePath], (item, index) => {
+      if (item.userHandler === handler) {
+        itemIndex = index;
+        return item;
+      }
+    });
+
+    if (!found) return;
+
+    this._handlers[storagePath].splice(itemIndex, 1);
+    if (!this._handlers[storagePath].length) {
+      delete this._handlers[storagePath];
+    }
+
+    // Unbind listener
+    this._main.$$events.removeListener('change', found.wrapperHandler);
+  }
+
   destroy(storagePath) {
     // TODO: пересмотреть
+    // TODO: должен поддержитьвать запросы документов - __responses
+    // TODO: листенеры удалять всегда, но молд очищать не всегда нужно
     // if (this._handlers[storagePath]) {
     //   _.each(this._handlers[storagePath], (handler) => {
     //     // TODO: странное название события
@@ -210,57 +283,8 @@ export default class State {
     // this._storage.clear(storagePath);
   }
 
-  /**
-   * Add change event handler on path.
-   * @param {string} storagePath - full path in mold
-   * @param {function} handler
-   */
-  addListener(storagePath, handler) {
-    // TODO: test it
-    // Save listener
-    if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
-    this._handlers[storagePath].push(handler);
 
-    // Add listener
-    this._main.$$events.on('change', (event) => {
-      if (event.path == storagePath) handler(event);
-    });
-  }
 
-  /**
-   * Add change event handler on path deeply.
-   * It means it rises on each change of any child of any deep.
-   * @param {string} storagePath - full path in mold
-   * @param {function} handler
-   */
-  addDeepListener(storagePath, handler) {
-    // TODO: test it
-    // Save listener
-    if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
-    this._handlers[storagePath].push(handler);
-
-    // Add listener
-    this._main.$$events.on('change', (event) => {
-      if (event.path.startsWith(storagePath)) handler(event);
-    });
-  }
-
-  /**
-   * Remove change event handler from path.
-   * @param {string} storagePath - full path in mold
-   * @param {function} handler
-   */
-  removeListener(storagePath, handler) {
-    // TODO: пересмотреть
-    // // Remove listener
-    // if (!this._handlers[storagePath]) return;
-    // var index = _.indexOf(this._handlers[storagePath], handler);
-    // if (index < 0) return;
-    // this._handlers[storagePath].splice(index, 1);
-    //
-    // // Unbind listener
-    // this._main.events.removeListener('changeOnPath::' + storagePath, handler);
-  }
 
   /**
    * Check for node. It isn't work with container.

@@ -16,8 +16,7 @@ describe 'Functional. Events.', ->
     this.handlerContainer = sinon.spy();
     this.handlerNested = sinon.spy();
 
-  describe 'container.', ->
-
+  describe 'mold, container', ->
     it 'mold.onMoldUpdate()', ->
       this.mold.onMoldUpdate(this.handlerContainer)
       container = this.mold.child('container')
@@ -86,6 +85,28 @@ describe 'Functional. Events.', ->
         action: 'change'
       })
 
+    it 'container.off() with nested', ->
+      container = this.mold.child('container')
+      container.onChangeDeep(this.handlerContainer)
+      nested = this.mold.child('container.nested')
+      nested.onChange(this.handlerNested)
+
+      nested.off(this.handlerNested)
+
+      nested.update({
+        nestedParam: 'newValue'
+      })
+
+      expect(this.handlerContainer).to.have.been.calledOnce
+      expect(this.handlerContainer).to.have.been.calledWith({
+        path: 'container.nested'
+        action: 'change'
+      })
+      expect(this.handlerNested).to.not.have.been.called
+      assert.isUndefined(this.mold.$$state._handlers['container.nested'])
+
 
 # TODO: check collection, paged collection
 # TODO: проверить что событие не поднимается если значение по факту не изменилось
+# TODO: destroy
+
