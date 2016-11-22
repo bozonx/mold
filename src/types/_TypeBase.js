@@ -31,16 +31,20 @@ export default class _TypeBase {
     this._mold = this._main.$$state.getMold(this._root);
   }
 
+  onChange(handler) {
+    this._main.state.addListener(this._root, handler);
+  }
+
+  onChangeDeep(handler) {
+    this._main.$$state.addDeepListener(this._root, handler);
+  }
+
+  off(handler) {
+    this._main.$$state.removeListener(this._root, handler);
+  }
+
   destroy() {
     this._main.$$state.destroy(this._root);
   }
-
-  // onChange(handler) {
-  //   this._main.state.addListener(this._root, handler);
-  // }
-  //
-  // offChange(handler) {
-  //   this._main.state.removeListener(this._root, handler);
-  // }
 
 }

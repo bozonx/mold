@@ -198,15 +198,68 @@ export default class State {
   }
 
   destroy(storagePath) {
-    if (this._handlers[storagePath]) {
-      _.each(this._handlers[storagePath], (handler) => {
-        // TODO: странное название события
-        this._main.$$events.removeListener('mold.update::' + storagePath, handler);
-      });
-      this._handlers[storagePath] = [];
-    }
+    // TODO: пересмотреть
+    // if (this._handlers[storagePath]) {
+    //   _.each(this._handlers[storagePath], (handler) => {
+    //     // TODO: странное название события
+    //     this._main.$$events.removeListener('changeOnPath::' + storagePath, handler);
+    //   });
+    //   this._handlers[storagePath] = [];
+    // }
+    //
+    // this._storage.clear(storagePath);
+  }
 
-    this._storage.clear(storagePath);
+  /**
+   * Add change event handler on path.
+   * @param {string} storagePath - full path in mold
+   * @param {function} handler
+   */
+  addListener(storagePath, handler) {
+    // TODO: test it
+    // Save listener
+    if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
+    this._handlers[storagePath].push(handler);
+
+    // Add listener
+    this._main.$$events.on('change', (event) => {
+      if (event.path == storagePath) handler(event);
+    });
+  }
+
+  /**
+   * Add change event handler on path deeply.
+   * It means it rises on each change of any child of any deep.
+   * @param {string} storagePath - full path in mold
+   * @param {function} handler
+   */
+  addDeepListener(storagePath, handler) {
+    // TODO: test it
+    // Save listener
+    if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
+    this._handlers[storagePath].push(handler);
+
+    // Add listener
+    this._main.$$events.on('change', (event) => {
+      if (event.path.startsWith(storagePath)) handler(event);
+    });
+  }
+
+  /**
+   * Remove change event handler from path.
+   * @param {string} storagePath - full path in mold
+   * @param {function} handler
+   */
+  removeListener(storagePath, handler) {
+    // TODO: пересмотреть
+    // // Remove listener
+    // if (!this._handlers[storagePath]) return;
+    // var index = _.indexOf(this._handlers[storagePath], handler);
+    // if (index < 0) return;
+    // this._handlers[storagePath].splice(index, 1);
+    //
+    // // Unbind listener
+    // this._main.events.removeListener('changeOnPath::' + storagePath, handler);
   }
 
   /**
@@ -328,33 +381,4 @@ export default class State {
     return initialStorage;
   }
 
-  // /**
-  //  * Add change event handler on path.
-  //  * @param {string} storagePath - full path in mold
-  //  * @param {function} handler
-  //  */
-  // addListener(storagePath, handler) {
-  //   // Save listener
-  //   if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
-  //   this._handlers[storagePath].push(handler);
-  //
-  //   // Add listener
-  //   this._main.events.on('mold.update::' + storagePath, handler);
-  // }
-  //
-  // /**
-  //  * Remove change event handler from path.
-  //  * @param {string} storagePath - full path in mold
-  //  * @param {function} handler
-  //  */
-  // removeListener(storagePath, handler) {
-  //   // Remove listener
-  //   if (!this._handlers[storagePath]) return;
-  //   var index = _.indexOf(this._handlers[storagePath], handler);
-  //   if (index < 0) return;
-  //   this._handlers[storagePath].splice(index, 1);
-  //
-  //   // Unbind listener
-  //   this._main.events.removeListener('mold.update::' + storagePath, handler);
-  // }
 }
