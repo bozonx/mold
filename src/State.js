@@ -292,7 +292,7 @@ export default class State {
   clear(moldPath) {
     // TODO: test it
     // TODO: должен поддержитьвать запросы документов - __responses
-    this._storage.clear(moldPath);
+    //this._storage.clear(moldPath);
   }
 
 
@@ -369,45 +369,20 @@ export default class State {
     eachSchema(rawSchema, (path, value) => {
       //  convert from schema to lodash
       const moldPath = convertFromSchemaToLodash(path);
-      if (value.type == 'document') {
+      // containers
+      if (_.includes(['document', 'container'], value.type)) {
         _.set(initialStorage, moldPath, {});
-
-        // Go through inner param 'schema'
-        //return 'schema';
       }
-      else if (value.type == 'container') {
-        _.set(initialStorage, moldPath, {});
-
-        // Go through inner param 'schema'
-        //return 'schema';
-      }
-      else if (_.includes(['documentsCollection'], value.type )) {
+      // arrays
+      else if (_.includes(['array', 'documentsCollection', 'pagedCollection', 'collection'], value.type )) {
         _.set(initialStorage, moldPath, []);
 
         // don't go deeper
         return false;
       }
-      else if (value.type == 'pagedCollection') {
-        _.set(initialStorage, moldPath, []);
-
-        // don't go deeper
-        return false;
-      }
-      else if (value.type == 'collection') {
-        _.set(initialStorage, moldPath, []);
-
-        // don't go deeper
-        return false;
-      }
-      else if (value.type == 'array') {
-        _.set(initialStorage, moldPath, []);
-
-        // don't go deeper
-        return false;
-      }
+      // primitives
       else if (_.includes(['boolean', 'string', 'number'], value.type)) {
-        // don't do anything
-
+        // don't set initial value
         // don't go deeper
         return false;
       }
