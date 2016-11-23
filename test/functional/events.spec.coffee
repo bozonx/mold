@@ -33,15 +33,12 @@ describe 'Functional. Events.', ->
     it 'mold.offAnyUpdate()', ->
       this.mold.onAnyUpdate(this.handlerContainer)
       this.container = this.mold.child('container')
+      this.mold.offAnyUpdate(this.handlerContainer)
       this.container.update({
         stringParam: 'newValue'
       })
 
-      expect(this.handlerContainer).to.have.been.calledOnce
-      expect(this.handlerContainer).to.have.been.calledWith({
-        path: 'container'
-        action: 'change'
-      })
+      expect(this.handlerContainer).to.not.have.been.called
 
   describe 'container', ->
     beforeEach () ->
