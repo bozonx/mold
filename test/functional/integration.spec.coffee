@@ -32,7 +32,7 @@ describe 'Integration.', ->
         expect(promise).to.eventually.property('request').deep.equal({
           method: 'get',
           nodeType: 'container',
-          storagePath: 'documentsCollection[0]',
+          moldPath: 'documentsCollection[0]',
           url: 'documentsCollection/0',
         }),
       ])).to.eventually.notify(done)

@@ -19,25 +19,25 @@ export default class State {
 
   /**
    * Get parameters for source path template.
-   * @param {string} storagePath
+   * @param {string} moldPath
    * @returns {object}
    */
-  getUrlParams(storagePath) {
-    if (this._urlParams[storagePath]) return this._urlParams[storagePath];
+  getUrlParams(moldPath) {
+    if (this._urlParams[moldPath]) return this._urlParams[moldPath];
 
     // For primitives - find the closest parent
-    var findtheClosestParentPath = findTheClosestParentPath(storagePath, this._urlParams);
+    var findtheClosestParentPath = findTheClosestParentPath(moldPath, this._urlParams);
 
     return this._urlParams[findtheClosestParentPath];
   }
 
   /**
    * Set parameters for source path template.
-   * @param {string} storagePath
+   * @param {string} moldPath
    * @param {object} params
    */
-  setUrlParams(storagePath, params) {
-    this._urlParams[storagePath] = params;
+  setUrlParams(moldPath, params) {
+    this._urlParams[moldPath] = params;
   }
 
   onAnyUpdate(handler) {
@@ -50,22 +50,22 @@ export default class State {
 
   /**
    * Get mold by path
-   * @param {string} storagePath
+   * @param {string} moldPath
    * @returns {*} - value from mold
    */
-  getMold(storagePath) {
-    return this._storage.get(storagePath);
+  getMold(moldPath) {
+    return this._storage.get(moldPath);
   }
 
   /**
    * Set container or collection to mold
-   * @param {string} storagePath
+   * @param {string} moldPath
    * @param {*} value - valid value
    */
-  update(storagePath, value) {
-    this._checkNode(storagePath, value);
+  update(moldPath, value) {
+    this._checkNode(moldPath, value);
 
-    this._storage.update(storagePath, value);
+    this._storage.update(moldPath, value);
   }
 
   initResponse(url, initial) {
@@ -84,7 +84,7 @@ export default class State {
    * @param {object} value - valid value
    */
   updateResponse(url, value) {
-    // this._checkNode(storagePath, value);
+    // this._checkNode(moldPath, value);
     this._storage.updateResponse(url, value);
   }
 
@@ -199,17 +199,17 @@ export default class State {
 
   /**
    * Add change event handler on path.
-   * @param {string} storagePath - full path in mold
+   * @param {string} moldPath - full path in mold
    * @param {function} userHandler
    */
-  addListener(storagePath, userHandler) {
+  addListener(moldPath, userHandler) {
     const wrapperHandler = (event) => {
-      if (event.path == storagePath) userHandler(event);
+      if (event.path == moldPath) userHandler(event);
     };
 
     // Save listener
-    if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
-    this._handlers[storagePath].push({
+    if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
+    this._handlers[moldPath].push({
       wrapperHandler,
       userHandler,
     });
@@ -221,17 +221,17 @@ export default class State {
   /**
    * Add change event handler on path deeply.
    * It means it rises on each change of any child of any deep.
-   * @param {string} storagePath - full path in mold
+   * @param {string} moldPath - full path in mold
    * @param {function} userHandler
    */
-  addDeepListener(storagePath, userHandler) {
+  addDeepListener(moldPath, userHandler) {
     const wrapperHandler = (event) => {
-      if (event.path.startsWith(storagePath)) userHandler(event);
+      if (event.path.startsWith(moldPath)) userHandler(event);
     };
 
     // Save listener
-    if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
-    this._handlers[storagePath].push({
+    if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
+    this._handlers[moldPath].push({
       wrapperHandler,
       userHandler,
     });
@@ -242,15 +242,15 @@ export default class State {
 
   /**
    * Remove change event handler from path.
-   * @param {string} storagePath - full path in mold
+   * @param {string} moldPath - full path in mold
    * @param {function} handler
    */
-  removeListener(storagePath, handler) {
-    if (!this._handlers[storagePath]) return;
+  removeListener(moldPath, handler) {
+    if (!this._handlers[moldPath]) return;
 
     let itemIndex;
 
-    var found = _.find(this._handlers[storagePath], (item, index) => {
+    var found = _.find(this._handlers[moldPath], (item, index) => {
       if (item.userHandler === handler) {
         itemIndex = index;
         return item;
@@ -259,16 +259,16 @@ export default class State {
 
     if (!found) return;
 
-    this._handlers[storagePath].splice(itemIndex, 1);
-    if (!this._handlers[storagePath].length) {
-      delete this._handlers[storagePath];
+    this._handlers[moldPath].splice(itemIndex, 1);
+    if (!this._handlers[moldPath].length) {
+      delete this._handlers[moldPath];
     }
 
     // Unbind listener
     this._main.$$events.removeListener('change', found.wrapperHandler);
   }
 
-  destroyListeners(storagePath, deep = false) {
+  destroyListeners(moldPath, deep = false) {
     // TODO: test it
     const clearing = (path) => {
       _.each(this._handlers[path], (item) => {
@@ -279,20 +279,20 @@ export default class State {
 
     if (deep) {
       _.each(this._handlers, (list, path) => {
-        if (!path.startsWith(storagePath)) return;
+        if (!path.startsWith(moldPath)) return;
         clearing(path);
       });
     }
     else {
-      if (!this._handlers[storagePath]) return;
-      clearing(storagePath);
+      if (!this._handlers[moldPath]) return;
+      clearing(moldPath);
     }
   }
 
-  clear(storagePath) {
+  clear(moldPath) {
     // TODO: test it
     // TODO: должен поддержитьвать запросы документов - __responses
-    this._storage.clear(storagePath);
+    this._storage.clear(moldPath);
   }
 
 
@@ -368,45 +368,45 @@ export default class State {
     // Init storage. Collection's init behavior if different than in schema init.
     eachSchema(rawSchema, (path, value) => {
       //  convert from schema to lodash
-      const storagePath = convertFromSchemaToLodash(path);
+      const moldPath = convertFromSchemaToLodash(path);
       if (value.type == 'document') {
-        _.set(initialStorage, storagePath, {});
+        _.set(initialStorage, moldPath, {});
 
         // Go through inner param 'schema'
         //return 'schema';
       }
       else if (value.type == 'container') {
-        _.set(initialStorage, storagePath, {});
+        _.set(initialStorage, moldPath, {});
 
         // Go through inner param 'schema'
         //return 'schema';
       }
       else if (value.type == 'documentsCollection') {
-        _.set(initialStorage, storagePath, []);
+        _.set(initialStorage, moldPath, []);
 
         // don't go deeper
         return false;
       }
       else if (value.type == 'pagedCollection') {
-        _.set(initialStorage, storagePath, []);
+        _.set(initialStorage, moldPath, []);
 
         // don't go deeper
         return false;
       }
       else if (value.type == 'collection') {
-        _.set(initialStorage, storagePath, []);
+        _.set(initialStorage, moldPath, []);
 
         // don't go deeper
         return false;
       }
       else if (value.type == 'array') {
-        _.set(initialStorage, storagePath, []);
+        _.set(initialStorage, moldPath, []);
 
         // don't go deeper
         return false;
       }
       else if (_.includes(['boolean', 'string', 'number'], value.type)) {
-        _.set(initialStorage, storagePath, null);
+        _.set(initialStorage, moldPath, null);
 
         // don't go deeper
         return false;

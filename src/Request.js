@@ -31,27 +31,27 @@ export default class Request {
   /**
    * Send query to driver for data.
    * @param {string} method - one of: get, set, filter, create, delete
-   * @param {string} storagePath - path in mold or schena
+   * @param {string} moldPath - path in mold or schena
    * @param {*} [payload] - data to save
    * @param {object} urlParams - dynamic part of source path
    * @param {object|undefined} metaParams
    * @returns {Promise}
    * @private
    */
-  _startDriverRequest(method, storagePath, payload, urlParams, metaParams) {
-    const driverRoot = this._main.$$schemaManager.getClosestDriverPath(storagePath);
+  _startDriverRequest(method, moldPath, payload, urlParams, metaParams) {
+    const driverRoot = this._main.$$schemaManager.getClosestDriverPath(moldPath);
 
     const driver = this._main.$$schemaManager.getDriver(driverRoot);
     // It rise an error if path doesn't consist with schema
-    const schema = this._main.$$schemaManager.get(storagePath);
+    const schema = this._main.$$schemaManager.get(moldPath);
 
-    const req = this._generateRequest(method, storagePath, payload, urlParams, schema, driverRoot, metaParams);
+    const req = this._generateRequest(method, moldPath, payload, urlParams, schema, driverRoot, metaParams);
     this._main.$$log.info('---> start request: ', req);
 
     return driver.startRequest(req);
   }
 
-  _generateRequest(method, storagePath, rawPayload, urlParams, schema, driverRoot, meta) {
+  _generateRequest(method, moldPath, rawPayload, urlParams, schema, driverRoot, meta) {
     // TODO: refactor
     let payload = rawPayload;
     if (_.isPlainObject(payload)) {
@@ -65,7 +65,7 @@ export default class Request {
     const request = {
       method,
       payload,
-      storagePath,
+      moldPath,
       driverRoot,
       meta,
       url: '',
@@ -84,7 +84,7 @@ export default class Request {
   _prepareUrl(urlTemplate, urlTemplateParams, request, driverRoot) {
     if (urlTemplate) return _.template(urlTemplate)({...urlTemplateParams, request});
 
-    let defaultUrl = _.trimStart(request.storagePath, driverRoot);
+    let defaultUrl = _.trimStart(request.moldPath, driverRoot);
     defaultUrl = convertFromLodashToUrl(defaultUrl);
 
     return defaultUrl;

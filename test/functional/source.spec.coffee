@@ -30,7 +30,7 @@ describe 'Functional. Source.', ->
       request:
         url: 'collection/0'
         method: 'get'
-        storagePath: 'details'
+        moldPath: 'details'
         nodeType: 'container'
 
   it 'container.save()', (done) ->

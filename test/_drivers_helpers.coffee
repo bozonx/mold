@@ -3,7 +3,7 @@ helpers = require('../src/helpers')
 
 generateRequest = (pathToDoc, method, toExtend) ->
   _.defaultsDeep(toExtend, {
-    storagePath: pathToDoc
+    moldPath: pathToDoc
     driverRoot: 'root'
     # TODO: url то source
     url: helpers.convertFromLodashToUrl(_.trimStart(pathToDoc, 'root'))

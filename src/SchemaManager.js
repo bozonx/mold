@@ -97,11 +97,11 @@ export default class SchemaManager {
     return this.mainMemoryDriver;
   }
 
-  getClosestDriverPath(storagePath) {
-    if (!_.isString(storagePath))
-      throw new Error(`You must pass the storagePath argument!`);
+  getClosestDriverPath(moldPath) {
+    if (!_.isString(moldPath))
+      throw new Error(`You must pass the moldPath argument!`);
 
-    return getTheBestMatchPath(storagePath, _.keys(this._drivers));
+    return getTheBestMatchPath(moldPath, _.keys(this._drivers));
   }
 
   _checkSchema(rawSchema) {
