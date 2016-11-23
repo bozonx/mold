@@ -57,9 +57,9 @@ export default class _TypeBase {
 
   /**
    * It removes all the events listeners.
-   * @param {boolean} deep - remove event listeners for children deeply too.
+   * @param {boolean = false} deep - remove event listeners for children deeply too.
    */
-  destroy(deep) {
+  destroy(deep = false) {
     this._main.$$state.destroyListeners(this._root, deep);
   }
 

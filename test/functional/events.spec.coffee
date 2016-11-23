@@ -30,18 +30,18 @@ describe 'Functional. Events.', ->
         action: 'change'
       })
 
-  describe 'mold, container', ->
+  describe 'container', ->
     beforeEach () ->
       this.container = this.mold.child('container')
       this.nested = this.mold.child('container.nested')
+      #this.container.onChange(this.handlerContainer)
+      #this.nested.onChange(this.handlerNested)
 
     it 'container.onChange()', ->
       this.container.onChange(this.handlerContainer)
       this.nested.onChange(this.handlerNested)
 
-      this.container.update({
-        stringParam: 'newValue'
-       })
+      this.container.update({ stringParam: 'newValue' })
 
       expect(this.handlerContainer).to.have.been.calledOnce
       expect(this.handlerContainer).to.have.been.calledWith({
@@ -54,9 +54,8 @@ describe 'Functional. Events.', ->
       this.container.onChange(this.handlerContainer)
       this.nested.onChange(this.handlerNested)
 
-      this.nested.update({
-        nestedParam: 'newValue'
-      })
+
+      this.nested.update({ nestedParam: 'newValue' })
 
       expect(this.handlerContainer).to.not.have.been.called
       expect(this.handlerNested).to.have.been.calledOnce
@@ -69,9 +68,7 @@ describe 'Functional. Events.', ->
       this.container.onChangeDeep(this.handlerContainer)
       this.nested.onChange(this.handlerNested)
 
-      this.nested.update({
-        nestedParam: 'newValue'
-      })
+      this.nested.update({ nestedParam: 'newValue' })
 
       expect(this.handlerContainer).to.have.been.calledOnce
       expect(this.handlerContainer).to.have.been.calledWith({
@@ -90,9 +87,7 @@ describe 'Functional. Events.', ->
 
       this.nested.off(this.handlerNested)
 
-      this.nested.update({
-        nestedParam: 'newValue'
-      })
+      this.nested.update({ nestedParam: 'newValue' })
 
       expect(this.handlerContainer).to.have.been.calledOnce
       expect(this.handlerContainer).to.have.been.calledWith({
@@ -106,13 +101,20 @@ describe 'Functional. Events.', ->
     beforeEach () ->
       this.container = this.mold.child('container')
       this.nested = this.mold.child('container.nested')
-
-    it 'not deep', ->
       this.container.onChangeDeep(this.handlerContainer)
       this.nested.onChange(this.handlerNested)
 
-      this.container.update({
-        stringParam: 'newValue'
+    it 'not deep', ->
+      this.container.destroy()
+
+      this.container.update({ stringParam: 'newValue' })
+      this.nested.update({ nestedParam: 'newValue' })
+
+      expect(this.handlerContainer).to.not.have.been.called
+      expect(this.handlerNested).to.have.been.calledOnce
+      expect(this.handlerNested).to.have.been.calledWith({
+        path: 'container.nested'
+        action: 'change'
       })
 
     it 'deep', ->
