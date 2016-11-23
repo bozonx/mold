@@ -17,8 +17,21 @@ describe 'Functional. Events.', ->
     this.handlerNested = sinon.spy();
 
   describe 'main', ->
-    it 'mold.onMoldUpdate()', ->
-      this.mold.onMoldUpdate(this.handlerContainer)
+    it 'mold.onAnyUpdate()', ->
+      this.mold.onAnyUpdate(this.handlerContainer)
+      this.container = this.mold.child('container')
+      this.container.update({
+        stringParam: 'newValue'
+      })
+
+      expect(this.handlerContainer).to.have.been.calledOnce
+      expect(this.handlerContainer).to.have.been.calledWith({
+        path: 'container'
+        action: 'change'
+      })
+
+    it 'mold.offAnyUpdate()', ->
+      this.mold.onAnyUpdate(this.handlerContainer)
       this.container = this.mold.child('container')
       this.container.update({
         stringParam: 'newValue'

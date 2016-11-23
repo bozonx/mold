@@ -48,11 +48,11 @@ export default class Main {
     return this.$$schemaManager.getInstance(path);
   }
 
-  onMoldUpdate(handler) {
-    this.$$state.onMoldUpdate(handler);
+  onAnyUpdate(handler) {
+    this.$$state.onAnyUpdate(handler);
   }
 
-  offMoldUpdate(handler) {
-    this.$$state.offMoldUpdate(handler);
+  offAnyUpdate(handler) {
+    this.$$state.offAnyUpdate(handler);
   }
 }

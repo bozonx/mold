@@ -40,11 +40,11 @@ export default class State {
     this._urlParams[storagePath] = params;
   }
 
-  onMoldUpdate(handler) {
+  onAnyUpdate(handler) {
     this._main.$$events.on('change', handler);
   }
 
-  offMoldUpdate(handler) {
+  offAnyUpdate(handler) {
     this._main.$$events.off('change', handler);
   }
 
