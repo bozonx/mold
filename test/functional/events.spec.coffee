@@ -34,13 +34,10 @@ describe 'Functional. Events.', ->
     beforeEach () ->
       this.container = this.mold.child('container')
       this.nested = this.mold.child('container.nested')
-      #this.container.onChange(this.handlerContainer)
-      #this.nested.onChange(this.handlerNested)
+      this.nested.onChange(this.handlerNested)
 
     it 'container.onChange()', ->
       this.container.onChange(this.handlerContainer)
-      this.nested.onChange(this.handlerNested)
-
       this.container.update({ stringParam: 'newValue' })
 
       expect(this.handlerContainer).to.have.been.calledOnce
@@ -52,8 +49,6 @@ describe 'Functional. Events.', ->
 
     it 'container.onChange() - don\'t rise on parent', ->
       this.container.onChange(this.handlerContainer)
-      this.nested.onChange(this.handlerNested)
-
 
       this.nested.update({ nestedParam: 'newValue' })
 
@@ -66,8 +61,6 @@ describe 'Functional. Events.', ->
 
     it 'container.onChangeDeep()', ->
       this.container.onChangeDeep(this.handlerContainer)
-      this.nested.onChange(this.handlerNested)
-
       this.nested.update({ nestedParam: 'newValue' })
 
       expect(this.handlerContainer).to.have.been.calledOnce
@@ -83,8 +76,6 @@ describe 'Functional. Events.', ->
 
     it 'container.off() with nested', ->
       this.container.onChangeDeep(this.handlerContainer)
-      this.nested.onChange(this.handlerNested)
-
       this.nested.off(this.handlerNested)
 
       this.nested.update({ nestedParam: 'newValue' })
@@ -101,10 +92,10 @@ describe 'Functional. Events.', ->
     beforeEach () ->
       this.container = this.mold.child('container')
       this.nested = this.mold.child('container.nested')
-      this.container.onChangeDeep(this.handlerContainer)
       this.nested.onChange(this.handlerNested)
 
     it 'not deep', ->
+      this.container.onChangeDeep(this.handlerContainer)
       this.container.destroy()
 
       this.container.update({ stringParam: 'newValue' })
