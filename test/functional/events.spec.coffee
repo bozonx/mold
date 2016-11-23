@@ -109,11 +109,14 @@ describe 'Functional. Events.', ->
       })
 
     it 'deep', ->
+      this.container.onChangeDeep(this.handlerContainer)
+      this.container.destroyDeep()
 
+      this.container.update({ stringParam: 'newValue' })
+      this.nested.update({ nestedParam: 'newValue' })
 
+      expect(this.handlerContainer).to.not.have.been.called
+      expect(this.handlerNested).to.not.have.been.called
 
 # TODO: check collection, paged collection
 # TODO: проверить что событие не поднимается если значение по факту не изменилось
-# TODO: destroy
-
-

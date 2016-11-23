@@ -268,7 +268,7 @@ export default class State {
     this._main.$$events.removeListener('change', found.wrapperHandler);
   }
 
-  destroyListeners(storagePath, deep) {
+  destroyListeners(storagePath, deep = false) {
     // TODO: test it
     const clearing = (path) => {
       _.each(this._handlers[path], (item) => {
