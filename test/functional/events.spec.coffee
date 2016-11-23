@@ -16,11 +16,11 @@ describe 'Functional. Events.', ->
     this.handlerContainer = sinon.spy();
     this.handlerNested = sinon.spy();
 
-  describe 'mold, container', ->
+  describe 'main', ->
     it 'mold.onMoldUpdate()', ->
       this.mold.onMoldUpdate(this.handlerContainer)
-      container = this.mold.child('container')
-      container.update({
+      this.container = this.mold.child('container')
+      this.container.update({
         stringParam: 'newValue'
       })
 
@@ -30,13 +30,16 @@ describe 'Functional. Events.', ->
         action: 'change'
       })
 
-    it 'container.onChange()', ->
-      container = this.mold.child('container')
-      container.onChange(this.handlerContainer)
-      nested = this.mold.child('container.nested')
-      nested.onChange(this.handlerNested)
+  describe 'mold, container', ->
+    beforeEach () ->
+      this.container = this.mold.child('container')
+      this.nested = this.mold.child('container.nested')
 
-      container.update({
+    it 'container.onChange()', ->
+      this.container.onChange(this.handlerContainer)
+      this.nested.onChange(this.handlerNested)
+
+      this.container.update({
         stringParam: 'newValue'
        })
 
@@ -48,12 +51,10 @@ describe 'Functional. Events.', ->
       expect(this.handlerNested).to.not.have.been.called
 
     it 'container.onChange() - don\'t rise on parent', ->
-      container = this.mold.child('container')
-      container.onChange(this.handlerContainer)
-      nested = this.mold.child('container.nested')
-      nested.onChange(this.handlerNested)
+      this.container.onChange(this.handlerContainer)
+      this.nested.onChange(this.handlerNested)
 
-      nested.update({
+      this.nested.update({
         nestedParam: 'newValue'
       })
 
@@ -65,12 +66,10 @@ describe 'Functional. Events.', ->
       })
 
     it 'container.onChangeDeep()', ->
-      container = this.mold.child('container')
-      container.onChangeDeep(this.handlerContainer)
-      nested = this.mold.child('container.nested')
-      nested.onChange(this.handlerNested)
+      this.container.onChangeDeep(this.handlerContainer)
+      this.nested.onChange(this.handlerNested)
 
-      nested.update({
+      this.nested.update({
         nestedParam: 'newValue'
       })
 
@@ -86,14 +85,12 @@ describe 'Functional. Events.', ->
       })
 
     it 'container.off() with nested', ->
-      container = this.mold.child('container')
-      container.onChangeDeep(this.handlerContainer)
-      nested = this.mold.child('container.nested')
-      nested.onChange(this.handlerNested)
+      this.container.onChangeDeep(this.handlerContainer)
+      this.nested.onChange(this.handlerNested)
 
-      nested.off(this.handlerNested)
+      this.nested.off(this.handlerNested)
 
-      nested.update({
+      this.nested.update({
         nestedParam: 'newValue'
       })
 
@@ -105,8 +102,25 @@ describe 'Functional. Events.', ->
       expect(this.handlerNested).to.not.have.been.called
       assert.isUndefined(this.mold.$$state._handlers['container.nested'])
 
+  describe 'destroy', ->
+    beforeEach () ->
+      this.container = this.mold.child('container')
+      this.nested = this.mold.child('container.nested')
+
+    it 'not deep', ->
+      this.container.onChangeDeep(this.handlerContainer)
+      this.nested.onChange(this.handlerNested)
+
+      this.container.update({
+        stringParam: 'newValue'
+      })
+
+    it 'deep', ->
+
+
 
 # TODO: check collection, paged collection
 # TODO: проверить что событие не поднимается если значение по факту не изменилось
 # TODO: destroy
+
 

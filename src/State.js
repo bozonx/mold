@@ -268,21 +268,32 @@ export default class State {
     this._main.$$events.removeListener('change', found.wrapperHandler);
   }
 
-  destroy(storagePath) {
-    // TODO: пересмотреть
-    // TODO: должен поддержитьвать запросы документов - __responses
-    // TODO: листенеры удалять всегда, но молд очищать не всегда нужно
-    // if (this._handlers[storagePath]) {
-    //   _.each(this._handlers[storagePath], (handler) => {
-    //     // TODO: странное название события
-    //     this._main.$$events.removeListener('changeOnPath::' + storagePath, handler);
-    //   });
-    //   this._handlers[storagePath] = [];
-    // }
-    //
-    // this._storage.clear(storagePath);
+  destroyListeners(storagePath, deep) {
+    // TODO: test it
+    const clearing = (path) => {
+      _.each(this._handlers[path], (item) => {
+        this._main.$$events.removeListener('change', item.wrapperHandler);
+      });
+      this._handlers[path] = [];
+    };
+
+    if (deep) {
+      _.each(this._handlers, (list, path) => {
+        if (!path.startsWith(storagePath)) return;
+        clearing(path);
+      });
+    }
+    else {
+      if (!this._handlers[storagePath]) return;
+      clearing(storagePath);
+    }
   }
 
+  clear(storagePath) {
+    // TODO: test it
+    // TODO: должен поддержитьвать запросы документов - __responses
+    this._storage.clear(storagePath);
+  }
 
 
 

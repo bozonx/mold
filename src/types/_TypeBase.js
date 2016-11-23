@@ -60,14 +60,14 @@ export default class _TypeBase {
    * @param {boolean} deep - remove event listeners for children deeply too.
    */
   destroy(deep) {
-    this._main.$$state.destroy(this._root, deep);
+    this._main.$$state.destroyListeners(this._root, deep);
   }
 
   /**
    * It clears mold state for current instance and for its descendants.
    */
   clear() {
-
+    this._main.$$state.clear(this._root);
   }
 
 }
