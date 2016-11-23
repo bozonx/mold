@@ -1,5 +1,8 @@
 mold = require('../../src/index').default
 
+# TODO: check collection, paged collection
+
+
 describe 'Functional. Events.', ->
   beforeEach () ->
     testSchema = () ->
@@ -98,6 +101,14 @@ describe 'Functional. Events.', ->
       expect(this.handlerNested).to.not.have.been.called
       assert.isUndefined(this.mold.$$state._handlers['container.nested'])
 
+    it "don't rise an event if value isn't changed", ->
+      this.container.onChange(this.handlerContainer)
+
+      this.container.update({ stringParam: 'newValue' })
+      this.container.update({ stringParam: 'newValue' })
+
+      expect(this.handlerContainer).to.have.been.calledOnce
+
   describe 'destroy', ->
     beforeEach () ->
       this.container = this.mold.child('container')
@@ -127,6 +138,3 @@ describe 'Functional. Events.', ->
 
       expect(this.handlerContainer).to.not.have.been.called
       expect(this.handlerNested).to.not.have.been.called
-
-# TODO: check collection, paged collection
-# TODO: проверить что событие не поднимается если значение по факту не изменилось
