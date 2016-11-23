@@ -381,7 +381,7 @@ export default class State {
         // Go through inner param 'schema'
         //return 'schema';
       }
-      else if (value.type == 'documentsCollection') {
+      else if (_.includes(['documentsCollection'], value.type )) {
         _.set(initialStorage, moldPath, []);
 
         // don't go deeper
@@ -406,7 +406,7 @@ export default class State {
         return false;
       }
       else if (_.includes(['boolean', 'string', 'number'], value.type)) {
-        _.set(initialStorage, moldPath, null);
+        // don't do anything
 
         // don't go deeper
         return false;
