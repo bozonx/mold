@@ -26,6 +26,7 @@ export default class Document extends Container{
     this._root = root;
 
     this._mold = this._main.$$state.initResponse(this._root, {});
+    this._storagePath = this._root;
   }
 
   child(path) {

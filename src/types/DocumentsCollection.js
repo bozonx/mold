@@ -119,7 +119,8 @@ export default class DocumentsCollection extends PagedCollection{
   _updateDoc(document, newState) {
     if (!_.isNumber(document.$pageIndex) || !_.isNumber(document.$index)) return;
     const pathToDoc = concatPath(concatPath(this._root, document.$pageIndex), document.$index);
-    this._main.$$state.update(pathToDoc, newState);
+    const storagePathToDoc = concatPath(concatPath(this._storagePath, document.$pageIndex), document.$index);
+    this._main.$$state.update(pathToDoc, storagePathToDoc, newState);
   }
 
 }

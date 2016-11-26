@@ -60,12 +60,13 @@ export default class State {
   /**
    * Set container or collection to mold
    * @param {string} moldPath
+   * @param {string} storagePath
    * @param {*} value - valid value
    */
-  update(moldPath, value) {
+  update(moldPath, storagePath, value) {
     this._checkNode(moldPath, value);
 
-    this._storage.update(moldPath, value);
+    this._storage.update(storagePath, value);
   }
 
   /**
