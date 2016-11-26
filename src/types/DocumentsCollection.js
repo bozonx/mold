@@ -15,6 +15,7 @@ export default class DocumentsCollection extends PagedCollection{
 
   $init(root) {
     super.$init(root);
+    this._storagePath = this._root + '.pages';
   }
 
   getUrlParams() {
@@ -102,7 +103,7 @@ export default class DocumentsCollection extends PagedCollection{
         delete document.$deleting;
         // remove from page
         if (_.isNumber(document.$pageIndex)) {
-          this._main.$$state.remove(this._root, document, document.$pageIndex);
+          this._main.$$state.remove(this._root, this._storagePath, document, document.$pageIndex);
         }
         return resp;
       }, (err) => {

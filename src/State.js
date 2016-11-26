@@ -79,8 +79,11 @@ export default class State {
   }
 
 
-
-
+  // TODO: убрать
+  updateResponse(url, value) {
+    // this._checkNode(moldPath, value);
+    this._storage.updateResponse(url, value);
+  }
   // TODO: убрать
   initResponse(url, initial) {
     // TODO: зачем делать через State??
@@ -100,10 +103,11 @@ export default class State {
    * Add to beginning of a collection in store by user action.
    * It add item as is, not clones it.
    * @param {string} moldPath
+   * @param {string} storagePath
    * @param {object} newItem
    * @param {number|undefined} pageNum
    */
-  unshift(moldPath, newItem, pageNum = undefined) {
+  unshift(moldPath, storagePath, newItem, pageNum = undefined) {
     // It rise an error if path doesn't consist with schema
     const schema = this._main.$$schemaManager.get(moldPath);
 
@@ -124,10 +128,11 @@ export default class State {
    * Add to end of collection in store by user action.
    * It add item as is, not clones it.
    * @param {string} moldPath
+   * @param {string} storagePath
    * @param {object} newItem
    * @param {number|undefined} pageNum
    */
-  push(moldPath, newItem, pageNum = undefined) {
+  push(moldPath, storagePath, newItem, pageNum = undefined) {
     // It rise an error if path doesn't consist with schema
     const schema = this._main.$$schemaManager.get(moldPath);
 
@@ -148,10 +153,11 @@ export default class State {
   /**
    * Remove item from collection.
    * @param {string} moldPath
+   * @param {string} storagePath
    * @param {object} itemToRemove
    * @param {number|undefined} pageNum
    */
-  remove(moldPath, itemToRemove, pageNum = undefined) {
+  remove(moldPath, storagePath, itemToRemove, pageNum = undefined) {
     // It rise an error if path doesn't consist with schema
     const schema = this._main.$$schemaManager.get(moldPath);
 
@@ -172,10 +178,11 @@ export default class State {
    * Set page to paged collection in store.
    * It doesn't mark items as unsaved.
    * @param {string} moldPath
+   * @param {string} storagePath
    * @param {Array} page
    * @param {number} pageNum. It's required.
    */
-  setPage(moldPath, page, pageNum) {
+  setPage(moldPath, storagePath, page, pageNum) {
     // It rises an error if path doesn't consist with schema
     const schema = this._main.$$schemaManager.get(moldPath);
 
@@ -192,9 +199,10 @@ export default class State {
   /**
    * Set undefined instead page. It doesn't reduce pagedCollection length.
    * @param moldPath
+   * @param {string} storagePath
    * @param pageNum
    */
-  removePage(moldPath, pageNum) {
+  removePage(moldPath, storagePath, pageNum) {
     // It rise an error if path doesn't consist with schema
     const schema = this._main.$$schemaManager.get(moldPath);
 
@@ -203,6 +211,12 @@ export default class State {
 
     this._storage.update(concatPath(moldPath, pageNum), undefined);
   }
+
+
+
+
+
+
 
   /**
    * Add change event handler on path.

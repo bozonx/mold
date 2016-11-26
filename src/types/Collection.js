@@ -16,6 +16,7 @@ export default class Collection extends _TypeBase {
 
   $init(root) {
     super.$init(root);
+    this._storagePath = this._root;
   }
 
   /**
@@ -41,7 +42,7 @@ export default class Collection extends _TypeBase {
    * @param {object} item
    */
   unshift(item) {
-    this._main.$$state.unshift(this._root, item);
+    this._main.$$state.unshift(this._root, this._storagePath , item);
   }
 
   /**
@@ -49,7 +50,7 @@ export default class Collection extends _TypeBase {
    * @param {object} item
    */
   push(item) {
-    this._main.$$state.push(this._root, item);
+    this._main.$$state.push(this._root, this._storagePath , item);
   }
 
   /**
@@ -57,7 +58,7 @@ export default class Collection extends _TypeBase {
    * @param item
    */
   remove(item) {
-    this._main.$$state.remove(this._root, item);
+    this._main.$$state.remove(this._root, this._storagePath , item);
   }
 
 }
