@@ -117,10 +117,10 @@ export default class State {
 
     this._checkNode(moldPath, newItem);
     if (_.isNumber(pageNum)) {
-      this._storage.unshift(concatPath(moldPath, pageNum), newItem);
+      this._storage.unshift(concatPath(storagePath, pageNum), newItem);
     }
     else {
-      this._storage.unshift(moldPath, newItem);
+      this._storage.unshift(storagePath, newItem);
     }
   }
 
@@ -143,10 +143,10 @@ export default class State {
     this._checkNode(moldPath, newItem);
 
     if (_.isNumber(pageNum)) {
-      this._storage.push(concatPath(moldPath, pageNum), newItem);
+      this._storage.push(concatPath(storagePath, pageNum), newItem);
     }
     else {
-      this._storage.push(moldPath, newItem);
+      this._storage.push(storagePath, newItem);
     }
   }
 
@@ -167,10 +167,10 @@ export default class State {
       throw new Error(`Deleted item must has an $index param.`);
 
     if (_.isNumber(pageNum)) {
-      this._storage.remove(concatPath(moldPath, pageNum), itemToRemove.$index);
+      this._storage.remove(concatPath(storagePath, pageNum), itemToRemove.$index);
     }
     else {
-      this._storage.remove(moldPath, itemToRemove.$index);
+      this._storage.remove(storagePath, itemToRemove.$index);
     }
   }
 
@@ -193,7 +193,7 @@ export default class State {
     const preparedPage = _.cloneDeep(page);
 
     //this._checkNode(moldPath, page);
-    this._storage.addTo(moldPath, preparedPage, pageNum);
+    this._storage.addTo(storagePath, preparedPage, pageNum);
   }
 
   /**
@@ -209,7 +209,7 @@ export default class State {
     if (!_.includes(['pagedCollection', 'documentsCollection'], schema.type))
       throw new Error(`You can remove  page only from pagedCollection of documentsCollection!`);
 
-    this._storage.update(concatPath(moldPath, pageNum), undefined);
+    this._storage.update(concatPath(storagePath, pageNum), undefined);
   }
 
 
@@ -395,8 +395,20 @@ export default class State {
         _.set(initialStorage, moldPath, {});
       }
       // arrays
-      else if (_.includes(['array', 'documentsCollection', 'pagedCollection', 'collection'], value.type )) {
+      else if (_.includes(['array', 'pagedCollection', 'collection'], value.type )) {
         _.set(initialStorage, moldPath, []);
+
+        // don't go deeper
+        return false;
+      }
+      else if (value.type == 'documentsCollection') {
+        _.set(initialStorage, moldPath, {
+          pages: [],
+          //loading: [],
+          //creating: [],
+          //deleting: [],
+          //child: {},
+        });
 
         // don't go deeper
         return false;

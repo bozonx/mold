@@ -29,6 +29,7 @@ export default class PagedCollection extends _TypeBase {
   $init(root) {
     super.$init(root);
     this._storagePath = this._root;
+    this._moldPages = this._mold;
   }
 
 
@@ -67,7 +68,7 @@ export default class PagedCollection extends _TypeBase {
    * It removes $index param.
    */
   getFlat() {
-    return _.flatMap(_.cloneDeep(this.mold), (page) => {
+    return _.flatMap(_.cloneDeep(this._moldPages), (page) => {
       return _.map(page, (item) => {
         delete item.$index;
         delete item.$pageIndex;
@@ -105,7 +106,7 @@ export default class PagedCollection extends _TypeBase {
     newItem.$addedUnsaved = true;
 
     this._checkEmptyPage();
-    const pageNum = this.mold.length - 1;
+    const pageNum = this._moldPages.length - 1;
     this._main.$$state.push(this._root, this._storagePath, newItem, pageNum);
   }
 
@@ -117,7 +118,7 @@ export default class PagedCollection extends _TypeBase {
    */
   setPage(page, pageNum) {
     if (_.isUndefined(pageNum)) {
-      pageNum = this.mold.length;
+      pageNum = this._moldPages.length;
     }
     else if (!_.isNumber(pageNum)) {
       throw new Error(`The pageNum must be type of number!`);
@@ -166,7 +167,7 @@ export default class PagedCollection extends _TypeBase {
    * @private
    */
   _checkEmptyPage() {
-    if (_.isEmpty(this.mold)) {
+    if (_.isEmpty(this._moldPages)) {
       const pageNum = 0;
       this._main.$$state.setPage(this._root, this._storagePath, [], pageNum);
     }

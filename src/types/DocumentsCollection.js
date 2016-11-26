@@ -16,6 +16,7 @@ export default class DocumentsCollection extends PagedCollection{
   $init(root) {
     super.$init(root);
     this._storagePath = this._root + '.pages';
+    this._moldPages = this._mold['pages'];
   }
 
   getUrlParams() {

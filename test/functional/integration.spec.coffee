@@ -49,7 +49,7 @@ describe 'Integration.', ->
         .deep.equal({
           __responses:
             'documentsCollection[0]': {id: 0}
-          documentsCollection: []
+          documentsCollection: {pages:[]}
         })
         .notify(done)
 
