@@ -47,9 +47,9 @@ describe 'Integration.', ->
       expect(this.document.load()).to.eventually.notify =>
         expect(Promise.resolve(this.document._main.$getWholeStorageState())).to.eventually
         .deep.equal({
-          __responses:
-            'documentsCollection[0]': {id: 0}
-          documentsCollection: {pages:[], documents: {}}
+          documentsCollection: {pages:[], documents: {
+            '0': {id: 0}
+          }}
         })
         .notify(done)
 

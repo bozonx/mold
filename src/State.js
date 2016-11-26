@@ -72,26 +72,35 @@ export default class State {
   }
 
   /**
-   * Set document to __requests
-   * @param {string} url
-   * @param {object} value - valid value
+   * Set to mold silently
+   * @param {string} storagePath
+   * @param {*} value - valid value
    */
-  // TODO: убрать
-  updateResponse(url, value) {
-    // this._checkNode(moldPath, value);
-    this._storage.updateResponse(url, value);
-  }
-  // TODO: убрать
-  initResponse(url, initial) {
-    // TODO: зачем делать через State??
-    return this._storage.initResponse(url, initial);
+  setSilent(storagePath, value) {
+    this._storage.setSilent(storagePath, value);
   }
 
-  // TODO: убрать
-  getResponse(url) {
-    // TODO: зачем делать через State??
-    return this._storage.getResponse(url);
-  }
+  // /**
+  //  * Set document to __requests
+  //  * @param {string} url
+  //  * @param {object} value - valid value
+  //  */
+  // // TODO: убрать
+  // updateResponse(url, value) {
+  //   // this._checkNode(moldPath, value);
+  //   this._storage.updateResponse(url, value);
+  // }
+  // // TODO: убрать
+  // initResponse(url, initial) {
+  //   // TODO: зачем делать через State??
+  //   return this._storage.initResponse(url, initial);
+  // }
+  //
+  // // TODO: убрать
+  // getResponse(url) {
+  //   // TODO: зачем делать через State??
+  //   return this._storage.getResponse(url);
+  // }
 
 
 
