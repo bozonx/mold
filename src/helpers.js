@@ -88,6 +88,10 @@ export function convertFromLodashToUrl(path) {
   return preUrl.replace(/\./g, '/');
 }
 
+export function convertFromMoldToDocumentStoragePath(moldPath) {
+  return moldPath.replace(/(\[\d+])$/, '.documents$1');
+}
+
 export function getTheBestMatchPath(sourcePath, pathsList) {
   let matchList = _.map(pathsList, (path) => {
     if (sourcePath.indexOf(path) === 0) return path;

@@ -50,11 +50,11 @@ export default class State {
 
   /**
    * Get mold by path
-   * @param {string} moldPath
+   * @param {string} storagePath
    * @returns {*} - value from mold
    */
-  getMold(moldPath) {
-    return this._storage.get(moldPath);
+  getMold(storagePath) {
+    return this._storage.get(storagePath);
   }
 
   /**
@@ -74,12 +74,6 @@ export default class State {
    * @param {string} url
    * @param {object} value - valid value
    */
-  updateDocument(url, value) {
-    // this._checkNode(moldPath, value);
-    //this._storage.updateResponse(url, value);
-  }
-
-
   // TODO: убрать
   updateResponse(url, value) {
     // this._checkNode(moldPath, value);
@@ -406,9 +400,7 @@ export default class State {
         _.set(initialStorage, moldPath, {
           pages: [],
           //loading: [],
-          //creating: [],
-          //deleting: [],
-          //child: {},
+          documents: {},
         });
 
         // don't go deeper
