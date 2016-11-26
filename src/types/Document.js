@@ -23,10 +23,10 @@ export default class Document extends Container{
   }
 
   $init(root) {
-    this._root = root;
+    this._moldPath = root;
 
-    this._mold = this._main.$$state.initResponse(this._root, {});
-    this._storagePath = this._root;
+    this._mold = this._main.$$state.initResponse(this._moldPath, {});
+    this._storagePath = this._moldPath;
   }
 
   child(path) {
@@ -36,17 +36,17 @@ export default class Document extends Container{
   }
 
   getUrlParams() {
-    return this._main.$$state.getUrlParams(this._root);
+    return this._main.$$state.getUrlParams(this._moldPath);
   }
 
   setUrlParams(params) {
-    this._main.$$state.setUrlParams(this._root, params);
+    this._main.$$state.setUrlParams(this._moldPath, params);
   }
 
   update(newState) {
     this._lastChanges = correctUpdatePayload(this._lastChanges, newState);
     // TODO: формировать правильно url
-    this._main.$$state.updateResponse(this._root, _.cloneDeep(newState));
+    this._main.$$state.updateResponse(this._moldPath, _.cloneDeep(newState));
   }
 
   /**
@@ -56,14 +56,14 @@ export default class Document extends Container{
   load() {
     const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
-        'get', this._root, undefined, metaParams, this.getUrlParams())
+        'get', this._moldPath, undefined, metaParams, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
 
         // TODO: формировать правильно url
-        this._main.$$state.updateResponse(this._root, resp.body);
+        this._main.$$state.updateResponse(this._moldPath, resp.body);
         // TODO: не надо здесь устанавливать mold - он уже должен был установлен
-        this._mold = this._main.$$state.getResponse(this._root);
+        this._mold = this._main.$$state.getResponse(this._moldPath);
         this._lastChanges = {};
 
         return resp;
@@ -77,9 +77,9 @@ export default class Document extends Container{
   put() {
     const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
-        'put', this._root, this._mold, metaParams, this.getUrlParams()).then((resp) => {
+        'put', this._moldPath, this._mold, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
-      this._main.$$state.updateResponse(this._root, resp.body);
+      this._main.$$state.updateResponse(this._moldPath, resp.body);
       this._lastChanges = {};
 
       return resp;
@@ -93,9 +93,9 @@ export default class Document extends Container{
   patch() {
     const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
-      'patch', this._root, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {
+      'patch', this._moldPath, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
-      this._main.$$state.updateResponse(this._root, resp.body);
+      this._main.$$state.updateResponse(this._moldPath, resp.body);
       this._lastChanges = {};
 
       return resp;

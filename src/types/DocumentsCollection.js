@@ -15,16 +15,16 @@ export default class DocumentsCollection extends PagedCollection{
 
   $init(root) {
     super.$init(root);
-    this._storagePath = this._root + '.pages';
+    this._storagePath = this._moldPath + '.pages';
     this._moldPages = this._mold['pages'];
   }
 
   getUrlParams() {
-    return this._main.$$state.getUrlParams(this._root);
+    return this._main.$$state.getUrlParams(this._moldPath);
   }
 
   setUrlParams(params) {
-    this._main.$$state.setUrlParams(this._root, params);
+    this._main.$$state.setUrlParams(this._moldPath, params);
   }
 
   /**
@@ -42,7 +42,7 @@ export default class DocumentsCollection extends PagedCollection{
     }, _.isUndefined);
 
     return this._main.$$state.$$request.sendRequest(
-        'filter', this._root, undefined, metaParams, this.getUrlParams())
+        'filter', this._moldPath, undefined, metaParams, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
         this.setPage(resp.body, pageNum);
@@ -63,7 +63,7 @@ export default class DocumentsCollection extends PagedCollection{
     this._updateDoc(document, { $adding: true });
     document.$adding = true;
     return this._main.$$state.$$request.sendRequest(
-        'create', this._root, document, metaParams, this.getUrlParams())
+        'create', this._moldPath, document, metaParams, this.getUrlParams())
       .then((resp) => {
         // update document if it's in storage
         this._updateDoc(document, {
@@ -99,12 +99,12 @@ export default class DocumentsCollection extends PagedCollection{
     this._updateDoc(document, { $deleting: true });
     document.$deleting = true;
     return this._main.$$state.$$request.sendRequest(
-        'delete', this._root, document, metaParams, this.getUrlParams())
+        'delete', this._moldPath, document, metaParams, this.getUrlParams())
       .then((resp) => {
         delete document.$deleting;
         // remove from page
         if (_.isNumber(document.$pageIndex)) {
-          this._main.$$state.remove(this._root, this._storagePath, document, document.$pageIndex);
+          this._main.$$state.remove(this._moldPath, this._storagePath, document, document.$pageIndex);
         }
         return resp;
       }, (err) => {
@@ -118,7 +118,7 @@ export default class DocumentsCollection extends PagedCollection{
 
   _updateDoc(document, newState) {
     if (!_.isNumber(document.$pageIndex) || !_.isNumber(document.$index)) return;
-    const pathToDoc = concatPath(concatPath(this._root, document.$pageIndex), document.$index);
+    const pathToDoc = concatPath(concatPath(this._moldPath, document.$pageIndex), document.$index);
     const storagePathToDoc = concatPath(concatPath(this._storagePath, document.$pageIndex), document.$index);
     this._main.$$state.update(pathToDoc, storagePathToDoc, newState);
   }

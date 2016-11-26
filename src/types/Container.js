@@ -15,7 +15,7 @@ export default class Container extends _TypeBase{
 
   $init(root) {
     super.$init(root);
-    this._storagePath = this._root;
+    this._storagePath = this._moldPath;
   }
 
   /**
@@ -27,7 +27,7 @@ export default class Container extends _TypeBase{
     if (!_.isString(path))
       throw new Error(`You must pass a path argument.`);
 
-    return this._main.$$schemaManager.getInstance(concatPath(this._root, path));
+    return this._main.$$schemaManager.getInstance(concatPath(this._moldPath, path));
   }
 
   update(newState) {

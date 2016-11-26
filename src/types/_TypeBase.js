@@ -8,7 +8,7 @@ export default class _TypeBase {
    * @returns {string}
    */
   get root() {
-    return '' + this._root;
+    return '' + this._moldPath;
   }
 
   /**
@@ -26,9 +26,9 @@ export default class _TypeBase {
   }
 
   $init(root) {
-    this._root = root;
+    this._moldPath = root;
     // mold is just a link to the storage
-    this._mold = this._main.$$state.getMold(this._root);
+    this._mold = this._main.$$state.getMold(this._moldPath);
   }
 
   /**
@@ -36,7 +36,7 @@ export default class _TypeBase {
    * @param {function} handler
    */
   onChange(handler) {
-    this._main.$$state.addListener(this._root, handler);
+    this._main.$$state.addListener(this._moldPath, handler);
   }
 
   /**
@@ -44,7 +44,7 @@ export default class _TypeBase {
    * @param {function} handler
    */
   onChangeDeep(handler) {
-    this._main.$$state.addDeepListener(this._root, handler);
+    this._main.$$state.addDeepListener(this._moldPath, handler);
   }
 
   /**
@@ -52,14 +52,14 @@ export default class _TypeBase {
    * @param {function} handler - handler to remove
    */
   off(handler) {
-    this._main.$$state.removeListener(this._root, handler);
+    this._main.$$state.removeListener(this._moldPath, handler);
   }
 
   /**
    * It removes all the events listeners.
    */
   destroy() {
-    this._main.$$state.destroyListeners(this._root);
+    this._main.$$state.destroyListeners(this._moldPath);
   }
 
   /**
@@ -67,14 +67,14 @@ export default class _TypeBase {
    * Removes event listeners for children deeply too.
    */
   destroyDeep() {
-    this._main.$$state.destroyListeners(this._root, true);
+    this._main.$$state.destroyListeners(this._moldPath, true);
   }
 
   /**
    * It clears mold state for current instance and for its descendants.
    */
   clear() {
-    this._main.$$state.clear(this._root);
+    this._main.$$state.clear(this._moldPath);
   }
 
 }
