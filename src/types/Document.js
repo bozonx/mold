@@ -24,9 +24,12 @@ export default class Document extends Container{
 
   $init(moldPath) {
     this._storagePath = this._moldPath;
-    this._moldPath = moldPath;
 
-    this._mold = this._main.$$state.initResponse(this._moldPath, {});
+    //this._storagePath = moldPath + '.pages';
+    //this._mold = this._main.$$state.getMold(moldPath);
+
+    this._mold = this._main.$$state.initResponse(moldPath, {});
+    super.$init(moldPath);
   }
 
   child(path) {

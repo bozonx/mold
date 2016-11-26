@@ -29,7 +29,7 @@ export default class _TypeBase {
     this._moldPath = moldPath;
     this._storagePath = this._storagePath || moldPath;
     // mold is just a link to the storage
-    this._mold = this._main.$$state.getMold(this._moldPath);
+    if (!this._mold) this._mold = this._main.$$state.getMold(this._storagePath);
   }
 
   /**
