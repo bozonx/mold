@@ -68,85 +68,92 @@ export default class State {
     this._storage.update(moldPath, value);
   }
 
-  initResponse(url, initial) {
-    // TODO: зачем делать через State??
-    return this._storage.initResponse(url, initial);
-  }
-
-  getResponse(url) {
-    // TODO: зачем делать через State??
-    return this._storage.getResponse(url);
-  }
-
   /**
    * Set document to __requests
    * @param {string} url
    * @param {object} value - valid value
    */
-  updateResponse(url, value) {
+  updateDocument(url, value) {
     // this._checkNode(moldPath, value);
-    this._storage.updateResponse(url, value);
+    //this._storage.updateResponse(url, value);
   }
+
+
+
+
+  // TODO: убрать
+  initResponse(url, initial) {
+    // TODO: зачем делать через State??
+    return this._storage.initResponse(url, initial);
+  }
+
+  // TODO: убрать
+  getResponse(url) {
+    // TODO: зачем делать через State??
+    return this._storage.getResponse(url);
+  }
+
+
 
 
   /**
    * Add to beginning of a collection in store by user action.
    * It add item as is, not clones it.
-   * @param {string} pathToCollection
+   * @param {string} moldPath
    * @param {object} newItem
    * @param {number|undefined} pageNum
    */
-  unshift(pathToCollection, newItem, pageNum = undefined) {
+  unshift(moldPath, newItem, pageNum = undefined) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.$$schemaManager.get(pathToCollection);
+    const schema = this._main.$$schemaManager.get(moldPath);
 
     // TODO: перенести это в checkNode
     if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
       throw new Error(`You can add new item only to collection!`);
 
-    this._checkNode(pathToCollection, newItem);
+    this._checkNode(moldPath, newItem);
     if (_.isNumber(pageNum)) {
-      this._storage.unshift(concatPath(pathToCollection, pageNum), newItem);
+      this._storage.unshift(concatPath(moldPath, pageNum), newItem);
     }
     else {
-      this._storage.unshift(pathToCollection, newItem);
+      this._storage.unshift(moldPath, newItem);
     }
   }
 
   /**
    * Add to end of collection in store by user action.
    * It add item as is, not clones it.
-   * @param {string} pathToCollection
+   * @param {string} moldPath
    * @param {object} newItem
    * @param {number|undefined} pageNum
    */
-  push(pathToCollection, newItem, pageNum = undefined) {
+  push(moldPath, newItem, pageNum = undefined) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.$$schemaManager.get(pathToCollection);
+    const schema = this._main.$$schemaManager.get(moldPath);
 
     // TODO: перенести это в checkNode
     if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
       throw new Error(`You can add new item only to collection!`);
 
-    this._checkNode(pathToCollection, newItem);
+    this._checkNode(moldPath, newItem);
 
     if (_.isNumber(pageNum)) {
-      this._storage.push(concatPath(pathToCollection, pageNum), newItem);
+      this._storage.push(concatPath(moldPath, pageNum), newItem);
     }
     else {
-      this._storage.push(pathToCollection, newItem);
+      this._storage.push(moldPath, newItem);
     }
   }
 
   /**
    * Remove item from collection.
-   * @param {string} pathToCollection
+   * @param {string} moldPath
    * @param {object} itemToRemove
    * @param {number|undefined} pageNum
    */
-  remove(pathToCollection, itemToRemove, pageNum = undefined) {
+  remove(moldPath, itemToRemove, pageNum = undefined) {
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.$$schemaManager.get(pathToCollection);
+    const schema = this._main.$$schemaManager.get(moldPath);
 
     if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
       throw new Error(`You can remove only from collection!`);
@@ -154,23 +161,23 @@ export default class State {
       throw new Error(`Deleted item must has an $index param.`);
 
     if (_.isNumber(pageNum)) {
-      this._storage.remove(concatPath(pathToCollection, pageNum), itemToRemove.$index);
+      this._storage.remove(concatPath(moldPath, pageNum), itemToRemove.$index);
     }
     else {
-      this._storage.remove(pathToCollection, itemToRemove.$index);
+      this._storage.remove(moldPath, itemToRemove.$index);
     }
   }
 
   /**
    * Set page to paged collection in store.
    * It doesn't mark items as unsaved.
-   * @param {string} pathToPagedCollection
+   * @param {string} moldPath
    * @param {Array} page
    * @param {number} pageNum. It's required.
    */
-  setPage(pathToPagedCollection, page, pageNum) {
+  setPage(moldPath, page, pageNum) {
     // It rises an error if path doesn't consist with schema
-    const schema = this._main.$$schemaManager.get(pathToPagedCollection);
+    const schema = this._main.$$schemaManager.get(moldPath);
 
     // TODO: перенести это в checkNode
     if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
@@ -178,23 +185,23 @@ export default class State {
 
     const preparedPage = _.cloneDeep(page);
 
-    //this._checkNode(pathToPagedCollection, page);
-    this._storage.addTo(pathToPagedCollection, preparedPage, pageNum);
+    //this._checkNode(moldPath, page);
+    this._storage.addTo(moldPath, preparedPage, pageNum);
   }
 
   /**
    * Set undefined instead page. It doesn't reduce pagedCollection length.
-   * @param pathToPagedCollection
+   * @param moldPath
    * @param pageNum
    */
-  removePage(pathToPagedCollection, pageNum) {
+  removePage(moldPath, pageNum) {
     // It rise an error if path doesn't consist with schema
-    const schema = this._main.$$schemaManager.get(pathToPagedCollection);
+    const schema = this._main.$$schemaManager.get(moldPath);
 
     if (!_.includes(['pagedCollection', 'documentsCollection'], schema.type))
       throw new Error(`You can remove  page only from pagedCollection of documentsCollection!`);
 
-    this._storage.update(concatPath(pathToPagedCollection, pageNum), undefined);
+    this._storage.update(concatPath(moldPath, pageNum), undefined);
   }
 
   /**
