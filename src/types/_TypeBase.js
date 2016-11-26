@@ -27,6 +27,7 @@ export default class _TypeBase {
 
   $init(root) {
     this._moldPath = root;
+    this._storagePath = this._storagePath || root;
     // mold is just a link to the storage
     this._mold = this._main.$$state.getMold(this._moldPath);
   }

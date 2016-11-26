@@ -15,7 +15,6 @@ export default class Container extends _TypeBase{
 
   $init(root) {
     super.$init(root);
-    this._storagePath = this._moldPath;
   }
 
   /**

@@ -48,6 +48,8 @@ export default class State {
     this._main.$$events.off('change', handler);
   }
 
+
+
   /**
    * Get mold by path
    * @param {string} storagePath

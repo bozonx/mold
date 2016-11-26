@@ -16,7 +16,6 @@ export default class Collection extends _TypeBase {
 
   $init(root) {
     super.$init(root);
-    this._storagePath = this._moldPath;
   }
 
   /**

@@ -23,10 +23,10 @@ export default class Document extends Container{
   }
 
   $init(root) {
+    this._storagePath = this._moldPath;
     this._moldPath = root;
 
     this._mold = this._main.$$state.initResponse(this._moldPath, {});
-    this._storagePath = this._moldPath;
   }
 
   child(path) {
