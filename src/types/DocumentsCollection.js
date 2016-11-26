@@ -13,9 +13,9 @@ export default class DocumentsCollection extends PagedCollection{
     return 'documentsCollection';
   }
 
-  $init(root) {
-    this._storagePath = root + '.pages';
-    super.$init(root);
+  $init(moldPath) {
+    this._storagePath = moldPath + '.pages';
+    super.$init(moldPath);
     this._moldPages = this._mold['pages'];
   }
 

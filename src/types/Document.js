@@ -22,9 +22,9 @@ export default class Document extends Container{
     return this._lastChanges;
   }
 
-  $init(root) {
+  $init(moldPath) {
     this._storagePath = this._moldPath;
-    this._moldPath = root;
+    this._moldPath = moldPath;
 
     this._mold = this._main.$$state.initResponse(this._moldPath, {});
   }
