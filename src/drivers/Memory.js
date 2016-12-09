@@ -63,6 +63,7 @@ class LocalMemory {
           driverResponse: result,
           request,
           meta: {
+            pageNum: request.meta.pageNum,
             // TODO: проверить нужно ли отнимать 1 от collection.length
             lastPage: lastItemIndex >= collection.length,
           },

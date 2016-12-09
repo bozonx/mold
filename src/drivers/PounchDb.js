@@ -74,6 +74,7 @@ class LocalPounchDb {
         if (usePaged) {
           const lastItemIndex = (request.meta.pageNum + 1) * request.meta.perPage;
           response.meta = {
+            pageNum: request.meta.pageNum,
             lastPage: lastItemIndex >= resp.total_rows,
           };
         }
