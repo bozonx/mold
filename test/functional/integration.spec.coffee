@@ -14,7 +14,7 @@ describe 'Integration.', ->
       # TODO: use pounch
 
       this.testSchema = testSchema()
-      this.mold = mold( {}, this.testSchema )
+      this.mold = mold( {silent: true}, this.testSchema )
       _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', [
         {id: 0}
       ])

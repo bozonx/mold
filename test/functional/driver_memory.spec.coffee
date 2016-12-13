@@ -27,7 +27,7 @@ describe 'Functional. Memory driver.', ->
   beforeEach ->
     memory = new Memory({});
     this.testSchema = testSchema(memory)
-    this.mold = mold( {}, this.testSchema )
+    this.mold = mold( {silent: true}, this.testSchema )
 
   it 'document_get', (done) ->
     driverHelpers.document_get(this.mold, 'root.document', done)

@@ -4,15 +4,13 @@ import Storage from './Storage';
 import SchemaManager from './SchemaManager';
 import State from './State';
 import Config from './Config';
-import Log from './Log';
-import events from './events';
 
 export default class Main {
   constructor(config, schema) {
     const configInstance = new Config(config);
     this.$$config = configInstance.get();
-    this.$$events = events;
-    this.$$log = new Log({silent: this.$$config.silent});
+    this.$$events = this.$$config.eventEmitter;
+    this.$$log = this.$$config.logger;
     this.$$schemaManager = new SchemaManager();
     this.$$state = new State();
 

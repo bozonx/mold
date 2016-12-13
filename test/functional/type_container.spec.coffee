@@ -26,7 +26,7 @@ describe 'Functional. Container type.', ->
     }
 
     this.testSchema = testSchema()
-    this.mold = mold( {}, this.testSchema )
+    this.mold = mold( {silent: true}, this.testSchema )
     this.container = this.mold.child('container')
 
   it "Initial values", ->

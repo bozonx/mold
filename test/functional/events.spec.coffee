@@ -15,7 +15,7 @@ describe 'Functional. Events.', ->
             schema:
               nestedParam: {type: 'string'}
 
-    this.mold = mold( {}, testSchema() )
+    this.mold = mold( {silent: true}, testSchema() )
     this.handlerContainer = sinon.spy();
     this.handlerNested = sinon.spy();
 

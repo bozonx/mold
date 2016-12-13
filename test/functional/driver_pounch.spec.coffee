@@ -34,7 +34,7 @@ describe 'Functional. PounchDb driver.', ->
         db: new PouchDB(dbName, {db: memdown}),
       });
       this.testSchema = testSchema(pounch)
-      this.mold = mold( {}, this.testSchema )
+      this.mold = mold( {silent: true}, this.testSchema )
 
   it 'document_get', (done) ->
     this.init('document_get')

@@ -11,7 +11,7 @@ testSchema = () ->
 
 describe 'Functional. Paged Collection type.', ->
   beforeEach () ->
-    this.mold = mold( {}, testSchema() )
+    this.mold = mold( {silent: true}, testSchema() )
     this.pagedCollection = this.mold.child('pagedCollection')
 
   it 'init value', ->

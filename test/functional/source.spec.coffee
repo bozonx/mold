@@ -10,7 +10,7 @@ testSchema = () ->
 
 describe 'Functional. Source.', ->
   beforeEach () ->
-    this.mold = mold( {}, testSchema() )
+    this.mold = mold( {silent: true}, testSchema() )
     _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'collection[0]', {
       id: 0
       name: 'value0'

@@ -26,7 +26,7 @@ describe 'Functional. Document type.', ->
     }
 
     this.testSchema = testSchema()
-    this.mold = mold( {}, this.testSchema )
+    this.mold = mold( {silent: true}, this.testSchema )
     this.document = this.mold.child('document')
 
   it 'load() and check mold', (done) ->

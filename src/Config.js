@@ -6,6 +6,8 @@ export default class Config {
 
     this._config = _.defaultsDeep(_.cloneDeep(this._rawConfig), this.getDefaults());
 
+    this._initModules();
+
     // TODO: validate a config
   }
 
@@ -18,6 +20,16 @@ export default class Config {
       silent: false,
       eventEmitter: null,
       logger: null,
+    }
+  }
+
+  _initModules() {
+    if (!this._config.eventEmitter) {
+      this._config.eventEmitter = require('./events').default;
+    }
+    if (!this._config.logger) {
+      const Log = require('./Log').default;
+      this._config.logger = new Log({silent: this._config.silent});
     }
   }
 }
