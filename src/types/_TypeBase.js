@@ -18,6 +18,10 @@ export default class _TypeBase {
     return this._mold;
   }
 
+  get schema() {
+    return this._schema;
+  }
+
   /**
    * Get copy of mold.
    */
@@ -28,6 +32,7 @@ export default class _TypeBase {
   $init(moldPath) {
     this._moldPath = moldPath;
     this._storagePath = this._storagePath || moldPath;
+    this._schema = this._main.$$schemaManager.get(this._storagePath);
     // mold is just a link to the storage
     if (!this._mold) this._mold = this._main.$$state.getMold(this._storagePath);
   }
