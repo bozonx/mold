@@ -163,7 +163,7 @@ module.exports =
             .deep.equal({body: [
               item2,
               item3,
-            ], request: request, meta: {lastPage: true}})
+            ], request: request, meta: {lastPage: true, pageNum: 1}})
             .notify(done)
 
 
