@@ -50,10 +50,25 @@ class LocalPounchDb {
     // simple query without paging
     let query = {
       include_docs: true,
-      startkey: preparedUrl,
-      // \uffff - is high character
-      endkey: preparedUrl + '\uffff',
     };
+
+    if (request.meta.descending) {
+      query = {
+        ...query,
+        startkey: preparedUrl + '\uffff',
+        endkey: preparedUrl,
+        descending: true,
+      }
+    }
+    else {
+      query = {
+        ...query,
+        startkey: preparedUrl,
+        // \uffff - is high character
+        endkey: preparedUrl + '\uffff',
+        descending: false,
+      }
+    }
 
     if (usePaged) {
       query = {

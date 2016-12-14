@@ -31,16 +31,24 @@ export default class DocumentsCollection extends PagedCollection{
   /**
    * Load the specified page.
    * It updates mold automatically.
-   * @param pageNum
+   * @param {number} pageNum
+   * @param {object} metaOverrides - override request's meta params
    * @returns {Promise}
    */
-  load(pageNum) {
+  load(pageNum, metaOverrides) {
     if (!_.isNumber(pageNum)) throw new Error(`The "pageNum" param is required!`);
 
-    const metaParams = _.omitBy({
+    let metaParams = _.omitBy({
       pageNum: pageNum,
       perPage: this._perPage,
     }, _.isUndefined);
+
+    if (_.isPlainObject(metaOverrides)) {
+      metaParams = {
+        ...metaParams,
+        ...metaOverrides,
+      }
+    }
 
     return this._main.$$state.$$request.sendRequest(
         'filter', this._moldPath, undefined, metaParams, this.getUrlParams())
