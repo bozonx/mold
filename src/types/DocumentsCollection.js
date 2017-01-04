@@ -69,7 +69,10 @@ export default class DocumentsCollection extends PagedCollection{
   create(document) {
     const metaParams = undefined;
     // change with event rising
-    this._updateDoc(document, { $adding: true });
+    this._updateDoc(document, {
+      $adding: true,
+      $saving: true,
+    });
     document.$adding = true;
 
     // TODO: add saving state
@@ -82,6 +85,7 @@ export default class DocumentsCollection extends PagedCollection{
           ...resp.body,
           $addedUnsaved: undefined,
           $adding: undefined,
+          $saving: false,
         });
 
         // remove for any way
@@ -92,6 +96,7 @@ export default class DocumentsCollection extends PagedCollection{
       }, (err) => {
         this._updateDoc(document, {
           $adding: undefined,
+          $saving: false,
         });
         delete document.$adding;
         return err;

@@ -62,6 +62,7 @@ describe 'Functional. DocumentsCollection type.', ->
 
       assert.isTrue(this.newDoc.$addedUnsaved)
       assert.isTrue(this.newDoc.$adding)
+      assert.isTrue(this.newDoc.$saving)
       expect(promise).to.eventually.notify =>
         assert.isUndefined(this.newDoc.$addedUnsaved)
         assert.isUndefined(this.newDoc.$adding)
@@ -69,6 +70,7 @@ describe 'Functional. DocumentsCollection type.', ->
         .property('pages').deep.equal([[
           {
             $pageIndex: 0,
+            $saving: false,
             $index: 0,
             name: 'a',
             id: 0,
