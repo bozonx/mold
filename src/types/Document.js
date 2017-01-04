@@ -75,9 +75,12 @@ export default class Document extends Container{
 
   /**
    * Save actual state.
+   * @param {object|undefined} newState
    * @returns {Promise}
    */
-  put() {
+  put(newState=undefined) {
+    if (newState) this.update(newState);
+
     const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
         'put', this._moldPath, this._mold, metaParams, this.getUrlParams()).then((resp) => {
@@ -91,9 +94,12 @@ export default class Document extends Container{
 
   /**
    * Save actual state.
+   * @param {object|undefined} newState
    * @returns {Promise}
    */
-  patch() {
+  patch(newState=undefined) {
+    if (newState) this.update(newState);
+
     const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
       'patch', this._moldPath, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {

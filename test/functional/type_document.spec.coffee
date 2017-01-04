@@ -46,3 +46,7 @@ describe 'Functional. Document type.', ->
     this.document.update(this.testValues)
     expect(this.document.put()).to.eventually
     .property('body').deep.equal(this.testValues)
+
+  it "put(newState)", ->
+    expect(this.document.put(this.testValues)).to.eventually
+    .property('body').deep.equal(this.testValues)
