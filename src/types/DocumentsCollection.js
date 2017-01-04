@@ -70,12 +70,8 @@ export default class DocumentsCollection extends PagedCollection{
     const metaParams = undefined;
     // change with event rising
     this._updateDoc(document, {
-      $adding: true,
       $saving: true,
     });
-    document.$adding = true;
-
-    // TODO: add saving state
 
     return this._main.$$state.$$request.sendRequest(
         'create', this._moldPath, document, metaParams, this.getUrlParams())
@@ -84,21 +80,17 @@ export default class DocumentsCollection extends PagedCollection{
         this._updateDoc(document, {
           ...resp.body,
           $addedUnsaved: undefined,
-          $adding: undefined,
           $saving: false,
         });
 
         // remove for any way
         delete document.$addedUnsaved;
-        delete document.$adding;
 
         return resp;
       }, (err) => {
         this._updateDoc(document, {
-          $adding: undefined,
           $saving: false,
         });
-        delete document.$adding;
         return err;
       });
   }

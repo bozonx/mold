@@ -61,7 +61,6 @@ describe 'Functional. DocumentsCollection type.', ->
       promise = this.documentsCollection.create(this.newDoc)
 
       assert.isTrue(this.newDoc.$addedUnsaved)
-      assert.isTrue(this.newDoc.$adding)
       assert.isTrue(this.newDoc.$saving)
       expect(promise).to.eventually.notify =>
         assert.isUndefined(this.newDoc.$addedUnsaved)
