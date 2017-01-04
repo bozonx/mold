@@ -67,3 +67,18 @@ describe 'Functional. PouchDb driver.', ->
   it 'documentsCollection_filter_paged', (done) ->
     this.init('paged')
     driverHelpers.documentsCollection_filter_paged(this.mold, 'root.documentsCollection', done)
+
+  it "_id and _rev have to save", (done) ->
+    this.init('_id_rev')
+    pathToDoc = 'root.document'
+    payload =
+      stringParam: 'newValue'
+    document = this.mold.child(pathToDoc)
+    document.update(payload)
+
+    promise = document.put()
+    expect(promise).to.eventually.notify =>
+      expect(Promise.all([
+        expect(Promise.resolve(document.mold._id)).to.eventually.equal('/document')
+        expect(Promise.resolve(document.mold._rev.length == 34)).to.eventually.equal(true)
+      ])).to.eventually.notify(done)
