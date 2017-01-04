@@ -40,7 +40,10 @@ describe 'Integration.', ->
     it 'load - check mold of document', (done) ->
       expect(this.document.load()).to.eventually.notify =>
         expect(Promise.resolve(this.document.mold)).to.eventually
-        .deep.equal({id: 0})
+        .deep.equal({
+          $loading: false
+          id: 0
+        })
         .notify(done)
 
     it 'load - check storage', (done) ->
@@ -48,7 +51,10 @@ describe 'Integration.', ->
         expect(Promise.resolve(this.document._main.$getWholeStorageState())).to.eventually
         .deep.equal({
           documentsCollection: {pages:[], documents: {
-            '0': {id: 0}
+            '0': {
+              $loading: false
+              id: 0
+            }
           }}
         })
         .notify(done)

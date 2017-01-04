@@ -14,6 +14,10 @@ export default class Document extends Container{
     return 'document';
   }
 
+  get loading() {
+    return this.mold.$loading;
+  }
+
   /**
    * Get changes from last save to the moment.
    * @returns {object}
@@ -58,10 +62,12 @@ export default class Document extends Container{
    */
   load() {
     const metaParams = undefined;
+    this._main.$$state.update(this._moldPath, this._storagePath, {$loading: true});
     return this._main.$$state.$$request.sendRequest(
         'get', this._moldPath, undefined, metaParams, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
+        this._main.$$state.update(this._moldPath, this._storagePath, {$loading: false});
 
         // TODO: формировать правильно url
         this._main.$$state.update(this._moldPath, this._storagePath, resp.body);
@@ -70,6 +76,9 @@ export default class Document extends Container{
         this._lastChanges = {};
 
         return resp;
+      }, (err) => {
+        this._main.$$state.update(this._moldPath, this._storagePath, {$loading: false});
+        return Promise.reject(err);
       });
   }
 

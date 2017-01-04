@@ -34,7 +34,7 @@ describe 'Functional. Document type.', ->
 
     expect(this.document.load()).to.eventually.notify =>
       expect(Promise.resolve(this.document.mold)).to.eventually
-      .deep.equal(this.testValues)
+      .deep.equal(_.defaults(_.clone(this.testValues), {$loading: false}))
       .notify(done)
 
   it 'load() and check response', ->
@@ -50,3 +50,15 @@ describe 'Functional. Document type.', ->
   it "put(newState)", ->
     expect(this.document.put(this.testValues)).to.eventually
     .property('body').deep.equal(this.testValues)
+
+  it "loading", (done) ->
+    _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'document', this.testValues)
+
+    assert.isUndefined(this.document.mold.$loading)
+    promise = this.document.load()
+    assert.isTrue(this.document.mold.$loading)
+
+    expect(promise).to.eventually.notify =>
+      expect(Promise.resolve(this.document.mold.$loading)).to.eventually
+      .deep.equal(false)
+      .notify(done)

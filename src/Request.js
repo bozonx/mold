@@ -23,6 +23,7 @@ export default class Request {
       return resp;
     }).catch((err) => {
       this._main.$$log.info('---> failed request: ', err);
+      return err;
     });
 
     return promise;
