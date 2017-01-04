@@ -11,7 +11,7 @@ describe 'Integration.', ->
             schema:
               id: {type: 'number', primary: true}
 
-      # TODO: use pounch
+      # TODO: use pouch
 
       this.testSchema = testSchema()
       this.mold = mold( {silent: true}, this.testSchema )

@@ -16,7 +16,7 @@ let uniqCreatedId = Math.floor(Math.random() * 20);
 //   return text;
 // }
 
-class LocalPounchDb {
+class LocalPouchDb {
   constructor(driverConfig, instanceConfig, db) {
     this._driverConfig = driverConfig;
     this._instanceConfig = instanceConfig;
@@ -248,10 +248,10 @@ export default function(driverConfig) {
   /**
    * Get instance
    * @param {object} instanceConfig
-   * @returns {LocalPounchDb}
+   * @returns {LocalPouchDb}
    */
   this.instance = (instanceConfig) => {
-    return new LocalPounchDb(this.driverConfig, instanceConfig, this.db);
+    return new LocalPouchDb(this.driverConfig, instanceConfig, this.db);
   };
 
 }

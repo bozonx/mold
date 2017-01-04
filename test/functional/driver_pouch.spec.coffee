@@ -2,13 +2,13 @@ PouchDB = require('pouchdb')
 memdown = require('memdown')
 
 mold = require('../../src/index').default
-PounchDbDriver = require('../../src/drivers/PounchDb').default
+PouchDbDriver = require('../../src/drivers/PouchDb').default
 driverHelpers = require('../_drivers_helpers.coffee')
 
-testSchema = (pounch) ->
+testSchema = (pouch) ->
   root:
     type: 'container'
-    driver: pounch.instance({})
+    driver: pouch.instance({})
     schema:
       document:
         type: 'document'
@@ -26,14 +26,14 @@ testSchema = (pounch) ->
             name: {type: 'string'}
             created: {type: 'number'}
 
-describe 'Functional. PounchDb driver.', ->
+describe 'Functional. PouchDb driver.', ->
   beforeEach ->
     this.init = (dbName) =>
       memdown.clearGlobalStore();
-      pounch = new PounchDbDriver({
+      pouch = new PouchDbDriver({
         db: new PouchDB(dbName, {db: memdown}),
       });
-      this.testSchema = testSchema(pounch)
+      this.testSchema = testSchema(pouch)
       this.mold = mold( {silent: true}, this.testSchema )
 
   it 'document_get', (done) ->

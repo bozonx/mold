@@ -15,7 +15,7 @@ cleanPromise = (promise) ->
     delete resp.driverResponse
     if (_.isArray(resp.body))
       return _.defaults({
-        # TODO: плохо что не проверяем id - он разный у pounch and memory
+        # TODO: плохо что не проверяем id - он разный у pouch and memory
         body: _.map resp.body, (item) =>
           _.omit(item, '_id', '_rev', 'id')
       }, resp)
