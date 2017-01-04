@@ -60,5 +60,15 @@ describe 'Functional. Document type.', ->
 
     expect(promise).to.eventually.notify =>
       expect(Promise.resolve(this.document.mold.$loading)).to.eventually
-      .deep.equal(false)
+      .equal(false)
+      .notify(done)
+
+  it "saving", (done) ->
+    assert.isUndefined(this.document.mold.$saving)
+    promise = this.document.put()
+    assert.isTrue(this.document.mold.$saving)
+
+    expect(promise).to.eventually.notify =>
+      expect(Promise.resolve(this.document.mold.$saving)).to.eventually
+      .equal(false)
       .notify(done)

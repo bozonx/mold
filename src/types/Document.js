@@ -18,6 +18,10 @@ export default class Document extends Container{
     return this.mold.$loading;
   }
 
+  get saving() {
+    return this.mold.$saving;
+  }
+
   /**
    * Get changes from last save to the moment.
    * @returns {object}
@@ -89,15 +93,22 @@ export default class Document extends Container{
    */
   put(newState=undefined) {
     if (newState) this.update(newState);
+    this._main.$$state.update(this._moldPath, this._storagePath, {$saving: true});
 
     const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
         'put', this._moldPath, this._mold, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
-      this._main.$$state.update(this._moldPath, this._storagePath, resp.body);
+      this._main.$$state.update(this._moldPath, this._storagePath, {
+        ...resp.body,
+        $saving: false,
+      });
       this._lastChanges = {};
 
       return resp;
+    }, (err) => {
+      this._main.$$state.update(this._moldPath, this._storagePath, {$saving: false});
+      return Promise.reject(err);
     });
   }
 
@@ -108,15 +119,22 @@ export default class Document extends Container{
    */
   patch(newState=undefined) {
     if (newState) this.update(newState);
+    this._main.$$state.update(this._moldPath, this._storagePath, {$saving: true});
 
     const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
       'patch', this._moldPath, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
-      this._main.$$state.update(this._moldPath, this._storagePath, resp.body);
+      this._main.$$state.update(this._moldPath, this._storagePath, {
+        ...resp.body,
+        $saving: false,
+      });
       this._lastChanges = {};
 
       return resp;
+    }, (err) => {
+      this._main.$$state.update(this._moldPath, this._storagePath, {$saving: false});
+      return Promise.reject(err);
     });
   }
 

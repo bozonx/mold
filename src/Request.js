@@ -56,7 +56,8 @@ export default class Request {
     // TODO: refactor
     let payload = rawPayload;
     if (_.isPlainObject(payload)) {
-      payload = _.omit(_.cloneDeep(payload), '$index', '$pageIndex', '$adding', '$addedUnsaved', '$deleting');
+      payload = _.omit(_.cloneDeep(payload), '$index', '$pageIndex',
+        '$adding', '$addedUnsaved', '$deleting', '$saving');
       payload = _.omitBy(payload, _.isUndefined);
     }
     // it clears an empty array or objects

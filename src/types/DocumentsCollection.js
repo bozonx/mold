@@ -71,6 +71,9 @@ export default class DocumentsCollection extends PagedCollection{
     // change with event rising
     this._updateDoc(document, { $adding: true });
     document.$adding = true;
+
+    // TODO: add saving state
+
     return this._main.$$state.$$request.sendRequest(
         'create', this._moldPath, document, metaParams, this.getUrlParams())
       .then((resp) => {
