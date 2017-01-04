@@ -106,21 +106,17 @@ export default class DocumentsCollection extends PagedCollection{
     const metaParams = undefined;
     // change with event rising
     this._updateDoc(document, { $deleting: true });
-    document.$deleting = true;
     return this._main.$$state.$$request.sendRequest(
         'delete', this._moldPath, document, metaParams, this.getUrlParams())
       .then((resp) => {
-        delete document.$deleting;
+        this._updateDoc(document, { $deleting: false });
         // remove from page
         if (_.isNumber(document.$pageIndex)) {
           this._main.$$state.remove(this._moldPath, this._storagePath, document, document.$pageIndex);
         }
         return resp;
       }, (err) => {
-        this._updateDoc(document, {
-          $deleting: undefined,
-        });
-        delete document.$deleting;
+        this._updateDoc(document, { $deleting: false });
         return err;
       });
   }

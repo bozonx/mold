@@ -94,7 +94,7 @@ describe 'Functional. DocumentsCollection type.', ->
 
         assert.isTrue(this.doc.$deleting)
         expect(promise).to.eventually.notify =>
-          assert.isUndefined(this.doc.$deleting)
+          assert.isFalse(this.doc.$deleting)
           expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
             .property('pages').deep.equal([[]])
             .notify(done)
