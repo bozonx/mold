@@ -60,10 +60,10 @@ export default class Document extends Container{
 
   /**
    * Load data from driver.
+   * @param {object} metaParams
    * @returns {Promise}
    */
-  load() {
-    const metaParams = undefined;
+  load(metaParams=undefined) {
     this._main.$$state.update(this._moldPath, this._storagePath, {$loading: true});
     return this._main.$$state.$$request.sendRequest(
         'get', this._moldPath, undefined, metaParams, this.getUrlParams())
@@ -84,13 +84,13 @@ export default class Document extends Container{
   /**
    * Save actual state.
    * @param {object|undefined} newState
+   * @param {object} metaParams
    * @returns {Promise}
    */
-  put(newState=undefined) {
+  put(newState=undefined, metaParams=undefined) {
     if (newState) this.update(newState);
     this._main.$$state.update(this._moldPath, this._storagePath, {$saving: true});
 
-    const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
         'put', this._moldPath, this._mold, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
@@ -110,13 +110,13 @@ export default class Document extends Container{
   /**
    * Save actual state.
    * @param {object|undefined} newState
+   * @param {object} metaParams
    * @returns {Promise}
    */
-  patch(newState=undefined) {
+  patch(newState=undefined, metaParams=undefined) {
     if (newState) this.update(newState);
     this._main.$$state.update(this._moldPath, this._storagePath, {$saving: true});
 
-    const metaParams = undefined;
     return this._main.$$state.$$request.sendRequest(
       'patch', this._moldPath, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
