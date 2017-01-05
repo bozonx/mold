@@ -45,6 +45,16 @@ describe 'Functional. DocumentsCollection type.', ->
         ])
         .notify(done)
 
+    it "loading state", (done) ->
+      assert.deepEqual(this.documentsCollection.loading, [])
+      promise = this.documentsCollection.load(0)
+      assert.deepEqual(this.documentsCollection.loading, [0])
+
+      expect(promise).to.eventually.notify =>
+        expect(Promise.resolve(this.documentsCollection.loading)).to.eventually
+        .deep.equal([])
+        .notify(done)
+
   describe "create()", ->
     beforeEach () ->
       this.newDoc = {name: 'a'}

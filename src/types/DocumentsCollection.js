@@ -13,6 +13,10 @@ export default class DocumentsCollection extends PagedCollection{
     return 'documentsCollection';
   }
 
+  get loading() {
+    //return this.mold.$loading;
+  }
+
   $init(moldPath) {
     this._storagePath = moldPath + '.pages';
     this._mold = this._main.$$state.getMold(moldPath);
@@ -50,13 +54,19 @@ export default class DocumentsCollection extends PagedCollection{
       }
     }
 
+    this._setPageLoadingState(pageNum, true);
+
     return this._main.$$state.$$request.sendRequest(
         'filter', this._moldPath, undefined, metaParams, this.getUrlParams())
       .then((resp) => {
+        this._setPageLoadingState(pageNum, false);
         // update mold with server response data
         this.setPage(resp.body, pageNum);
 
         return resp;
+      }, (err) => {
+        this._setPageLoadingState(pageNum, false);
+        return Promise.reject(err);
       });
   }
 
@@ -103,6 +113,8 @@ export default class DocumentsCollection extends PagedCollection{
    * @returns {Promise}
    */
   deleteDocument(document) {
+    // TODO: может делать вызов в Document type
+    // TODO: поддержка $deleting
     const metaParams = undefined;
     // change with event rising
     this._updateDoc(document, { $deleting: true });
@@ -128,4 +140,9 @@ export default class DocumentsCollection extends PagedCollection{
     this._main.$$state.update(pathToDoc, storagePathToDoc, newState);
   }
 
+  _setPageLoadingState(pageNum, loading) {
+    //this._main.$$state.update(this._moldPath, this._storagePath, {$loading: false});
+    //this._storagePath = moldPath + '.pages';
+    //this._mold = this._main.$$state.getMold(moldPath);
+  }
 }
