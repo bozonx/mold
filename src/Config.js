@@ -1,5 +1,12 @@
 import _ from 'lodash';
 
+const defaultConfig = {
+  silent: false,
+  eventEmitter: null,
+  logger: null,
+  omitParamsToRequest: ['$index', '$pageIndex', '$addedUnsaved', '$deleting', '$saving'],
+};
+
 export default class Config {
   constructor(conf) {
     this._rawConfig = conf;
@@ -16,11 +23,7 @@ export default class Config {
   }
 
   getDefaults() {
-    return {
-      silent: false,
-      eventEmitter: null,
-      logger: null,
-    }
+    return _.clone(defaultConfig);
   }
 
   _initModules() {
