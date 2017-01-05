@@ -24,7 +24,7 @@ export default class DocumentsCollection extends PagedCollection{
     this._moldPages = this._mold.pages;
 
     this._mold.state = {
-      loading: []
+      loading: [],
     };
     this._loading = this._mold.state.loading;
   }
@@ -60,6 +60,8 @@ export default class DocumentsCollection extends PagedCollection{
     }
 
     this._setPageLoadingState(pageNum, true);
+    // rise an event
+    this._main.$$storage.emit(this._moldPath);
 
     return this._main.$$state.$$request.sendRequest(
         'filter', this._moldPath, undefined, metaParams, this.getUrlParams())
@@ -150,6 +152,8 @@ export default class DocumentsCollection extends PagedCollection{
       this._loading.push(pageNum);
       return;
     }
+
+    // remove page's loading state
 
     const findedIndex = _.findIndex(this._loading, (item) => {
       return item === pageNum;

@@ -46,14 +46,24 @@ describe 'Functional. DocumentsCollection type.', ->
         .notify(done)
 
     it "loading state", (done) ->
+      handler = sinon.spy();
+      this.mold.onAnyUpdate(handler)
+
       assert.deepEqual(this.documentsCollection.loading, [])
       promise = this.documentsCollection.load(0)
       assert.deepEqual(this.documentsCollection.loading, [0])
 
+      expect(handler).to.have.been.calledWith({
+        path: 'documentsCollection'
+        action: 'change'
+      })
+
       expect(promise).to.eventually.notify =>
-        expect(Promise.resolve(this.documentsCollection.loading)).to.eventually
-        .deep.equal([])
-        .notify(done)
+        expect(Promise.all([
+          expect(handler).to.have.been.calledTwice,
+          expect(Promise.resolve(this.documentsCollection.loading)).to.eventually.deep.equal([]),
+        ])).to.eventually.notify(done)
+
 
   describe "create()", ->
     beforeEach () ->

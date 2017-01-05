@@ -61,6 +61,15 @@ export default class Storage {
   }
 
   /**
+   * Emit an event
+   * @param {string} path
+   * @param {string} action - 'change', 'add' etc.
+   */
+  emit(path, action='change') {
+    this._riseEvents(path, action);
+  }
+
+  /**
    * Add to beginning of collection
    * It rises an event any way.
    * @param {string} pathToCollection - it must be a path to array in storage.

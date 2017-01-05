@@ -14,11 +14,11 @@ export default class Main {
     this.$$schemaManager = new SchemaManager();
     this.$$state = new State();
 
-    this._storage = new Storage(this.$$events);
+    this.$$storage = new Storage(this.$$events);
 
     // initialize
     this.$$schemaManager.init(schema, this);
-    this.$$state.init(this, this._storage);
+    this.$$state.init(this, this.$$storage);
   }
 
   /**
@@ -27,7 +27,7 @@ export default class Main {
    * @returns {*}
    */
   $getWholeStorageState() {
-    return this._storage.$getWholeStorageState();
+    return this.$$storage.$getWholeStorageState();
   }
 
   /**
@@ -35,7 +35,7 @@ export default class Main {
    * @returns {*}
    */
   exportStorage() {
-    return _.cloneDeep(this._storage.$getWholeStorageState());
+    return _.cloneDeep(this.$$storage.$getWholeStorageState());
   }
 
   /**
