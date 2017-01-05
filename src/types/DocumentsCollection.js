@@ -14,14 +14,19 @@ export default class DocumentsCollection extends PagedCollection{
   }
 
   get loading() {
-    //return this.mold.$loading;
+    return this._loading;
   }
 
   $init(moldPath) {
     this._storagePath = moldPath + '.pages';
     this._mold = this._main.$$state.getMold(moldPath);
     super.$init(moldPath);
-    this._moldPages = this._mold['pages'];
+    this._moldPages = this._mold.pages;
+
+    this._mold.state = {
+      loading: []
+    };
+    this._loading = this._mold.state.loading;
   }
 
   getUrlParams() {
@@ -141,8 +146,20 @@ export default class DocumentsCollection extends PagedCollection{
   }
 
   _setPageLoadingState(pageNum, loading) {
-    //this._main.$$state.update(this._moldPath, this._storagePath, {$loading: false});
-    //this._storagePath = moldPath + '.pages';
-    //this._mold = this._main.$$state.getMold(moldPath);
+    if (loading) {
+      this._loading.push(pageNum);
+      return;
+    }
+
+    const findedIndex = _.findIndex(this._loading, (item) => {
+      return item === pageNum;
+    });
+
+    // if it didn't find - do nothing
+    if (findedIndex === -1) return;
+
+    // remove page from loading state
+    this._loading.splice(findedIndex, 1);
   }
+
 }
