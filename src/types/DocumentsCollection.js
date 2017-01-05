@@ -81,10 +81,10 @@ export default class DocumentsCollection extends PagedCollection{
    * Send request to create document.
    * You can use recently added document.
    * @param {object} document
+   * @param {object} metaParams
    * @returns {Promise}
    */
-  create(document) {
-    const metaParams = undefined;
+  create(document, metaParams=undefined) {
     // change with event rising
     this._updateDoc(document, {
       $saving: true,
@@ -117,12 +117,12 @@ export default class DocumentsCollection extends PagedCollection{
    * It adds "$deleting" prop to document.
    * After success response, it remove document from mold.
    * @param {object} document
+   * @param {object} metaParams
    * @returns {Promise}
    */
-  deleteDocument(document) {
+  deleteDocument(document, metaParams=undefined) {
     // TODO: может делать вызов в Document type
     // TODO: поддержка $deleting
-    const metaParams = undefined;
     // change with event rising
     this._updateDoc(document, { $deleting: true });
     return this._main.$$state.$$request.sendRequest(
