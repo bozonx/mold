@@ -73,8 +73,6 @@ export default class Request {
       primaryKeyName: schema.item && findPrimary(schema.item),
       // One of: container or collection
       nodeType: getSchemaBaseType(schema.type),
-      // TODO: params - доп параметры, передаваемые драйверу - или воткнуть их в payload
-      //params: undefined,
     };
     request.url = this._prepareUrl(schema.source, urlParams, request, driverRoot);
 

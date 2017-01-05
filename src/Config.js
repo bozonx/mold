@@ -9,7 +9,6 @@ const defaultConfig = {
 };
 
 
-
 export default class Config {
   constructor(conf) {
     this._rawConfig = conf;
@@ -17,8 +16,6 @@ export default class Config {
     this._config = _.defaultsDeep(_.cloneDeep(this._rawConfig), this.getDefaults());
 
     this._initModules();
-
-    // TODO: validate a config
   }
 
   get() {

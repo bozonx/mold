@@ -80,31 +80,6 @@ export default class State {
     this._storage.setSilent(storagePath, value);
   }
 
-  // /**
-  //  * Set document to __requests
-  //  * @param {string} url
-  //  * @param {object} value - valid value
-  //  */
-  // // TODO: убрать
-  // updateResponse(url, value) {
-  //   // this._checkNode(moldPath, value);
-  //   this._storage.updateResponse(url, value);
-  // }
-  // // TODO: убрать
-  // initResponse(url, initial) {
-  //   // TODO: зачем делать через State??
-  //   return this._storage.initResponse(url, initial);
-  // }
-  //
-  // // TODO: убрать
-  // getResponse(url) {
-  //   // TODO: зачем делать через State??
-  //   return this._storage.getResponse(url);
-  // }
-
-
-
-
   /**
    * Add to beginning of a collection in store by user action.
    * It add item as is, not clones it.
@@ -218,12 +193,6 @@ export default class State {
     this._storage.update(concatPath(storagePath, pageNum), undefined);
   }
 
-
-
-
-
-
-
   /**
    * Add change event handler on path.
    * @param {string} moldPath - full path in mold
@@ -296,7 +265,6 @@ export default class State {
   }
 
   destroyListeners(moldPath, deep = false) {
-    // TODO: test it
     const clearing = (path) => {
       _.each(this._handlers[path], (item) => {
         this._main.$$events.removeListener('change', item.wrapperHandler);
