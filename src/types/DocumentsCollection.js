@@ -45,7 +45,7 @@ export default class DocumentsCollection extends PagedCollection{
    * @returns {Promise}
    */
   load(pageNum, metaOverrides) {
-    if (!_.isNumber(pageNum)) throw new Error(`The "pageNum" param is required!`);
+    if (!_.isNumber(pageNum)) this._main.$$log.fatal(`The "pageNum" param is required!`);
 
     let metaParams = _.omitBy({
       pageNum: pageNum,

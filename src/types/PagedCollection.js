@@ -38,7 +38,7 @@ export default class PagedCollection extends _TypeBase {
    */
   child(path) {
     if (!_.isString(path) || !_.isNumber(path))
-      throw new Error(`You must pass a path argument.`);
+      this._main.$$log.fatal(`You must pass a path argument.`);
 
 
 
@@ -82,7 +82,7 @@ export default class PagedCollection extends _TypeBase {
    */
   unshift(newItem) {
     if (!_.isPlainObject(newItem))
-      throw new Error(`You can add item only of plain object type!`);
+      this._main.$$log.fatal(`You can add item only of plain object type!`);
 
     // there is no matter to up change event, because event will rise after inserting.
     newItem.$addedUnsaved = true;
@@ -98,7 +98,7 @@ export default class PagedCollection extends _TypeBase {
    */
   push(newItem) {
     if (!_.isPlainObject(newItem))
-      throw new Error(`You can add item only of plain object type!`);
+      this._main.$$log.fatal(`You can add item only of plain object type!`);
 
     // there is no matter to up change event, because event will rise after inserting.
     newItem.$addedUnsaved = true;
@@ -119,10 +119,10 @@ export default class PagedCollection extends _TypeBase {
       pageNum = this._moldPages.length;
     }
     else if (!_.isNumber(pageNum)) {
-      throw new Error(`The pageNum must be type of number!`);
+      this._main.$$log.fatal(`The pageNum must be type of number!`);
     }
     if (!_.isArray(page))
-      throw new Error(`The page must be type of array!`);
+      this._main.$$log.fatal(`The page must be type of array!`);
 
     this._main.$$state.setPage(this._moldPath, this._storagePath, page, pageNum);
   }
@@ -132,9 +132,8 @@ export default class PagedCollection extends _TypeBase {
    * @param {number} pageNum
    */
   removePage(pageNum) {
-    if (!_.isNumber(pageNum)) {
-      throw new Error(`The pageNum must be type of number!`);
-    }
+    if (!_.isNumber(pageNum))
+      this._main.$$log.fatal(`The pageNum must be type of number!`);
 
     this._main.$$state.removePage(this._moldPath, this._storagePath, pageNum);
   }

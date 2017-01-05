@@ -5,11 +5,15 @@ export default class Log {
     this._isSilent = (_.isBoolean(config.silent)) ? config.silent : true;
   }
 
-  info () {
+  info() {
     if (!this._isSilent) console.log(...arguments);
   }
 
-  error () {
+  error() {
     if (!this._isSilent) console.error(...arguments);
+  }
+
+  fatal() {
+    if (!this._isSilent) throw new Error(...arguments);
   }
 }

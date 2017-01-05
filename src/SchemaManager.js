@@ -41,7 +41,7 @@ export default class SchemaManager {
     const schemaPath = convertFromLodashToSchema(path);
     const schema = _.get(this._schema, schemaPath);
 
-    if (_.isUndefined(schema)) throw new Error(`Schema on path "${schemaPath}" doesn't exists`);
+    if (_.isUndefined(schema)) this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
 
     return schema;
   }
@@ -70,13 +70,13 @@ export default class SchemaManager {
     else if (schema.type == 'document')             instance = new Document(this._main);
     else if (schema.type == 'documentsCollection')  instance = new DocumentsCollection(this._main);
     else if (schema.type == 'array') {
-      throw new Error(`You can't get instance of primitive array!`);
+      this._main.$$log.fatal(`You can't get instance of primitive array!`);
     }
     else if (schema.type == 'boolean' || schema.type == 'string' || schema.type == 'number'){
-      throw new Error(`You can't get instance of primitive!`);
+      this._main.$$log.fatal(`You can't get instance of primitive!`);
     }
     else {
-      throw new Error(`No one type have found!`);
+      this._main.$$log.fatal(`No one type have found!`);
     }
 
     // It's need for creating collection child
@@ -99,7 +99,7 @@ export default class SchemaManager {
 
   getClosestDriverPath(moldPath) {
     if (!_.isString(moldPath))
-      throw new Error(`You must pass the moldPath argument!`);
+      this._main.$$log.fatal(`You must pass the moldPath argument!`);
 
     return getTheBestMatchPath(moldPath, _.keys(this._drivers));
   }
@@ -115,23 +115,23 @@ export default class SchemaManager {
       }
       if (value.type == 'document') {
         if (!_.isPlainObject(value.schema))
-          throw new Error(`Schema definition of document on "${schemaPath}" must have a "schema" param!`);
+          this._main.$$log.fatal(`Schema definition of document on "${schemaPath}" must have a "schema" param!`);
       }
       else if (value.type == 'container') {
         if (!_.isPlainObject(value.schema))
-          throw new Error(`Schema definition of container on "${schemaPath}" must have a "schema" param!`);
+          this._main.$$log.fatal(`Schema definition of container on "${schemaPath}" must have a "schema" param!`);
       }
       else if (value.type == 'documentsCollection') {
         if (!_.isPlainObject(value.item))
-          throw new Error(`Schema definition of documentsCollection on "${schemaPath}" must have an "item" param!`);
+          this._main.$$log.fatal(`Schema definition of documentsCollection on "${schemaPath}" must have an "item" param!`);
       }
       else if (value.type == 'pagedCollection') {
         if (!_.isPlainObject(value.item))
-          throw new Error(`Schema definition of pagedCollection on "${schemaPath}" must have an "item" param!`);
+          this._main.$$log.fatal(`Schema definition of pagedCollection on "${schemaPath}" must have an "item" param!`);
       }
       else if (value.type == 'collection') {
         if (!_.isPlainObject(value.item))
-          throw new Error(`Schema definition of collection on "${schemaPath}" must have an "item" param!`);
+          this._main.$$log.fatal(`Schema definition of collection on "${schemaPath}" must have an "item" param!`);
       }
       else if (value.type == 'array') {
         // TODO: если есть параметр itemType - проверить, чтобы его типы совпадали с существующими
@@ -139,7 +139,7 @@ export default class SchemaManager {
       else if (_.includes(['boolean', 'string', 'number'], value.type)) {
       }
       else {
-        throw new Error(`Unknown schema node ${JSON.stringify(value)} !`);
+        this._main.$$log.fatal(`Unknown schema node ${JSON.stringify(value)} !`);
       }
     });
   }

@@ -94,7 +94,7 @@ export default class State {
 
     // TODO: перенести это в checkNode
     if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
-      throw new Error(`You can add new item only to collection!`);
+      this._main.$$log.fatal(`You can add new item only to collection!`);
 
     this._checkNode(moldPath, newItem);
     if (_.isNumber(pageNum)) {
@@ -119,7 +119,7 @@ export default class State {
 
     // TODO: перенести это в checkNode
     if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
-      throw new Error(`You can add new item only to collection!`);
+      this._main.$$log.fatal(`You can add new item only to collection!`);
 
     this._checkNode(moldPath, newItem);
 
@@ -143,9 +143,9 @@ export default class State {
     const schema = this._main.$$schemaManager.get(moldPath);
 
     if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
-      throw new Error(`You can remove only from collection!`);
+      this._main.$$log.fatal(`You can remove only from collection!`);
     if (!_.isNumber(itemToRemove.$index))
-      throw new Error(`Deleted item must has an $index param.`);
+      this._main.$$log.fatal(`Deleted item must has an $index param.`);
 
     if (_.isNumber(pageNum)) {
       this._storage.remove(concatPath(storagePath, pageNum), itemToRemove.$index);
@@ -169,7 +169,7 @@ export default class State {
 
     // TODO: перенести это в checkNode
     if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
-      throw new Error(`You can add new item only to paged collection!`);
+      this._main.$$log.fatal(`You can add new item only to paged collection!`);
 
     const preparedPage = _.cloneDeep(page);
 
@@ -188,7 +188,7 @@ export default class State {
     const schema = this._main.$$schemaManager.get(moldPath);
 
     if (!_.includes(['pagedCollection', 'documentsCollection'], schema.type))
-      throw new Error(`You can remove  page only from pagedCollection of documentsCollection!`);
+      this._main.$$log.fatal(`You can remove  page only from pagedCollection of documentsCollection!`);
 
     this._storage.update(concatPath(storagePath, pageNum), undefined);
   }
@@ -353,8 +353,7 @@ export default class State {
       return true;
     }
 
-
-    throw new Error(`Not valid value "${JSON.stringify(value)}" of param "${path}"! See validation rules in your schema.`);
+    this._main.$$log.fatal(`Not valid value "${JSON.stringify(value)}" of param "${path}"! See validation rules in your schema.`);
   }
 
   _getInitialStorage(rawSchema) {
