@@ -12,8 +12,7 @@ export default class PagedCollection extends _TypeBase {
   }
 
   get perPage() {
-    // TODO: значение по умолчанию брать из конфига
-    if (_.isUndefined(this._perPage)) return 10;
+    if (_.isUndefined(this._perPage)) return this._main.$$config.itemsPerPage;
 
     return this._perPage;
   }
