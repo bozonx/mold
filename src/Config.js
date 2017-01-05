@@ -7,6 +7,8 @@ const defaultConfig = {
   omitParamsToRequest: ['$index', '$pageIndex', '$addedUnsaved', '$deleting', '$saving'],
 };
 
+
+
 export default class Config {
   constructor(conf) {
     this._rawConfig = conf;

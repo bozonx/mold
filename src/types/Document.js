@@ -55,8 +55,6 @@ export default class Document extends Container{
 
   update(newState) {
     this._lastChanges = correctUpdatePayload(this._lastChanges, newState);
-    // TODO: формировать правильно url
-    //this._main.$$state.updateResponse(this._moldPath, _.cloneDeep(newState));
     this._main.$$state.update(this._moldPath, this._storagePath, _.cloneDeep(newState));
   }
 
@@ -73,10 +71,7 @@ export default class Document extends Container{
         // update mold with server response data
         this._main.$$state.update(this._moldPath, this._storagePath, {$loading: false});
 
-        // TODO: формировать правильно url
         this._main.$$state.update(this._moldPath, this._storagePath, resp.body);
-        // TODO: не надо здесь устанавливать mold - он уже должен был установлен
-        //this._mold = this._main.$$state.getResponse(this._moldPath);
         this._lastChanges = {};
 
         return resp;
