@@ -40,7 +40,6 @@ export default class Document extends Container{
   }
 
   child(path) {
-    // TODO: ???
     // !!! пока не разрешаем получать потомков, так как придется мого переделывать если
     //     потомки будут коллекциями
   }

@@ -33,12 +33,14 @@ describe 'Functional. Url.', ->
         moldPath: 'details'
         nodeType: 'container'
 
-  it 'container.save()', (done) ->
-    container = this.mold.child('details');
-    container.setUrlParams({itemId: 0});
-    container.update({id: 0})
-    container.update({name: 'new value'})
-    expect(container.put()).to.eventually.notify =>
+  it 'document.put()', (done) ->
+    document = this.mold.child('details');
+    document.setUrlParams({itemId: 0});
+    document.update({
+      id: 0,
+      name: 'new value'
+    })
+    expect(document.put()).to.eventually.notify =>
       expect(Promise.resolve(_.get(this.mold.$$schemaManager.$defaultMemoryDb, 'collection[0]'))).to.eventually
       .deep.equal({
         id: 0
