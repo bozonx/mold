@@ -3,12 +3,12 @@ mold = require('../../src/index').default
 testSchema = () ->
   details:
     type: 'document',
-    source: 'collection/${itemId}',
+    url: 'collection/${itemId}',
     schema:
       id: {type: 'number'}
       name: {type: 'string'}
 
-describe 'Functional. Source.', ->
+describe 'Functional. Url.', ->
   beforeEach () ->
     this.mold = mold( {silent: true}, testSchema() )
     _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'collection[0]', {

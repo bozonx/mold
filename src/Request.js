@@ -74,7 +74,7 @@ export default class Request {
       // One of: container or collection
       nodeType: getSchemaBaseType(schema.type),
     };
-    request.url = this._prepareUrl(schema.source, urlParams, request, driverRoot);
+    request.url = this._prepareUrl(schema.url, urlParams, request, driverRoot);
 
     // clear undefined params
     return _.omitBy(request, _.isUndefined);
@@ -83,6 +83,7 @@ export default class Request {
   _prepareUrl(urlTemplate, urlTemplateParams, request, driverRoot) {
     if (urlTemplate) return _.template(urlTemplate)({...urlTemplateParams, request});
 
+    // else generate url automatically
     let defaultUrl = _.trimStart(request.moldPath, driverRoot);
     defaultUrl = convertFromLodashToUrl(defaultUrl);
 

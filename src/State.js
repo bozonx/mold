@@ -18,7 +18,7 @@ export default class State {
   }
 
   /**
-   * Get parameters for source path template.
+   * Get parameters for url path template.
    * @param {string} moldPath
    * @returns {object}
    */
@@ -32,7 +32,7 @@ export default class State {
   }
 
   /**
-   * Set parameters for source path template.
+   * Set parameters for url path template.
    * @param {string} moldPath
    * @param {object} params
    */
