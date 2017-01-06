@@ -18,15 +18,16 @@ describe 'Integration.', ->
 
       this.testSchema = testSchema()
       this.mold = mold( {silent: true}, this.testSchema )
-#      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'container.documentsCollection', [
-#        {id: 0}
-#      ])
+      this.doc = {id: 0}
+      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'container.documentsCollection', [
+        [this.doc]
+      ])
 
     it "child( 'container.documentsCollection[0][0]' )", ->
       moldPath = 'container.documentsCollection[0][0]'
       document = this.mold.child(moldPath)
 
-#      assert.equal(document.schema)
-#      assert.equal(document.mold)
-#      assert.equal(document._storagePath)
+      assert.deepEqual(document.schema, this.testSchema.container.schema.documentsCollection.item.item)
+      #assert.deepEqual(document.mold, this.doc)
+      #assert.equal(document._storagePath)
       assert.equal(document.root, moldPath)

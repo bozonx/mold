@@ -41,8 +41,6 @@ export default class SchemaManager {
     const schemaPath = convertFromLodashToSchema(path);
     const schema = _.get(this._schema, schemaPath);
 
-    console.log(5555555555, path, schemaPath, schema)
-
     if (_.isUndefined(schema)) this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
 
     return schema;
