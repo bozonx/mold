@@ -7,7 +7,15 @@ import Document from './types/Document';
 import DocumentsCollection from './types/DocumentsCollection';
 import { convertFromLodashToSchema, convertFromSchemaToLodash, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
-import { eachSchema } from './helpers';
+import { eachSchema, concatPath } from './helpers';
+
+const registeredTypes = {
+  pagedCollection: PagedCollection,
+  collection: Collection,
+  container: Container,
+  document: Document,
+  documentsCollection: DocumentsCollection,
+};
 
 /**
  * It's schema manager
@@ -56,10 +64,56 @@ export default class SchemaManager {
 
   /**
    * Get type instance
-   * @param {string} path - absolute path
+   * @param {string} path - absolute path or relative if context is used
+   * @param {object} context - instance of root element
    * @returns {object} - instance of type
    */
-  getInstance(path) {
+  getInstance(path, context) {
+    let contextMoldPath = '';
+    let fullMoldPath = path;
+    if (context) {
+      contextMoldPath = context.root;
+      fullMoldPath = concatPath(contextMoldPath, path);
+    }
+
+    if (!_.isString(path))
+      this._main.$$log.fatal(`You must pass a path argument.`);
+
+    if (!path) this._main.$$log.fatal(`Path is empty.`);
+
+    // TODO: наверное разбить ещё и [0]
+    const pathParts = path.split('.');
+    let instance = null;
+
+    let currentPathPart = contextMoldPath;
+    _.each(pathParts, (pathPart) => {
+      currentPathPart = concatPath(currentPathPart, pathPart);
+
+      // It rise an error if path doesn't consist with schema
+      const schema = this.get(currentPathPart);
+      instance = new registeredTypes[schema.type](this._main);
+
+      // It's need for creating collection child
+      instance.$init(currentPathPart);
+
+      if (!instance.$getChildInstance) this._main.$$log.fatal(`Instance doesn't have getChildInstance method.`);
+
+      console.log(111111111, currentPathPart, pathPart)
+
+      // TODO: поддержка [0][0] in pathPart
+      // TODO: может наверное нужно давать всю оставнуюся часть пути
+      instance.$getChildInstance(pathPart);
+    });
+
+    return instance;
+  }
+
+  /**
+   * Get type instance
+   * @param {string} path - absolute path or relative if context is used
+   * @returns {object} - instance of type
+   */
+  getInstanceOld(path) {
     let instance;
     // It rise an error if path doesn't consist with schema
     const schema = this.get(path);
