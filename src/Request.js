@@ -53,7 +53,6 @@ export default class Request {
   }
 
   _generateRequest(method, moldPath, rawPayload, urlParams, schema, driverRoot, meta) {
-    // TODO: refactor
     let payload = rawPayload;
     if (_.isPlainObject(payload)) {
       payload = _.omit(_.cloneDeep(payload), ...this._main.$$config.omitParamsToRequest);

@@ -142,7 +142,8 @@ class Mutate {
     let originalCollection = _.get(this.storage, root);
 
     // TODO: переделать - порядок элементов бедем из новых данных
-    // TODO: - ищем по primaryKey старые элементы, и берем из старых элементов данные, на которые накладываем новые
+    //       - ищем по primaryKey старые элементы, и берем из старых элементов данные, на которые накладываем новые
+    //       !!!! или может вообще всегда заменять массивы, чтобы не было путаницы
 
     if (_.isUndefined(originalCollection)) {
       originalCollection = _.cloneDeep(newCollectionState);

@@ -5,7 +5,6 @@ generateRequest = (pathToDoc, method, toExtend) ->
   _.defaultsDeep(toExtend, {
     moldPath: pathToDoc
     driverRoot: 'root'
-    # TODO: url то source
     url: helpers.convertFromLodashToUrl(_.trimStart(pathToDoc, 'root'))
     method: method
   })
@@ -60,13 +59,11 @@ module.exports =
       arrayParam: ['value1']
     request = generateRequest(pathToDoc, 'put', {nodeType: 'container', payload: payload})
     document = mold.child(pathToDoc)
-    document.update(payload)
 
-    promise = cleanPromise( document.put() )
+    promise = cleanPromise( document.put(payload) )
     expect(promise).to.eventually.deep.equal({body: payload, request: request}).notify(done)
 
   document_patch: (mold, pathToDoc, done) ->
-    # TODO: пересмотреть
     firstData =
       booleanParam: true
       stringParam: 'oldValue'
@@ -79,10 +76,8 @@ module.exports =
     document = mold.child(pathToDoc)
     request = generateRequest(pathToDoc, 'patch', {nodeType: 'container', payload: updatedData})
 
-    document.update(firstData)
-    expect(document.put()).to.eventually.notify =>
-      document.update(updatedData)
-      promise = cleanPromise( document.patch() )
+    expect(document.put(firstData)).to.eventually.notify =>
+      promise = cleanPromise( document.patch(updatedData) )
       expect(promise).to.eventually.deep.equal({body: resultData, request: request})
       .notify(done)
 
@@ -116,28 +111,28 @@ module.exports =
             expect(loadPromise).to.eventually.property('body').deep.equal([{name: 'value2'}]),
           ])).to.eventually.notify(done)
 
-  documentsCollection_filter: (mold, pathToDocColl, done) ->
-    # TODO: не особо нужно
-    collection = mold.child(pathToDocColl)
-    request = generateRequest(pathToDocColl, 'filter', {
-      nodeType: 'collection', primaryKeyName: 'id'
-      meta: {pageNum: 0}
-    })
-    earlyItem = {
-      name: 'value'
-      created: parseInt(moment().format('x'))
-    }
-    olderItem = {
-      name: 'value'
-      created: parseInt(moment().format('x')) + 10000
-    }
-
-    expect(collection.create(earlyItem)).to.eventually.notify =>
-      expect(collection.create(olderItem)).to.eventually.notify =>
-        promise = cleanPromise( collection.load(0) )
-        expect(promise).to.eventually
-        .deep.equal({body: [earlyItem, olderItem], request: request})
-        .notify(done)
+#  documentsCollection_filter: (mold, pathToDocColl, done) ->
+#    # не особо нужно - уже проверяется в documentsCollection_filter_paged
+#    collection = mold.child(pathToDocColl)
+#    request = generateRequest(pathToDocColl, 'filter', {
+#      nodeType: 'collection', primaryKeyName: 'id'
+#      meta: {pageNum: 0}
+#    })
+#    earlyItem = {
+#      name: 'value'
+#      created: parseInt(moment().format('x'))
+#    }
+#    olderItem = {
+#      name: 'value'
+#      created: parseInt(moment().format('x')) + 10000
+#    }
+#
+#    expect(collection.create(earlyItem)).to.eventually.notify =>
+#      expect(collection.create(olderItem)).to.eventually.notify =>
+#        promise = cleanPromise( collection.load(0) )
+#        expect(promise).to.eventually
+#        .deep.equal({body: [earlyItem, olderItem], request: request})
+#        .notify(done)
 
   documentsCollection_filter_paged: (mold, pathToDocColl, done) ->
     collection = mold.child(pathToDocColl)

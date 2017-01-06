@@ -60,9 +60,9 @@ describe 'Functional. PouchDb driver.', ->
     this.init('delete')
     driverHelpers.documentsCollection_delete(this.mold, 'root.documentsCollection', done)
 
-  it 'documentsCollection_filter', (done) ->
-    this.init('filter')
-    driverHelpers.documentsCollection_filter(this.mold, 'root.documentsCollection', done)
+#  it 'documentsCollection_filter', (done) ->
+#    this.init('filter')
+#    driverHelpers.documentsCollection_filter(this.mold, 'root.documentsCollection', done)
 
   it 'documentsCollection_filter_paged', (done) ->
     this.init('paged')
