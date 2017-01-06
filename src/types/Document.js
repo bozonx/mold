@@ -132,4 +132,33 @@ export default class Document extends Container{
     });
   }
 
+  remove(metaParams=undefined) {
+    // TODO: как выяснить что это документ в коллекции - у него есть $pageNum
+
+    console.log(333333333, this._moldPath, this._storagePath)
+
+    // TODO: !!!!!
+    const moldPathToCollection = '';
+    // TODO: url params брать коллекции или документа??? или объединенные?
+    const urlParams = this.getUrlParams();
+
+
+
+    this._main.$$state.update(this._moldPath, this._storagePath, { $deleting: true });
+
+    return this._main.$$state.$$request.sendRequest(
+      'delete', moldPathToCollection, this.mold, metaParams, urlParams)
+      .then((resp) => {
+        this._main.$$state.update(this._moldPath, this._storagePath, { $deleting: false });
+        // remove from page
+        if (_.isNumber(this.mold.$pageIndex)) {
+          this._main.$$state.remove(this._moldPath, this._storagePath, this.mold, this.mold.$pageIndex);
+        }
+        return resp;
+      }, (err) => {
+        this._main.$$state.update(this._moldPath, this._storagePath, { $deleting: false });
+        return Promise.reject(err);
+      });
+  }
+
 }

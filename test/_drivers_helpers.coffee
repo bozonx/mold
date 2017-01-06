@@ -102,7 +102,7 @@ module.exports =
       expect(collection.create(item2)).to.eventually.notify =>
         request = generateRequest(pathToDocColl, 'delete', {
           nodeType: 'collection', primaryKeyName: 'id', payload: {id: collection.mold.pages[0][0].id}})
-        deletePromise = collection.deleteDocument({id: collection.mold.pages[0][0].id})
+        deletePromise = collection.deleteDocument(_.pick(collection.mold.pages[0][0], 'id', '$pageIndex', '$index'))
         expect(deletePromise).to.eventually.notify =>
           loadPromise = cleanPromise( collection.load(0) )
 

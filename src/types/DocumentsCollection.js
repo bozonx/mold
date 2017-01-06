@@ -37,6 +37,35 @@ export default class DocumentsCollection extends PagedCollection{
     this._main.$$state.setUrlParams(this._moldPath, params);
   }
 
+  child(path) {
+    // просто вызывать - this._main.child(concatPath(this._moldPath, path));
+    // или передавать контекст - this._main.child(this._moldPath, this);
+  }
+
+  getChildInstance(pageNum, index) {
+    // TODO: разобрать путь
+    // TODO: если не передан index - то отдавать страницу, если страницы нет, то undefined
+
+    // TODO: add it to paged collection
+    if (!_.isNumber(pageNum)) this._main.$$log.fatal(`pageNum parameter has to be a number`);
+
+    // get path to doc without page num
+    const realPathToDoc = concatPath(concatPath(this._moldPath, pageNum), index);
+    //const pathToDoc = concatPath(this._moldPath, index);
+
+    console.log(2222, pathToDoc)
+
+    //const document = this._main.child(pathToDoc);
+
+    const document = this._main.$$schemaManager.getInstance(pathToDoc);
+    // reinit container instance with correct path
+    document.$init(pathToDoc);
+
+    console.log(44444, document.mold)
+
+    return document;
+  }
+
   /**
    * Load the specified page.
    * It updates mold automatically.
@@ -80,35 +109,35 @@ export default class DocumentsCollection extends PagedCollection{
   /**
    * Send request to create document.
    * You can use recently added document.
-   * @param {object} document
+   * @param {object} documentMold
    * @param {object} metaParams
    * @returns {Promise}
    */
-  create(document, metaParams=undefined) {
+  create(documentMold, metaParams=undefined) {
     // change with event rising
-    this._updateDoc(document, {
+    this._updateDoc(documentMold, {
       $saving: true,
     });
 
     return this._main.$$state.$$request.sendRequest(
-        'create', this._moldPath, document, metaParams, this.getUrlParams())
+        'create', this._moldPath, documentMold, metaParams, this.getUrlParams())
       .then((resp) => {
         // update document if it's in storage
-        this._updateDoc(document, {
+        this._updateDoc(documentMold, {
           ...resp.body,
           $addedUnsaved: undefined,
           $saving: false,
         });
 
         // remove for any way
-        delete document.$addedUnsaved;
+        delete documentMold.$addedUnsaved;
 
         return resp;
       }, (err) => {
-        this._updateDoc(document, {
+        this._updateDoc(documentMold, {
           $saving: false,
         });
-        return err;
+        return Promise.reject(err);
       });
   }
 
@@ -116,34 +145,38 @@ export default class DocumentsCollection extends PagedCollection{
    * Send request to delete document.
    * It adds "$deleting" prop to document.
    * After success response, it remove document from mold.
-   * @param {object} document
+   * @param {object} documentMold
    * @param {object} metaParams
    * @returns {Promise}
    */
-  deleteDocument(document, metaParams=undefined) {
-    // TODO: может делать вызов в Document type
-    // TODO: поддержка $deleting
+  deleteDocument(documentMold, metaParams=undefined) {
+    // console.log(1111, documentMold)
+    //
+    // const document = this.getChildInstance(documentMold.$pageIndex, documentMold.$index);
+    //
+    // document.remove(metaParams);
+
     // change with event rising
-    this._updateDoc(document, { $deleting: true });
+    this._updateDoc(documentMold, { $deleting: true });
     return this._main.$$state.$$request.sendRequest(
-        'delete', this._moldPath, document, metaParams, this.getUrlParams())
+        'delete', this._moldPath, documentMold, metaParams, this.getUrlParams())
       .then((resp) => {
-        this._updateDoc(document, { $deleting: false });
+        this._updateDoc(documentMold, { $deleting: false });
         // remove from page
-        if (_.isNumber(document.$pageIndex)) {
-          this._main.$$state.remove(this._moldPath, this._storagePath, document, document.$pageIndex);
+        if (_.isNumber(documentMold.$pageIndex)) {
+          this._main.$$state.remove(this._moldPath, this._storagePath, documentMold, documentMold.$pageIndex);
         }
         return resp;
       }, (err) => {
-        this._updateDoc(document, { $deleting: false });
-        return err;
+        this._updateDoc(documentMold, { $deleting: false });
+        return Promise.reject(err);
       });
   }
 
-  _updateDoc(document, newState) {
-    if (!_.isNumber(document.$pageIndex) || !_.isNumber(document.$index)) return;
-    const pathToDoc = concatPath(concatPath(this._moldPath, document.$pageIndex), document.$index);
-    const storagePathToDoc = concatPath(concatPath(this._storagePath, document.$pageIndex), document.$index);
+  _updateDoc(documentMold, newState) {
+    if (!_.isNumber(documentMold.$pageIndex) || !_.isNumber(documentMold.$index)) return;
+    const pathToDoc = concatPath(concatPath(this._moldPath, documentMold.$pageIndex), documentMold.$index);
+    const storagePathToDoc = concatPath(concatPath(this._storagePath, documentMold.$pageIndex), documentMold.$index);
     this._main.$$state.update(pathToDoc, storagePathToDoc, newState);
   }
 
