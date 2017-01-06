@@ -170,8 +170,7 @@ class LocalMemory {
         return;
       }
 
-      // TODO: use splice
-      _.remove(collection, item);
+      collection.splice(_.indexOf(collection, item), 1);
 
       resolve({
         body: undefined,
