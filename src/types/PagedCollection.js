@@ -30,35 +30,68 @@ export default class PagedCollection extends _TypeBase {
     this._moldPages = this._mold;
   }
 
-
   /**
-   * Get instance of page.
-   * @param {string|number} path
-   * @returns {object|undefined} - instance of Collection of undefined if page not found.
+   * Get instance of child
+   * @param {string} path - path relative to this instance root
+   * @returns {object} - instance of child
    */
   child(path) {
-    if (!_.isString(path) || !_.isNumber(path))
-      this._main.$$log.fatal(`You must pass a path argument.`);
+    this._main.child(path, this);
+  }
+
+  // child(path) {
+  //   if (!_.isString(path) || !_.isNumber(path))
+  //     this._main.$$log.fatal(`You must pass a path argument.`);
+  //
+  //
+  //
+  //   // !!!! мы не знаем на какой страницу находится элемента
+  //   // ОТДАВАТЬ ЭЛЕМЕНТ А НЕ СТРАНИЦУ
+  //   // должен работать с любым путем, можно получить потомка любой глубины
+  //
+  //
+  //
+  //   // if (!_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
+  //   //
+  //   // if (_.isUndefined(this.mold[pageNum])) return undefined;
+  //   //
+  //   // var pathToChild = concatPath(this._root, pageNum);
+  //   // // get container instance
+  //   // var instance = this._main.$$schemaManager.getInstance(pathToChild);
+  //   // // reinit container instance with correct path
+  //   // instance.$init(pathToChild);
+  //   //
+  //   // return instance;
+  // }
 
 
+  /**
+   * Get instance of child
+   * @param path
+   * @returns {Object}
+   */
+  $getChildInstance(path) {
+    // TODO: разобрать путь
+    // TODO: если не передан index - то отдавать страницу, если страницы нет, то undefined
 
-    // !!!! мы не знаем на какой страницу находится элемента
-    // ОТДАВАТЬ ЭЛЕМЕНТ А НЕ СТРАНИЦУ
-    // должен работать с любым путем, можно получить потомка любой глубины
+    // TODO: add it to paged collection
+    if (!_.isNumber(pageNum)) this._main.$$log.fatal(`pageNum parameter has to be a number`);
 
+    // get path to doc without page num
+    const realPathToDoc = concatPath(concatPath(this._moldPath, pageNum), index);
+    //const pathToDoc = concatPath(this._moldPath, index);
 
+    console.log(2222, pathToDoc)
 
-    // if (!_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
-    //
-    // if (_.isUndefined(this.mold[pageNum])) return undefined;
-    //
-    // var pathToChild = concatPath(this._root, pageNum);
-    // // get container instance
-    // var instance = this._main.$$schemaManager.getInstance(pathToChild);
-    // // reinit container instance with correct path
-    // instance.$init(pathToChild);
-    //
-    // return instance;
+    //const document = this._main.child(pathToDoc);
+
+    const document = this._main.$$schemaManager.getInstance(pathToDoc);
+    // reinit container instance with correct path
+    document.$init(pathToDoc);
+
+    console.log(44444, document.mold)
+
+    return document;
   }
 
   /**

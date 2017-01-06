@@ -37,35 +37,6 @@ export default class DocumentsCollection extends PagedCollection{
     this._main.$$state.setUrlParams(this._moldPath, params);
   }
 
-  child(path) {
-    // просто вызывать - this._main.child(concatPath(this._moldPath, path));
-    // или передавать контекст - this._main.child(this._moldPath, this);
-  }
-
-  getChildInstance(pageNum, index) {
-    // TODO: разобрать путь
-    // TODO: если не передан index - то отдавать страницу, если страницы нет, то undefined
-
-    // TODO: add it to paged collection
-    if (!_.isNumber(pageNum)) this._main.$$log.fatal(`pageNum parameter has to be a number`);
-
-    // get path to doc without page num
-    const realPathToDoc = concatPath(concatPath(this._moldPath, pageNum), index);
-    //const pathToDoc = concatPath(this._moldPath, index);
-
-    console.log(2222, pathToDoc)
-
-    //const document = this._main.child(pathToDoc);
-
-    const document = this._main.$$schemaManager.getInstance(pathToDoc);
-    // reinit container instance with correct path
-    document.$init(pathToDoc);
-
-    console.log(44444, document.mold)
-
-    return document;
-  }
-
   /**
    * Load the specified page.
    * It updates mold automatically.

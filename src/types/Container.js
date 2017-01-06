@@ -18,15 +18,12 @@ export default class Container extends _TypeBase{
   }
 
   /**
-   * Get child
+   * Get instance of child
    * @param {string} path - path relative to this instance root
-   * @returns {object} - instance of param or list or container
+   * @returns {object} - instance of child
    */
   child(path) {
-    if (!_.isString(path))
-      this._main.$$log.fatal(`You must pass a path argument.`);
-
-    return this._main.$$schemaManager.getInstance(concatPath(this._moldPath, path));
+    this._main.child(path, this);
   }
 
   update(newState) {

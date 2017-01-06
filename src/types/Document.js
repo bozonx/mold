@@ -39,11 +39,6 @@ export default class Document extends Container{
     super.$init(moldPath);
   }
 
-  child(path) {
-    // !!! пока не разрешаем получать потомков, так как придется мого переделывать если
-    //     потомки будут коллекциями
-  }
-
   getUrlParams() {
     return this._main.$$state.getUrlParams(this._moldPath);
   }
