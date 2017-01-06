@@ -40,11 +40,12 @@ export default class Main {
 
   /**
    * Get instance of one of the types by a path
-   * @param {string} path - absolute path
+   * @param {string} path - absolute path or relative if context is used
+   * @param {object} context - instance of root element
    * @returns {object} - instance of one of the types
    */
-  child(path) {
-    return this.$$schemaManager.getInstance(path);
+  child(path, context) {
+    return this.$$schemaManager.getInstance(path, context);
   }
 
   onAnyUpdate(handler) {
