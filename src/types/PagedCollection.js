@@ -1,7 +1,7 @@
 // Paged collection
 import _ from 'lodash';
 
-import { concatPath, getFirstChildPath } from '../helpers';
+import { concatPath, convertFromLodashToSchema } from '../helpers';
 import _TypeBase from './_TypeBase';
 
 export default class PagedCollection extends _TypeBase {
@@ -99,7 +99,7 @@ export default class PagedCollection extends _TypeBase {
 
     fullChildPath = concatPath(this._moldPath, primaryId);
 
-    const fullSchemaPath = concatPath(this._moldPath, 'item.item');
+    const fullSchemaPath = concatPath(convertFromLodashToSchema(this._moldPath), 'item.item');
 
 
     console.log(8888888, primaryId, primaryIdNumber, items, fullChildPath, fullSchemaPath)
