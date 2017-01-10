@@ -75,20 +75,22 @@ export default class SchemaManager {
     let rootInstance;
     let pathParts;
     let fullMoldPath;
+
     if (context) {
+      // use received context
       fullMoldPath = concatPath(context.root, path);
       pathParts = splitPath(fullMoldPath);
       rootInstance = context;
     }
     else {
+      // use instance of first level of path
       fullMoldPath = path;
       pathParts = splitPath(fullMoldPath);
       rootInstance = this.$getInstanceByFullPath(pathParts[0]);
     }
 
-    if (pathParts.length === 1) {
-      return rootInstance;
-    }
+    // if there is only first level of path - return its instance.
+    if (pathParts.length === 1) return rootInstance;
 
     const result = this._findInstance(pathParts.slice(1), rootInstance);
 
@@ -112,36 +114,36 @@ export default class SchemaManager {
     return instance;
   }
 
-  /**
-   * Get type instance
-   * @param {string} path - absolute path or relative if context is used
-   * @returns {object} - instance of type
-   */
-  getInstanceOld(path) {
-    let instance;
-    // It rise an error if path doesn't consist with schema
-    const schema = this.get(path);
-
-    if (schema.type == 'container')                 instance = new Container(this._main);
-    else if (schema.type == 'collection')           instance = new Collection(this._main);
-    else if (schema.type == 'pagedCollection')      instance = new PagedCollection(this._main);
-    else if (schema.type == 'document')             instance = new Document(this._main);
-    else if (schema.type == 'documentsCollection')  instance = new DocumentsCollection(this._main);
-    else if (schema.type == 'array') {
-      this._main.$$log.fatal(`You can't get instance of primitive array!`);
-    }
-    else if (schema.type == 'boolean' || schema.type == 'string' || schema.type == 'number'){
-      this._main.$$log.fatal(`You can't get instance of primitive!`);
-    }
-    else {
-      this._main.$$log.fatal(`No one type have found!`);
-    }
-
-    // It's need for creating collection child
-    instance.$init(path);
-
-    return instance;
-  }
+  // /**
+  //  * Get type instance
+  //  * @param {string} path - absolute path or relative if context is used
+  //  * @returns {object} - instance of type
+  //  */
+  // getInstanceOld(path) {
+  //   let instance;
+  //   // It rise an error if path doesn't consist with schema
+  //   const schema = this.get(path);
+  //
+  //   if (schema.type == 'container')                 instance = new Container(this._main);
+  //   else if (schema.type == 'collection')           instance = new Collection(this._main);
+  //   else if (schema.type == 'pagedCollection')      instance = new PagedCollection(this._main);
+  //   else if (schema.type == 'document')             instance = new Document(this._main);
+  //   else if (schema.type == 'documentsCollection')  instance = new DocumentsCollection(this._main);
+  //   else if (schema.type == 'array') {
+  //     this._main.$$log.fatal(`You can't get instance of primitive array!`);
+  //   }
+  //   else if (schema.type == 'boolean' || schema.type == 'string' || schema.type == 'number'){
+  //     this._main.$$log.fatal(`You can't get instance of primitive!`);
+  //   }
+  //   else {
+  //     this._main.$$log.fatal(`No one type have found!`);
+  //   }
+  //
+  //   // It's need for creating collection child
+  //   instance.$init(path);
+  //
+  //   return instance;
+  // }
 
   /**
    * Get driver by path.
@@ -163,50 +165,23 @@ export default class SchemaManager {
   }
 
   _findInstance(pathParts, rootInstance) {
-    let instance = rootInstance;
-    let result = null;
-    //let currentPathPart = '';
-
-    // получаем первый инстанс корня
-    // далее у него спрашиваем в цикле потомка
-    // у следующего потомка спрашиваем его потомка
-    // последний потомок и будет результатом
-    // если результата нет - ошибка
-
-
-    // TODO: refactor - use reduce
-    // iterate each path part
-
+    let currentInstance = rootInstance;
+    let result = undefined;
 
     _.each(pathParts, (pathPart, index) => {
-      // combined path to current iteration
-      //currentPathPart = concatPath(currentPathPart, pathPart);
-      // save instance
-      //instances[index] = this.$getInstanceByFullPath(currentPathPart);
-
-      console.log(2222222222, pathPart)
-
       // TODO: нужно давать всю оставнуюся часть пути
-
-      const child = instance.$getChildInstance(pathPart);
-
-      console.log(3333333, child.root)
-
-
       if (index === pathParts.length - 1) {
         // the last path part
-        result = child;
+        result = currentInstance.$getChildInstance(pathPart);
       }
+      else {
+        // not last
+        if (!currentInstance.$getChildInstance)
+          this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
 
-      if (!instance.$getChildInstance) {
-        // TODO: !!!!! ошибка если не достигнут конец массмва путей
-        return;
+        currentInstance = currentInstance.$getChildInstance(pathPart);
       }
-
-      instance = child;
     });
-
-    console.log(111111112, result && result.root, result && result.type)
     return result;
   }
 
