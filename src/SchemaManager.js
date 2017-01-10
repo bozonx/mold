@@ -32,16 +32,16 @@ export default class SchemaManager {
 
   /**
    * get schema part by path
-   * @param {string} moldOrSchemaPath - absolute mold or schema path
+   * @param {string} schemaPath - absolute mold or schema path
    * @returns {object} schema like {type, driver, params, schema}
    */
-  get(moldOrSchemaPath) {
-    if (moldOrSchemaPath === '') return this.getFullSchema();
+  getSchema(schemaPath) {
+    if (schemaPath === '') return this.getFullSchema();
 
-    let schemaPath = moldOrSchemaPath;
-    if (!moldOrSchemaPath.match(/\.(schema|item)/)) {
-      schemaPath = convertFromLodashToSchema(moldOrSchemaPath);
-    }
+    // let schemaPath = moldOrSchemaPath;
+    // if (!moldOrSchemaPath.match(/\.(schema|item)/)) {
+    //   schemaPath = convertFromLodashToSchema(moldOrSchemaPath);
+    // }
 
     const schema = _.get(this._schema, schemaPath);
 
@@ -126,11 +126,7 @@ export default class SchemaManager {
     const preparedSchemaPath = (fullSchemaPath) ? fullSchemaPath : convertFromLodashToSchema(fullMoldPath);
 
     // It rise an error if path doesn't consist with schema
-    const schema = this.get(preparedSchemaPath);
-
-    console.log(55555555555, preparedSchemaPath, schema)
-
-
+    const schema = this.getSchema(preparedSchemaPath);
     const instance = new this._registeredTypes[schema.type](this._main);
     instance.$init(fullMoldPath, preparedSchemaPath, schema);
 
@@ -145,11 +141,6 @@ export default class SchemaManager {
       const restOfPath = joinPath(pathParts.slice(index + 1));
 
       if (index === pathParts.length - 1) {
-
-
-        console.log(666666666, pathParts, currentPathPiece, restOfPath, currentInstance.root)
-
-
         // the last part of path
         result = currentInstance.$getChildInstance(currentPathPiece, restOfPath);
       }

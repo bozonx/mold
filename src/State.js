@@ -89,12 +89,12 @@ export default class State {
    * @param {number|undefined} pageNum
    */
   unshift(moldPath, storagePath, newItem, pageNum = undefined) {
-    // It rise an error if path doesn't consist with schema
-    const schema = this._main.$$schemaManager.get(moldPath);
-
-    // TODO: перенести это в checkNode
-    if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
-      this._main.$$log.fatal(`You can add new item only to collection!`);
+    // // It rise an error if path doesn't consist with schema
+    // const schema = this._main.$$schemaManager.get(moldPath);
+    //
+    // // TODO: перенести это в checkNode
+    // if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
+    //   this._main.$$log.fatal(`You can add new item only to collection!`);
 
     this._checkNode(moldPath, newItem);
     if (_.isNumber(pageNum)) {
@@ -114,12 +114,12 @@ export default class State {
    * @param {number|undefined} pageNum
    */
   push(moldPath, storagePath, newItem, pageNum = undefined) {
-    // It rise an error if path doesn't consist with schema
-    const schema = this._main.$$schemaManager.get(moldPath);
-
-    // TODO: перенести это в checkNode
-    if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
-      this._main.$$log.fatal(`You can add new item only to collection!`);
+    // // It rise an error if path doesn't consist with schema
+    // const schema = this._main.$$schemaManager.get(moldPath);
+    //
+    // // TODO: перенести это в checkNode
+    // if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
+    //   this._main.$$log.fatal(`You can add new item only to collection!`);
 
     this._checkNode(moldPath, newItem);
 
@@ -139,11 +139,12 @@ export default class State {
    * @param {number|undefined} pageNum
    */
   remove(moldPath, storagePath, itemToRemove, pageNum = undefined) {
-    // It rise an error if path doesn't consist with schema
-    const schema = this._main.$$schemaManager.get(moldPath);
+    // // It rise an error if path doesn't consist with schema
+    // const schema = this._main.$$schemaManager.get(moldPath);
+    //
+    // if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
+    //   this._main.$$log.fatal(`You can remove only from collection!`);
 
-    if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
-      this._main.$$log.fatal(`You can remove only from collection!`);
     if (!_.isNumber(itemToRemove.$index))
       this._main.$$log.fatal(`Deleted item must has an $index param.`);
 
@@ -164,12 +165,12 @@ export default class State {
    * @param {number} pageNum. It's required.
    */
   setPage(moldPath, storagePath, page, pageNum) {
-    // It rises an error if path doesn't consist with schema
-    const schema = this._main.$$schemaManager.get(moldPath);
-
-    // TODO: перенести это в checkNode
-    if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
-      this._main.$$log.fatal(`You can add new item only to paged collection!`);
+    // // It rises an error if path doesn't consist with schema
+    // const schema = this._main.$$schemaManager.get(moldPath);
+    //
+    // // TODO: перенести это в checkNode
+    // if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
+    //   this._main.$$log.fatal(`You can add new item only to paged collection!`);
 
     const preparedPage = _.cloneDeep(page);
 
@@ -184,11 +185,11 @@ export default class State {
    * @param pageNum
    */
   removePage(moldPath, storagePath, pageNum) {
-    // It rise an error if path doesn't consist with schema
-    const schema = this._main.$$schemaManager.get(moldPath);
-
-    if (!_.includes(['pagedCollection', 'documentsCollection'], schema.type))
-      this._main.$$log.fatal(`You can remove  page only from pagedCollection of documentsCollection!`);
+    // // It rise an error if path doesn't consist with schema
+    // const schema = this._main.$$schemaManager.get(moldPath);
+    //
+    // if (!_.includes(['pagedCollection', 'documentsCollection'], schema.type))
+    //   this._main.$$log.fatal(`You can remove  page only from pagedCollection of documentsCollection!`);
 
     this._storage.update(concatPath(storagePath, pageNum), undefined);
   }
