@@ -123,9 +123,12 @@ export default class DocumentsCollection extends PagedCollection{
   deleteDocument(documentMold, metaParams=undefined) {
     // console.log(1111, documentMold)
     //
-    // const document = this.getChildInstance(documentMold.$pageIndex, documentMold.$index);
+    // const document = this.child(`[${documentMold.$pageIndex}][${documentMold.$index}]`);
+    //
+    // console.log(22222, document)
     //
     // document.remove(metaParams);
+
 
     // change with event rising
     this._updateDoc(documentMold, { $deleting: true });

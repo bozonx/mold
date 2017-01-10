@@ -132,6 +132,8 @@ export default class Document extends Container{
 
     console.log(333333333, this._moldPath, this._storagePath)
 
+    return;
+
     // TODO: !!!!!
     const moldPathToCollection = '';
     // TODO: url params брать коллекции или документа??? или объединенные?

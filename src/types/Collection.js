@@ -24,10 +24,14 @@ export default class Collection extends _TypeBase {
    * @returns {object} - instance of child
    */
   child(path) {
-    return this._main.child(path, this);
+    const preparedPath = (_.isNumber(path)) ? `[${path}]` : path;
+    return this._main.child(preparedPath, this);
   }
 
   $getChildInstance(primaryIdOrSubPath, restOfPath) {
+
+    console.log(555555555, primaryIdOrSubPath)
+
     const childPath = getFirstChildPath(primaryIdOrSubPath);
     const fullChildPath = concatPath(this._moldPath, childPath);
 

@@ -84,26 +84,31 @@ export default class SchemaManager {
     if (!path && !context) this._main.$$log.fatal(`Path is empty.`);
 
     let rootInstance;
-    let pathParts;
+    let childPathParts;
     let fullMoldPath;
 
     if (context) {
+      if (!path) return context;
+
       // use received context
       fullMoldPath = concatPath(context.root, path);
-      pathParts = splitPath(fullMoldPath);
+      childPathParts = splitPath(path);
       rootInstance = context;
     }
     else {
       // use instance of first level of path
       fullMoldPath = path;
-      pathParts = splitPath(fullMoldPath);
+      const pathParts = splitPath(fullMoldPath);
+      childPathParts = pathParts.slice(1);
       rootInstance = this.$getInstanceByFullPath(pathParts[0]);
+
+      // if there is only first level of path - return its instance.
+      if (childPathParts.length === 0) return rootInstance;
     }
 
-    // if there is only first level of path - return its instance.
-    if (pathParts.length === 1) return rootInstance;
+    console.log(22222222222, fullMoldPath, path, childPathParts)
 
-    const result = this._findInstance(pathParts.slice(1), rootInstance);
+    const result = this._findInstance(childPathParts, rootInstance);
 
     if (result) return result;
 
@@ -131,16 +136,27 @@ export default class SchemaManager {
     _.each(pathParts, (currentPathPiece, index) => {
       const restOfPath = joinPath(pathParts.slice(index + 1));
 
+      console.log(333333, index, pathParts.length)
+
       if (index === pathParts.length - 1) {
         // the last part of path
         result = currentInstance.$getChildInstance(currentPathPiece, restOfPath);
       }
       else {
         // not last
+
+
+
         if (!currentInstance.$getChildInstance)
           this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
 
+        console.log(444444444, index, currentPathPiece, currentInstance.type)
+
+
         currentInstance = currentInstance.$getChildInstance(currentPathPiece, restOfPath);
+
+        console.log(55555555555)
+
       }
     });
     return result;
