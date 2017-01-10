@@ -28,12 +28,18 @@ export default class Collection extends _TypeBase {
     return this._main.child(preparedPath, this);
   }
 
-  $getChildInstance(primaryIdOrSubPath, restOfPath) {
-    const childPath = getFirstChildPath(primaryIdOrSubPath);
-    const fullChildPath = concatPath(this._moldPath, childPath);
+  /**
+   * Get instance of child of first level.
+   * @param {string} primaryId - id of element, like '[0]'
+   * @returns {*}
+   */
+  $getChildInstance(primaryId) {
+    const childPath = getFirstChildPath(primaryId);
+    const fullChildMoldPath = concatPath(this._moldPath, childPath);
+    const fullChildSchemaPath = concatPath(this._schemaPath, 'item');
 
     // get container instance
-    return this._main.$$schemaManager.$getInstanceByFullPath(fullChildPath);
+    return this._main.$$schemaManager.$getInstanceByFullPath(fullChildMoldPath, fullChildSchemaPath);
   }
 
   /**

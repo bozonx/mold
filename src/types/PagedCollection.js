@@ -69,9 +69,9 @@ export default class PagedCollection extends _TypeBase {
   /**
    * Get instance of element. (not page!).
    * @param {string} primaryId - id of element, like '[0]'
-   * @returns {Object}
+   * @returns {Object|undefined}
    */
-  $getChildInstance(primaryId, restOfPath) {
+  $getChildInstance(primaryId) {
     // TODO: всегда отдаем элемент!!!!
     // TODO: все элементы будут иметь путь без учета страницы
 

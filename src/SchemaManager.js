@@ -104,6 +104,7 @@ export default class SchemaManager {
       fullMoldPath = path;
       const pathParts = splitPath(fullMoldPath);
       childPathParts = pathParts.slice(1);
+      // TODO: передать schemaPath
       rootInstance = this.$getInstanceByFullPath(pathParts[0]);
 
       // if there is only first level of path - return its instance.
@@ -123,6 +124,7 @@ export default class SchemaManager {
    * @param fullSchemaPath - if undefined - it converts fullMoldPath to schema path
    */
   $getInstanceByFullPath(fullMoldPath, fullSchemaPath=undefined) {
+    // TODO: fullSchemaPath обязательный!!!!!
     const preparedSchemaPath = (fullSchemaPath) ? fullSchemaPath : convertFromLodashToSchema(fullMoldPath);
 
     // It rise an error if path doesn't consist with schema
