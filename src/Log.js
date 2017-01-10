@@ -14,6 +14,6 @@ export default class Log {
   }
 
   fatal() {
-    if (!this._isSilent) throw new Error(...arguments);
+    throw new Error(...arguments);
   }
 }

@@ -72,6 +72,8 @@ export default class PagedCollection extends _TypeBase {
    * @returns {Object|undefined}
    */
   $getChildInstance(primaryId) {
+    if (primaryId.toString().match(/\./)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
+
     // TODO: всегда отдаем элемент!!!!
     // TODO: все элементы будут иметь путь без учета страницы
 
