@@ -60,7 +60,7 @@ export default class Document extends Container{
   load(metaParams=undefined) {
     this._main.$$state.update(this._moldPath, this._storagePath, {$loading: true});
     return this._main.$$state.$$request.sendRequest(
-        'get', this._moldPath, undefined, metaParams, this.getUrlParams())
+        'get', this._moldPath, this._schema, undefined, metaParams, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
         this._main.$$state.update(this._moldPath, this._storagePath, {$loading: false});
@@ -86,7 +86,7 @@ export default class Document extends Container{
     this._main.$$state.update(this._moldPath, this._storagePath, {$saving: true});
 
     return this._main.$$state.$$request.sendRequest(
-        'put', this._moldPath, this._mold, metaParams, this.getUrlParams()).then((resp) => {
+        'put', this._moldPath, this._schema, this._mold, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.update(this._moldPath, this._storagePath, {
         ...resp.body,
@@ -112,7 +112,7 @@ export default class Document extends Container{
     this._main.$$state.update(this._moldPath, this._storagePath, {$saving: true});
 
     return this._main.$$state.$$request.sendRequest(
-      'patch', this._moldPath, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {
+      'patch', this._moldPath, this._schema, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.update(this._moldPath, this._storagePath, {
         ...resp.body,
@@ -145,7 +145,7 @@ export default class Document extends Container{
 
 
     return this._main.$$state.$$request.sendRequest(
-      'delete', moldPathToCollection, this.mold, metaParams, urlParams)
+      'delete', moldPathToCollection, this._schema, this.mold, metaParams, urlParams)
       .then((resp) => {
         this._main.$$state.update(this._moldPath, this._storagePath, { $deleting: false });
         // remove from page

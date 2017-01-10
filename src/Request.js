@@ -11,13 +11,14 @@ export default class Request {
    * Send request to driver
    * @param {string} method - one of: get, put, patch, filter, create, delete
    * @param {string} moldPath - path in mold
+   * @param {string} schema
    * @param {object|array|undefined} payload - data to save
    * @param {object|undefined} metaParams - parameters to pass to driver
    * @param {object|undefined} urlParams
    * @returns {Promise}
    */
-  sendRequest(method, moldPath, payload, metaParams, urlParams) {
-    const promise = this._startDriverRequest(method, moldPath, payload, urlParams, metaParams)
+  sendRequest(method, moldPath, schema, payload, metaParams, urlParams) {
+    const promise = this._startDriverRequest(method, moldPath, schema, payload, urlParams, metaParams)
     promise.then((resp) => {
       this._main.$$log.info('---> finish request: ', resp);
       return resp;
@@ -32,19 +33,20 @@ export default class Request {
   /**
    * Send query to driver for data.
    * @param {string} method - one of: get, set, filter, create, delete
-   * @param {string} moldPath - path in mold or schena
+   * @param {string} moldPath - path in mold
+   * @param {string} schema
    * @param {*} [payload] - data to save
    * @param {object} urlParams - dynamic part of source path
    * @param {object|undefined} metaParams
    * @returns {Promise}
    * @private
    */
-  _startDriverRequest(method, moldPath, payload, urlParams, metaParams) {
+  _startDriverRequest(method, moldPath, schema, payload, urlParams, metaParams) {
     const driverRoot = this._main.$$schemaManager.getClosestDriverPath(moldPath);
 
     const driver = this._main.$$schemaManager.getDriver(driverRoot);
-    // It rise an error if path doesn't consist with schema
-    const schema = this._main.$$schemaManager.get(moldPath);
+    // // It rise an error if path doesn't consist with schema
+    // const schema = this._main.$$schemaManager.get(schemaPath);
 
     const req = this._generateRequest(method, moldPath, payload, urlParams, schema, driverRoot, metaParams);
     this._main.$$log.info('---> start request: ', req);
