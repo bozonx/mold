@@ -1,7 +1,7 @@
 // Paged collection
 import _ from 'lodash';
 
-import { concatPath } from '../helpers';
+import { concatPath, getFirstChildPath } from '../helpers';
 import _TypeBase from './_TypeBase';
 
 export default class PagedCollection extends _TypeBase {
@@ -71,28 +71,39 @@ export default class PagedCollection extends _TypeBase {
    * @param path
    * @returns {Object}
    */
-  $getChildInstance(path) {
-    // TODO: разобрать путь
-    // TODO: если не передан index - то отдавать страницу, если страницы нет, то undefined
+  $getChildInstance(path, restOfPath) {
+    const primaryIdOrSubPath = path;
 
-    // TODO: add it to paged collection
-    if (!_.isNumber(pageNum)) this._main.$$log.fatal(`pageNum parameter has to be a number`);
 
-    // get path to doc without page num
-    const realPathToDoc = concatPath(concatPath(this._moldPath, pageNum), index);
-    //const pathToDoc = concatPath(this._moldPath, index);
+    const childPath = getFirstChildPath(primaryIdOrSubPath);
+    const fullChildPath = concatPath(this._moldPath, childPath);
 
-    console.log(2222, pathToDoc)
+    // get container instance
+    return this._main.$$schemaManager.$getInstanceByFullPath(fullChildPath);
 
-    //const document = this._main.child(pathToDoc);
 
-    const document = this._main.$$schemaManager.getInstance(pathToDoc);
-    // reinit container instance with correct path
-    document.$init(pathToDoc);
-
-    console.log(44444, document.mold)
-
-    return document;
+    // console.log(3333333, path)
+    //
+    // // TODO: если не передан index - то отдавать страницу, если страницы нет, то undefined
+    //
+    // // TODO: add it to paged collection
+    // if (!_.isNumber(pageNum)) this._main.$$log.fatal(`pageNum parameter has to be a number`);
+    //
+    // // get path to doc without page num
+    // const realPathToDoc = concatPath(concatPath(this._moldPath, pageNum), index);
+    // //const pathToDoc = concatPath(this._moldPath, index);
+    //
+    // console.log(2222, pathToDoc)
+    //
+    // //const document = this._main.child(pathToDoc);
+    //
+    // const document = this._main.$$schemaManager.getInstance(pathToDoc);
+    // // reinit container instance with correct path
+    // document.$init(pathToDoc);
+    //
+    // console.log(44444, document.mold)
+    //
+    // return document;
   }
 
   /**

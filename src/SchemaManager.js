@@ -63,6 +63,25 @@ export default class SchemaManager {
   }
 
   /**
+   * Get driver by path.
+   * @param {string} driverPath - absolute path to driver
+   * @returns {object|undefined} If driver doesnt exists, returns undefined
+   */
+  getDriver(driverPath) {
+    if (driverPath) return this._drivers[driverPath];
+
+    // no-one === default memory driver
+    return this.mainMemoryDriver;
+  }
+
+  getClosestDriverPath(moldPath) {
+    if (!_.isString(moldPath))
+      this._main.$$log.fatal(`You must pass the moldPath argument!`);
+
+    return getTheBestMatchPath(moldPath, _.keys(this._drivers));
+  }
+
+  /**
    * Get instance of type
    * @param {string} path - absolute path or relative if context is used
    * @param {object} context - instance of root element
@@ -114,78 +133,29 @@ export default class SchemaManager {
     return instance;
   }
 
-  // /**
-  //  * Get type instance
-  //  * @param {string} path - absolute path or relative if context is used
-  //  * @returns {object} - instance of type
-  //  */
-  // getInstanceOld(path) {
-  //   let instance;
-  //   // It rise an error if path doesn't consist with schema
-  //   const schema = this.get(path);
-  //
-  //   if (schema.type == 'container')                 instance = new Container(this._main);
-  //   else if (schema.type == 'collection')           instance = new Collection(this._main);
-  //   else if (schema.type == 'pagedCollection')      instance = new PagedCollection(this._main);
-  //   else if (schema.type == 'document')             instance = new Document(this._main);
-  //   else if (schema.type == 'documentsCollection')  instance = new DocumentsCollection(this._main);
-  //   else if (schema.type == 'array') {
-  //     this._main.$$log.fatal(`You can't get instance of primitive array!`);
-  //   }
-  //   else if (schema.type == 'boolean' || schema.type == 'string' || schema.type == 'number'){
-  //     this._main.$$log.fatal(`You can't get instance of primitive!`);
-  //   }
-  //   else {
-  //     this._main.$$log.fatal(`No one type have found!`);
-  //   }
-  //
-  //   // It's need for creating collection child
-  //   instance.$init(path);
-  //
-  //   return instance;
-  // }
-
-  /**
-   * Get driver by path.
-   * @param {string} driverPath - absolute path to driver
-   * @returns {object|undefined} If driver doesnt exists, returns undefined
-   */
-  getDriver(driverPath) {
-    if (driverPath) return this._drivers[driverPath];
-
-    // no-one === default memory driver
-    return this.mainMemoryDriver;
-  }
-
-  getClosestDriverPath(moldPath) {
-    if (!_.isString(moldPath))
-      this._main.$$log.fatal(`You must pass the moldPath argument!`);
-
-    return getTheBestMatchPath(moldPath, _.keys(this._drivers));
-  }
-
   _findInstance(pathParts, rootInstance) {
     let currentInstance = rootInstance;
     let result = undefined;
-
     _.each(pathParts, (currentPathPiece, index) => {
+      const restOfPath = joinPath(pathParts.slice(index + 1));
+
       if (index === pathParts.length - 1) {
         // the last part of path
-        result = currentInstance.$getChildInstance(currentPathPiece);
+        result = currentInstance.$getChildInstance(currentPathPiece, restOfPath);
       }
       else {
         // not last
         if (!currentInstance.$getChildInstance)
           this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
 
-        const pathToEnd = joinPath(pathParts.slice(index));
-        currentInstance = currentInstance.$getChildInstance(pathToEnd);
+        currentInstance = currentInstance.$getChildInstance(currentPathPiece, restOfPath);
       }
     });
     return result;
   }
 
   _checkSchema(rawSchema) {
+    // TODO: запускать метод у каждого типа
     // Validate schema
     eachSchema(rawSchema, (schemaPath, value) => {
       if (_.includes(

@@ -27,20 +27,7 @@ export default class Collection extends _TypeBase {
     return this._main.child(path, this);
   }
 
-  // child(primaryIdOrPath) {
-  //   if (_.isUndefined(primaryIdOrPath))
-  //     this._main.$$log.fatal(`You must pass a path argument.`);
-  //
-  //   const pathToChild = concatPath(this._moldPath, primaryIdOrPath);
-  //   // get container instance
-  //   const instance = this._main.$$schemaManager.getInstance(pathToChild);
-  //   // reinit container instance with correct path
-  //   instance.$init(pathToChild);
-  //
-  //   return instance;
-  // }
-
-  $getChildInstance(primaryIdOrSubPath) {
+  $getChildInstance(primaryIdOrSubPath, restOfPath) {
     const childPath = getFirstChildPath(primaryIdOrSubPath);
     const fullChildPath = concatPath(this._moldPath, childPath);
 

@@ -26,7 +26,7 @@ export default class Container extends _TypeBase{
     return this._main.child(path, this);
   }
 
-  $getChildInstance(primaryIdOrSubPath) {
+  $getChildInstance(primaryIdOrSubPath, restOfPath) {
     const childPath = getFirstChildPath(primaryIdOrSubPath);
     const fullChildPath = concatPath(this._moldPath, childPath);
 
