@@ -32,32 +32,16 @@ export default class SchemaManager {
 
   /**
    * get schema part by path
-   * @param {string} path - absolute mold or schema path
+   * @param {string} moldOrSchemaPath - absolute mold or schema path
    * @returns {object} schema like {type, driver, params, schema}
    */
-  get(path) {
-    // TODO: удалить
-    if (path === '') return this.getFullSchema();
+  get(moldOrSchemaPath) {
+    if (moldOrSchemaPath === '') return this.getFullSchema();
 
-    let schemaPath = path;
-    if (!path.match(/\.schema/)) {
-      schemaPath = convertFromLodashToSchema(path);
+    let schemaPath = moldOrSchemaPath;
+    if (!moldOrSchemaPath.match(/\.schema/)) {
+      schemaPath = convertFromLodashToSchema(moldOrSchemaPath);
     }
-
-    const schema = _.get(this._schema, schemaPath);
-
-    if (_.isUndefined(schema)) this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
-
-    return schema;
-  }
-
-  /**
-   * get schema part by path
-   * @param {string} schemaPath - absolute path in schema format
-   * @returns {object} schema like {type, driver, params, schema}
-   */
-  getSchema(schemaPath) {
-    if (schemaPath === '') return this.getFullSchema();
 
     const schema = _.get(this._schema, schemaPath);
 
