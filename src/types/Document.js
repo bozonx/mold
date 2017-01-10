@@ -130,18 +130,19 @@ export default class Document extends Container{
   remove(metaParams=undefined) {
     // TODO: как выяснить что это документ в коллекции - у него есть $pageNum
 
-    console.log(333333333, this._moldPath, this._storagePath)
 
-    return;
-
-    // TODO: !!!!!
-    const moldPathToCollection = '';
+    // TODO: !!!!! не правильно
+    const moldPathToCollection = this._moldPath.replace(/\[\d+]\[\d+]$/, '');
     // TODO: url params брать коллекции или документа??? или объединенные?
-    const urlParams = this.getUrlParams();
+    //const urlParams = this.getUrlParams();
+    const urlParams = {};
 
 
 
     this._main.$$state.update(this._moldPath, this._storagePath, { $deleting: true });
+
+    console.log(77777777777, this._moldPath, this._storagePath, moldPathToCollection)
+
 
     return this._main.$$state.$$request.sendRequest(
       'delete', moldPathToCollection, this.mold, metaParams, urlParams)

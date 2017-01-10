@@ -125,7 +125,7 @@ export default class DocumentsCollection extends PagedCollection{
     //
     // const document = this.child(`[${documentMold.$pageIndex}][${documentMold.$index}]`);
     //
-    // console.log(22222, document)
+    // console.log(6666666, document)
     //
     // document.remove(metaParams);
 
