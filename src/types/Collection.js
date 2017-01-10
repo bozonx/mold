@@ -14,8 +14,8 @@ export default class Collection extends _TypeBase {
     return 'collection';
   }
 
-  $init(moldPath) {
-    super.$init(moldPath);
+  $init(moldPath, schemaPath, schema) {
+    super.$init(moldPath, schemaPath, schema);
   }
 
   /**

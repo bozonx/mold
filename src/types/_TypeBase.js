@@ -4,11 +4,19 @@ export default class _TypeBase {
   }
 
   /**
-   * Get root path
+   * Get mold path
    * @returns {string}
    */
   get root() {
     return '' + this._moldPath;
+  }
+
+  /**
+   * Get schema path
+   * @returns {string}
+   */
+  get schemaPath() {
+    return '' + this._schemaPath;
   }
 
   /**
@@ -29,10 +37,12 @@ export default class _TypeBase {
     return _.cloneDeep(this._mold);
   }
 
-  $init(moldPath) {
+  $init(moldPath, schemaPath, schema) {
     this._moldPath = moldPath;
+    this._schemaPath = schemaPath;
     this._storagePath = this._storagePath || moldPath;
-    this._schema = this._main.$$schemaManager.get(this._moldPath);
+    //this._schema = this._main.$$schemaManager.get(this._moldPath);
+    this._schema = schema;
     // mold is just a link to the storage
     if (!this._mold) this._mold = this._main.$$state.getMold(this._storagePath);
   }

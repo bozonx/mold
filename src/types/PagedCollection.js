@@ -25,8 +25,8 @@ export default class PagedCollection extends _TypeBase {
     return 'pagedCollection';
   }
 
-  $init(moldPath) {
-    super.$init(moldPath);
+  $init(moldPath, schemaPath, schema) {
+    super.$init(moldPath, schemaPath, schema);
     this._moldPages = this._mold;
   }
 

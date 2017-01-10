@@ -152,7 +152,7 @@ export default class SchemaManager {
     // It rise an error if path doesn't consist with schema
     const schema = this.getSchema(fullSchemaPath);
     const instance = new this._registeredTypes[schema.type](this._main);
-    instance.$init(fullMoldPath, fullSchemaPath);
+    instance.$init(fullMoldPath, fullSchemaPath, schema);
 
     return instance;
   }

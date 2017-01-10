@@ -30,13 +30,13 @@ export default class Document extends Container{
     return this._lastChanges;
   }
 
-  $init(moldPath) {
+  $init(moldPath, schemaPath, schema) {
     this._storagePath = convertFromMoldToDocumentStoragePath(moldPath);
     // init a document
     if (!_.isPlainObject(this._main.$$state.getMold(this._storagePath))) {
       this._main.$$state.setSilent(this._storagePath, {});
     }
-    super.$init(moldPath);
+    super.$init(moldPath, schemaPath, schema);
   }
 
   getUrlParams() {
