@@ -171,9 +171,16 @@ export function getFirstChildPath(path) {
 
 export function splitPath(moldPath) {
   // ff[1][3] = > ff.[1].[2] => ['ff', '[1]', [2]]
-  let pathParts = moldPath.replace(/\[/g, '.[');
+  const pathParts = moldPath.replace(/\[/g, '.[');
   return pathParts.split('.');
 }
+
+export function joinPath(pathArray) {
+  const joined = pathArray.join('.');
+  // ['ff', '[1]', [2]] => ff.[1].[2] => ff[1][3]
+  return joined.replace(/\.\[/g, '[');
+}
+
 
 
 

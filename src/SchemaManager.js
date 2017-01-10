@@ -7,7 +7,7 @@ import Document from './types/Document';
 import DocumentsCollection from './types/DocumentsCollection';
 import { convertFromLodashToSchema, convertFromSchemaToLodash, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
-import { eachSchema, concatPath, splitPath } from './helpers';
+import { eachSchema, concatPath, splitPath, joinPath } from './helpers';
 
 const registeredTypes = {
   pagedCollection: PagedCollection,
@@ -168,18 +168,18 @@ export default class SchemaManager {
     let currentInstance = rootInstance;
     let result = undefined;
 
-    _.each(pathParts, (pathPart, index) => {
-      // TODO: нужно давать всю оставнуюся часть пути
+    _.each(pathParts, (currentPathPiece, index) => {
       if (index === pathParts.length - 1) {
-        // the last path part
-        result = currentInstance.$getChildInstance(pathPart);
+        // the last part of path
+        result = currentInstance.$getChildInstance(currentPathPiece);
       }
       else {
         // not last
         if (!currentInstance.$getChildInstance)
           this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
 
-        currentInstance = currentInstance.$getChildInstance(pathPart);
+        const pathToEnd = joinPath(pathParts.slice(index));
+        currentInstance = currentInstance.$getChildInstance(pathToEnd);
       }
     });
     return result;
