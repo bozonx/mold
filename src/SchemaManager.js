@@ -131,28 +131,16 @@ export default class SchemaManager {
 
   /**
    * It just returns an instance
-   * @param fullPath
-   */
-  $getInstanceByFullPath(fullPath) {
-    // It rise an error if path doesn't consist with schema
-    const schema = this.get(fullPath);
-    const instance = new this._registeredTypes[schema.type](this._main);
-    // It's need for creating collection child
-    instance.$init(fullPath);
-
-    return instance;
-  }
-
-  /**
-   * It just returns an instance
    * @param fullMoldPath
-   * @param fullSchemaPath
+   * @param fullSchemaPath - if undefined - it converts fullMoldPath to schema path
    */
-  $getInstanceByFullPath22222(fullMoldPath, fullSchemaPath) {
+  $getInstanceByFullPath(fullMoldPath, fullSchemaPath=undefined) {
+    const preparedSchemaPath = (fullSchemaPath) ? fullSchemaPath : convertFromLodashToSchema(fullMoldPath);
+
     // It rise an error if path doesn't consist with schema
-    const schema = this.getSchema(fullSchemaPath);
+    const schema = this.getSchema(preparedSchemaPath);
     const instance = new this._registeredTypes[schema.type](this._main);
-    instance.$init(fullMoldPath, fullSchemaPath, schema);
+    instance.$init(fullMoldPath, preparedSchemaPath, schema);
 
     return instance;
   }

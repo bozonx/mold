@@ -108,7 +108,7 @@ export default class PagedCollection extends _TypeBase {
     // const fullChildPath = concatPath(this._moldPath, childPath);
 
     // get container instance
-    return this._main.$$schemaManager.$getInstanceByFullPath22222(fullChildPath, fullSchemaPath);
+    return this._main.$$schemaManager.$getInstanceByFullPath(fullChildPath, fullSchemaPath);
 
 
     // console.log(3333333, path)
