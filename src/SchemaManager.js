@@ -1,21 +1,8 @@
 import _ from 'lodash';
 
-import PagedCollection from './types/PagedCollection';
-import Collection from './types/Collection';
-import Container from './types/Container';
-import Document from './types/Document';
-import DocumentsCollection from './types/DocumentsCollection';
 import { convertFromLodashToSchema, convertFromSchemaToLodash, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
 import { eachSchema, concatPath, splitPath, joinPath } from './helpers';
-
-const registeredTypes = {
-  pagedCollection: PagedCollection,
-  collection: Collection,
-  container: Container,
-  document: Document,
-  documentsCollection: DocumentsCollection,
-};
 
 /**
  * It's schema manager
@@ -29,6 +16,7 @@ export default class SchemaManager {
     this._main = main;
     this.$defaultMemoryDb = {};
     this._drivers = {};
+    this._registeredTypes = {};
 
     const memoryDriver = new Memory({
       db: this.$defaultMemoryDb,
@@ -36,6 +24,10 @@ export default class SchemaManager {
     this.mainMemoryDriver = memoryDriver.instance({});
 
     this._checkSchema(this._schema);
+  }
+
+  registerType(typeName, typeClass) {
+    this._registeredTypes[typeName] = typeClass;
   }
 
   /**
@@ -125,7 +117,7 @@ export default class SchemaManager {
   $getInstanceByFullPath(fullPath) {
     // It rise an error if path doesn't consist with schema
     const schema = this.get(fullPath);
-    const instance = new registeredTypes[schema.type](this._main);
+    const instance = new this._registeredTypes[schema.type](this._main);
 
     // It's need for creating collection child
     instance.$init(fullPath);

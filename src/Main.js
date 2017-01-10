@@ -5,6 +5,12 @@ import SchemaManager from './SchemaManager';
 import State from './State';
 import Config from './Config';
 
+import PagedCollection from './types/PagedCollection';
+import Collection from './types/Collection';
+import Container from './types/Container';
+import Document from './types/Document';
+import DocumentsCollection from './types/DocumentsCollection';
+
 export default class Main {
   constructor(config, schema) {
     const configInstance = new Config(config);
@@ -19,6 +25,12 @@ export default class Main {
     // initialize
     this.$$schemaManager.init(schema, this);
     this.$$state.init(this, this.$$storage);
+
+    this.$$schemaManager.registerType('pagedCollection', PagedCollection);
+    this.$$schemaManager.registerType('collection', Collection);
+    this.$$schemaManager.registerType('container', Container);
+    this.$$schemaManager.registerType('document', Document);
+    this.$$schemaManager.registerType('documentsCollection', DocumentsCollection);
   }
 
   /**
@@ -55,4 +67,9 @@ export default class Main {
   offAnyUpdate(handler) {
     this.$$state.offAnyUpdate(handler);
   }
+
+  registerType(typeName, typeClass) {
+    this.$$schemaManager.registerType(typeName, typeClass);
+  }
+
 }
