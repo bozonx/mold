@@ -63,7 +63,7 @@ export default class SchemaManager {
   }
 
   /**
-   * Get type instance
+   * Get instance of type
    * @param {string} path - absolute path or relative if context is used
    * @param {object} context - instance of root element
    * @returns {object|undefined} - instance of type
