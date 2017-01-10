@@ -67,19 +67,48 @@ export default class PagedCollection extends _TypeBase {
 
 
   /**
-   * Get instance of child
-   * @param path
+   * Get instance of element. (not page!).
+   * @param {string} primaryId - id of element, like '[0]'
    * @returns {Object}
    */
-  $getChildInstance(path, restOfPath) {
-    const primaryIdOrSubPath = path;
+  $getChildInstance(primaryId, restOfPath) {
+    // TODO: всегда отдаем элемент!!!!
+    // TODO: все элементы будут иметь путь без учета страницы
+
+    if (!primaryId) return;
+
+    const primaryIdNumber = parseInt(primaryId.replace(/\[(\d+)]/, '$1'));
+
+    const items = this.getFlat();
+    let fullChildPath;
+
+    // if (_.isEmpty(items)) {
+    //
+    // }
+    // else {
+    //   const finded = _.find(items, (item) => {
+    //     // TODO: get primary name
+    //     return item.id === primaryIdNumber;
+    //   });
+    //
+    //   // TODO: если нет элемента, то создаем новый
+    //   if (!finded) return;
+    //
+    //   //fullChildPath = concatPath(this._moldPath, `[${finded.$pageIndex}][${finded.$index}]`);
+    // }
+
+    fullChildPath = concatPath(this._moldPath, primaryId);
+
+    const fullSchemaPath = concatPath(this._moldPath, 'item.item');
 
 
-    const childPath = getFirstChildPath(primaryIdOrSubPath);
-    const fullChildPath = concatPath(this._moldPath, childPath);
+    console.log(8888888, primaryId, primaryIdNumber, items, fullChildPath, fullSchemaPath)
+
+    // const childPath = getFirstChildPath(primaryIdOrSubPath);
+    // const fullChildPath = concatPath(this._moldPath, childPath);
 
     // get container instance
-    return this._main.$$schemaManager.$getInstanceByFullPath(fullChildPath);
+    return this._main.$$schemaManager.$getInstanceByFullPath22222(fullChildPath, fullSchemaPath);
 
 
     // console.log(3333333, path)

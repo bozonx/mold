@@ -7,9 +7,11 @@ describe 'Integration.', ->
         documentsCollection:
           type: 'documentsCollection'
           item:
-            type: 'document'
-            schema:
-              id: {type: 'number', primary: true}
+            type: 'collection'
+            item:
+              type: 'document'
+              schema:
+                id: {type: 'number', primary: true}
 
       # TODO: use pouch
 

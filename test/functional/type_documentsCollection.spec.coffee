@@ -6,10 +6,12 @@ describe 'Functional. DocumentsCollection type.', ->
       documentsCollection:
         type: 'documentsCollection'
         item:
-          type: 'document'
-          schema:
-            id: {type: 'number', primary: true}
-            name: {type: 'string'}
+          type: 'collection'
+          item:
+            type: 'document'
+            schema:
+              id: {type: 'number', primary: true}
+              name: {type: 'string'}
     this.mold = mold( {silent: true}, this.testSchema() )
     this.documentsCollection = this.mold.child('documentsCollection')
 

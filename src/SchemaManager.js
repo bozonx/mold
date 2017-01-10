@@ -36,9 +36,25 @@ export default class SchemaManager {
    * @returns {object} schema like {type, driver, params, schema}
    */
   get(path) {
+    // TODO: удалить
     if (path === '') return this.getFullSchema();
 
     const schemaPath = convertFromLodashToSchema(path);
+    const schema = _.get(this._schema, schemaPath);
+
+    if (_.isUndefined(schema)) this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
+
+    return schema;
+  }
+
+  /**
+   * get schema part by path
+   * @param {string} schemaPath - absolute path in schema format
+   * @returns {object} schema like {type, driver, params, schema}
+   */
+  getSchema(schemaPath) {
+    if (schemaPath === '') return this.getFullSchema();
+
     const schema = _.get(this._schema, schemaPath);
 
     if (_.isUndefined(schema)) this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
@@ -106,8 +122,6 @@ export default class SchemaManager {
       if (childPathParts.length === 0) return rootInstance;
     }
 
-    console.log(22222222222, fullMoldPath, path, childPathParts)
-
     const result = this._findInstance(childPathParts, rootInstance);
 
     if (result) return result;
@@ -123,9 +137,22 @@ export default class SchemaManager {
     // It rise an error if path doesn't consist with schema
     const schema = this.get(fullPath);
     const instance = new this._registeredTypes[schema.type](this._main);
-
     // It's need for creating collection child
     instance.$init(fullPath);
+
+    return instance;
+  }
+
+  /**
+   * It just returns an instance
+   * @param fullMoldPath
+   * @param fullSchemaPath
+   */
+  $getInstanceByFullPath22222(fullMoldPath, fullSchemaPath) {
+    // It rise an error if path doesn't consist with schema
+    const schema = this.getSchema(fullSchemaPath);
+    const instance = new this._registeredTypes[schema.type](this._main);
+    instance.$init(fullMoldPath, fullSchemaPath);
 
     return instance;
   }
@@ -136,8 +163,6 @@ export default class SchemaManager {
     _.each(pathParts, (currentPathPiece, index) => {
       const restOfPath = joinPath(pathParts.slice(index + 1));
 
-      console.log(333333, index, pathParts.length)
-
       if (index === pathParts.length - 1) {
         // the last part of path
         result = currentInstance.$getChildInstance(currentPathPiece, restOfPath);
@@ -145,18 +170,10 @@ export default class SchemaManager {
       else {
         // not last
 
-
-
         if (!currentInstance.$getChildInstance)
           this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
 
-        console.log(444444444, index, currentPathPiece, currentInstance.type)
-
-
         currentInstance = currentInstance.$getChildInstance(currentPathPiece, restOfPath);
-
-        console.log(55555555555)
-
       }
     });
     return result;
