@@ -161,6 +161,20 @@ export function findTheClosestParentPath(path, assoc) {
   });
 }
 
+export function getFirstChildPath(path) {
+  if (_.isNumber(path)) return `[${path}]`;
+  if (!path || !_.isString(path)) return '';
+
+  const pathSplit = path.split('.');
+  return pathSplit[0];
+}
+
+export function splitPath(moldPath) {
+  // ff[1][3] = > ff.[1].[2] => ['ff', '[1]', [2]]
+  let pathParts = moldPath.replace(/\[/g, '.[');
+  return pathParts.split('.');
+}
+
 
 
 // export function getUniqPartOfPaths(paths) {

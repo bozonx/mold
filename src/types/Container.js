@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { concatPath } from '../helpers';
+import { concatPath, getFirstChildPath } from '../helpers';
 import _TypeBase from './_TypeBase';
 
 
@@ -23,7 +23,15 @@ export default class Container extends _TypeBase{
    * @returns {object} - instance of child
    */
   child(path) {
-    this._main.child(path, this);
+    return this._main.child(path, this);
+  }
+
+  $getChildInstance(primaryIdOrSubPath) {
+    const childPath = getFirstChildPath(primaryIdOrSubPath);
+    const fullChildPath = concatPath(this._moldPath, childPath);
+
+    // get container instance
+    return this._main.$$schemaManager.$getInstanceByFullPath(fullChildPath);
   }
 
   update(newState) {

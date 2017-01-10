@@ -36,7 +36,7 @@ export default class PagedCollection extends _TypeBase {
    * @returns {object} - instance of child
    */
   child(path) {
-    this._main.child(path, this);
+    return this._main.child(path, this);
   }
 
   // child(path) {
@@ -63,6 +63,7 @@ export default class PagedCollection extends _TypeBase {
   //   //
   //   // return instance;
   // }
+
 
 
   /**
