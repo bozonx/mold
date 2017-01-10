@@ -7,7 +7,7 @@ import Document from './types/Document';
 import DocumentsCollection from './types/DocumentsCollection';
 import { convertFromLodashToSchema, convertFromSchemaToLodash, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
-import { eachSchema, concatPath } from './helpers';
+import { eachSchema, concatPath, splitPath } from './helpers';
 
 const registeredTypes = {
   pagedCollection: PagedCollection,
@@ -66,44 +66,48 @@ export default class SchemaManager {
    * Get type instance
    * @param {string} path - absolute path or relative if context is used
    * @param {object} context - instance of root element
-   * @returns {object} - instance of type
+   * @returns {object|undefined} - instance of type
    */
-  getInstance(path, context) {
-    let contextMoldPath = '';
-    let fullMoldPath = path;
+  getInstance(path, context=undefined) {
+    if (!_.isString(path)) this._main.$$log.fatal(`You must pass a path argument.`);
+    if (!path && !context) this._main.$$log.fatal(`Path is empty.`);
+
+    let rootInstance;
+    let pathParts;
+    let fullMoldPath;
     if (context) {
-      contextMoldPath = context.root;
-      fullMoldPath = concatPath(contextMoldPath, path);
+      fullMoldPath = concatPath(context.root, path);
+      pathParts = splitPath(fullMoldPath);
+      rootInstance = context;
+    }
+    else {
+      fullMoldPath = path;
+      pathParts = splitPath(fullMoldPath);
+      rootInstance = this.$getInstanceByFullPath(pathParts[0]);
     }
 
-    if (!_.isString(path))
-      this._main.$$log.fatal(`You must pass a path argument.`);
+    if (pathParts.length === 1) {
+      return rootInstance;
+    }
 
-    if (!path) this._main.$$log.fatal(`Path is empty.`);
+    const result = this._findInstance(pathParts.slice(1), rootInstance);
 
-    // TODO: наверное разбить ещё и [0]
-    const pathParts = path.split('.');
-    let instance = null;
+    if (result) return result;
 
-    let currentPathPart = contextMoldPath;
-    _.each(pathParts, (pathPart) => {
-      currentPathPart = concatPath(currentPathPart, pathPart);
+    this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
+  }
 
-      // It rise an error if path doesn't consist with schema
-      const schema = this.get(currentPathPart);
-      instance = new registeredTypes[schema.type](this._main);
+  /**
+   * It just returns an instance
+   * @param fullPath
+   */
+  $getInstanceByFullPath(fullPath) {
+    // It rise an error if path doesn't consist with schema
+    const schema = this.get(fullPath);
+    const instance = new registeredTypes[schema.type](this._main);
 
-      // It's need for creating collection child
-      instance.$init(currentPathPart);
-
-      if (!instance.$getChildInstance) this._main.$$log.fatal(`Instance doesn't have getChildInstance method.`);
-
-      console.log(111111111, currentPathPart, pathPart)
-
-      // TODO: поддержка [0][0] in pathPart
-      // TODO: может наверное нужно давать всю оставнуюся часть пути
-      instance.$getChildInstance(pathPart);
-    });
+    // It's need for creating collection child
+    instance.$init(fullPath);
 
     return instance;
   }
@@ -156,6 +160,54 @@ export default class SchemaManager {
       this._main.$$log.fatal(`You must pass the moldPath argument!`);
 
     return getTheBestMatchPath(moldPath, _.keys(this._drivers));
+  }
+
+  _findInstance(pathParts, rootInstance) {
+    let instance = rootInstance;
+    let result = null;
+    //let currentPathPart = '';
+
+    // получаем первый инстанс корня
+    // далее у него спрашиваем в цикле потомка
+    // у следующего потомка спрашиваем его потомка
+    // последний потомок и будет результатом
+    // если результата нет - ошибка
+
+
+    // TODO: refactor - use reduce
+    // iterate each path part
+
+
+    _.each(pathParts, (pathPart, index) => {
+      // combined path to current iteration
+      //currentPathPart = concatPath(currentPathPart, pathPart);
+      // save instance
+      //instances[index] = this.$getInstanceByFullPath(currentPathPart);
+
+      console.log(2222222222, pathPart)
+
+      // TODO: нужно давать всю оставнуюся часть пути
+
+      const child = instance.$getChildInstance(pathPart);
+
+      console.log(3333333, child.root)
+
+
+      if (index === pathParts.length - 1) {
+        // the last path part
+        result = child;
+      }
+
+      if (!instance.$getChildInstance) {
+        // TODO: !!!!! ошибка если не достигнут конец массмва путей
+        return;
+      }
+
+      instance = child;
+    });
+
+    console.log(111111112, result && result.root, result && result.type)
+    return result;
   }
 
   _checkSchema(rawSchema) {
