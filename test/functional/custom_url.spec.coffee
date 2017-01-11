@@ -31,7 +31,6 @@ describe 'Functional. Url.', ->
         url: 'collection/0'
         method: 'get'
         moldPath: 'details'
-        nodeType: 'container'
 
   it 'document.put()', (done) ->
     document = this.mold.child('details');

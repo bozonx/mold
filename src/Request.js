@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { findPrimary, getSchemaBaseType, convertFromLodashToUrl } from './helpers';
+import { findPrimary, convertFromLodashToUrl } from './helpers';
 
 export default class Request {
   constructor(main) {
@@ -72,8 +72,6 @@ export default class Request {
       meta,
       url: '',
       primaryKeyName: schema.item && findPrimary(schema.item),
-      // One of: container or collection
-      nodeType: getSchemaBaseType(schema.type),
     };
     request.url = this._prepareUrl(schema.url, urlParams, request, driverRoot);
 

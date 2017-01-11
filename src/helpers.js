@@ -125,28 +125,6 @@ export function concatPath(root, relativePath) {
   return _.trim(`${root}.${relativePath}`, '.');
 }
 
-export function getSchemaBaseType(schemaType) {
-  if (schemaType == 'container') {
-    return 'container';
-  }
-  if (schemaType == 'document') {
-    return 'container';
-  }
-  else if (schemaType == 'pagedCollection') {
-    return 'collection';
-  }
-  else if (schemaType == 'collection') {
-    return 'collection';
-  }
-  else if (schemaType == 'documentsCollection') {
-    return 'collection';
-  }
-  // TODO: primitive doesn't support
-  else if (_.includes(['boolean', 'string', 'number', 'array'], schemaType)) {
-    return 'primitive';
-  }
-}
-
 export function findTheClosestParentPath(path, assoc) {
   // TODO: нужна ли поддержка lodash array format???
 

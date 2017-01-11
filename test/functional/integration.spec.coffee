@@ -33,7 +33,6 @@ describe 'Integration.', ->
         expect(promise).to.eventually.property('body').deep.equal({id: 0}),
         expect(promise).to.eventually.property('request').deep.equal({
           method: 'get',
-          nodeType: 'container',
           moldPath: 'documentsCollection[0]',
           url: 'documentsCollection/0',
         }),

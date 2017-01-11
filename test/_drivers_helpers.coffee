@@ -31,7 +31,7 @@ module.exports =
       stringParam: 'newValue'
       numberParam: 5
       arrayParam: ['value1']
-    request = generateRequest(pathToDoc, 'get', {nodeType: 'container'})
+    request = generateRequest(pathToDoc, 'get', {})
 
     document = mold.child(pathToDoc)
     document.update(payload)
@@ -57,7 +57,7 @@ module.exports =
       stringParam: 'newValue'
       numberParam: 5
       arrayParam: ['value1']
-    request = generateRequest(pathToDoc, 'put', {nodeType: 'container', payload: payload})
+    request = generateRequest(pathToDoc, 'put', {payload: payload})
     document = mold.child(pathToDoc)
 
     promise = cleanPromise( document.put(payload) )
@@ -74,7 +74,7 @@ module.exports =
       arrayParam: ['value3']
     resultData = _.defaults(_.clone(updatedData), firstData)
     document = mold.child(pathToDoc)
-    request = generateRequest(pathToDoc, 'patch', {nodeType: 'container', payload: updatedData})
+    request = generateRequest(pathToDoc, 'patch', {payload: updatedData})
 
     expect(document.put(firstData)).to.eventually.notify =>
       promise = cleanPromise( document.patch(updatedData) )
@@ -86,7 +86,7 @@ module.exports =
     payload =
       name: 'value'
     request = generateRequest(pathToDocColl, 'create', {
-      nodeType: 'collection', payload: payload, primaryKeyName: 'id'})
+      payload: payload, primaryKeyName: 'id'})
 
     promise = cleanPromise( collection.create(payload) )
     expect(promise).to.eventually.deep.equal({body: {name: 'value'}, request: request}).notify(done)
@@ -101,7 +101,7 @@ module.exports =
     expect(collection.create(item1)).to.eventually.notify =>
       expect(collection.create(item2)).to.eventually.notify =>
         request = generateRequest(pathToDocColl, 'delete', {
-          nodeType: 'collection', primaryKeyName: 'id', payload: {id: collection.mold[0][0].id}})
+          primaryKeyName: 'id', payload: {id: collection.mold[0][0].id}})
         deletePromise = collection.remove(_.pick(collection.mold[0][0], 'id', '$pageIndex', '$index'))
         expect(deletePromise).to.eventually.notify =>
           loadPromise = cleanPromise( collection.load(0) )
@@ -138,7 +138,7 @@ module.exports =
     collection = mold.child(pathToDocColl)
     collection.perPage = 2
     request = generateRequest(pathToDocColl, 'filter', {
-      nodeType: 'collection', primaryKeyName: 'id'
+      primaryKeyName: 'id'
       meta: {
         pageNum: 1,
         perPage: 2,
