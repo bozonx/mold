@@ -58,10 +58,6 @@ export default class PagedCollection extends _TypeBase {
       storage = concatPath(this._storagePath, `[${finded.$pageIndex}][${finded.$index}]`)
     }
 
-    // TODO: mold пустой почему-то
-
-    //console.log(33333, items, primaryIdNumber, finded, storage, this._mold, this._main.$$state._storage._storage)
-
     return {
       mold: concatPath(this._moldPath, primaryId),
       schema: concatPath(convertFromLodashToSchema(this._moldPath), 'item.item'),
@@ -81,9 +77,6 @@ export default class PagedCollection extends _TypeBase {
     const paths = this.$getChildPaths(primaryId);
 
     if (!paths.storage) return;
-
-    console.log(5555555, paths)
-
 
     return this._main.$$schemaManager.$getInstanceByFullPath(paths);
   }
