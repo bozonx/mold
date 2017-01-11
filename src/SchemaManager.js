@@ -82,7 +82,7 @@ export default class SchemaManager {
 
     let rootInstance;
     let childPathParts;
-    let fullMoldPath;
+    //let fullMoldPath;
 
     if (context) {
       // use received context
@@ -134,11 +134,9 @@ export default class SchemaManager {
     _.each(pathParts, (currentPathPiece, index) => {
       if (index === pathParts.length - 1) {
         // the last part of path
-        console.log(22222222, pathParts, currentPathPiece, currentInstance.root, currentInstance.type)
         result = currentInstance.$getChildInstance(currentPathPiece);
       }
       else {
-        console.log(1111111111, pathParts, currentPathPiece)
         // not last
         if (!currentInstance.$getChildInstance)
           this._main.$$log.fatal(`There is no method "$getChildInstance" of ${currentInstance.root}`);
@@ -168,8 +166,8 @@ export default class SchemaManager {
           this._main.$$log.fatal(`Schema definition of container on "${schemaPath}" must have a "schema" param!`);
       }
       else if (value.type == 'documentsCollection') {
-        if (!_.isPlainObject(value.item))
-          this._main.$$log.fatal(`Schema definition of documentsCollection on "${schemaPath}" must have an "item" param!`);
+        // if (!_.isPlainObject(value.item))
+        //   this._main.$$log.fatal(`Schema definition of documentsCollection on "${schemaPath}" must have an "item" param!`);
       }
       else if (value.type == 'pagedCollection') {
         if (!_.isPlainObject(value.item))

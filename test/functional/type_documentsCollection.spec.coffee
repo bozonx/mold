@@ -15,7 +15,21 @@ describe 'Functional. DocumentsCollection type.', ->
 
   # init, child and getFlat aren't testing here. It's testing in paged_collection spec
 
-  # TODO: documentsCollection может быть без item
+  it "without document", ->
+    schema = documentsCollection:
+      type: 'documentsCollection'
+
+    moldInstance = mold( {silent: true}, schema )
+    documentsCollection = moldInstance.child('documentsCollection')
+
+    items = [{id: 0}]
+    _.set(moldInstance.$$schemaManager.$defaultMemoryDb, 'documentsCollection', items)
+
+    expect(documentsCollection.load(0)).to.eventually.notify =>
+      expect(Promise.resolve(documentsCollection.mold)).to.eventually
+      .deep.equal([[{ id: 0, $index: 0, $pageIndex: 0 }]])
+      .notify(done)
+
 
   describe "load", ->
     beforeEach () ->

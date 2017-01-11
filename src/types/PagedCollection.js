@@ -31,6 +31,15 @@ export default class PagedCollection extends _TypeBase {
     this._moldPages = this._mold;
   }
 
+  getPage(pageNum) {
+    // получить экземпляр элемента - collection
+  }
+
+  getItem(primiryId) {
+    // получить экземпляр элемента - container
+    // TODO: сделать на основе ниже закомментированного кода
+  }
+
   // /**
   //  * Get instance of child
   //  * @param {string|number} primaryId - primary id like 0 or '[0]'
