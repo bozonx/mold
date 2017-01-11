@@ -4,7 +4,10 @@ import { concatPath } from '../helpers';
 import PagedCollection from './PagedCollection';
 
 
-export default class DocumentsCollection extends PagedCollection{
+export default class DocumentsCollection extends PagedCollection {
+  static validateSchema(schema, schemaPath) {
+  }
+
   constructor(main) {
     super(main);
   }

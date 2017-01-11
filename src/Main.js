@@ -31,6 +31,8 @@ export default class Main {
     this.$$schemaManager.registerType('container', Container);
     this.$$schemaManager.registerType('document', Document);
     this.$$schemaManager.registerType('documentsCollection', DocumentsCollection);
+
+    this.$$schemaManager.checkSchema();
   }
 
   /**

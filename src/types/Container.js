@@ -5,6 +5,11 @@ import _TypeBase from './_TypeBase';
 
 
 export default class Container extends _TypeBase{
+  static validateSchema(schema, schemaPath) {
+    if (!_.isPlainObject(schema.schema))
+      return `Schema definition of container on "${schemaPath}" must have a "schema" param!`;
+  }
+
   constructor(main) {
     super(main);
   }

@@ -4,6 +4,11 @@ import { correctUpdatePayload } from '../helpers';
 import Container from './Container';
 
 export default class Document extends Container{
+  static validateSchema(schema, schemaPath) {
+    if (!_.isPlainObject(schema.schema))
+      return `Schema definition of document on "${schemaPath}" must have a "schema" param!`;
+  }
+
   constructor(main) {
     super(main);
 

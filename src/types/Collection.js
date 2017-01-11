@@ -6,6 +6,11 @@ import { concatPath, getFirstChildPath } from '../helpers';
 import _TypeBase from './_TypeBase';
 
 export default class Collection extends _TypeBase {
+  static validateSchema(schema, schemaPath) {
+    // if (!_.isPlainObject(schema.item))
+    //   return `Schema definition of collection on "${schemaPath}" must have an "item" param!`;
+  }
+
   constructor(main) {
     super(main);
   }

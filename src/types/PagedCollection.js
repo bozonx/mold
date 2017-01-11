@@ -5,6 +5,11 @@ import { concatPath, convertFromLodashToSchema } from '../helpers';
 import _TypeBase from './_TypeBase';
 
 export default class PagedCollection extends _TypeBase {
+  static validateSchema(schema, schemaPath) {
+    // if (!_.isPlainObject(schema.item))
+    //   return `Schema definition of pagedCollection on "${schemaPath}" must have an "item" param!`;
+  }
+
   constructor(main) {
     super(main);
 
