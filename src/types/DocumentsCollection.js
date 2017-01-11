@@ -162,7 +162,7 @@ export default class DocumentsCollection extends PagedCollection{
    * @param {object} metaParams
    * @returns {Promise}
    */
-  deleteDocument(documentMold, metaParams=undefined) {
+  remove(documentMold, metaParams=undefined) {
     // console.log(1111, documentMold)
     //
     // const document = this.child(`[${documentMold.$pageIndex}][${documentMold.$index}]`);

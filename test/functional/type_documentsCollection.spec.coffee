@@ -113,20 +113,20 @@ describe 'Functional. DocumentsCollection type.', ->
         ]])
         .notify(done)
 
-  describe "deleteDocument", ->
+  describe "remove", ->
     beforeEach () ->
       this.doc = {id: 0, name: 'a', $index: 0}
 
     it "check response", (done) ->
       expect(this.documentsCollection.create(this.doc)).to.eventually.notify =>
-        promise = this.documentsCollection.deleteDocument(this.doc)
+        promise = this.documentsCollection.remove(this.doc)
         expect(promise).to.eventually.property('body').equal(undefined)
         .notify(done)
 
     it "check mold", (done) ->
       this.documentsCollection.unshift(this.doc)
       expect(this.documentsCollection.create(this.doc)).to.eventually.notify =>
-        promise = this.documentsCollection.deleteDocument(this.doc)
+        promise = this.documentsCollection.remove(this.doc)
 
         assert.isTrue(this.doc.$deleting)
         expect(promise).to.eventually.notify =>
