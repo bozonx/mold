@@ -39,32 +39,19 @@ export default class PagedCollection extends _TypeBase {
     return this._main.child(path, this);
   }
 
-  // child(path) {
-  //   if (!_.isString(path) || !_.isNumber(path))
-  //     this._main.$$log.fatal(`You must pass a path argument.`);
-  //
-  //
-  //
-  //   // !!!! мы не знаем на какой страницу находится элемента
-  //   // ОТДАВАТЬ ЭЛЕМЕНТ А НЕ СТРАНИЦУ
-  //   // должен работать с любым путем, можно получить потомка любой глубины
-  //
-  //
-  //
-  //   // if (!_.isNumber(pageNum)) throw new Error(`The pageNum must be type of number!`);
-  //   //
-  //   // if (_.isUndefined(this.mold[pageNum])) return undefined;
-  //   //
-  //   // var pathToChild = concatPath(this._root, pageNum);
-  //   // // get container instance
-  //   // var instance = this._main.$$schemaManager.getInstance(pathToChild);
-  //   // // reinit container instance with correct path
-  //   // instance.$init(pathToChild);
-  //   //
-  //   // return instance;
-  // }
-
-
+  /**
+   * Get paths of child of first level.
+   * @param {string} primaryId
+   * @returns {{mold: string, schema: string, storage: string}}
+   */
+  $getChildPaths(primaryId) {
+    return {
+      mold: concatPath(this._moldPath, primaryId),
+      schema: concatPath(convertFromLodashToSchema(this._moldPath), 'item.item'),
+      // TODO: !!!!! проверить
+      storage: concatPath(this._storagePath, primaryId),
+    }
+  }
 
   /**
    * Get instance of element. (not page!).
@@ -75,71 +62,11 @@ export default class PagedCollection extends _TypeBase {
     if (!primaryId || !_.isString(primaryId)) return;
     if (!primaryId.match(/^\[\d+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
 
-    const items = this.getFlat();
-    const fullChildMoldPath = concatPath(this._moldPath, primaryId);
-    const fullChildSchemaPath = concatPath(convertFromLodashToSchema(this._moldPath), 'item.item');
+    const paths = this.$getChildPaths(primaryId);
 
-    console.log(8888888, primaryId, items, fullChildMoldPath, fullChildSchemaPath)
+    console.log(8888888, primaryId, paths)
 
-    return this._main.$$schemaManager.$getInstanceByFullPath(fullChildMoldPath, fullChildSchemaPath);
-
-
-
-
-
-
-    //const primaryIdNumber = parseInt(primaryId.replace(/\[(\d+)]/, '$1'));
-
-
-    // if (_.isEmpty(items)) {
-    //
-    // }
-    // else {
-    //   const finded = _.find(items, (item) => {
-    //     // TODO: get primary name
-    //     return item.id === primaryIdNumber;
-    //   });
-    //
-    //   // TODO: если нет элемента, то создаем новый
-    //   if (!finded) return;
-    //
-    //   //fullChildPath = concatPath(this._moldPath, `[${finded.$pageIndex}][${finded.$index}]`);
-    // }
-
-
-    // TODO: надо самим взять инстанс коллекции и у неё взять документ
-
-
-
-
-    // const childPath = getFirstChildPath(primaryIdOrSubPath);
-    // const fullChildPath = concatPath(this._moldPath, childPath);
-
-    // get container instance
-
-
-    // console.log(3333333, path)
-    //
-    // // TODO: если не передан index - то отдавать страницу, если страницы нет, то undefined
-    //
-    // // TODO: add it to paged collection
-    // if (!_.isNumber(pageNum)) this._main.$$log.fatal(`pageNum parameter has to be a number`);
-    //
-    // // get path to doc without page num
-    // const realPathToDoc = concatPath(concatPath(this._moldPath, pageNum), index);
-    // //const pathToDoc = concatPath(this._moldPath, index);
-    //
-    // console.log(2222, pathToDoc)
-    //
-    // //const document = this._main.child(pathToDoc);
-    //
-    // const document = this._main.$$schemaManager.getInstance(pathToDoc);
-    // // reinit container instance with correct path
-    // document.$init(pathToDoc);
-    //
-    // console.log(44444, document.mold)
-    //
-    // return document;
+    return this._main.$$schemaManager.$getInstanceByFullPath(paths.mold, paths.schema, paths.storage);
   }
 
   /**
@@ -250,23 +177,5 @@ export default class PagedCollection extends _TypeBase {
       this._main.$$state.setPage(this._moldPath, this._storagePath, [], pageNum);
     }
   }
-
-
-
-  // /**
-  //  * Add list of items. They will be spread to pages.
-  //  * @param items
-  //  */
-  // batchAdd(items) {
-  //   // TODO: test it
-  //   if (!_.isArray(items))
-  //     throw new Error(`You can add only items of array type!`);
-  //
-  //   // TODO: делать всё за одно изменение - должно подняться одно событие
-  // }
-  //
-  // batchRemove(items) {
-  //   // TODO: !!!!
-  // }
 
 }

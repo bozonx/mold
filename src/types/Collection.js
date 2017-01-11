@@ -29,6 +29,20 @@ export default class Collection extends _TypeBase {
   }
 
   /**
+   * Get paths of child of first level.
+   * @param {string} primaryId
+   * @returns {{mold: string, schema: string, storage: string}}
+   */
+  $getChildPaths(primaryId) {
+    return {
+      mold: concatPath(this._moldPath, primaryId),
+      schema: concatPath(this._schemaPath, 'item'),
+      storage: concatPath(this._storagePath, primaryId),
+    }
+  }
+
+
+  /**
    * Get instance of child of first level.
    * @param {string} primaryId - id of element, like '[0]'
    * @returns {*}
@@ -37,12 +51,9 @@ export default class Collection extends _TypeBase {
     if (!primaryId || !_.isString(primaryId)) return;
     if (!primaryId.match(/^\[\d+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
 
-    const childPath = getFirstChildPath(primaryId);
-    const fullChildMoldPath = concatPath(this._moldPath, childPath);
-    const fullChildSchemaPath = concatPath(this._schemaPath, 'item');
+    const paths = this.$getChildPaths(primaryId);
 
-    // get container instance
-    return this._main.$$schemaManager.$getInstanceByFullPath(fullChildMoldPath, fullChildSchemaPath);
+    return this._main.$$schemaManager.$getInstanceByFullPath(paths.mold, paths.schema, paths.storage);
   }
 
   /**

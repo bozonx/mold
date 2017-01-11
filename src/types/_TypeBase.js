@@ -40,9 +40,11 @@ export default class _TypeBase {
   $init(moldPath, schemaPath, schema) {
     this._moldPath = moldPath;
     this._schemaPath = schemaPath;
-    this._storagePath = this._storagePath || moldPath;
-    //this._schema = this._main.$$schemaManager.get(this._moldPath);
     this._schema = schema;
+    this._storagePath = this._storagePath || moldPath;
+
+    console.log(222222222, moldPath, schemaPath, this._storagePath)
+
     // mold is just a link to the storage
     if (!this._mold) this._mold = this._main.$$state.getMold(this._storagePath);
   }
