@@ -18,16 +18,17 @@ export default class DocumentsCollection extends PagedCollection{
   }
 
   $init(paths, schema) {
-    // TODO: может это должно устанавливаться у родителя, а может вообще у потомка????
     this._storagePath = paths.mold + '.pages';
-    this._mold = this._main.$$state.getMold(paths.mold);
-    super.$init(paths, schema);
-    this._moldPages = this._mold.pages;
 
-    this._mold.state = {
+    super.$init(paths, schema);
+
+    this._storageData = this._main.$$state.getMold(paths.mold);
+    this._moldPages = this._storageData.pages;
+
+    this._storageData.state = {
       loading: [],
     };
-    this._loading = this._mold.state.loading;
+    this._loading = this._storageData.state.loading;
   }
 
   getUrlParams() {

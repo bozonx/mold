@@ -30,7 +30,7 @@ describe 'Functional. DocumentsCollection type.', ->
     it 'load(page) - check mold', (done) ->
       expect(this.documentsCollection.load(0)).to.eventually.notify =>
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
-        .property('pages').deep.equal([[{ id: 0, $index: 0, $pageIndex: 0 }]])
+        .deep.equal([[{ id: 0, $index: 0, $pageIndex: 0 }]])
         .notify(done)
 
     it 'load(1) - load second page', (done) ->
@@ -41,7 +41,7 @@ describe 'Functional. DocumentsCollection type.', ->
 
       expect(this.documentsCollection.load(1)).to.eventually.notify =>
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
-        .property('pages').property(1).deep.equal([
+        .property(1).deep.equal([
           { id: 2, $index: 0, $pageIndex: 1 },
           { id: 3, $index: 1, $pageIndex: 1 },
         ])
@@ -88,7 +88,7 @@ describe 'Functional. DocumentsCollection type.', ->
         assert.isUndefined(this.newDoc.$addedUnsaved)
         assert.isUndefined(this.newDoc.$adding)
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
-        .property('pages').deep.equal([[
+        .deep.equal([[
           {
             $pageIndex: 0,
             $saving: false,
@@ -118,5 +118,5 @@ describe 'Functional. DocumentsCollection type.', ->
         expect(promise).to.eventually.notify =>
           assert.isFalse(this.doc.$deleting)
           expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
-            .property('pages').deep.equal([[]])
+            .deep.equal([[]])
             .notify(done)
