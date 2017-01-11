@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { convertFromLodashToSchema, convertFromSchemaToLodash, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
-import { eachSchema, concatPath, splitPath, joinPath } from './helpers';
+import { eachSchema, concatPath, splitPath } from './helpers';
 
 /**
  * It's schema manager
@@ -37,14 +37,7 @@ export default class SchemaManager {
    */
   getSchema(schemaPath) {
     if (schemaPath === '') return this.getFullSchema();
-
-    // let schemaPath = moldOrSchemaPath;
-    // if (!moldOrSchemaPath.match(/\.(schema|item)/)) {
-    //   schemaPath = convertFromLodashToSchema(moldOrSchemaPath);
-    // }
-
     const schema = _.get(this._schema, schemaPath);
-
     if (_.isUndefined(schema)) this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
 
     return schema;
@@ -142,9 +135,8 @@ export default class SchemaManager {
       }
       else {
         // not last
-
         if (!currentInstance.$getChildInstance)
-          this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
+          this._main.$$log.fatal(`There is no method "$getChildInstance" of ${currentInstance.root}`);
 
         currentInstance = currentInstance.$getChildInstance(currentPathPiece);
       }
