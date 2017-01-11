@@ -22,13 +22,11 @@ describe 'Functional. Child.', ->
       [this.doc]
     ])
 
-  it "child( 'container.documentsCollection[0][0]' )", ->
-    moldPath = 'container.documentsCollection[0][0]'
+  it "child( 'container.documentsCollection[0]' )", ->
+    moldPath = 'container.documentsCollection[0]'
     document = this.mold.child(moldPath)
 
-
-
     assert.deepEqual(document.schema, this.testSchema.container.schema.documentsCollection.item.item)
-    #assert.deepEqual(document.mold, this.doc)
-    #assert.equal(document._storagePath)
+    assert.equal(document._schemaPath, 'container.schema.documentsCollection.item.item')
     assert.equal(document.root, moldPath)
+    assert.deepEqual(document.mold, this.doc)
