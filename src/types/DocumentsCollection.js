@@ -59,7 +59,7 @@ export default class DocumentsCollection extends PagedCollection{
   $getChildPaths(primaryId) {
     return {
       mold: concatPath(this._rootStoragePath, primaryId),
-      schema: concatPath(this._schemaPath, 'item.item'),
+      schema: concatPath(this._schemaPath, 'item'),
       storage: concatPath(this._moldPath, concatPath('documents', primaryId)),
     }
   }

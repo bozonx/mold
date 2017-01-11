@@ -17,13 +17,11 @@ testSchema = (memory) ->
       documentsCollection:
         type: 'documentsCollection'
         item:
-          type: 'collection'
-          item:
-            type: 'document'
-            schema:
-              id: {type: 'number', primary: true}
-              name: {type: 'string'}
-              created: {type: 'number'}
+          type: 'document'
+          schema:
+            id: {type: 'number', primary: true}
+            name: {type: 'string'}
+            created: {type: 'number'}
 
 describe 'Functional. Memory driver.', ->
   beforeEach ->

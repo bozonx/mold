@@ -7,11 +7,9 @@ describe 'Integration.', ->
         documentsCollection:
           type: 'documentsCollection'
           item:
-            type: 'collection'
-            item:
-              type: 'document'
-              schema:
-                id: {type: 'number', primary: true}
+            type: 'document'
+            schema:
+              id: {type: 'number', primary: true}
 
       # TODO: use pouch
 
@@ -24,7 +22,7 @@ describe 'Integration.', ->
 
     it 'document empty instance', ->
       assert.equal(this.document.root, 'documentsCollection[0]')
-      assert.equal(this.document._schemaPath, 'documentsCollection.item.item')
+      assert.equal(this.document._schemaPath, 'documentsCollection.item')
       assert.equal(this.document._storagePath, 'documentsCollection.documents[0]')
       assert.deepEqual(this.document.mold, {})
 
