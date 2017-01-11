@@ -17,8 +17,8 @@ describe 'Functional. Child.', ->
 
     this.testSchema = testSchema()
     this.mold = mold( {silent: true}, this.testSchema )
-    this.doc = {id: 0}
-    _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'container.documentsCollection', [
+    this.doc = {id: 0, $pageIndex: 0, $index: 0}
+    _.set(this.mold.$$state._storage._storage, 'container.documentsCollection.pages', [
       [this.doc]
     ])
 

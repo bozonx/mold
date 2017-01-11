@@ -20,6 +20,9 @@ describe 'Integration.', ->
       _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', [
         {id: 0}
       ])
+      _.set(this.mold.$$state._storage._storage, 'documentsCollection.pages', [
+        {id: 0, $pageIndex: 0, $index: 0}
+      ])
       this.document = this.mold.child('documentsCollection[0]')
 
     it 'document instance', ->

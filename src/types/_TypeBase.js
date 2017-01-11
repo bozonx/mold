@@ -43,6 +43,7 @@ export default class _TypeBase {
     this._storagePath = this._storagePath || paths.storage;
     this._schema = schema;
     // mold is just a link to the storage
+    console.log(66666666, this._mold, this._storagePath, JSON.stringify(this._main.$$state._storage._storage), this._main.$$state.getMold(this._storagePath))
     this._mold = this._mold || this._main.$$state.getMold(this._storagePath);
   }
 

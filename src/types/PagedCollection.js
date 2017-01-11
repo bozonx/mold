@@ -27,6 +27,7 @@ export default class PagedCollection extends _TypeBase {
 
   $init(paths, schema) {
     super.$init(paths, schema);
+    // TODO: впринципе можно использовать _mold внесто _moldPages
     this._moldPages = this._mold;
   }
 
@@ -46,7 +47,7 @@ export default class PagedCollection extends _TypeBase {
    * @returns {{mold: string, schema: string, storage: string|undefined}}
    */
   $getChildPaths(primaryId) {
-    const items = this.getFlat();
+    const items = _.flatMap(_.cloneDeep(this._moldPages));
     const primaryIdNumber = parseInt(primaryId.replace(/\[(\d+)]/, '$1'));
     const finded = _.find(items, (item) => {
       return item.id === primaryIdNumber;
@@ -59,7 +60,7 @@ export default class PagedCollection extends _TypeBase {
 
     // TODO: mold пустой почему-то
 
-    console.log(33333, items, primaryIdNumber, finded, storage, this._mold, this._moldPages)
+    //console.log(33333, items, primaryIdNumber, finded, storage, this._mold, this._main.$$state._storage._storage)
 
     return {
       mold: concatPath(this._moldPath, primaryId),
@@ -80,6 +81,9 @@ export default class PagedCollection extends _TypeBase {
     const paths = this.$getChildPaths(primaryId);
 
     if (!paths.storage) return;
+
+    console.log(5555555, paths)
+
 
     return this._main.$$schemaManager.$getInstanceByFullPath(paths);
   }

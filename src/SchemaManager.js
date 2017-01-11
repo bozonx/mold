@@ -85,17 +85,18 @@ export default class SchemaManager {
     let fullMoldPath;
 
     if (context) {
+      // use received context
       if (!path) return context;
 
-      // use received context
-      fullMoldPath = concatPath(context.root, path);
+      //fullMoldPath = concatPath(context.root, path);
       childPathParts = splitPath(path);
       rootInstance = context;
     }
     else {
       // use instance of first level of path
-      fullMoldPath = path;
-      const pathParts = splitPath(fullMoldPath);
+
+      //fullMoldPath = path;
+      const pathParts = splitPath(path);
       childPathParts = pathParts.slice(1);
       rootInstance = this.$getInstanceByFullPath({
         mold: pathParts[0],
@@ -107,11 +108,11 @@ export default class SchemaManager {
       if (childPathParts.length === 0) return rootInstance;
     }
 
-    //return this._findInstance(childPathParts, rootInstance);
+    return this._findInstance(childPathParts, rootInstance);
 
-    const result = this._findInstance(childPathParts, rootInstance);
-    if (result) return result;
-    this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
+    // const result = this._findInstance(childPathParts, rootInstance);
+    // if (result) return result;
+    // this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
   }
 
   /**
@@ -133,9 +134,11 @@ export default class SchemaManager {
     _.each(pathParts, (currentPathPiece, index) => {
       if (index === pathParts.length - 1) {
         // the last part of path
+        console.log(22222222, pathParts, currentPathPiece, currentInstance.root, currentInstance.type)
         result = currentInstance.$getChildInstance(currentPathPiece);
       }
       else {
+        console.log(1111111111, pathParts, currentPathPiece)
         // not last
         if (!currentInstance.$getChildInstance)
           this._main.$$log.fatal(`There is no method "$getChildInstance" of ${currentInstance.root}`);
