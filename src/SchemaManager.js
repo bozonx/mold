@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { convertFromLodashToSchema, convertFromSchemaToLodash, getTheBestMatchPath } from './helpers';
 import Memory from './drivers/Memory';
-import { eachSchema, concatPath, splitPath } from './helpers';
+import { eachSchema, splitPath } from './helpers';
 
 /**
  * It's schema manager
@@ -29,24 +29,25 @@ export default class SchemaManager {
   }
 
   /**
-   * get schema part by path
-   * @param {string} schemaPath - absolute mold or schema path
-   * @returns {object} schema like {type, driver, params, schema}
-   */
-  getSchema(schemaPath) {
-    if (schemaPath === '') return this.getFullSchema();
-    const schema = _.get(this._schema, schemaPath);
-    if (_.isUndefined(schema)) this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
-
-    return schema;
-  }
-
-  /**
    * Get full schema
    * @returns {object} schema
    */
   getFullSchema() {
     return this._schema;
+  }
+
+  /**
+   * get schema part by path
+   * @param {string} schemaPath - absolute mold or schema path
+   * @returns {object} schema part on path
+   */
+  getSchema(schemaPath) {
+    if (schemaPath === '') return this.getFullSchema();
+
+    const schema = _.get(this._schema, schemaPath);
+    if (_.isUndefined(schema)) this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
+
+    return schema;
   }
 
   /**
@@ -77,25 +78,22 @@ export default class SchemaManager {
   getInstance(path, context=undefined) {
     if (!_.isString(path)) this._main.$$log.fatal(`You must pass a path argument.`);
     if (!path && !context) this._main.$$log.fatal(`Path is empty.`);
+    if (!path && context) return context;
 
     let rootInstance;
     let childPathParts;
-    //let fullMoldPath;
 
     if (context) {
       // use received context
-      if (!path) return context;
-
-      //fullMoldPath = concatPath(context.root, path);
       childPathParts = splitPath(path);
       rootInstance = context;
     }
     else {
       // use instance of first level of path
-
-      //fullMoldPath = path;
       const pathParts = splitPath(path);
+      // get path parts after start from index of 1
       childPathParts = pathParts.slice(1);
+      // get root instance
       rootInstance = this.$getInstanceByFullPath({
         mold: pathParts[0],
         schema: convertFromLodashToSchema(pathParts[0]),
@@ -107,10 +105,6 @@ export default class SchemaManager {
     }
 
     return this._findInstance(childPathParts, rootInstance);
-
-    // const result = this._findInstance(childPathParts, rootInstance);
-    // if (result) return result;
-    // this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
   }
 
   /**
@@ -126,36 +120,15 @@ export default class SchemaManager {
     return instance;
   }
 
-  _findInstance(pathParts, rootInstance) {
-    let currentInstance = rootInstance;
-    let result = undefined;
-    _.each(pathParts, (currentPathPiece, index) => {
-      if (index === pathParts.length - 1) {
-        // the last part of path
-        result = currentInstance.$getChildInstance(currentPathPiece);
-      }
-      else {
-        // not last
-        if (!currentInstance.$getChildInstance)
-          this._main.$$log.fatal(`There is no method "$getChildInstance" of ${currentInstance.root}`);
-
-        currentInstance = currentInstance.$getChildInstance(currentPathPiece);
-      }
-    });
-    return result;
-  }
-
   checkSchema() {
-    // TODO: запускать метод у каждого типа
-    // Validate schema
     eachSchema(this._schema, (schemaPath, schema) => {
-      if (_.includes(
-          ['documentsCollection', 'document', 'container', 'collection'], schema.type)
-          && schema.driver) {
+      // init driver if it has set
+      if (schema.driver) {
         schema.driver.init(convertFromSchemaToLodash(schemaPath), this._main);
         this._drivers[schemaPath] = schema.driver;
       }
 
+      // schema validation
       if (this._registeredTypes[schema.type]) {
         if (this._registeredTypes[schema.type].validateSchema) {
           const result = this._registeredTypes[schema.type].validateSchema(schema, schemaPath);
@@ -166,5 +139,25 @@ export default class SchemaManager {
         this._main.$$log.fatal(`Unknown schema node ${JSON.stringify(schema)} !`);
       }
     });
+  }
+
+  _findInstance(pathParts, rootInstance) {
+    let currentInstance = rootInstance;
+    let result = undefined;
+    _.each(pathParts, (currentPathPiece, index) => {
+      if (index === pathParts.length - 1) {
+        // the last part of path
+        result = currentInstance.$getChildInstance(currentPathPiece);
+      }
+      else {
+        // not last
+        // all the parents have to implement of $getChildInstance method.
+        if (!currentInstance.$getChildInstance)
+          this._main.$$log.fatal(`There is no method "$getChildInstance" of ${currentInstance.root}`);
+
+        currentInstance = currentInstance.$getChildInstance(currentPathPiece);
+      }
+    });
+    return result;
   }
 }

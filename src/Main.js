@@ -26,6 +26,7 @@ export default class Main {
     this.$$schemaManager.init(schema, this);
     this.$$state.init(this, this.$$storage);
 
+    // register base types
     this.$$schemaManager.registerType('pagedCollection', PagedCollection);
     this.$$schemaManager.registerType('collection', Collection);
     this.$$schemaManager.registerType('container', Container);
