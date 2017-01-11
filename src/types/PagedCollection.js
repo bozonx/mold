@@ -25,8 +25,8 @@ export default class PagedCollection extends _TypeBase {
     return 'pagedCollection';
   }
 
-  $init(moldPath, schemaPath, schema) {
-    super.$init(moldPath, schemaPath, schema);
+  $init(paths, schema) {
+    super.$init(paths, schema);
     this._moldPages = this._mold;
   }
 
@@ -42,21 +42,33 @@ export default class PagedCollection extends _TypeBase {
   /**
    * Get paths of child of first level.
    * @param {string} primaryId
-   * @returns {{mold: string, schema: string, storage: string}}
+   * @returns {{mold: string, schema: string, storage: string|undefined}}
    */
   $getChildPaths(primaryId) {
+    const items = this.getFlat();
+    const primaryIdNumber = parseInt(primaryId.replace(/\[(\d+)]/, '$1'));
+    const finded = _.find(items, (item) => {
+      return item.id === primaryIdNumber;
+    });
+
+    let storage = undefined;
+    if (finded) {
+      storage = concatPath(this._storagePath, `[${finded.$pageIndex}][${finded.$index}]`)
+    }
+
+    console.log(33333, items, primaryIdNumber, finded, storage)
+
     return {
       mold: concatPath(this._moldPath, primaryId),
       schema: concatPath(convertFromLodashToSchema(this._moldPath), 'item.item'),
-      // TODO: !!!!! проверить - надо получить полный путь - найти на странице - [0][0]
-      storage: concatPath(this._storagePath, primaryId),
+      storage,
     }
   }
 
   /**
    * Get instance of element. (not page!).
    * @param {string} primaryId - id of element, like '[0]'
-   * @returns {Object|undefined}
+   * @returns {Object|undefined} - if undefined - it means not found.
    */
   $getChildInstance(primaryId) {
     if (!primaryId || !_.isString(primaryId)) return;
@@ -64,7 +76,7 @@ export default class PagedCollection extends _TypeBase {
 
     const paths = this.$getChildPaths(primaryId);
 
-    console.log(8888888, primaryId, paths)
+    if (!paths.storage) return;
 
     return this._main.$$schemaManager.$getInstanceByFullPath(paths);
   }

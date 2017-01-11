@@ -14,8 +14,8 @@ export default class Collection extends _TypeBase {
     return 'collection';
   }
 
-  $init(moldPath, schemaPath, schema) {
-    super.$init(moldPath, schemaPath, schema);
+  $init(paths, schema) {
+    super.$init(paths, schema);
   }
 
   /**
@@ -45,13 +45,15 @@ export default class Collection extends _TypeBase {
   /**
    * Get instance of child of first level.
    * @param {string} primaryId - id of element, like '[0]'
-   * @returns {*}
+   * @returns {Object|undefined} - if undefined - it means not found.
    */
   $getChildInstance(primaryId) {
     if (!primaryId || !_.isString(primaryId)) return;
     if (!primaryId.match(/^\[\d+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
 
     const paths = this.$getChildPaths(primaryId);
+
+    if (!paths.storage) return;
 
     return this._main.$$schemaManager.$getInstanceByFullPath(paths);
   }

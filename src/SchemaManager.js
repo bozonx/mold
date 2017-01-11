@@ -107,10 +107,10 @@ export default class SchemaManager {
       if (childPathParts.length === 0) return rootInstance;
     }
 
+    //return this._findInstance(childPathParts, rootInstance);
+
     const result = this._findInstance(childPathParts, rootInstance);
-
     if (result) return result;
-
     this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
   }
 
@@ -122,7 +122,7 @@ export default class SchemaManager {
     // It rise an error if path doesn't consist with schema
     const schema = this.getSchema(paths.schema);
     const instance = new this._registeredTypes[schema.type](this._main);
-    instance.$init(paths.mold, paths.schema, schema);
+    instance.$init(paths, schema);
 
     return instance;
   }

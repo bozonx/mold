@@ -17,10 +17,10 @@ export default class DocumentsCollection extends PagedCollection{
     return this._loading;
   }
 
-  $init(moldPath, schemaPath, schema) {
-    this._storagePath = moldPath + '.pages';
-    this._mold = this._main.$$state.getMold(moldPath);
-    super.$init(moldPath, schemaPath, schema);
+  $init(paths, schema) {
+    this._storagePath = paths.mold + '.pages';
+    this._mold = this._main.$$state.getMold(paths.mold);
+    super.$init(paths, schema);
     this._moldPages = this._mold.pages;
 
     this._mold.state = {

@@ -13,8 +13,8 @@ export default class Container extends _TypeBase{
     return 'container';
   }
 
-  $init(moldPath, schemaPath, schema) {
-    super.$init(moldPath, schemaPath, schema);
+  $init(paths, schema) {
+    super.$init(paths, schema);
   }
 
   /**

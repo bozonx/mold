@@ -37,13 +37,11 @@ export default class _TypeBase {
     return _.cloneDeep(this._mold);
   }
 
-  $init(moldPath, schemaPath, schema) {
-    this._moldPath = moldPath;
-    this._schemaPath = schemaPath;
+  $init(paths, schema) {
+    this._moldPath = paths.mold;
+    this._schemaPath = paths.schema;
     this._schema = schema;
-    this._storagePath = this._storagePath || moldPath;
-
-    console.log(222222222, moldPath, schemaPath, this._storagePath)
+    this._storagePath = this._storagePath || paths.mold;
 
     // mold is just a link to the storage
     if (!this._mold) this._mold = this._main.$$state.getMold(this._storagePath);
