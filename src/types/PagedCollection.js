@@ -31,55 +31,55 @@ export default class PagedCollection extends _TypeBase {
     this._moldPages = this._mold;
   }
 
-  /**
-   * Get instance of child
-   * @param {string|number} primaryId - primary id like 0 or '[0]'
-   * @returns {object} - instance of child
-   */
-  child(primaryId) {
-    const preparedPath = (_.isNumber(primaryId)) ? `[${primaryId}]` : primaryId;
-    return this._main.child(preparedPath, this);
-  }
-
-  /**
-   * Get paths of child of first level.
-   * @param {string} primaryId
-   * @returns {{mold: string, schema: string, storage: string|undefined}}
-   */
-  $getChildPaths(primaryId) {
-    const items = _.flatMap(_.cloneDeep(this._moldPages));
-    const primaryIdNumber = parseInt(primaryId.replace(/\[(\d+)]/, '$1'));
-    const finded = _.find(items, (item) => {
-      return item.id === primaryIdNumber;
-    });
-
-    let storage = undefined;
-    if (finded) {
-      storage = concatPath(this._storagePath, `[${finded.$pageIndex}][${finded.$index}]`)
-    }
-
-    return {
-      mold: concatPath(this._moldPath, primaryId),
-      schema: concatPath(convertFromLodashToSchema(this._moldPath), 'item.item'),
-      storage,
-    }
-  }
-
-  /**
-   * Get instance of element. (not page!).
-   * @param {string} primaryId - id of element, like '[0]'
-   * @returns {Object|undefined} - if undefined - it means not found.
-   */
-  $getChildInstance(primaryId) {
-    if (!primaryId || !_.isString(primaryId)) return;
-    if (!primaryId.match(/^\[\d+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
-
-    const paths = this.$getChildPaths(primaryId);
-
-    if (!paths.storage) return;
-
-    return this._main.$$schemaManager.$getInstanceByFullPath(paths);
-  }
+  // /**
+  //  * Get instance of child
+  //  * @param {string|number} primaryId - primary id like 0 or '[0]'
+  //  * @returns {object} - instance of child
+  //  */
+  // child(primaryId) {
+  //   const preparedPath = (_.isNumber(primaryId)) ? `[${primaryId}]` : primaryId;
+  //   return this._main.child(preparedPath, this);
+  // }
+  //
+  // /**
+  //  * Get paths of child of first level.
+  //  * @param {string} primaryId
+  //  * @returns {{mold: string, schema: string, storage: string|undefined}}
+  //  */
+  // $getChildPaths(primaryId) {
+  //   const items = _.flatMap(_.cloneDeep(this._moldPages));
+  //   const primaryIdNumber = parseInt(primaryId.replace(/\[(\d+)]/, '$1'));
+  //   const finded = _.find(items, (item) => {
+  //     return item.id === primaryIdNumber;
+  //   });
+  //
+  //   let storage = undefined;
+  //   if (finded) {
+  //     storage = concatPath(this._storagePath, `[${finded.$pageIndex}][${finded.$index}]`)
+  //   }
+  //
+  //   return {
+  //     mold: concatPath(this._moldPath, primaryId),
+  //     schema: concatPath(convertFromLodashToSchema(this._moldPath), 'item.item'),
+  //     storage,
+  //   }
+  // }
+  //
+  // /**
+  //  * Get instance of element. (not page!).
+  //  * @param {string} primaryId - id of element, like '[0]'
+  //  * @returns {Object|undefined} - if undefined - it means not found.
+  //  */
+  // $getChildInstance(primaryId) {
+  //   if (!primaryId || !_.isString(primaryId)) return;
+  //   if (!primaryId.match(/^\[\d+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
+  //
+  //   const paths = this.$getChildPaths(primaryId);
+  //
+  //   if (!paths.storage) return;
+  //
+  //   return this._main.$$schemaManager.$getInstanceByFullPath(paths);
+  // }
 
   /**
    * Get list with all the items of all the pages.

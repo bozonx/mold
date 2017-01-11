@@ -20,14 +20,13 @@ describe 'Integration.', ->
       _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', [
         {id: 0}
       ])
-      _.set(this.mold.$$state._storage._storage, 'documentsCollection.pages', [
-        [{id: 0, $pageIndex: 0, $index: 0}]
-      ])
       this.document = this.mold.child('documentsCollection[0]')
 
-    it 'document instance', ->
+    it 'document empty instance', ->
       assert.equal(this.document.root, 'documentsCollection[0]')
-      assert.deepEqual(this.document.mold, {id: 0, $pageIndex: 0, $index: 0})
+      assert.equal(this.document._schemaPath, 'documentsCollection.item.item')
+      assert.equal(this.document._storagePath, 'documentsCollection.documents[0]')
+      assert.deepEqual(this.document.mold, {})
 
     it 'load - check responce', (done) ->
       promise = this.document.load()
@@ -46,8 +45,6 @@ describe 'Integration.', ->
       expect(this.document.load()).to.eventually.notify =>
         expect(Promise.resolve(this.document.mold)).to.eventually
         .deep.equal({
-          $pageIndex: 0,
-          $index: 0,
           $loading: false
           id: 0
         })
@@ -62,8 +59,6 @@ describe 'Integration.', ->
             state: {loading: []},
             documents: {
               '0': {
-                $pageIndex: 0,
-                $index: 0,
                 $loading: false
                 id: 0
               }

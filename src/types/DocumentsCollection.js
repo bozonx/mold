@@ -18,7 +18,8 @@ export default class DocumentsCollection extends PagedCollection{
   }
 
   $init(paths, schema) {
-    this._storagePath = paths.mold + '.pages';
+    this._storagePath = paths.storage + '.pages';
+    this._rootStoragePath = paths.storage;
 
     super.$init(paths, schema);
 
@@ -38,6 +39,45 @@ export default class DocumentsCollection extends PagedCollection{
   setUrlParams(params) {
     this._main.$$state.setUrlParams(this._moldPath, params);
   }
+
+
+  /**
+   * Get instance of child
+   * @param {string|number} primaryId - primary id like 0 or '[0]'
+   * @returns {object} - instance of child
+   */
+  child(primaryId) {
+    const preparedPath = (_.isNumber(primaryId)) ? `[${primaryId}]` : primaryId;
+    return this._main.child(preparedPath, this);
+  }
+
+  /**
+   * Get paths of child of first level.
+   * @param {string} primaryId
+   * @returns {{mold: string, schema: string, storage: string|undefined}}
+   */
+  $getChildPaths(primaryId) {
+    return {
+      mold: concatPath(this._rootStoragePath, primaryId),
+      schema: concatPath(this._schemaPath, 'item.item'),
+      storage: concatPath(this._moldPath, concatPath('documents', primaryId)),
+    }
+  }
+
+  /**
+   * Get instance of element. (not page!).
+   * @param {string} primaryId - id of element, like '[0]'
+   * @returns {Object|undefined} - if undefined - it means not found.
+   */
+  $getChildInstance(primaryId) {
+    if (!primaryId || !_.isString(primaryId)) return;
+    if (!primaryId.match(/^\[\d+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
+
+    const paths = this.$getChildPaths(primaryId);
+
+    return this._main.$$schemaManager.$getInstanceByFullPath(paths);
+  }
+
 
   /**
    * Load the specified page.
