@@ -31,12 +31,12 @@ export default class Document extends Container{
   }
 
   $init(paths, schema) {
-    this._storagePath = convertFromMoldToDocumentStoragePath(paths.mold);
+    //this._storagePath = convertFromMoldToDocumentStoragePath(paths.mold);
+    super.$init(paths, schema);
     // init a document
     if (!_.isPlainObject(this._main.$$state.getMold(this._storagePath))) {
       this._main.$$state.setSilent(this._storagePath, {});
     }
-    super.$init(paths, schema);
   }
 
   getUrlParams() {

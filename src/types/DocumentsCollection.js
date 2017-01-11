@@ -18,6 +18,7 @@ export default class DocumentsCollection extends PagedCollection{
   }
 
   $init(paths, schema) {
+    // TODO: может это должно устанавливаться у родителя????
     this._storagePath = paths.mold + '.pages';
     this._mold = this._main.$$state.getMold(paths.mold);
     super.$init(paths, schema);
