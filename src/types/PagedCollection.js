@@ -66,7 +66,7 @@ export default class PagedCollection extends _TypeBase {
 
     console.log(8888888, primaryId, paths)
 
-    return this._main.$$schemaManager.$getInstanceByFullPath(paths.mold, paths.schema, paths.storage);
+    return this._main.$$schemaManager.$getInstanceByFullPath(paths);
   }
 
   /**

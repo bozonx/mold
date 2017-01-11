@@ -98,7 +98,12 @@ export default class SchemaManager {
       const pathParts = splitPath(fullMoldPath);
       childPathParts = pathParts.slice(1);
       const rootInstanceSchemaPath = convertFromLodashToSchema(pathParts[0]);
-      rootInstance = this.$getInstanceByFullPath(pathParts[0], rootInstanceSchemaPath);
+      rootInstance = this.$getInstanceByFullPath({
+        mold: pathParts[0],
+        schema: rootInstanceSchemaPath,
+        // TODO: !!!!!!
+        storage: '',
+      });
 
       // if there is only first level of path - return its instance.
       if (childPathParts.length === 0) return rootInstance;
@@ -113,14 +118,13 @@ export default class SchemaManager {
 
   /**
    * It just returns an instance
-   * @param fullMoldPath
-   * @param fullSchemaPath - if undefined - it converts fullMoldPath to schema path
+   * @param {{mold: string, schema: string, storage: string}} paths
    */
-  $getInstanceByFullPath(fullMoldPath, fullSchemaPath) {
+  $getInstanceByFullPath(paths) {
     // It rise an error if path doesn't consist with schema
-    const schema = this.getSchema(fullSchemaPath);
+    const schema = this.getSchema(paths.schema);
     const instance = new this._registeredTypes[schema.type](this._main);
-    instance.$init(fullMoldPath, fullSchemaPath, schema);
+    instance.$init(paths.mold, paths.schema, schema);
 
     return instance;
   }
