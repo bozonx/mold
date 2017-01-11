@@ -11,17 +11,21 @@ import { eachSchema, splitPath } from './helpers';
  * @class
  */
 export default class SchemaManager {
-  init(schema, main) {
-    this._schema = schema;
+  constructor(main) {
     this._main = main;
     this.$defaultMemoryDb = {};
     this._drivers = {};
     this._registeredTypes = {};
+  }
+
+  init(schema) {
+    this._schema = schema;
 
     const memoryDriver = new Memory({
       db: this.$defaultMemoryDb,
     });
     this.mainMemoryDriver = memoryDriver.instance({});
+    this._checkSchema();
   }
 
   registerType(typeName, typeClass) {
@@ -120,7 +124,7 @@ export default class SchemaManager {
     return instance;
   }
 
-  checkSchema() {
+  _checkSchema() {
     eachSchema(this._schema, (schemaPath, schema) => {
       // init driver if it has set
       if (schema.driver) {

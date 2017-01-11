@@ -88,10 +88,6 @@ export function convertFromLodashToUrl(path) {
   return preUrl.replace(/\./g, '/');
 }
 
-export function convertFromMoldToDocumentStoragePath(moldPath) {
-  return moldPath.replace(/(\[\d+])$/, '.documents$1');
-}
-
 export function getTheBestMatchPath(sourcePath, pathsList) {
   let matchList = _.map(pathsList, (path) => {
     if (sourcePath.indexOf(path) === 0) return path;
@@ -160,7 +156,9 @@ export function joinPath(pathArray) {
 }
 
 
-
+// export function convertFromMoldToDocumentStoragePath(moldPath) {
+//   return moldPath.replace(/(\[\d+])$/, '.documents$1');
+// }
 
 // export function getUniqPartOfPaths(paths) {
 //   if(_.isArray(paths) && paths.length == 1) {

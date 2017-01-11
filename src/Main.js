@@ -17,14 +17,9 @@ export default class Main {
     this.$$config = configInstance.get();
     this.$$events = this.$$config.eventEmitter;
     this.$$log = this.$$config.logger;
-    this.$$schemaManager = new SchemaManager();
+    this.$$schemaManager = new SchemaManager(this);
     this.$$state = new State();
-
     this.$$storage = new Storage(this.$$events);
-
-    // initialize
-    this.$$schemaManager.init(schema, this);
-    this.$$state.init(this, this.$$storage);
 
     // register base types
     this.$$schemaManager.registerType('pagedCollection', PagedCollection);
@@ -33,7 +28,9 @@ export default class Main {
     this.$$schemaManager.registerType('document', Document);
     this.$$schemaManager.registerType('documentsCollection', DocumentsCollection);
 
-    this.$$schemaManager.checkSchema();
+    // initialize
+    this.$$schemaManager.init(schema);
+    this.$$state.init(this, this.$$storage);
   }
 
   /**
