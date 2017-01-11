@@ -48,7 +48,7 @@ export default class PagedCollection extends _TypeBase {
     return {
       mold: concatPath(this._moldPath, primaryId),
       schema: concatPath(convertFromLodashToSchema(this._moldPath), 'item.item'),
-      // TODO: !!!!! проверить
+      // TODO: !!!!! проверить - надо получить полный путь - найти на странице - [0][0]
       storage: concatPath(this._storagePath, primaryId),
     }
   }

@@ -97,12 +97,10 @@ export default class SchemaManager {
       fullMoldPath = path;
       const pathParts = splitPath(fullMoldPath);
       childPathParts = pathParts.slice(1);
-      const rootInstanceSchemaPath = convertFromLodashToSchema(pathParts[0]);
       rootInstance = this.$getInstanceByFullPath({
         mold: pathParts[0],
-        schema: rootInstanceSchemaPath,
-        // TODO: !!!!!!
-        storage: '',
+        schema: convertFromLodashToSchema(pathParts[0]),
+        storage: pathParts[0],
       });
 
       // if there is only first level of path - return its instance.
