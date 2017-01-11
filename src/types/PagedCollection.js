@@ -32,11 +32,12 @@ export default class PagedCollection extends _TypeBase {
 
   /**
    * Get instance of child
-   * @param {string} path - path relative to this instance root
+   * @param {string|number} primaryId - primary id like 0 or '[0]'
    * @returns {object} - instance of child
    */
-  child(path) {
-    return this._main.child(path, this);
+  child(primaryId) {
+    const preparedPath = (_.isNumber(primaryId)) ? `[${primaryId}]` : primaryId;
+    return this._main.child(preparedPath, this);
   }
 
   /**
@@ -56,7 +57,9 @@ export default class PagedCollection extends _TypeBase {
       storage = concatPath(this._storagePath, `[${finded.$pageIndex}][${finded.$index}]`)
     }
 
-    console.log(33333, items, primaryIdNumber, finded, storage)
+    // TODO: mold пустой почему-то
+
+    console.log(33333, items, primaryIdNumber, finded, storage, this._mold, this._moldPages)
 
     return {
       mold: concatPath(this._moldPath, primaryId),

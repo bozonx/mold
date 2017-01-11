@@ -18,7 +18,7 @@ export default class DocumentsCollection extends PagedCollection{
   }
 
   $init(paths, schema) {
-    // TODO: может это должно устанавливаться у родителя????
+    // TODO: может это должно устанавливаться у родителя, а может вообще у потомка????
     this._storagePath = paths.mold + '.pages';
     this._mold = this._main.$$state.getMold(paths.mold);
     super.$init(paths, schema);
@@ -149,6 +149,7 @@ export default class DocumentsCollection extends PagedCollection{
   }
 
   _updateDoc(documentMold, newState) {
+    // TODO: переделать на инстанс документа
     if (!_.isNumber(documentMold.$pageIndex) || !_.isNumber(documentMold.$index)) return;
     const pathToDoc = concatPath(concatPath(this._moldPath, documentMold.$pageIndex), documentMold.$index);
     const storagePathToDoc = concatPath(concatPath(this._storagePath, documentMold.$pageIndex), documentMold.$index);

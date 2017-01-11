@@ -20,11 +20,11 @@ export default class Collection extends _TypeBase {
 
   /**
    * Get instance of child
-   * @param {string} path - path relative to this instance root
+   * @param {string|number} primaryId - primary id like 0 or '[0]'
    * @returns {object} - instance of child
    */
-  child(path) {
-    const preparedPath = (_.isNumber(path)) ? `[${path}]` : path;
+  child(primaryId) {
+    const preparedPath = (_.isNumber(primaryId)) ? `[${primaryId}]` : primaryId;
     return this._main.child(preparedPath, this);
   }
 
