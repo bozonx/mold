@@ -34,7 +34,8 @@ export default class Collection extends _TypeBase {
    * @returns {*}
    */
   $getChildInstance(primaryId) {
-    if (primaryId.toString().match(/\./)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
+    if (!primaryId || !_.isString(primaryId)) return;
+    if (!primaryId.match(/^\[\d+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
 
     const childPath = getFirstChildPath(primaryId);
     const fullChildMoldPath = concatPath(this._moldPath, childPath);

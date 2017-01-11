@@ -72,17 +72,24 @@ export default class PagedCollection extends _TypeBase {
    * @returns {Object|undefined}
    */
   $getChildInstance(primaryId) {
-    if (primaryId.toString().match(/\./)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
-
-    // TODO: всегда отдаем элемент!!!!
-    // TODO: все элементы будут иметь путь без учета страницы
-
-    if (!primaryId) return;
-
-    const primaryIdNumber = parseInt(primaryId.replace(/\[(\d+)]/, '$1'));
+    if (!primaryId || !_.isString(primaryId)) return;
+    if (!primaryId.match(/^\[\d+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
 
     const items = this.getFlat();
-    let fullChildPath;
+    const fullChildMoldPath = concatPath(this._moldPath, primaryId);
+    const fullChildSchemaPath = concatPath(convertFromLodashToSchema(this._moldPath), 'item.item');
+
+    console.log(8888888, primaryId, items, fullChildMoldPath, fullChildSchemaPath)
+
+    return this._main.$$schemaManager.$getInstanceByFullPath(fullChildMoldPath, fullChildSchemaPath);
+
+
+
+
+
+
+    //const primaryIdNumber = parseInt(primaryId.replace(/\[(\d+)]/, '$1'));
+
 
     // if (_.isEmpty(items)) {
     //
@@ -99,18 +106,16 @@ export default class PagedCollection extends _TypeBase {
     //   //fullChildPath = concatPath(this._moldPath, `[${finded.$pageIndex}][${finded.$index}]`);
     // }
 
-    fullChildPath = concatPath(this._moldPath, primaryId);
 
-    const fullSchemaPath = concatPath(convertFromLodashToSchema(this._moldPath), 'item.item');
+    // TODO: надо самим взять инстанс коллекции и у неё взять документ
 
 
-    console.log(8888888, primaryId, primaryIdNumber, items, fullChildPath, fullSchemaPath)
+
 
     // const childPath = getFirstChildPath(primaryIdOrSubPath);
     // const fullChildPath = concatPath(this._moldPath, childPath);
 
     // get container instance
-    return this._main.$$schemaManager.$getInstanceByFullPath(fullChildPath, fullSchemaPath);
 
 
     // console.log(3333333, path)

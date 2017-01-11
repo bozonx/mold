@@ -104,8 +104,8 @@ export default class SchemaManager {
       fullMoldPath = path;
       const pathParts = splitPath(fullMoldPath);
       childPathParts = pathParts.slice(1);
-      // TODO: передать schemaPath
-      rootInstance = this.$getInstanceByFullPath(pathParts[0]);
+      const rootInstanceSchemaPath = convertFromLodashToSchema(pathParts[0]);
+      rootInstance = this.$getInstanceByFullPath(pathParts[0], rootInstanceSchemaPath);
 
       // if there is only first level of path - return its instance.
       if (childPathParts.length === 0) return rootInstance;
@@ -123,14 +123,11 @@ export default class SchemaManager {
    * @param fullMoldPath
    * @param fullSchemaPath - if undefined - it converts fullMoldPath to schema path
    */
-  $getInstanceByFullPath(fullMoldPath, fullSchemaPath=undefined) {
-    // TODO: fullSchemaPath обязательный!!!!!
-    const preparedSchemaPath = (fullSchemaPath) ? fullSchemaPath : convertFromLodashToSchema(fullMoldPath);
-
+  $getInstanceByFullPath(fullMoldPath, fullSchemaPath) {
     // It rise an error if path doesn't consist with schema
-    const schema = this.getSchema(preparedSchemaPath);
+    const schema = this.getSchema(fullSchemaPath);
     const instance = new this._registeredTypes[schema.type](this._main);
-    instance.$init(fullMoldPath, preparedSchemaPath, schema);
+    instance.$init(fullMoldPath, fullSchemaPath, schema);
 
     return instance;
   }
@@ -139,12 +136,9 @@ export default class SchemaManager {
     let currentInstance = rootInstance;
     let result = undefined;
     _.each(pathParts, (currentPathPiece, index) => {
-      // TODO: не нужно - удалить
-      const restOfPath = joinPath(pathParts.slice(index + 1));
-
       if (index === pathParts.length - 1) {
         // the last part of path
-        result = currentInstance.$getChildInstance(currentPathPiece, restOfPath);
+        result = currentInstance.$getChildInstance(currentPathPiece);
       }
       else {
         // not last
@@ -152,7 +146,7 @@ export default class SchemaManager {
         if (!currentInstance.$getChildInstance)
           this._main.$$log.fatal(`Can't find a element on path "${fullMoldPath}".`);
 
-        currentInstance = currentInstance.$getChildInstance(currentPathPiece, restOfPath);
+        currentInstance = currentInstance.$getChildInstance(currentPathPiece);
       }
     });
     return result;
