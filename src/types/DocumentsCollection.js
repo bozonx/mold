@@ -170,8 +170,8 @@ export default class DocumentsCollection extends PagedCollection {
   /**
    * Send request to delete document.
    * It adds "$deleting" prop to document.
-   * After success response, it remove document from mold.
-   * @param {object} documentMold
+   * After success response, it remove document from page in storage.
+   * @param {object} documentMold - like {id: 0, $pageIndex: 0, $index: 0}
    * @param {object} metaParams
    * @returns {Promise}
    */
@@ -195,10 +195,15 @@ export default class DocumentsCollection extends PagedCollection {
   }
 
   _updateDoc(documentMold, newState) {
-    // TODO: переделать на инстанс документа
     if (!_.isNumber(documentMold.$pageIndex) || !_.isNumber(documentMold.$index)) return;
-    const storagePathToDoc = concatPath(concatPath(this._storagePath, documentMold.$pageIndex), documentMold.$index);
-    this._main.$$state.update(storagePathToDoc, newState);
+
+    const storagePathToDocInPages = concatPath(
+      concatPath(this._storagePath, documentMold.$pageIndex),
+      documentMold.$index);
+
+    // TODO: обновить ещё и в documents
+    console.log(222222, storagePathToDocInPages, newState)
+    this._main.$$state.update(storagePathToDocInPages, newState);
   }
 
   _setPageLoadingState(pageNum, loading) {

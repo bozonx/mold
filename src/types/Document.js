@@ -134,13 +134,13 @@ export default class Document extends Container{
    * @return {Promise}
    */
   remove(metaParams=undefined) {
-    if (!_.isNumber(this.mold.$pageNum) || !_.isNumber(this.mold.$index))
-      this._main.$$log.fatal(`There are no $pageNum or $index params. You can remove only from DocumentsCollection`);
-
     const myDocumentsCollection = this.getParent();
 
     if (!myDocumentsCollection)
       this._main.$$log.fatal(`You can remove only from DocumentsCollection`);
+
+    if (myDocumentsCollection.type != 'documentsCollection')
+      this._main.$$log.fatal(`The parent of document isn't a DocumentsCollection. You can remove only from DocumentsCollection`);
 
     return myDocumentsCollection.remove(this.mold, metaParams);
   }
