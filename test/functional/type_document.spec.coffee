@@ -82,8 +82,7 @@ describe 'Functional. Document type.', ->
           schema:
             id: {type: 'number', primary: true}
 
-    testDoc = {id: 0}
-    testDocInPages = {
+    testDoc = {
       id: 0,
       $pageIndex: 0,
       $index: 0,
@@ -93,28 +92,23 @@ describe 'Functional. Document type.', ->
     document = moldMain.child('documentsCollection[0]')
 
     _.set(moldMain.$$schemaManager.$defaultMemoryDb, 'documentsCollection', [testDoc])
-    _.set(moldMain.$$state._storage._storage, 'documentsCollection.pages[0]', [testDocInPages])
+    _.set(moldMain.$$state._storage._storage, 'documentsCollection.pages[0]', [testDoc])
     _.extend(_.get(moldMain.$$state._storage._storage, 'documentsCollection.documents.0'), testDoc)
 
     assert.deepEqual(moldMain.$$schemaManager.$defaultMemoryDb.documentsCollection, [testDoc])
-    assert.deepEqual(moldMain.$$state._storage._storage.documentsCollection.pages, [[testDocInPages]])
+    assert.deepEqual(moldMain.$$state._storage._storage.documentsCollection.pages, [[testDoc]])
     assert.deepEqual(document.mold, testDoc)
 
     promise = document.remove()
-
-    console.log(11111, document.mold)
 
     assert.isTrue(document.mold.$deleting)
 
     expect(promise).to.eventually.notify =>
       expect(Promise.all([
-        #expect(Promise.resolve(this.document.mold.$deleting)).to.eventually.equal(true)
-        #expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.pages)).to.eventually.deep.equal([[]])
-        #expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.documents)).to.eventually.deep.equal({})
+        expect(Promise.resolve(document.mold.$deleting)).to.eventually.equal(false)
+        expect(Promise.resolve(document.mold.$deleted)).to.eventually.equal(true)
+        expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.pages)).to.eventually.deep.equal([[]])
+        # don't delete form documents
+        expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.documents['0'].id)).to.eventually.equal(0)
         expect(Promise.resolve(moldMain.$$schemaManager.$defaultMemoryDb.documentsCollection)).to.eventually.deep.equal([])
       ])).to.eventually.notify(done)
-
-#    expect(promise).to.eventually.notify =>
-#      expect(Promise.resolve(this.document.mold.$deleting)).to.eventually
-#      .equal(false)
-#      .notify(done)

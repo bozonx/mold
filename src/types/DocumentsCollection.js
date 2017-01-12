@@ -53,7 +53,6 @@ export default class DocumentsCollection extends PagedCollection {
     this._main.$$state.setUrlParams(this._moldPath, params);
   }
 
-
   /**
    * Get instance of child
    * @param {string|number} primaryId - primary id like 0 or '[0]'
@@ -181,7 +180,11 @@ export default class DocumentsCollection extends PagedCollection {
     return this._main.$$state.$$request.sendRequest(
         'delete', this._moldPath, this._schema, documentMold, metaParams, this.getUrlParams())
       .then((resp) => {
-        this._updateDoc(documentMold, { $deleting: false });
+        this._updateDoc(documentMold, {
+          $deleting: false,
+          $deleted: true,
+        });
+
         // remove from page
         if (_.isNumber(documentMold.$pageIndex)) {
           const storagePathToPage = concatPath(this._storagePath, documentMold.$pageIndex);
@@ -195,15 +198,23 @@ export default class DocumentsCollection extends PagedCollection {
   }
 
   _updateDoc(documentMold, newState) {
-    if (!_.isNumber(documentMold.$pageIndex) || !_.isNumber(documentMold.$index)) return;
+    const isDocumentInPage = _.isNumber(documentMold.$pageIndex) && _.isNumber(documentMold.$index);
+    // update document in one of page
+    if (isDocumentInPage) {
+      const storagePathToDocInPages = concatPath(
+        concatPath(this._storagePath, documentMold.$pageIndex),
+        documentMold.$index);
 
-    const storagePathToDocInPages = concatPath(
-      concatPath(this._storagePath, documentMold.$pageIndex),
-      documentMold.$index);
+      this._main.$$state.update(storagePathToDocInPages, newState);
+    }
 
-    // TODO: обновить ещё и в documents
-    console.log(222222, storagePathToDocInPages, newState)
-    this._main.$$state.update(storagePathToDocInPages, newState);
+    // update document in "documents"
+    // TODO: получить имя primaryId
+    const storagePathToDocInDocuments = concatPath(
+      concatPath(this._rootStoragePath, 'documents'), `[${documentMold.id}]`);
+
+    if (!this._main.$$state.getMold(storagePathToDocInDocuments)) return;
+    this._main.$$state.update(storagePathToDocInDocuments, newState);
   }
 
   _setPageLoadingState(pageNum, loading) {

@@ -5,7 +5,7 @@ const defaultConfig = {
   eventEmitter: null,
   logger: null,
   itemsPerPage: 10,
-  omitParamsToRequest: ['$index', '$pageIndex', '$addedUnsaved', '$deleting', '$saving'],
+  omitParamsToRequest: ['$index', '$pageIndex', '$addedUnsaved', '$deleting', '$deleted', '$saving'],
 };
 
 
