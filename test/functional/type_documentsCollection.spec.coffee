@@ -30,6 +30,19 @@ describe 'Functional. DocumentsCollection type.', ->
       .deep.equal([[{ id: 0, $index: 0, $pageIndex: 0 }]])
       .notify(done)
 
+  it "clear()", ->
+    _.set(this.mold.$$state._storage._storage, 'documentsCollection', {
+      pages: [{id: 0}],
+      state: {loading: [0]},
+      documents: {'0': {id: 0}}
+    })
+    this.documentsCollection.clear();
+    assert.deepEqual(this.mold.$$state._storage._storage.documentsCollection, {
+      pages: [],
+      state: {loading: [0]},
+      documents: {'0': {id: 0}}
+    })
+
 
   describe "load", ->
     beforeEach () ->

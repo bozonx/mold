@@ -17,6 +17,11 @@ describe 'Functional. Paged Collection type.', ->
   it 'init value', ->
     assert.deepEqual(this.pagedCollection.mold, [])
 
+  it "clear()", ->
+    this.pagedCollection.unshift({name: 'newValue'})
+    this.pagedCollection.clear();
+    assert.deepEqual(this.pagedCollection.mold, [])
+
   describe 'unshift()', ->
     it "to empty pagedCollection", ->
       this.pagedCollection.perPage = 1
@@ -115,29 +120,3 @@ describe 'Functional. Paged Collection type.', ->
         }
       ])
 
-  # TODO: переделать
-
-#  describe 'child(pageNum)', ->
-#    it 'no one pages', ->
-#      assert.isUndefined(this.pagedCollection.child(0))
-#      assert.isUndefined(this.pagedCollection.child(1))
-#
-#    it 'returned page is a collection', ->
-#      page = [{name: 'newValue1'}, {name: 'newValue2'}]
-#      this.pagedCollection.setPage([], 0)
-#      this.pagedCollection.setPage(page)
-#      child = this.pagedCollection.child(1)
-#
-#      assert.equal(child.type, 'collection')
-#      assert.deepEqual(child.mold, [
-#        {
-#          $pageIndex: 1,
-#          $index: 0,
-#          name: 'newValue1',
-#        },
-#        {
-#          $pageIndex: 1,
-#          $index: 1,
-#          name: 'newValue2',
-#        },
-#      ])
