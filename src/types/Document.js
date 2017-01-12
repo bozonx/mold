@@ -49,7 +49,7 @@ export default class Document extends Container{
 
   update(newState) {
     this._lastChanges = correctUpdatePayload(this._lastChanges, newState);
-    this._main.$$state.update(this._moldPath, this._storagePath, _.cloneDeep(newState));
+    this._main.$$state.update(this._storagePath, _.cloneDeep(newState));
   }
 
   /**
@@ -58,19 +58,19 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   load(metaParams=undefined) {
-    this._main.$$state.update(this._moldPath, this._storagePath, {$loading: true});
+    this._main.$$state.update(this._storagePath, {$loading: true});
     return this._main.$$state.$$request.sendRequest(
         'get', this._moldPath, this._schema, undefined, metaParams, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
-        this._main.$$state.update(this._moldPath, this._storagePath, {$loading: false});
+        this._main.$$state.update(this._storagePath, {$loading: false});
 
-        this._main.$$state.update(this._moldPath, this._storagePath, resp.body);
+        this._main.$$state.update(this._storagePath, resp.body);
         this._lastChanges = {};
 
         return resp;
       }, (err) => {
-        this._main.$$state.update(this._moldPath, this._storagePath, {$loading: false});
+        this._main.$$state.update(this._storagePath, {$loading: false});
         return Promise.reject(err);
       });
   }
@@ -83,12 +83,12 @@ export default class Document extends Container{
    */
   put(newState=undefined, metaParams=undefined) {
     if (newState) this.update(newState);
-    this._main.$$state.update(this._moldPath, this._storagePath, {$saving: true});
+    this._main.$$state.update(this._storagePath, {$saving: true});
 
     return this._main.$$state.$$request.sendRequest(
         'put', this._moldPath, this._schema, this._mold, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
-      this._main.$$state.update(this._moldPath, this._storagePath, {
+      this._main.$$state.update(this._storagePath, {
         ...resp.body,
         $saving: false,
       });
@@ -96,7 +96,7 @@ export default class Document extends Container{
 
       return resp;
     }, (err) => {
-      this._main.$$state.update(this._moldPath, this._storagePath, {$saving: false});
+      this._main.$$state.update(this._storagePath, {$saving: false});
       return Promise.reject(err);
     });
   }
@@ -109,12 +109,12 @@ export default class Document extends Container{
    */
   patch(newState=undefined, metaParams=undefined) {
     if (newState) this.update(newState);
-    this._main.$$state.update(this._moldPath, this._storagePath, {$saving: true});
+    this._main.$$state.update(this._storagePath, {$saving: true});
 
     return this._main.$$state.$$request.sendRequest(
       'patch', this._moldPath, this._schema, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
-      this._main.$$state.update(this._moldPath, this._storagePath, {
+      this._main.$$state.update(this._storagePath, {
         ...resp.body,
         $saving: false,
       });
@@ -122,7 +122,7 @@ export default class Document extends Container{
 
       return resp;
     }, (err) => {
-      this._main.$$state.update(this._moldPath, this._storagePath, {$saving: false});
+      this._main.$$state.update(this._storagePath, {$saving: false});
       return Promise.reject(err);
     });
   }
@@ -139,7 +139,7 @@ export default class Document extends Container{
 
 
 
-    this._main.$$state.update(this._moldPath, this._storagePath, { $deleting: true });
+    this._main.$$state.update(this._storagePath, { $deleting: true });
 
     console.log(77777777777, this._moldPath, this._storagePath, moldPathToCollection)
 
@@ -147,14 +147,14 @@ export default class Document extends Container{
     return this._main.$$state.$$request.sendRequest(
       'delete', moldPathToCollection, this._schema, this.mold, metaParams, urlParams)
       .then((resp) => {
-        this._main.$$state.update(this._moldPath, this._storagePath, { $deleting: false });
+        this._main.$$state.update(this._storagePath, { $deleting: false });
         // remove from page
         if (_.isNumber(this.mold.$pageIndex)) {
-          this._main.$$state.remove(this._moldPath, this._storagePath, this.mold, this.mold.$pageIndex);
+          this._main.$$state.remove(this.mold, this.mold.$pageIndex);
         }
         return resp;
       }, (err) => {
-        this._main.$$state.update(this._moldPath, this._storagePath, { $deleting: false });
+        this._main.$$state.update(this._storagePath, { $deleting: false });
         return Promise.reject(err);
       });
   }

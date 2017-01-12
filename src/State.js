@@ -50,13 +50,10 @@ export default class State {
 
   /**
    * Set container or collection to mold
-   * @param {string} moldPath
    * @param {string} storagePath
    * @param {*} value - valid value
    */
-  update(moldPath, storagePath, value) {
-    this._checkNode(moldPath, value);
-
+  update(storagePath, value) {
     this._storage.update(storagePath, value);
   }
 
@@ -72,19 +69,12 @@ export default class State {
   /**
    * Add to beginning of a collection in store by user action.
    * It add item as is, not clones it.
-   * @param {string} moldPath
    * @param {string} storagePath
    * @param {object} newItem
    */
-  unshift(moldPath, storagePath, newItem) {
-    // // It rise an error if path doesn't consist with schema
-    // const schema = this._main.$$schemaManager.get(moldPath);
-    //
-    // // TODO: перенести это в checkNode
+  unshift(storagePath, newItem) {
     // if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
     //   this._main.$$log.fatal(`You can add new item only to collection!`);
-
-    this._checkNode(moldPath, newItem);
 
     this._storage.unshift(storagePath, newItem);
   }
@@ -92,33 +82,22 @@ export default class State {
   /**
    * Add to end of collection in store by user action.
    * It add item as is, not clones it.
-   * @param {string} moldPath
    * @param {string} storagePath
    * @param {object} newItem
    */
-  push(moldPath, storagePath, newItem) {
-    // // It rise an error if path doesn't consist with schema
-    // const schema = this._main.$$schemaManager.get(moldPath);
-    //
-    // // TODO: перенести это в checkNode
+  push(storagePath, newItem) {
     // if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
     //   this._main.$$log.fatal(`You can add new item only to collection!`);
-
-    this._checkNode(moldPath, newItem);
 
     this._storage.push(storagePath, newItem);
   }
 
   /**
    * Remove item from collection.
-   * @param {string} moldPath
    * @param {string} storagePath
    * @param {object} itemToRemove
    */
-  remove(moldPath, storagePath, itemToRemove) {
-    // // It rise an error if path doesn't consist with schema
-    // const schema = this._main.$$schemaManager.get(moldPath);
-    //
+  remove(storagePath, itemToRemove) {
     // if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
     //   this._main.$$log.fatal(`You can remove only from collection!`);
 
@@ -131,15 +110,11 @@ export default class State {
   /**
    * Set page to paged collection in store.
    * It doesn't mark items as unsaved.
-   * @param {string} moldPath
    * @param {string} storagePath
    * @param {Array} page
    * @param {number} pageNum. It's required.
    */
-  setPage(moldPath, storagePath, page, pageNum) {
-    // // It rises an error if path doesn't consist with schema
-    // const schema = this._main.$$schemaManager.get(moldPath);
-    //
+  setPage(storagePath, page, pageNum) {
     // // TODO: перенести это в checkNode
     // if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
     //   this._main.$$log.fatal(`You can add new item only to paged collection!`);
@@ -151,14 +126,10 @@ export default class State {
 
   /**
    * Set undefined instead page. It doesn't reduce pagedCollection length.
-   * @param moldPath
    * @param {string} storagePath
    * @param pageNum
    */
-  removePage(moldPath, storagePath, pageNum) {
-    // // It rise an error if path doesn't consist with schema
-    // const schema = this._main.$$schemaManager.get(moldPath);
-    //
+  removePage(storagePath, pageNum) {
     // if (!_.includes(['pagedCollection', 'documentsCollection'], schema.type))
     //   this._main.$$log.fatal(`You can remove  page only from pagedCollection of documentsCollection!`);
 
@@ -262,10 +233,6 @@ export default class State {
 
     // Add listener
     this._main.$$events.on('change', wrapperHandler);
-  }
-
-  _checkNode(path, value, schema) {
-    // TODO: do it - node has to consist to schema
   }
 
 }

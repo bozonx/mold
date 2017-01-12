@@ -130,7 +130,7 @@ export default class PagedCollection extends _TypeBase {
 
     this._checkEmptyPage();
     const storagePathToPage = concatPath(this._storagePath, 0);
-    this._main.$$state.unshift(this._moldPath, storagePathToPage, newItem);
+    this._main.$$state.unshift(storagePathToPage, newItem);
   }
 
   /**
@@ -148,7 +148,7 @@ export default class PagedCollection extends _TypeBase {
     this._checkEmptyPage();
     const pageNum = this._moldPages.length - 1;
     const storagePathToPage = concatPath(this._storagePath, pageNum);
-    this._main.$$state.push(this._moldPath, storagePathToPage, newItem);
+    this._main.$$state.push(storagePathToPage, newItem);
   }
 
   /**
@@ -167,7 +167,7 @@ export default class PagedCollection extends _TypeBase {
     if (!_.isArray(page))
       this._main.$$log.fatal(`The page must be type of array!`);
 
-    this._main.$$state.setPage(this._moldPath, this._storagePath, page, pageNum);
+    this._main.$$state.setPage(this._storagePath, page, pageNum);
   }
 
   /**
@@ -178,7 +178,7 @@ export default class PagedCollection extends _TypeBase {
     if (!_.isNumber(pageNum))
       this._main.$$log.fatal(`The pageNum must be type of number!`);
 
-    this._main.$$state.removePage(this._moldPath, this._storagePath, pageNum);
+    this._main.$$state.removePage(this._storagePath, pageNum);
   }
 
   /**
@@ -209,7 +209,7 @@ export default class PagedCollection extends _TypeBase {
   _checkEmptyPage() {
     if (_.isEmpty(this._moldPages)) {
       const pageNum = 0;
-      this._main.$$state.setPage(this._moldPath, this._storagePath, [], pageNum);
+      this._main.$$state.setPage(this._storagePath, [], pageNum);
     }
   }
 

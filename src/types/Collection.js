@@ -75,7 +75,7 @@ export default class Collection extends _TypeBase {
    * @param {object} item
    */
   unshift(item) {
-    this._main.$$state.unshift(this._moldPath, this._storagePath , item);
+    this._main.$$state.unshift(this._storagePath , item);
   }
 
   /**
@@ -83,7 +83,7 @@ export default class Collection extends _TypeBase {
    * @param {object} item
    */
   push(item) {
-    this._main.$$state.push(this._moldPath, this._storagePath , item);
+    this._main.$$state.push(this._storagePath , item);
   }
 
   /**
@@ -91,7 +91,7 @@ export default class Collection extends _TypeBase {
    * @param item
    */
   remove(item) {
-    this._main.$$state.remove(this._moldPath, this._storagePath , item);
+    this._main.$$state.remove(this._storagePath , item);
   }
 
 }

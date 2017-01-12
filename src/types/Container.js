@@ -66,7 +66,7 @@ export default class Container extends _TypeBase{
   }
 
   update(newState) {
-    this._main.$$state.update(this._root, this._storagePath, _.cloneDeep(newState));
+    this._main.$$state.update(this._storagePath, _.cloneDeep(newState));
   }
 
 }

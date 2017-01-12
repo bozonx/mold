@@ -194,7 +194,7 @@ export default class DocumentsCollection extends PagedCollection {
         // remove from page
         if (_.isNumber(documentMold.$pageIndex)) {
           const storagePathToPage = concatPath(this._storagePath, documentMold.$pageIndex);
-          this._main.$$state.remove(this._moldPath, storagePathToPage, documentMold);
+          this._main.$$state.remove(storagePathToPage, documentMold);
         }
         return resp;
       }, (err) => {
@@ -206,9 +206,8 @@ export default class DocumentsCollection extends PagedCollection {
   _updateDoc(documentMold, newState) {
     // TODO: переделать на инстанс документа
     if (!_.isNumber(documentMold.$pageIndex) || !_.isNumber(documentMold.$index)) return;
-    const pathToDoc = concatPath(concatPath(this._moldPath, documentMold.$pageIndex), documentMold.$index);
     const storagePathToDoc = concatPath(concatPath(this._storagePath, documentMold.$pageIndex), documentMold.$index);
-    this._main.$$state.update(pathToDoc, storagePathToDoc, newState);
+    this._main.$$state.update(storagePathToDoc, newState);
   }
 
   _setPageLoadingState(pageNum, loading) {
