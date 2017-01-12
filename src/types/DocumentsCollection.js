@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { concatPath } from '../helpers';
+import { concatPath, findPrimary } from '../helpers';
 import PagedCollection from './PagedCollection';
 
 
@@ -209,9 +209,9 @@ export default class DocumentsCollection extends PagedCollection {
     }
 
     // update document in "documents"
-    // TODO: получить имя primaryId
+    const primaryName = findPrimary(this.schema.item);
     const storagePathToDocInDocuments = concatPath(
-      concatPath(this._rootStoragePath, 'documents'), `[${documentMold.id}]`);
+      concatPath(this._rootStoragePath, 'documents'), `[${documentMold[primaryName]}]`);
 
     if (!this._main.$$state.getMold(storagePathToDocInDocuments)) return;
     this._main.$$state.update(storagePathToDocInDocuments, newState);
