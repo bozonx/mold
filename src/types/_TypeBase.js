@@ -103,7 +103,7 @@ export default class _TypeBase {
    * It clears mold state for current instance and for its descendants.
    */
   clear() {
-    this._main.$$state.clear(this._moldPath);
+    this._main.$$state.clear(this._storagePath);
   }
 
 }

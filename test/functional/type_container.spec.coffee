@@ -57,3 +57,11 @@ describe 'Functional. Container type.', ->
       numberParam: 6,
       boolParam: true,
     })
+
+  it "clear()", ->
+    this.container.update({
+      stringParam: 'newerValue',
+      numberParam: 5,
+    })
+    this.container.clear();
+    assert.deepEqual(this.container.mold, {})

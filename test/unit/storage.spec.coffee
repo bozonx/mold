@@ -402,11 +402,8 @@ describe 'Unit. Storage.', ->
       this.storage.clear('container')
 
       assert.deepEqual(this.storage.get('container'), {
-        param: null
         nested:
           array: []
-          number: null
-          bool: null
         collection: []
       })
       this.checkEvent('container', 'change')

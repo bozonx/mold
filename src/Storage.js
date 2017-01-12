@@ -160,14 +160,14 @@ export default class Storage {
 
   /**
    * Clear storage on path. But it doesn't remove container or array itself.
-   * @param path
+   * @param {string} storagePath
    */
-  clear(path) {
-    const containerOrArray = _.get(this._storage, path);
-    const isItEmpty = _.isEmpty(containerOrArray);
+  clear(storagePath) {
+    const containerOrArray = _.get(this._storage, storagePath);
+    if (_.isEmpty(containerOrArray)) return;
 
     this._clearRecursive(containerOrArray);
-    if (!isItEmpty) this._riseEvents(path, 'change');
+    this._riseEvents(storagePath, 'change');
   }
 
   /**
@@ -183,7 +183,7 @@ export default class Storage {
       // container
       _.each(value, (containerItem, name) => {
         if (!_.isObject(containerItem)) {
-          _.set(value, name, null);
+          delete value[name];
         }
         else {
           this._clearRecursive(containerItem);
