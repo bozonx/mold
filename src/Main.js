@@ -61,11 +61,11 @@ export default class Main {
   }
 
   onAnyUpdate(handler) {
-    this.$$state.onAnyUpdate(handler);
+    this.$$events.on('change', handler);
   }
 
   offAnyUpdate(handler) {
-    this.$$state.offAnyUpdate(handler);
+    this.$$events.off('change', handler);
   }
 
   registerType(typeName, typeClass) {

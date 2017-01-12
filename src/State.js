@@ -26,9 +26,9 @@ export default class State {
     if (this._urlParams[moldPath]) return this._urlParams[moldPath];
 
     // For primitives - find the closest parent
-    var findtheClosestParentPath = findTheClosestParentPath(moldPath, this._urlParams);
+    const closestParentPath = findTheClosestParentPath(moldPath, this._urlParams);
 
-    return this._urlParams[findtheClosestParentPath];
+    return this._urlParams[closestParentPath];
   }
 
   /**
@@ -39,16 +39,6 @@ export default class State {
   setUrlParams(moldPath, params) {
     this._urlParams[moldPath] = params;
   }
-
-  onAnyUpdate(handler) {
-    this._main.$$events.on('change', handler);
-  }
-
-  offAnyUpdate(handler) {
-    this._main.$$events.off('change', handler);
-  }
-
-
 
   /**
    * Get mold by path
