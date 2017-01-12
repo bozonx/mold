@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { correctUpdatePayload } from '../helpers';
+import { correctUpdatePayload, omitUnsaveable } from '../helpers';
 import Container from './Container';
 
 export default class Document extends Container{
@@ -85,8 +85,10 @@ export default class Document extends Container{
     if (newState) this.update(newState);
     this._main.$$state.update(this._storagePath, {$saving: true});
 
+    const payload = omitUnsaveable(this._mold, this.schema);
+
     return this._main.$$state.$$request.sendRequest(
-        'put', this._moldPath, this._schema, this._mold, metaParams, this.getUrlParams()).then((resp) => {
+        'put', this._moldPath, this._schema, payload, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.update(this._storagePath, {
         ...resp.body,
@@ -111,8 +113,10 @@ export default class Document extends Container{
     if (newState) this.update(newState);
     this._main.$$state.update(this._storagePath, {$saving: true});
 
+    const payload = omitUnsaveable(this._lastChanges, this.schema);
+
     return this._main.$$state.$$request.sendRequest(
-      'patch', this._moldPath, this._schema, this._lastChanges, metaParams, this.getUrlParams()).then((resp) => {
+      'patch', this._moldPath, this._schema, payload, metaParams, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.update(this._storagePath, {
         ...resp.body,

@@ -132,7 +132,7 @@ describe 'Functional. Document type.', ->
     moldMain = mold( {silent: true}, testSchema() )
     document = moldMain.child('document')
 
-    expect(this.document.put({id: 0, unsaveable: 'newValue'})).to.eventually
+    expect(document.put({id: 0, unsaveable: 'newValue'})).to.eventually
     .property('request').property('payload').deep.equal({
       id: 0,
     })

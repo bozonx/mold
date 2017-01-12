@@ -155,6 +155,13 @@ export function joinPath(pathArray) {
   return joined.replace(/\.\[/g, '[');
 }
 
+export function omitUnsaveable(payload, documentSchema) {
+  const unsaveableParamsNames = [];
+  _.each(documentSchema.schema, (item, name) => {
+    if (item.saveable === false) unsaveableParamsNames.push(name);
+  });
+  return _.omit(payload, unsaveableParamsNames);
+}
 
 // export function convertFromMoldToDocumentStoragePath(moldPath) {
 //   return moldPath.replace(/(\[\d+])$/, '.documents$1');
