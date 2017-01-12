@@ -35,12 +35,6 @@ export default class Document extends Container{
     return this._lastChanges;
   }
 
-  // $initStorage() {
-  //   if (!_.isPlainObject(this._main.$$state.getMold(paths.storage))) {
-  //     this._main.$$state.setSilent(paths.storage, {});
-  //   }
-  // }
-
   $init(paths, schema) {
     super.$init(paths, schema);
   }

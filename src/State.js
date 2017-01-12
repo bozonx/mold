@@ -1,7 +1,7 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { findTheClosestParentPath, eachSchema, convertFromSchemaToLodash, concatPath } from './helpers';
+import { findTheClosestParentPath, concatPath } from './helpers';
 import Request from './Request';
 
 
@@ -13,9 +13,7 @@ export default class State {
     this._handlers = {};
     this._urlParams = {};
 
-    //var initialStorage = this._getInitialStorage(this._main.$$schemaManager.getFullSchema());
-    const initialStorage = {};
-    this._storage.$init(initialStorage);
+    this._storage.$init({});
   }
 
   /**
@@ -274,45 +272,6 @@ export default class State {
 
   _checkNode(path, value, schema) {
     // TODO: do it - node has to consist to schema
-  }
-
-  _getInitialStorage(rawSchema) {
-    const initialStorage = {};
-
-    // Init storage. Collection's init behavior if different than in schema init.
-    eachSchema(rawSchema, (path, value) => {
-      //  convert from schema to lodash
-      const moldPath = convertFromSchemaToLodash(path);
-      // containers
-      if (_.includes(['document', 'container'], value.type)) {
-        _.set(initialStorage, moldPath, {});
-      }
-      // arrays
-      else if (_.includes(['array', 'pagedCollection', 'collection'], value.type )) {
-        _.set(initialStorage, moldPath, []);
-
-        // don't go deeper
-        return false;
-      }
-      else if (value.type == 'documentsCollection') {
-        _.set(initialStorage, moldPath, {
-          pages: [],
-          //loading: [],
-          documents: {},
-        });
-
-        // don't go deeper
-        return false;
-      }
-      // primitives
-      else if (_.includes(['boolean', 'string', 'number'], value.type)) {
-        // don't set initial value
-        // don't go deeper
-        return false;
-      }
-    });
-
-    return initialStorage;
   }
 
 }
