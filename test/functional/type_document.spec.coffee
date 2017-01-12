@@ -13,8 +13,7 @@ describe 'Functional. Document type.', ->
           nested:
             type: 'container'
             schema:
-              nestedStringParam:
-                type: 'string'
+              nestedStringParam: { type: 'string' }
 
     this.testValues = {
       boolParam: true,
@@ -122,3 +121,18 @@ describe 'Functional. Document type.', ->
         expect(Promise.resolve(moldMain.$$schemaManager.$defaultMemoryDb.documentsCollection)).to.eventually.deep.equal([])
       ])).to.eventually.notify(done)
 
+  it "try to save unsaveable", ->
+    testSchema = () ->
+      document:
+        type: 'document'
+        schema:
+          id: {type: 'number', primary: true}
+          unsaveable: {type: 'string', saveable: false}
+
+    moldMain = mold( {silent: true}, testSchema() )
+    document = moldMain.child('document')
+
+    expect(this.document.put({id: 0, unsaveable: 'newValue'})).to.eventually
+    .property('request').property('payload').deep.equal({
+      id: 0,
+    })
