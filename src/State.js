@@ -87,12 +87,9 @@ export default class State {
     //   this._main.$$log.fatal(`You can add new item only to collection!`);
 
     this._checkNode(moldPath, newItem);
-    if (_.isNumber(pageNum)) {
-      this._storage.unshift(concatPath(storagePath, pageNum), newItem);
-    }
-    else {
-      this._storage.unshift(storagePath, newItem);
-    }
+
+    const path = (_.isNumber(pageNum)) ? concatPath(storagePath, pageNum) : storagePath;
+    this._storage.unshift(path, newItem);
   }
 
   /**
@@ -113,12 +110,8 @@ export default class State {
 
     this._checkNode(moldPath, newItem);
 
-    if (_.isNumber(pageNum)) {
-      this._storage.push(concatPath(storagePath, pageNum), newItem);
-    }
-    else {
-      this._storage.push(storagePath, newItem);
-    }
+    const path = (_.isNumber(pageNum)) ? concatPath(storagePath, pageNum) : storagePath;
+    this._storage.push(path, newItem);
   }
 
   /**
@@ -138,12 +131,8 @@ export default class State {
     if (!_.isNumber(itemToRemove.$index))
       this._main.$$log.fatal(`Deleted item must has an $index param.`);
 
-    if (_.isNumber(pageNum)) {
-      this._storage.remove(concatPath(storagePath, pageNum), itemToRemove.$index);
-    }
-    else {
-      this._storage.remove(storagePath, itemToRemove.$index);
-    }
+    const path = (_.isNumber(pageNum)) ? concatPath(storagePath, pageNum) : storagePath;
+    this._storage.remove(path, itemToRemove.$index);
   }
 
   /**
@@ -164,7 +153,6 @@ export default class State {
 
     const preparedPage = _.cloneDeep(page);
 
-    //this._checkNode(moldPath, page);
     this._storage.addTo(storagePath, preparedPage, pageNum);
   }
 
@@ -194,15 +182,7 @@ export default class State {
       if (event.path == moldPath) userHandler(event);
     };
 
-    // Save listener
-    if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
-    this._handlers[moldPath].push({
-      wrapperHandler,
-      userHandler,
-    });
-
-    // Add listener
-    this._main.$$events.on('change', wrapperHandler);
+    this._addListener(moldPath, userHandler, wrapperHandler);
   }
 
   /**
@@ -216,15 +196,7 @@ export default class State {
       if (event.path.startsWith(moldPath)) userHandler(event);
     };
 
-    // Save listener
-    if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
-    this._handlers[moldPath].push({
-      wrapperHandler,
-      userHandler,
-    });
-
-    // Add listener
-    this._main.$$events.on('change', wrapperHandler);
+    this._addListener(moldPath, userHandler, wrapperHandler);
   }
 
   /**
@@ -235,7 +207,7 @@ export default class State {
   removeListener(moldPath, handler) {
     if (!this._handlers[moldPath]) return;
 
-    let itemIndex;
+    let itemIndex = -1;
 
     var found = _.find(this._handlers[moldPath], (item, index) => {
       if (item.userHandler === handler) {
@@ -255,7 +227,12 @@ export default class State {
     this._main.$$events.removeListener('change', found.wrapperHandler);
   }
 
-  destroyListeners(moldPath, deep = false) {
+  /**
+   * Remove all listeners on path.
+   * @param moldPath
+   * @param deep
+   */
+  destroyListeners(moldPath, deep=false) {
     const clearing = (path) => {
       _.each(this._handlers[path], (item) => {
         this._main.$$events.removeListener('change', item.wrapperHandler);
@@ -282,69 +259,20 @@ export default class State {
   }
 
 
+  _addListener(moldPath, userHandler, wrapperHandler) {
+    // Save listener
+    if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
+    this._handlers[moldPath].push({
+      wrapperHandler,
+      userHandler,
+    });
 
-  /**
-   * Check for node. It isn't work with container.
-   * It rises an error on invalid value or node.
-   * @param {string} path - path to a param. (Not to container)
-   * @param {*} value - value to set. (Not undefined and not an object)
-   * @returns {boolean}
-   * @private
-   */
+    // Add listener
+    this._main.$$events.on('change', wrapperHandler);
+  }
+
   _checkNode(path, value, schema) {
-    // TODO: переделать!!!
-
-    return true;
-
-
-    schema = schema || this._main.$$schemaManager.get(path);
-
-
-
-    const _checkRecursively = function(path, value, childPath, childSchema) {
-      if (childSchema.type) {
-        // param
-        let valuePath = childPath;
-        if (path !== '') valuePath = childPath.replace(path + '.', '');
-
-        const childValue = _.get(value, valuePath);
-
-        // If value doesn't exist for this schema branch - do nothing
-        if (_.isUndefined(childValue)) return false;
-
-        // It rises an error on invalid value
-        this._checkNode(childPath, childValue, childSchema);
-
-        return false;
-      }
-
-      // If it's a container - go deeper
-      return true;
-    };
-
-    if (schema.type == 'array') {
-      // For array
-      // TODO: validate all items in list
-      return true;
-    }
-    else if (schema.type == 'collection') {
-      // For collection
-      // TODO: do it for parametrized lists
-      // TODO: validate all items in list
-      return true;
-    }
-    else if (schema.type) {
-      // For primitive
-      // TODO: validate it!!!
-      return true;
-    }
-    else if (!schema.type) {
-      // It's a container - check values for all children
-      //recursiveSchema(path, schema, _checkRecursively.bind(this, path, value));
-      return true;
-    }
-
-    this._main.$$log.fatal(`Not valid value "${JSON.stringify(value)}" of param "${path}"! See validation rules in your schema.`);
+    // TODO: do it - node has to consist to schema
   }
 
   _getInitialStorage(rawSchema) {
