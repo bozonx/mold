@@ -19,7 +19,7 @@ export default class Main {
     this.$$log = this.$$config.logger;
     this.$$schemaManager = new SchemaManager(this);
     this.$$state = new State();
-    this.$$storage = new Storage(this.$$events, this.$$log);
+    this._storage = new Storage(this.$$events, this.$$log);
 
     // register base types
     this.$$schemaManager.registerType('pagedCollection', PagedCollection);
@@ -30,7 +30,7 @@ export default class Main {
 
     // initialize
     this.$$schemaManager.init(schema);
-    this.$$state.init(this, this.$$storage);
+    this.$$state.init(this, this._storage);
   }
 
   /**
@@ -39,7 +39,7 @@ export default class Main {
    * @returns {*}
    */
   $getWholeStorageState() {
-    return this.$$storage.$getWholeStorageState();
+    return this._storage.$getWholeStorageState();
   }
 
   /**
@@ -47,7 +47,7 @@ export default class Main {
    * @returns {*}
    */
   exportStorage() {
-    return _.cloneDeep(this.$$storage.$getWholeStorageState());
+    return _.cloneDeep(this._storage.$getWholeStorageState());
   }
 
   /**

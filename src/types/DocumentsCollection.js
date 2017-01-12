@@ -116,7 +116,7 @@ export default class DocumentsCollection extends PagedCollection {
 
     this._setPageLoadingState(pageNum, true);
     // rise an event
-    this._main.$$storage.emit(this._moldPath);
+    this._main.$$state.storageEmit(this._moldPath);
 
     return this._main.$$state.$$request.sendRequest(
         'filter', this._moldPath, this._schema, undefined, metaParams, this.getUrlParams())
