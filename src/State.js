@@ -49,15 +49,6 @@ export default class State {
   }
 
   /**
-   * Set container or collection to mold
-   * @param {string} storagePath
-   * @param {*} value - valid value
-   */
-  update(storagePath, value) {
-    this._storage.update(storagePath, value);
-  }
-
-  /**
    * Set to mold silently
    * @param {string} storagePath
    * @param {*} value - valid value
@@ -66,25 +57,10 @@ export default class State {
     this._storage.setSilent(storagePath, value);
   }
 
-  /**
-   * Add to beginning of a collection in store by user action.
-   * It add item as is, not clones it.
-   * @param {string} storagePath
-   * @param {object} newItem
-   */
-  unshift(storagePath, newItem) {
-    this._storage.unshift(storagePath, newItem);
-  }
-
-  /**
-   * Add to end of collection in store by user action.
-   * It add item as is, not clones it.
-   * @param {string} storagePath
-   * @param {object} newItem
-   */
-  push(storagePath, newItem) {
-    this._storage.push(storagePath, newItem);
-  }
+  // these methods are only wrappers of storage's methods
+  update(...params) { this._storage.update(...params) }
+  unshift(...params) { this._storage.unshift(...params) }
+  push(...params) { this._storage.push(...params) }
 
   /**
    * Remove item from collection.
@@ -106,9 +82,7 @@ export default class State {
    * @param {number} pageNum. It's required.
    */
   setPage(storagePath, page, pageNum) {
-    const preparedPage = _.cloneDeep(page);
-
-    this._storage.addTo(storagePath, preparedPage, pageNum);
+    this._storage.addTo(storagePath, page, pageNum);
   }
 
   /**

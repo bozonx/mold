@@ -167,7 +167,8 @@ export default class PagedCollection extends _TypeBase {
     if (!_.isArray(page))
       this._main.$$log.fatal(`The page must be type of array!`);
 
-    this._main.$$state.setPage(this._storagePath, page, pageNum);
+    const preparedPage = _.cloneDeep(page);
+    this._main.$$state.setPage(this._storagePath, preparedPage, pageNum);
   }
 
   /**
