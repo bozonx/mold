@@ -60,7 +60,7 @@ describe 'Functional. Container type.', ->
 
   it "clear()", ->
     this.container.update({
-      stringParam: 'newerValue',
+      stringParam: 'newValue',
       numberParam: 5,
     })
     this.container.clear();

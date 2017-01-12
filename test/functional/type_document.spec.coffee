@@ -73,6 +73,15 @@ describe 'Functional. Document type.', ->
       .equal(false)
       .notify(done)
 
+  it "clear()", ->
+    this.document.update({
+      stringParam: 'newValue',
+      numberParam: 5,
+    })
+    this.document.clear();
+    assert.deepEqual(this.document.mold, {})
+
+
   it "remove", (done) ->
     testSchema = () ->
       documentsCollection:
@@ -112,3 +121,4 @@ describe 'Functional. Document type.', ->
         expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.documents['0'].id)).to.eventually.equal(0)
         expect(Promise.resolve(moldMain.$$schemaManager.$defaultMemoryDb.documentsCollection)).to.eventually.deep.equal([])
       ])).to.eventually.notify(done)
+

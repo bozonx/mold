@@ -66,3 +66,8 @@ describe 'Functional. Collection type.', ->
       }
     ])
     expect(this.onSpy).to.have.been.calledThrice
+
+  it "clear()", ->
+    this.collection.push({id: 0})
+    this.collection.clear();
+    assert.deepEqual(this.collection.mold, [])
