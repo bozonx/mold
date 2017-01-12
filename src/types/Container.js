@@ -18,7 +18,14 @@ export default class Container extends _TypeBase{
     return 'container';
   }
 
+  $initStorage(paths) {
+    if (!_.isPlainObject(this._main.$$state.getMold(paths.storage))) {
+      this._main.$$state.setSilent(paths.storage, {});
+    }
+  }
+
   $init(paths, schema) {
+    this.$initStorage(paths);
     super.$init(paths, schema);
   }
 

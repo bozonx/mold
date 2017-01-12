@@ -19,7 +19,14 @@ export default class Collection extends _TypeBase {
     return 'collection';
   }
 
+  $initStorage(paths) {
+    if (!_.isPlainObject(this._main.$$state.getMold(paths.storage))) {
+      this._main.$$state.setSilent(paths.storage, []);
+    }
+  }
+
   $init(paths, schema) {
+    this.$initStorage(paths);
     super.$init(paths, schema);
   }
 

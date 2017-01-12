@@ -20,6 +20,16 @@ export default class DocumentsCollection extends PagedCollection {
     return this._loading;
   }
 
+  $initStorage(paths) {
+    if (!_.isPlainObject(this._main.$$state.getMold(paths.storage))) {
+      this._main.$$state.setSilent(paths.storage, {
+        pages: [],
+        state: {},
+        documents: {},
+      });
+    }
+  }
+
   $init(paths, schema) {
     this._storagePath = paths.storage + '.pages';
     this._rootStoragePath = paths.storage;

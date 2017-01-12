@@ -30,7 +30,14 @@ export default class PagedCollection extends _TypeBase {
     return 'pagedCollection';
   }
 
+  $initStorage(paths) {
+    if (!_.isPlainObject(this._main.$$state.getMold(paths.storage))) {
+      this._main.$$state.setSilent(paths.storage, []);
+    }
+  }
+
   $init(paths, schema) {
+    this.$initStorage(paths);
     super.$init(paths, schema);
     // TODO: впринципе можно использовать _mold внесто _moldPages
     this._moldPages = this._mold;

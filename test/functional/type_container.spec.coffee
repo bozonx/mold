@@ -30,10 +30,7 @@ describe 'Functional. Container type.', ->
     this.container = this.mold.child('container')
 
   it "Initial values", ->
-    assert.deepEqual(this.container.mold, {
-      arrayParam: [],
-      nested: {}
-    })
+    assert.deepEqual(this.container.mold, {})
 
   it "child(subpath)", ->
     nested = this.container.child('nested')
@@ -59,6 +56,4 @@ describe 'Functional. Container type.', ->
       stringParam: 'newerValue',
       numberParam: 6,
       boolParam: true,
-      arrayParam: [],
-      nested: {}
     })

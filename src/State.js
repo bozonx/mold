@@ -13,7 +13,8 @@ export default class State {
     this._handlers = {};
     this._urlParams = {};
 
-    var initialStorage = this._getInitialStorage(this._main.$$schemaManager.getFullSchema());
+    //var initialStorage = this._getInitialStorage(this._main.$$schemaManager.getFullSchema());
+    const initialStorage = {};
     this._storage.$init(initialStorage);
   }
 
