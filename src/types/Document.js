@@ -49,7 +49,8 @@ export default class Document extends Container{
 
   update(newState) {
     this._lastChanges = correctUpdatePayload(this._lastChanges, newState);
-    this._main.$$state.update(this._storagePath, _.cloneDeep(newState));
+    //this._main.$$state.update(this._storagePath, _.cloneDeep(newState));
+    super.update(newState);
   }
 
   /**

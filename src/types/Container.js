@@ -27,6 +27,10 @@ export default class Container extends _TypeBase{
   $init(paths, schema) {
     this.$initStorage(paths);
     super.$init(paths, schema);
+    this.__readOnlyProps = [];
+    _.each(this.schema.schema, (item, name) => {
+      if (item.readOnly) this.__readOnlyProps.push(name);
+    });
   }
 
   /**
@@ -66,6 +70,12 @@ export default class Container extends _TypeBase{
   }
 
   update(newState) {
+    const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);
+
+    if (!_.isEmpty(forbiddenRoProps)) {
+      this._main.$$log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
+    }
+
     this._main.$$state.update(this._storagePath, _.cloneDeep(newState));
   }
 

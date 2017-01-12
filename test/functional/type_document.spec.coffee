@@ -126,7 +126,7 @@ describe 'Functional. Document type.', ->
       document:
         type: 'document'
         schema:
-          id: {type: 'number', primary: true}
+          id: {type: 'number'}
           unsaveable: {type: 'string', saveable: false}
 
     moldMain = mold( {silent: true}, testSchema() )
@@ -136,3 +136,15 @@ describe 'Functional. Document type.', ->
     .property('request').property('payload').deep.equal({
       id: 0,
     })
+
+  it "update read only - it throws an error", ->
+    testSchema = () ->
+      document:
+        type: 'document'
+        schema:
+          id: {type: 'number', readOnly: true}
+
+    moldMain = mold( {silent: true}, testSchema() )
+    document = moldMain.child('document')
+
+    assert.throws(document.update.bind(document, {id: 5}))
