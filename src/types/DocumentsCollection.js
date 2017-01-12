@@ -193,7 +193,8 @@ export default class DocumentsCollection extends PagedCollection {
         this._updateDoc(documentMold, { $deleting: false });
         // remove from page
         if (_.isNumber(documentMold.$pageIndex)) {
-          this._main.$$state.remove(this._moldPath, this._storagePath, documentMold, documentMold.$pageIndex);
+          const storagePathToPage = concatPath(this._storagePath, documentMold.$pageIndex);
+          this._main.$$state.remove(this._moldPath, storagePathToPage, documentMold);
         }
         return resp;
       }, (err) => {

@@ -75,9 +75,8 @@ export default class State {
    * @param {string} moldPath
    * @param {string} storagePath
    * @param {object} newItem
-   * @param {number|undefined} pageNum
    */
-  unshift(moldPath, storagePath, newItem, pageNum = undefined) {
+  unshift(moldPath, storagePath, newItem) {
     // // It rise an error if path doesn't consist with schema
     // const schema = this._main.$$schemaManager.get(moldPath);
     //
@@ -87,8 +86,7 @@ export default class State {
 
     this._checkNode(moldPath, newItem);
 
-    const path = (_.isNumber(pageNum)) ? concatPath(storagePath, pageNum) : storagePath;
-    this._storage.unshift(path, newItem);
+    this._storage.unshift(storagePath, newItem);
   }
 
   /**
@@ -97,9 +95,8 @@ export default class State {
    * @param {string} moldPath
    * @param {string} storagePath
    * @param {object} newItem
-   * @param {number|undefined} pageNum
    */
-  push(moldPath, storagePath, newItem, pageNum = undefined) {
+  push(moldPath, storagePath, newItem) {
     // // It rise an error if path doesn't consist with schema
     // const schema = this._main.$$schemaManager.get(moldPath);
     //
@@ -109,8 +106,7 @@ export default class State {
 
     this._checkNode(moldPath, newItem);
 
-    const path = (_.isNumber(pageNum)) ? concatPath(storagePath, pageNum) : storagePath;
-    this._storage.push(path, newItem);
+    this._storage.push(storagePath, newItem);
   }
 
   /**
@@ -118,9 +114,8 @@ export default class State {
    * @param {string} moldPath
    * @param {string} storagePath
    * @param {object} itemToRemove
-   * @param {number|undefined} pageNum
    */
-  remove(moldPath, storagePath, itemToRemove, pageNum = undefined) {
+  remove(moldPath, storagePath, itemToRemove) {
     // // It rise an error if path doesn't consist with schema
     // const schema = this._main.$$schemaManager.get(moldPath);
     //
@@ -130,8 +125,7 @@ export default class State {
     if (!_.isNumber(itemToRemove.$index))
       this._main.$$log.fatal(`Deleted item must has an $index param.`);
 
-    const path = (_.isNumber(pageNum)) ? concatPath(storagePath, pageNum) : storagePath;
-    this._storage.remove(path, itemToRemove.$index);
+    this._storage.remove(storagePath, itemToRemove.$index);
   }
 
   /**
