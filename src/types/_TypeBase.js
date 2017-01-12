@@ -1,3 +1,5 @@
+import { splitPath, joinPath } from '../helpers';
+
 export default class _TypeBase {
   constructor(main) {
     this._main = main;
@@ -44,6 +46,18 @@ export default class _TypeBase {
     this._schema = schema;
     // mold is just a link to the storage
     this._mold = this._mold || this._main.$$state.getMold(this._storagePath);
+  }
+
+  /**
+   * Get instance of parent by mold path.
+   * @return {object|undefined}
+   */
+  getParent() {
+    const pathParts = splitPath(this._moldPath);
+    pathParts.pop();
+    if (!pathParts.length) return;
+    const parentPath = joinPath(pathParts);
+    return this._main.child(parentPath);
   }
 
   /**

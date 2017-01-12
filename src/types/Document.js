@@ -127,36 +127,22 @@ export default class Document extends Container{
     });
   }
 
+  /**
+   * Delete a document via documentsCollection.
+   * You can't remove document that not inside a collection.
+   * @param {object} metaParams
+   * @return {Promise}
+   */
   remove(metaParams=undefined) {
-    // TODO: как выяснить что это документ в коллекции - у него есть $pageNum
+    if (!_.isNumber(this.mold.$pageNum) || !_.isNumber(this.mold.$index))
+      this._main.$$log.fatal(`There are no $pageNum or $index params. You can remove only from DocumentsCollection`);
 
+    const myDocumentsCollection = this.getParent();
 
-    // TODO: !!!!! не правильно
-    const moldPathToCollection = this._moldPath.replace(/\[\d+]\[\d+]$/, '');
-    // TODO: url params брать коллекции или документа??? или объединенные?
-    //const urlParams = this.getUrlParams();
-    const urlParams = {};
+    if (!myDocumentsCollection)
+      this._main.$$log.fatal(`You can remove only from DocumentsCollection`);
 
-
-
-    this._main.$$state.update(this._storagePath, { $deleting: true });
-
-    console.log(77777777777, this._moldPath, this._storagePath, moldPathToCollection)
-
-
-    return this._main.$$state.$$request.sendRequest(
-      'delete', moldPathToCollection, this._schema, this.mold, metaParams, urlParams)
-      .then((resp) => {
-        this._main.$$state.update(this._storagePath, { $deleting: false });
-        // remove from page
-        if (_.isNumber(this.mold.$pageIndex)) {
-          this._main.$$state.remove(this.mold, this.mold.$pageIndex);
-        }
-        return resp;
-      }, (err) => {
-        this._main.$$state.update(this._storagePath, { $deleting: false });
-        return Promise.reject(err);
-      });
+    return myDocumentsCollection.remove(this.mold, metaParams);
   }
 
 }

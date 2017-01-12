@@ -176,15 +176,6 @@ export default class DocumentsCollection extends PagedCollection {
    * @returns {Promise}
    */
   remove(documentMold, metaParams=undefined) {
-    // console.log(1111, documentMold)
-    //
-    // const document = this.child(`[${documentMold.$pageIndex}][${documentMold.$index}]`);
-    //
-    // console.log(6666666, document)
-    //
-    // document.remove(metaParams);
-
-
     // change with event rising
     this._updateDoc(documentMold, { $deleting: true });
     return this._main.$$state.$$request.sendRequest(
