@@ -19,7 +19,7 @@ export default class Main {
     this.$$log = this.$$config.logger;
     this.$$schemaManager = new SchemaManager(this);
     this.$$state = new State();
-    this.$$storage = new Storage(this.$$events);
+    this.$$storage = new Storage(this.$$events, this.$$log);
 
     // register base types
     this.$$schemaManager.registerType('pagedCollection', PagedCollection);

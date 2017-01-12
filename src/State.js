@@ -73,9 +73,6 @@ export default class State {
    * @param {object} newItem
    */
   unshift(storagePath, newItem) {
-    // if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
-    //   this._main.$$log.fatal(`You can add new item only to collection!`);
-
     this._storage.unshift(storagePath, newItem);
   }
 
@@ -86,9 +83,6 @@ export default class State {
    * @param {object} newItem
    */
   push(storagePath, newItem) {
-    // if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
-    //   this._main.$$log.fatal(`You can add new item only to collection!`);
-
     this._storage.push(storagePath, newItem);
   }
 
@@ -98,9 +92,6 @@ export default class State {
    * @param {object} itemToRemove
    */
   remove(storagePath, itemToRemove) {
-    // if (!_.includes(['collection', 'pagedCollection', 'documentsCollection'], schema.type))
-    //   this._main.$$log.fatal(`You can remove only from collection!`);
-
     if (!_.isNumber(itemToRemove.$index))
       this._main.$$log.fatal(`Deleted item must has an $index param.`);
 
@@ -115,10 +106,6 @@ export default class State {
    * @param {number} pageNum. It's required.
    */
   setPage(storagePath, page, pageNum) {
-    // // TODO: перенести это в checkNode
-    // if (schema.type !== 'pagedCollection' && schema.type !== 'documentsCollection')
-    //   this._main.$$log.fatal(`You can add new item only to paged collection!`);
-
     const preparedPage = _.cloneDeep(page);
 
     this._storage.addTo(storagePath, preparedPage, pageNum);
@@ -130,9 +117,6 @@ export default class State {
    * @param pageNum
    */
   removePage(storagePath, pageNum) {
-    // if (!_.includes(['pagedCollection', 'documentsCollection'], schema.type))
-    //   this._main.$$log.fatal(`You can remove  page only from pagedCollection of documentsCollection!`);
-
     this._storage.update(concatPath(storagePath, pageNum), undefined);
   }
 

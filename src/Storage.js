@@ -4,8 +4,9 @@ import { concatPath } from './helpers';
 import { mutate, updateIndexes } from './mutate';
 
 export default class Storage {
-  constructor(events) {
+  constructor(events, log) {
     this._events = events;
+    this._log = log;
     this._storage = null;
   }
 
@@ -77,7 +78,9 @@ export default class Storage {
    */
   unshift(pathToCollection, newItem) {
     if (!_.isObject(newItem)) return;
-    var collection = this.get(pathToCollection);
+    const collection = this.get(pathToCollection);
+
+    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${pathToCollection}"`);
 
     // add to beginning
     collection.splice(0, 0, newItem);
@@ -97,6 +100,7 @@ export default class Storage {
    */
   push(pathToCollection, newItem) {
     const collection = this.get(pathToCollection);
+    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${pathToCollection}"`);
     this.addTo(pathToCollection, newItem, collection.length);
   }
 
@@ -111,6 +115,7 @@ export default class Storage {
     if (!_.isObject(newItem)) return;
     if (!_.isNumber(index)) return;
     const collection = this.get(pathToCollection);
+    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${pathToCollection}"`);
     const oldCollectionLength = collection.length;
 
     let pageIndex = pathToCollection.replace(/.*\[(\d+)]$/, '$1');
@@ -142,6 +147,7 @@ export default class Storage {
   remove(pathToCollection, $index) {
     if (!_.isNumber($index)) return;
     const collection = this.get(pathToCollection);
+    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${pathToCollection}"`);
 
     if ($index > collection.length - 1) return;
 
