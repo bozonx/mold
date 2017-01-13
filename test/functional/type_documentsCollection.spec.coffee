@@ -76,7 +76,7 @@ describe 'Functional. DocumentsCollection type.', ->
 
     it "loading state", (done) ->
       handler = sinon.spy();
-      this.mold.onAnyUpdate(handler)
+      this.mold.onChange(handler)
 
       assert.deepEqual(this.documentsCollection.loading, [])
       promise = this.documentsCollection.load(0)

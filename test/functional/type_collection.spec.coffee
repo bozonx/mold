@@ -12,7 +12,7 @@ describe 'Functional. Collection type.', ->
             id: {type: 'number', primary: true}
             name: {type: 'string'}
     this.mold = mold( {silent: true}, this.testSchema() )
-    this.mold.onAnyUpdate(this.onSpy)
+    this.mold.onChange(this.onSpy)
     this.collection = this.mold.child('collection')
 
   it 'init value', ->

@@ -20,8 +20,8 @@ describe 'Functional. Events.', ->
     this.handlerNested = sinon.spy();
 
   describe 'main', ->
-    it 'mold.onAnyUpdate()', ->
-      this.mold.onAnyUpdate(this.handlerContainer)
+    it 'mold.onChange()', ->
+      this.mold.onChange(this.handlerContainer)
       this.container = this.mold.child('container')
       this.container.update({
         stringParam: 'newValue'
@@ -33,10 +33,10 @@ describe 'Functional. Events.', ->
         action: 'change'
       })
 
-    it 'mold.offAnyUpdate()', ->
-      this.mold.onAnyUpdate(this.handlerContainer)
+    it 'mold.off()', ->
+      this.mold.onChange(this.handlerContainer)
       this.container = this.mold.child('container')
-      this.mold.offAnyUpdate(this.handlerContainer)
+      this.mold.off(this.handlerContainer)
       this.container.update({
         stringParam: 'newValue'
       })

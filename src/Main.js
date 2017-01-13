@@ -60,11 +60,11 @@ export default class Main {
     return this.$$schemaManager.getInstance(path, context);
   }
 
-  onAnyUpdate(handler) {
+  onChange(handler) {
     this.$$events.on('change', handler);
   }
 
-  offAnyUpdate(handler) {
+  off(handler) {
     this.$$events.off('change', handler);
   }
 
