@@ -40,7 +40,7 @@ export default class PagedCollection extends _TypeBase {
     this._storagePagesPath = this._storagePagesPath || paths.storage;
     this.$initStorage(paths);
     super.$init(paths, schema);
-    this._moldPages = this._mold;
+    this._moldPages = this.mold;
   }
 
   getPage(pageNum) {

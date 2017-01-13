@@ -20,9 +20,16 @@ export default class DocumentsCollection extends PagedCollection {
     return this._loading;
   }
 
+  /**
+   * Overwrote. Get real mold.
+   */
+  get mold() {
+    return this._mold.pages;
+  }
+
   $initStorage() {
-    if (!_.isPlainObject(this._main.$$state.getMold(this._rootStoragePath))) {
-      this._main.$$state.setSilent(this._rootStoragePath, {
+    if (!_.isPlainObject(this._main.$$state.getMold(this._storagePath))) {
+      this._main.$$state.setSilent(this._storagePath, {
         pages: [],
         state: {},
         documents: {},
@@ -31,20 +38,22 @@ export default class DocumentsCollection extends PagedCollection {
   }
 
   $init(paths, schema) {
-    this._rootStoragePath = paths.storage;
+    this._storagePath = paths.storage;
     this._storagePagesPath = paths.storage + '.pages';
-    // it needs to TypeBase to get mold
-    this._storagePath = this._storagePagesPath;
 
     super.$init(paths, schema);
 
-    this._storageData = this._main.$$state.getMold(paths.storage);
-    this._moldPages = this._storageData.pages;
-
-    this._storageData.state = {
+    this._mold.state = {
       loading: [],
     };
-    this._loading = this._storageData.state.loading;
+    this._loading = this._mold.state.loading;
+  }
+
+  /**
+   * Overwrote clear.
+   */
+  clear() {
+    this._main.$$state.clear(this._storagePagesPath);
   }
 
   getUrlParams() {
@@ -74,7 +83,7 @@ export default class DocumentsCollection extends PagedCollection {
     return {
       mold: concatPath(this._moldPath, primaryId),
       schema: concatPath(this._schemaPath, 'item'),
-      storage: concatPath(this._rootStoragePath, concatPath('documents', primaryId)),
+      storage: concatPath(this._storagePath, concatPath('documents', primaryId)),
     }
   }
 
@@ -213,7 +222,7 @@ export default class DocumentsCollection extends PagedCollection {
     // update document in "documents"
     const primaryName = findPrimary(this.schema.item);
     const storagePathToDocInDocuments = concatPath(
-      concatPath(this._rootStoragePath, 'documents'), `[${documentMold[primaryName]}]`);
+      concatPath(this._storagePath, 'documents'), `[${documentMold[primaryName]}]`);
 
     if (!this._main.$$state.getMold(storagePathToDocInDocuments)) return;
     this._main.$$state.update(storagePathToDocInDocuments, newState);

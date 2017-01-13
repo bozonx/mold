@@ -176,8 +176,6 @@ export default class State {
   }
 
   clear(storagePath) {
-    // TODO: test it
-    // TODO: должен поддержитьвать запросы документов - __responses
     this._storage.clear(storagePath);
   }
 
