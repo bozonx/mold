@@ -97,42 +97,43 @@ export default class State {
 
   /**
    * Add change event handler on path.
-   * @param {string} moldPath - full path in mold
+   * @param {string} storagePath
    * @param {function} userHandler
    */
-  addListener(moldPath, userHandler) {
+  addListener(storagePath, userHandler) {
     const wrapperHandler = (event) => {
-      if (event.path == moldPath) userHandler(event);
+      // TODO: переименовать
+      if (event.path == storagePath) userHandler(event);
     };
 
-    this._addListener(moldPath, userHandler, wrapperHandler);
+    this._addListener(storagePath, userHandler, wrapperHandler);
   }
 
   /**
    * Add change event handler on path deeply.
    * It means it rises on each change of any child of any deep.
-   * @param {string} moldPath - full path in mold
+   * @param {string} storagePath
    * @param {function} userHandler
    */
-  addDeepListener(moldPath, userHandler) {
+  addDeepListener(storagePath, userHandler) {
     const wrapperHandler = (event) => {
-      if (event.path.startsWith(moldPath)) userHandler(event);
+      if (event.path.startsWith(storagePath)) userHandler(event);
     };
 
-    this._addListener(moldPath, userHandler, wrapperHandler);
+    this._addListener(storagePath, userHandler, wrapperHandler);
   }
 
   /**
    * Remove change event handler from path.
-   * @param {string} moldPath - full path in mold
+   * @param {string} storagePath
    * @param {function} handler
    */
-  removeListener(moldPath, handler) {
-    if (!this._handlers[moldPath]) return;
+  removeListener(storagePath, handler) {
+    if (!this._handlers[storagePath]) return;
 
     let itemIndex = -1;
 
-    var found = _.find(this._handlers[moldPath], (item, index) => {
+    var found = _.find(this._handlers[storagePath], (item, index) => {
       if (item.userHandler === handler) {
         itemIndex = index;
         return item;
@@ -141,9 +142,9 @@ export default class State {
 
     if (!found) return;
 
-    this._handlers[moldPath].splice(itemIndex, 1);
-    if (!this._handlers[moldPath].length) {
-      delete this._handlers[moldPath];
+    this._handlers[storagePath].splice(itemIndex, 1);
+    if (!this._handlers[storagePath].length) {
+      delete this._handlers[storagePath];
     }
 
     // Unbind listener
@@ -152,10 +153,10 @@ export default class State {
 
   /**
    * Remove all listeners on path.
-   * @param moldPath
+   * @param storagePath
    * @param deep
    */
-  destroyListeners(moldPath, deep=false) {
+  destroyListeners(storagePath, deep=false) {
     const clearing = (path) => {
       _.each(this._handlers[path], (item) => {
         this._main.$$events.removeListener('change', item.wrapperHandler);
@@ -165,13 +166,13 @@ export default class State {
 
     if (deep) {
       _.each(this._handlers, (list, path) => {
-        if (!path.startsWith(moldPath)) return;
+        if (!path.startsWith(storagePath)) return;
         clearing(path);
       });
     }
     else {
-      if (!this._handlers[moldPath]) return;
-      clearing(moldPath);
+      if (!this._handlers[storagePath]) return;
+      clearing(storagePath);
     }
   }
 
@@ -180,10 +181,10 @@ export default class State {
   }
 
 
-  _addListener(moldPath, userHandler, wrapperHandler) {
+  _addListener(storagePath, userHandler, wrapperHandler) {
     // Save listener
-    if (!this._handlers[moldPath]) this._handlers[moldPath] = [];
-    this._handlers[moldPath].push({
+    if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
+    this._handlers[storagePath].push({
       wrapperHandler,
       userHandler,
     });
