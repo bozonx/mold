@@ -65,7 +65,7 @@ export default class _TypeBase {
    * @param {function} handler
    */
   onChange(handler) {
-    this._main.$$state.addListener(this._moldPath, handler);
+    this._main.$$state.addListener(this._storagePath, handler);
   }
 
   /**
@@ -73,7 +73,7 @@ export default class _TypeBase {
    * @param {function} handler
    */
   onChangeDeep(handler) {
-    this._main.$$state.addDeepListener(this._moldPath, handler);
+    this._main.$$state.addDeepListener(this._storagePath, handler);
   }
 
   /**
@@ -81,14 +81,14 @@ export default class _TypeBase {
    * @param {function} handler - handler to remove
    */
   off(handler) {
-    this._main.$$state.removeListener(this._moldPath, handler);
+    this._main.$$state.removeListener(this._storagePath, handler);
   }
 
   /**
    * It removes all the events listeners.
    */
   destroy() {
-    this._main.$$state.destroyListeners(this._moldPath);
+    this._main.$$state.destroyListeners(this._storagePath);
   }
 
   /**
@@ -96,7 +96,7 @@ export default class _TypeBase {
    * Removes event listeners for children deeply too.
    */
   destroyDeep() {
-    this._main.$$state.destroyListeners(this._moldPath, true);
+    this._main.$$state.destroyListeners(this._storagePath, true);
   }
 
   /**
