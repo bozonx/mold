@@ -39,8 +39,8 @@ export default class PagedCollection extends _TypeBase {
   $init(paths, schema) {
     this.$initStorage(paths);
     super.$init(paths, schema);
-    // TODO: впринципе можно использовать _mold внесто _moldPages
     this._moldPages = this._mold;
+    this._storagePagesPath = this._storagePath;
   }
 
   getPage(pageNum) {
@@ -76,7 +76,7 @@ export default class PagedCollection extends _TypeBase {
   //
   //   let storage = undefined;
   //   if (finded) {
-  //     storage = concatPath(this._storagePath, `[${finded.$pageIndex}][${finded.$index}]`)
+  //     storage = concatPath(this._storagePagesPath, `[${finded.$pageIndex}][${finded.$index}]`)
   //   }
   //
   //   return {
@@ -129,7 +129,7 @@ export default class PagedCollection extends _TypeBase {
     newItem.$addedUnsaved = true;
 
     this._checkEmptyPage();
-    const storagePathToPage = concatPath(this._storagePath, 0);
+    const storagePathToPage = concatPath(this._storagePagesPath, 0);
     this._main.$$state.unshift(storagePathToPage, newItem);
   }
 
@@ -147,7 +147,7 @@ export default class PagedCollection extends _TypeBase {
 
     this._checkEmptyPage();
     const pageNum = this._moldPages.length - 1;
-    const storagePathToPage = concatPath(this._storagePath, pageNum);
+    const storagePathToPage = concatPath(this._storagePagesPath, pageNum);
     this._main.$$state.push(storagePathToPage, newItem);
   }
 
@@ -168,7 +168,7 @@ export default class PagedCollection extends _TypeBase {
       this._main.$$log.fatal(`The page must be type of array!`);
 
     const preparedPage = _.cloneDeep(page);
-    this._main.$$state.setPage(this._storagePath, preparedPage, pageNum);
+    this._main.$$state.setPage(this._storagePagesPath, preparedPage, pageNum);
   }
 
   /**
@@ -179,7 +179,7 @@ export default class PagedCollection extends _TypeBase {
     if (!_.isNumber(pageNum))
       this._main.$$log.fatal(`The pageNum must be type of number!`);
 
-    this._main.$$state.removePage(this._storagePath, pageNum);
+    this._main.$$state.removePage(this._storagePagesPath, pageNum);
   }
 
   /**
@@ -210,7 +210,7 @@ export default class PagedCollection extends _TypeBase {
   _checkEmptyPage() {
     if (_.isEmpty(this._moldPages)) {
       const pageNum = 0;
-      this._main.$$state.setPage(this._storagePath, [], pageNum);
+      this._main.$$state.setPage(this._storagePagesPath, [], pageNum);
     }
   }
 
