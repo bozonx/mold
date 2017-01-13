@@ -47,10 +47,9 @@ export default class Document extends Container{
     this._main.$$state.setUrlParams(this._moldPath, params);
   }
 
-  update(newState) {
+  update(newState, eventData=undefined) {
     this._lastChanges = correctUpdatePayload(this._lastChanges, newState);
-    //this._main.$$state.update(this._storagePath, _.cloneDeep(newState));
-    super.update(newState);
+    super.update(newState, eventData);
   }
 
   /**
