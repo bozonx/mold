@@ -28,97 +28,97 @@ export default class Storage {
    * Get value from the storage.
    * It hopes a path is correct
    * To get root you can pass '' or undefined to a path
-   * @param {string} path - absolute path
+   * @param {string} storagePath - absolute path in storage
    * @returns {*} - value by path
    */
-  get(path) {
-    if (!path) return this._storage;
+  get(storagePath) {
+    if (!storagePath) return this._storage;
 
-    return _.get(this._storage, path);
+    return _.get(this._storage, storagePath);
   }
 
   /**
    * Update container or collection.
    * This method deeply mutates existent object or arrays.
    * It rises an event only if were any changes
-   * @param {string} path
+   * @param {string} storagePath
    * @param {*} newValue
    */
-  update(path, newValue) {
+  update(storagePath, newValue) {
     // run mutates and get list of changes
-    var wereChanges = mutate(this._storage, path).update(newValue);
+    var wereChanges = mutate(this._storage, storagePath).update(newValue);
 
     // run update event
-    if (wereChanges) this._riseEvents(path, 'change');
+    if (wereChanges) this._riseEvents(storagePath, 'change');
   }
 
   /**
    * It set data to storage silently. It just replace data, it doesn't update it!
-   * @param {string} path
+   * @param {string} storagePath
    * @param {*} newValue
    */
-  setSilent(path, newValue) {
-    _.set(this._storage, path, newValue);
+  setSilent(storagePath, newValue) {
+    _.set(this._storage, storagePath, newValue);
   }
 
   /**
    * Emit an event
-   * @param {string} path
+   * @param {string} storagePath
    * @param {string} action - 'change', 'add' etc.
    */
-  emit(path, action='change') {
-    this._riseEvents(path, action);
+  emit(storagePath, action='change') {
+    this._riseEvents(storagePath, action);
   }
 
   /**
    * Add to beginning of collection
    * It rises an event any way.
-   * @param {string} pathToCollection - it must be a path to array in storage.
+   * @param {string} storagePathToCollection - it must be a path to array in storage.
    * @param {object} newItem
    */
-  unshift(pathToCollection, newItem) {
+  unshift(storagePathToCollection, newItem) {
     if (!_.isObject(newItem)) return;
-    const collection = this.get(pathToCollection);
+    const collection = this.get(storagePathToCollection);
 
-    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${pathToCollection}"`);
+    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${storagePathToCollection}"`);
 
     // add to beginning
     collection.splice(0, 0, newItem);
 
-    let pageIndex = pathToCollection.replace(/.*\[(\d+)]$/, '$1');
+    let pageIndex = storagePathToCollection.replace(/.*\[(\d+)]$/, '$1');
     pageIndex = _.toNumber(pageIndex);
     updateIndexes(collection, pageIndex);
 
     // run update event
-    this._riseEvents(pathToCollection, 'add');
+    this._riseEvents(storagePathToCollection, 'add');
   }
 
   /**
    * Add to the end of collection
-   * @param {string} pathToCollection - it must be a path to array in storage
+   * @param {string} storagePathToCollection - it must be a path to array in storage
    * @param {object} newItem
    */
-  push(pathToCollection, newItem) {
-    const collection = this.get(pathToCollection);
-    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${pathToCollection}"`);
-    this.addTo(pathToCollection, newItem, collection.length);
+  push(storagePathToCollection, newItem) {
+    const collection = this.get(storagePathToCollection);
+    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${storagePathToCollection}"`);
+    this.addTo(storagePathToCollection, newItem, collection.length);
   }
 
   /**
    * Add item specified index of collection.
    * It rises an event if item adds to the end or it update existent item and changes were registered.
-   * @param {string} pathToCollection - it must be a path to array in storage
+   * @param {string} storagePathToCollection - it must be a path to array in storage
    * @param {object} newItem
    * @param {number} index
    */
-  addTo(pathToCollection, newItem, index) {
+  addTo(storagePathToCollection, newItem, index) {
     if (!_.isObject(newItem)) return;
     if (!_.isNumber(index)) return;
-    const collection = this.get(pathToCollection);
-    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${pathToCollection}"`);
+    const collection = this.get(storagePathToCollection);
+    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${storagePathToCollection}"`);
     const oldCollectionLength = collection.length;
 
-    let pageIndex = pathToCollection.replace(/.*\[(\d+)]$/, '$1');
+    let pageIndex = storagePathToCollection.replace(/.*\[(\d+)]$/, '$1');
     pageIndex = _.toNumber(pageIndex);
 
     if (index + 1 > oldCollectionLength) {
@@ -128,26 +128,26 @@ export default class Storage {
       collection.splice(index, 1, newItem);
       updateIndexes(collection, pageIndex);
       // run update event
-      this._riseEvents(pathToCollection, 'add');
+      this._riseEvents(storagePathToCollection, 'add');
     }
     else {
       // change existent item
-      const wereChanges = mutate(this._storage, concatPath(pathToCollection, index)).update(newItem);
+      const wereChanges = mutate(this._storage, concatPath(storagePathToCollection, index)).update(newItem);
       updateIndexes(collection, pageIndex);
-      if (wereChanges) this._riseEvents(pathToCollection, 'change');
+      if (wereChanges) this._riseEvents(storagePathToCollection, 'change');
     }
   }
 
   /**
    * Remove item from collection by its $index.
    * After it, array will reduce.
-   * @param {string} pathToCollection
+   * @param {string} storagePathToCollection
    * @param {number} $index
    */
-  remove(pathToCollection, $index) {
+  remove(storagePathToCollection, $index) {
     if (!_.isNumber($index)) return;
-    const collection = this.get(pathToCollection);
-    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${pathToCollection}"`);
+    const collection = this.get(storagePathToCollection);
+    if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${storagePathToCollection}"`);
 
     if ($index > collection.length - 1) return;
 
@@ -155,19 +155,19 @@ export default class Storage {
     collection.splice($index, 1);
     updateIndexes(collection);
     // run update event
-    this._riseEvents(pathToCollection, 'remove');
+    this._riseEvents(storagePathToCollection, 'remove');
   }
 
   /**
    * Clear storage on path. But it doesn't remove container or array itself.
-   * @param {string} storagePath
+   * @param {string} storagePathToCollection
    */
-  clear(storagePath) {
-    const containerOrArray = _.get(this._storage, storagePath);
+  clear(storagePathToCollection) {
+    const containerOrArray = _.get(this._storage, storagePathToCollection);
     if (_.isEmpty(containerOrArray)) return;
 
     this._clearRecursive(containerOrArray);
-    this._riseEvents(storagePath, 'change');
+    this._riseEvents(storagePathToCollection, 'change');
   }
 
   /**
@@ -192,11 +192,11 @@ export default class Storage {
     }
   }
 
-  _riseEvents(path, action) {
+  _riseEvents(storagePath, action) {
     this._events.emit('change', {
-      path,
       // TODO: переименовать
-      //storagePath: path,
+      path: storagePath,
+      //storagePath,
       action,
     });
   }
