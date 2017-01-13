@@ -68,12 +68,22 @@ export default class _TypeBase {
     this._main.$$state.addListener(this._storagePath, handler);
   }
 
+  onAnyChange(handler) {
+    // TODO: вешать на все изменения включая silent
+    //this._main.$$state.addListener(this._storagePath, handler);
+  }
+
   /**
    * Listen changes of instance and its descendants.
    * @param {function} handler
    */
   onChangeDeep(handler) {
     this._main.$$state.addDeepListener(this._storagePath, handler);
+  }
+
+  onAnyChangeDeep(handler) {
+    // TODO: вешать на все изменения включая silent
+    //this._main.$$state.addDeepListener(this._storagePath, handler);
   }
 
   /**

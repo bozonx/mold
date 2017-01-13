@@ -106,7 +106,7 @@ export default class State {
       if (event.storagePath == storagePath) userHandler(event);
     };
 
-    this._addListener(storagePath, userHandler, wrapperHandler);
+    this._addListener(storagePath, userHandler, wrapperHandler, 'change');
   }
 
   /**
@@ -120,7 +120,7 @@ export default class State {
       if (event.storagePath.startsWith(storagePath)) userHandler(event);
     };
 
-    this._addListener(storagePath, userHandler, wrapperHandler);
+    this._addListener(storagePath, userHandler, wrapperHandler, 'change');
   }
 
   /**
@@ -181,7 +181,7 @@ export default class State {
   }
 
 
-  _addListener(storagePath, userHandler, wrapperHandler) {
+  _addListener(storagePath, userHandler, wrapperHandler, eventName) {
     // Save listener
     if (!this._handlers[storagePath]) this._handlers[storagePath] = [];
     this._handlers[storagePath].push({
@@ -190,7 +190,7 @@ export default class State {
     });
 
     // Add listener
-    this._main.$$events.on('change', wrapperHandler);
+    this._main.$$events.on(eventName, wrapperHandler);
   }
 
 }
