@@ -29,7 +29,7 @@ describe 'Functional. Events.', ->
 
       expect(this.handlerContainer).to.have.been.calledOnce
       expect(this.handlerContainer).to.have.been.calledWith({
-        path: 'container'
+        storagePath: 'container'
         action: 'change'
       })
 
@@ -55,7 +55,7 @@ describe 'Functional. Events.', ->
 
       expect(this.handlerContainer).to.have.been.calledOnce
       expect(this.handlerContainer).to.have.been.calledWith({
-        path: 'container'
+        storagePath: 'container'
         action: 'change'
       })
       expect(this.handlerNested).to.not.have.been.called
@@ -68,7 +68,7 @@ describe 'Functional. Events.', ->
       expect(this.handlerContainer).to.not.have.been.called
       expect(this.handlerNested).to.have.been.calledOnce
       expect(this.handlerNested).to.have.been.calledWith({
-        path: 'container.nested'
+        storagePath: 'container.nested'
         action: 'change'
       })
 
@@ -78,12 +78,12 @@ describe 'Functional. Events.', ->
 
       expect(this.handlerContainer).to.have.been.calledOnce
       expect(this.handlerContainer).to.have.been.calledWith({
-        path: 'container.nested'
+        storagePath: 'container.nested'
         action: 'change'
       })
       expect(this.handlerNested).to.have.been.calledOnce
       expect(this.handlerNested).to.have.been.calledWith({
-        path: 'container.nested'
+        storagePath: 'container.nested'
         action: 'change'
       })
 
@@ -95,7 +95,7 @@ describe 'Functional. Events.', ->
 
       expect(this.handlerContainer).to.have.been.calledOnce
       expect(this.handlerContainer).to.have.been.calledWith({
-        path: 'container.nested'
+        storagePath: 'container.nested'
         action: 'change'
       })
       expect(this.handlerNested).to.not.have.been.called
@@ -125,7 +125,7 @@ describe 'Functional. Events.', ->
       expect(this.handlerContainer).to.not.have.been.called
       expect(this.handlerNested).to.have.been.calledOnce
       expect(this.handlerNested).to.have.been.calledWith({
-        path: 'container.nested'
+        storagePath: 'container.nested'
         action: 'change'
       })
 

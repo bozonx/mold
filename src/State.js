@@ -102,8 +102,7 @@ export default class State {
    */
   addListener(storagePath, userHandler) {
     const wrapperHandler = (event) => {
-      // TODO: переименовать
-      if (event.path == storagePath) userHandler(event);
+      if (event.storagePath == storagePath) userHandler(event);
     };
 
     this._addListener(storagePath, userHandler, wrapperHandler);
@@ -117,7 +116,7 @@ export default class State {
    */
   addDeepListener(storagePath, userHandler) {
     const wrapperHandler = (event) => {
-      if (event.path.startsWith(storagePath)) userHandler(event);
+      if (event.storagePath.startsWith(storagePath)) userHandler(event);
     };
 
     this._addListener(storagePath, userHandler, wrapperHandler);

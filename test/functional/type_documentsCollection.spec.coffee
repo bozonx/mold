@@ -83,7 +83,7 @@ describe 'Functional. DocumentsCollection type.', ->
       assert.deepEqual(this.documentsCollection.loading, [0])
 
       expect(handler).to.have.been.calledWith({
-        path: 'documentsCollection'
+        storagePath: 'documentsCollection'
         action: 'change'
       })
 

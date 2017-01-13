@@ -194,9 +194,7 @@ export default class Storage {
 
   _riseEvents(storagePath, action) {
     this._events.emit('change', {
-      // TODO: переименовать
-      path: storagePath,
-      //storagePath,
+      storagePath,
       action,
     });
   }
