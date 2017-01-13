@@ -68,12 +68,13 @@ export default class State {
    * Remove item from collection.
    * @param {string} storagePath
    * @param {object} itemToRemove
+   * @param {object|undefined} eventData - additional data to event
    */
-  remove(storagePath, itemToRemove) {
+  remove(storagePath, itemToRemove, eventData=undefined) {
     if (!_.isNumber(itemToRemove.$index))
       this._main.$$log.fatal(`Deleted item must has an $index param.`);
 
-    this._storage.remove(storagePath, itemToRemove.$index);
+    this._storage.remove(storagePath, itemToRemove.$index, eventData);
   }
 
   /**
@@ -82,18 +83,20 @@ export default class State {
    * @param {string} storagePath
    * @param {Array} page
    * @param {number} pageNum. It's required.
+   * @param {object|undefined} eventData - additional data to event
    */
-  setPage(storagePath, page, pageNum) {
-    this._storage.addTo(storagePath, page, pageNum);
+  setPage(storagePath, page, pageNum, eventData=undefined) {
+    this._storage.addTo(storagePath, page, pageNum, eventData);
   }
 
   /**
    * Set undefined instead page. It doesn't reduce pagedCollection length.
    * @param {string} storagePath
    * @param pageNum
+   * @param {object|undefined} eventData - additional data to event
    */
-  removePage(storagePath, pageNum) {
-    this._storage.update(concatPath(storagePath, pageNum), undefined);
+  removePage(storagePath, pageNum, eventData=undefined) {
+    this._storage.update(concatPath(storagePath, pageNum), undefined, eventData);
   }
 
   /**

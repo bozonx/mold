@@ -73,25 +73,28 @@ export default class Collection extends _TypeBase {
   /**
    * Add item to beginning of a collection.
    * @param {object} item
+   * @param {object|undefined} eventData - additional data to event
    */
-  unshift(item) {
-    this._main.$$state.unshift(this._storagePath , item);
+  unshift(item, eventData=undefined) {
+    this._main.$$state.unshift(this._storagePath , item, eventData);
   }
 
   /**
    * Add to the end of a collection.
    * @param {object} item
+   * @param {object|undefined} eventData - additional data to event
    */
-  push(item) {
-    this._main.$$state.push(this._storagePath , item);
+  push(item, eventData=undefined) {
+    this._main.$$state.push(this._storagePath , item, eventData);
   }
 
   /**
    * Remove item by uniq key
    * @param item
+   * @param {object|undefined} eventData - additional data to event
    */
-  remove(item) {
-    this._main.$$state.remove(this._storagePath , item);
+  remove(item, eventData=undefined) {
+    this._main.$$state.remove(this._storagePath , item, eventData);
   }
 
 }

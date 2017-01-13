@@ -57,9 +57,10 @@ export default class Storage {
    * Update container or collection silently without rising an event.
    * @param {string} storagePath
    * @param {*} newValue
+   * @param {object|undefined} eventData - additional data to event
    * @return {bool} wereChanges
    */
-  updateSilent(storagePath, newValue) {
+  updateSilent(storagePath, newValue, eventData=undefined) {
     // run mutates and get list of changes
     return mutate(this._storage, storagePath).update(newValue);
   }
@@ -88,8 +89,9 @@ export default class Storage {
    * It rises an event any way.
    * @param {string} storagePathToCollection - it must be a path to array in storage.
    * @param {object} newItem
+   * @param {object|undefined} eventData - additional data to event
    */
-  unshift(storagePathToCollection, newItem) {
+  unshift(storagePathToCollection, newItem, eventData=undefined) {
     if (!_.isObject(newItem)) return;
     const collection = this.get(storagePathToCollection);
 
@@ -103,18 +105,19 @@ export default class Storage {
     updateIndexes(collection, pageIndex);
 
     // run update event
-    this._riseEvents(storagePathToCollection, 'add');
+    this._riseEvents(storagePathToCollection, 'add', eventData);
   }
 
   /**
    * Add to the end of collection
    * @param {string} storagePathToCollection - it must be a path to array in storage
    * @param {object} newItem
+   * @param {object|undefined} eventData - additional data to event
    */
-  push(storagePathToCollection, newItem) {
+  push(storagePathToCollection, newItem, eventData=undefined) {
     const collection = this.get(storagePathToCollection);
     if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${storagePathToCollection}"`);
-    this.addTo(storagePathToCollection, newItem, collection.length);
+    this.addTo(storagePathToCollection, newItem, collection.length, eventData);
   }
 
   /**
@@ -123,8 +126,9 @@ export default class Storage {
    * @param {string} storagePathToCollection - it must be a path to array in storage
    * @param {object} newItem
    * @param {number} index
+   * @param {object|undefined} eventData - additional data to event
    */
-  addTo(storagePathToCollection, newItem, index) {
+  addTo(storagePathToCollection, newItem, index, eventData=undefined) {
     if (!_.isObject(newItem)) return;
     if (!_.isNumber(index)) return;
     const collection = this.get(storagePathToCollection);
@@ -141,13 +145,13 @@ export default class Storage {
       collection.splice(index, 1, newItem);
       updateIndexes(collection, pageIndex);
       // run update event
-      this._riseEvents(storagePathToCollection, 'add');
+      this._riseEvents(storagePathToCollection, 'add', eventData);
     }
     else {
       // change existent item
       const wereChanges = mutate(this._storage, concatPath(storagePathToCollection, index)).update(newItem);
       updateIndexes(collection, pageIndex);
-      if (wereChanges) this._riseEvents(storagePathToCollection, 'change');
+      if (wereChanges) this._riseEvents(storagePathToCollection, 'change', eventData);
     }
   }
 
@@ -156,8 +160,9 @@ export default class Storage {
    * After it, array will reduce.
    * @param {string} storagePathToCollection
    * @param {number} $index
+   * @param {object|undefined} eventData - additional data to event
    */
-  remove(storagePathToCollection, $index) {
+  remove(storagePathToCollection, $index, eventData=undefined) {
     if (!_.isNumber($index)) return;
     const collection = this.get(storagePathToCollection);
     if (!_.isArray(collection)) this._log.fatal(`Collection isn't an array "${storagePathToCollection}"`);
@@ -168,19 +173,20 @@ export default class Storage {
     collection.splice($index, 1);
     updateIndexes(collection);
     // run update event
-    this._riseEvents(storagePathToCollection, 'remove');
+    this._riseEvents(storagePathToCollection, 'remove', eventData);
   }
 
   /**
    * Clear storage on path. But it doesn't remove container or array itself.
    * @param {string} storagePathToCollection
+   * @param {object|undefined} eventData - additional data to event
    */
-  clear(storagePathToCollection) {
+  clear(storagePathToCollection, eventData=undefined) {
     const containerOrArray = _.get(this._storage, storagePathToCollection);
     if (_.isEmpty(containerOrArray)) return;
 
     this._clearRecursive(containerOrArray);
-    this._riseEvents(storagePathToCollection, 'change');
+    this._riseEvents(storagePathToCollection, 'change', eventData);
   }
 
   /**

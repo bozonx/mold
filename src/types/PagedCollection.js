@@ -120,8 +120,9 @@ export default class PagedCollection extends _TypeBase {
    * Add item to beginning of first page.
    * It add item as is, not clones it.
    * @param {object} newItem
+   * @param {object|undefined} eventData - additional data to event
    */
-  unshift(newItem) {
+  unshift(newItem, eventData=undefined) {
     if (!_.isPlainObject(newItem))
       this._main.$$log.fatal(`You can add item only of plain object type!`);
 
@@ -130,15 +131,16 @@ export default class PagedCollection extends _TypeBase {
 
     this._checkEmptyPage();
     const storagePathToPage = concatPath(this._storagePagesPath, 0);
-    this._main.$$state.unshift(storagePathToPage, newItem);
+    this._main.$$state.unshift(storagePathToPage, newItem, eventData);
   }
 
   /**
    * Add item to end of last page.
    * It add item as is, not clones it.
    * @param {object} newItem
+   * @param {object|undefined} eventData - additional data to event
    */
-  push(newItem) {
+  push(newItem, eventData=undefined) {
     if (!_.isPlainObject(newItem))
       this._main.$$log.fatal(`You can add item only of plain object type!`);
 
@@ -148,7 +150,7 @@ export default class PagedCollection extends _TypeBase {
     this._checkEmptyPage();
     const pageNum = this._moldPages.length - 1;
     const storagePathToPage = concatPath(this._storagePagesPath, pageNum);
-    this._main.$$state.push(storagePathToPage, newItem);
+    this._main.$$state.push(storagePathToPage, newItem, eventData);
   }
 
   /**
@@ -156,8 +158,9 @@ export default class PagedCollection extends _TypeBase {
    * If pageNum hasn't passed it means add to the end.
    * @param {Array} page
    * @param {number|undefined} pageNum
+   * @param {object|undefined} eventData - additional data to event
    */
-  setPage(page, pageNum) {
+  setPage(page, pageNum, eventData=undefined) {
     if (_.isUndefined(pageNum)) {
       pageNum = this._moldPages.length;
     }
@@ -168,18 +171,19 @@ export default class PagedCollection extends _TypeBase {
       this._main.$$log.fatal(`The page must be type of array!`);
 
     const preparedPage = _.cloneDeep(page);
-    this._main.$$state.setPage(this._storagePagesPath, preparedPage, pageNum);
+    this._main.$$state.setPage(this._storagePagesPath, preparedPage, pageNum, eventData);
   }
 
   /**
    * Remove page
    * @param {number} pageNum
+   * @param {object|undefined} eventData - additional data to event
    */
-  removePage(pageNum) {
+  removePage(pageNum, eventData=undefined) {
     if (!_.isNumber(pageNum))
       this._main.$$log.fatal(`The pageNum must be type of number!`);
 
-    this._main.$$state.removePage(this._storagePagesPath, pageNum);
+    this._main.$$state.removePage(this._storagePagesPath, pageNum, eventData);
   }
 
   /**

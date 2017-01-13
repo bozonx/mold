@@ -51,9 +51,10 @@ export default class DocumentsCollection extends PagedCollection {
 
   /**
    * Overwrote clear.
+   * @param {object|undefined} eventData - additional data to event
    */
-  clear() {
-    this._main.$$state.clear(this._storagePagesPath);
+  clear(eventData=undefined) {
+    this._main.$$state.clear(this._storagePagesPath, eventData);
   }
 
   getUrlParams() {

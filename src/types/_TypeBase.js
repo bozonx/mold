@@ -111,9 +111,10 @@ export default class _TypeBase {
 
   /**
    * It clears mold state for current instance and for its descendants.
+   * @param {object|undefined} eventData - additional data to event
    */
-  clear() {
-    this._main.$$state.clear(this._storagePath);
+  clear(eventData=undefined) {
+    this._main.$$state.clear(this._storagePath, eventData);
   }
 
 }
