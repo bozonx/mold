@@ -36,7 +36,7 @@ export default class DocumentsCollection extends PagedCollection {
 
     super.$init(paths, schema);
 
-    this._storageData = this._main.$$state.getMold(paths.mold);
+    this._storageData = this._main.$$state.getMold(paths.storage);
     this._moldPages = this._storageData.pages;
 
     this._storageData.state = {
@@ -70,9 +70,9 @@ export default class DocumentsCollection extends PagedCollection {
    */
   $getChildPaths(primaryId) {
     return {
-      mold: concatPath(this._rootStoragePath, primaryId),
+      mold: concatPath(this._moldPath, primaryId),
       schema: concatPath(this._schemaPath, 'item'),
-      storage: concatPath(this._moldPath, concatPath('documents', primaryId)),
+      storage: concatPath(this._rootStoragePath, concatPath('documents', primaryId)),
     }
   }
 
