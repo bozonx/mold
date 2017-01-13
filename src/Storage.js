@@ -43,13 +43,14 @@ export default class Storage {
    * It rises an event only if were any changes
    * @param {string} storagePath
    * @param {*} newValue
+   * @param {object|undefined} eventData - additional data to event
    */
-  update(storagePath, newValue) {
+  update(storagePath, newValue, eventData=undefined) {
     // run mutates and get list of changes
     var wereChanges = this.updateSilent(storagePath, newValue);
 
     // run update event
-    if (wereChanges) this._riseEvents(storagePath, 'change');
+    if (wereChanges) this._riseEvents(storagePath, 'change', eventData);
   }
 
   /**
@@ -76,9 +77,10 @@ export default class Storage {
    * Emit an event
    * @param {string} storagePath
    * @param {string} action - 'change', 'add' etc.
+   * @param {object|undefined} eventData - additional data to event
    */
-  emit(storagePath, action='change') {
-    this._riseEvents(storagePath, action);
+  emit(storagePath, action='change', eventData=undefined) {
+    this._riseEvents(storagePath, action, eventData);
   }
 
   /**
@@ -202,12 +204,12 @@ export default class Storage {
       });
     }
   }
-
-  _riseEvents(storagePath, action) {
-    this._events.emit('change', {
+  _riseEvents(storagePath, action, eventData) {
+    this._events.emit('change', _.omitBy({
       storagePath,
       action,
-    });
+      data: eventData,
+    }, _.isUndefined));
   }
 
 }

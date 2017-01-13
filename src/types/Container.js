@@ -69,16 +69,21 @@ export default class Container extends _TypeBase{
     return this._main.$$schemaManager.$getInstanceByFullPath(paths);
   }
 
-  update(newState) {
+  /**
+   * Update container data
+   * @param {string} newState
+   * @param {object|undefined} eventData - additional data to event
+   */
+  update(newState, eventData=undefined) {
     this._checkForUpdateReadOnly(newState);
 
-    this._main.$$state.update(this._storagePath, _.cloneDeep(newState));
+    this._main.$$state.update(this._storagePath, _.cloneDeep(newState), eventData);
   }
 
-  updateSilent(newState) {
+  updateSilent(newState, eventData=undefined) {
     this._checkForUpdateReadOnly(newState);
 
-    this._main.$$state.updateSilent(this._storagePath, _.cloneDeep(newState));
+    this._main.$$state.updateSilent(this._storagePath, _.cloneDeep(newState), eventData);
   }
 
   _checkForUpdateReadOnly(newState) {
