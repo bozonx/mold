@@ -70,13 +70,23 @@ export default class Container extends _TypeBase{
   }
 
   update(newState) {
+    this._checkForUpdateReadOnly(newState);
+
+    this._main.$$state.update(this._storagePath, _.cloneDeep(newState));
+  }
+
+  updateSilent(newState) {
+    this._checkForUpdateReadOnly(newState);
+
+    this._main.$$state.updateSilent(this._storagePath, _.cloneDeep(newState));
+  }
+
+  _checkForUpdateReadOnly(newState) {
     const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);
 
     if (!_.isEmpty(forbiddenRoProps)) {
       this._main.$$log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
     }
-
-    this._main.$$state.update(this._storagePath, _.cloneDeep(newState));
   }
 
 }

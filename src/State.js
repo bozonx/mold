@@ -59,6 +59,7 @@ export default class State {
 
   // these methods are only wrappers of storage's methods
   update(...params) { this._storage.update(...params) }
+  updateSilent(...params) { this._storage.updateSilent(...params) }
   unshift(...params) { this._storage.unshift(...params) }
   push(...params) { this._storage.push(...params) }
   storageEmit(...params) { this._storage.emit(...params) }

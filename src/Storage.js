@@ -46,10 +46,21 @@ export default class Storage {
    */
   update(storagePath, newValue) {
     // run mutates and get list of changes
-    var wereChanges = mutate(this._storage, storagePath).update(newValue);
+    var wereChanges = this.updateSilent(storagePath, newValue);
 
     // run update event
     if (wereChanges) this._riseEvents(storagePath, 'change');
+  }
+
+  /**
+   * Update container or collection silently without rising an event.
+   * @param {string} storagePath
+   * @param {*} newValue
+   * @return {bool} wereChanges
+   */
+  updateSilent(storagePath, newValue) {
+    // run mutates and get list of changes
+    return mutate(this._storage, storagePath).update(newValue);
   }
 
   /**
