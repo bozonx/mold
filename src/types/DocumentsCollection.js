@@ -20,9 +20,9 @@ export default class DocumentsCollection extends PagedCollection {
     return this._loading;
   }
 
-  $initStorage(paths) {
-    if (!_.isPlainObject(this._main.$$state.getMold(paths.storage))) {
-      this._main.$$state.setSilent(paths.storage, {
+  $initStorage() {
+    if (!_.isPlainObject(this._main.$$state.getMold(this._rootStoragePath))) {
+      this._main.$$state.setSilent(this._rootStoragePath, {
         pages: [],
         state: {},
         documents: {},
@@ -31,8 +31,10 @@ export default class DocumentsCollection extends PagedCollection {
   }
 
   $init(paths, schema) {
-    this._storagePath = paths.storage + '.pages';
     this._rootStoragePath = paths.storage;
+    this._storagePagesPath = paths.storage + '.pages';
+    // it needs to TypeBase to get mold
+    this._storagePath = this._storagePagesPath;
 
     super.$init(paths, schema);
 
@@ -187,7 +189,7 @@ export default class DocumentsCollection extends PagedCollection {
 
         // remove from page
         if (_.isNumber(documentMold.$pageIndex)) {
-          const storagePathToPage = concatPath(this._storagePath, documentMold.$pageIndex);
+          const storagePathToPage = concatPath(this._storagePagesPath, documentMold.$pageIndex);
           this._main.$$state.remove(storagePathToPage, documentMold);
         }
         return resp;
@@ -202,7 +204,7 @@ export default class DocumentsCollection extends PagedCollection {
     // update document in one of page
     if (isDocumentInPage) {
       const storagePathToDocInPages = concatPath(
-        concatPath(this._storagePath, documentMold.$pageIndex),
+        concatPath(this._storagePagesPath, documentMold.$pageIndex),
         documentMold.$index);
 
       this._main.$$state.update(storagePathToDocInPages, newState);

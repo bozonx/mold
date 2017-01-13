@@ -30,17 +30,17 @@ export default class PagedCollection extends _TypeBase {
     return 'pagedCollection';
   }
 
-  $initStorage(paths) {
-    if (!_.isPlainObject(this._main.$$state.getMold(paths.storage))) {
-      this._main.$$state.setSilent(paths.storage, []);
+  $initStorage() {
+    if (!_.isPlainObject(this._main.$$state.getMold(this._storagePagesPath))) {
+      this._main.$$state.setSilent(this._storagePagesPath, []);
     }
   }
 
   $init(paths, schema) {
+    this._storagePagesPath = this._storagePagesPath || paths.storage;
     this.$initStorage(paths);
     super.$init(paths, schema);
     this._moldPages = this._mold;
-    this._storagePagesPath = this._storagePath;
   }
 
   getPage(pageNum) {
