@@ -1,5 +1,6 @@
 PouchDB = require('pouchdb')
 memdown = require('memdown')
+PouchDB.plugin(require('pouchdb-find'));
 
 mold = require('../../src/index').default
 PouchDbDriver = require('../../src/drivers/PouchDb').default

@@ -16,11 +16,11 @@ cleanPromise = (promise) ->
       return _.defaults({
         # TODO: плохо что не проверяем id - он разный у pouch and memory
         body: _.map resp.body, (item) =>
-          _.omit(item, '_id', '_rev', 'id')
+          _.omit(item, '_id', '_rev', 'id', '$url', '$id', '$parent')
       }, resp)
     else if (_.isPlainObject(resp.body))
       return _.defaults({
-        body: _.omit(resp.body, '_id', '_rev', 'id')
+        body: _.omit(resp.body, '_id', '_rev', 'id', '$url')
       }, resp)
     return resp
 

@@ -47,28 +47,47 @@ class LocalPouchDb {
   filter(request) {
     const usePaged = _.isNumber(request.meta.perPage) && _.isNumber(request.meta.pageNum);
     const preparedUrl = _.trimEnd(request.url, '/') + '/';
+    const preparedUrl222 = _.trimEnd(request.url, '/');
     // simple query without paging
     let query = {
       include_docs: true,
     };
 
-    if (request.meta.descending) {
-      query = {
-        ...query,
-        startkey: preparedUrl + '\uffff',
-        endkey: preparedUrl,
-        descending: true,
-      }
-    }
-    else {
-      query = {
-        ...query,
-        startkey: preparedUrl,
-        // \uffff - is high character
-        endkey: preparedUrl + '\uffff',
-        descending: false,
-      }
-    }
+    // TODO: убрать meta.descending - это параметр sort
+
+    // if (request.meta.descending) {
+    //   query = {
+    //     ...query,
+    //     startkey: preparedUrl + '\uffff',
+    //     endkey: preparedUrl,
+    //     descending: true,
+    //   }
+    // }
+    // else {
+    //   query = {
+    //     ...query,
+    //     startkey: preparedUrl,
+    //     // \uffff - is high character
+    //     endkey: preparedUrl + '\uffff',
+    //     descending: false,
+    //   }
+    // }
+
+
+    query = {
+      ...query,
+      selector: {
+        // _id: {
+        //   $elemMatch: {
+        //     //$regex: "^\/blog\/",
+        //     $regex: preparedUrl,
+        //   }
+        // },
+        // body: {$gt: null},
+        $parent: {$eq: preparedUrl222}
+      },
+      //sort: ['$parent', {'$id': 'desc'}],
+    };
 
     if (usePaged) {
       query = {
@@ -79,10 +98,10 @@ class LocalPouchDb {
       }
     }
 
-    return this._db.allDocs(query)
+    return this._db.find(query)
       .then((resp) => {
         const response = {
-          body: _.map(resp.rows, value => value.doc),
+          body: resp.docs,
           driverResponse: resp,
           request,
         };
@@ -90,6 +109,7 @@ class LocalPouchDb {
           const lastItemIndex = (request.meta.pageNum + 1) * request.meta.perPage;
           response.meta = {
             pageNum: request.meta.pageNum,
+            // TODO: как теперь подсчитать????
             lastPage: lastItemIndex >= resp.total_rows,
           };
         }
@@ -127,8 +147,8 @@ class LocalPouchDb {
       this._db.get(request.url).then((resp) => {
         // full update
         const payload = {
-          ..._.omit(request.payload, '_id', '_rev'),
-          ..._.pick(resp, '_id', '_rev'),
+          ..._.omit(request.payload, '_id', '_rev', '$root'),
+          ..._.pick(resp, '_id', '_rev', '$root'),
         };
 
         // update
@@ -140,6 +160,7 @@ class LocalPouchDb {
         const payload = {
           ...request.payload,
           _id: request.url,
+          $url: request.url,
         };
 
         sendPut(payload, resolve, reject);
@@ -189,6 +210,9 @@ class LocalPouchDb {
       ...request.payload,
       [request.primaryKeyName]: itemId,
       _id: uniqDocId,
+      $parent: request.url,
+      $url: uniqDocId,
+      $id: itemId,
     };
 
     return this._db.put(payload)
