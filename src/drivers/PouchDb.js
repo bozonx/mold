@@ -74,6 +74,8 @@ class LocalPouchDb {
     // }
 
 
+    // TODO: указываем запрос только если не передан свыше
+
     query = {
       ...query,
       selector: {
@@ -110,7 +112,9 @@ class LocalPouchDb {
           response.meta = {
             pageNum: request.meta.pageNum,
             // TODO: как теперь подсчитать????
-            lastPage: lastItemIndex >= resp.total_rows,
+            //lastPage: lastItemIndex >= resp.total_rows,
+            // TODO: не очень правильно
+            lastPage: resp.docs.length < request.meta.perPage,
           };
         }
         return response;
