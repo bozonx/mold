@@ -69,6 +69,11 @@ describe 'Unit. helpers.', ->
         helpers.convertFromLodashToSchema('dir1[1][2].name'),
         'dir1.item.item.schema.name')
 
+    it 'string id', ->
+      assert.deepEqual(
+        helpers.convertFromLodashToSchema('dir1["fg45-fg"]'),
+        'dir1.item')
+
 
 
 #  describe 'splitLastParamPath.', ->

@@ -83,3 +83,10 @@ describe 'Functional. PouchDb driver.', ->
         expect(Promise.resolve(document.mold._id)).to.eventually.equal('/document')
         expect(Promise.resolve(document.mold._rev.length == 34)).to.eventually.equal(true)
       ])).to.eventually.notify(done)
+
+  it "support for string $id", () ->
+    pathToDoc = 'root.documentsCollection["fg988dfg45asd7s6fg8fg"]'
+    payload =
+      name: 'newValue'
+    document = this.mold.child(pathToDoc)
+    document.update(payload)

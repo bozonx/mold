@@ -66,10 +66,19 @@ export function findPrimary(schema) {
   return primary;
 }
 
+export function omitUnsaveable(payload, documentSchema) {
+  const unsaveableParamsNames = [];
+  _.each(documentSchema.schema, (item, name) => {
+    if (item.saveable === false) unsaveableParamsNames.push(name);
+  });
+  return _.omit(payload, unsaveableParamsNames);
+}
+
+
 export function convertFromLodashToSchema(path) {
   let newPath = path;
-  // replace collection params [1]
-  newPath = newPath.replace(/\[\d+]/g, '!item!');
+  // replace collection params [1] ["dfg-ddfg-c453"]
+  newPath = newPath.replace(/\[[^\s.\[\]]+]/g, '!item!');
 
   // replace "." to ".schema."
   newPath = newPath.replace(/\./g, '.schema.');
@@ -84,6 +93,7 @@ export function convertFromSchemaToLodash(path) {
 }
 
 export function convertFromLodashToUrl(path) {
+  // TODO: поддержка string id
   const preUrl = path.replace(/\[(\d+)]/g, '.$1');
   return preUrl.replace(/\./g, '/');
 }
@@ -112,6 +122,7 @@ export function getTheBestMatchPath(sourcePath, pathsList) {
  * @returns {string}
  */
 export function concatPath(root, relativePath) {
+  // TODO: поддержка string id
   if (_.isNumber(relativePath))
     return `${root}[${relativePath}]`;
 
@@ -135,33 +146,30 @@ export function findTheClosestParentPath(path, assoc) {
   });
 }
 
-export function getFirstChildPath(path) {
-  if (_.isNumber(path)) return `[${path}]`;
-  if (!path || !_.isString(path)) return '';
-
-  const pathSplit = path.split('.');
-  return pathSplit[0];
-}
-
 export function splitPath(moldPath) {
+  // TODO: поддержка string id
   // ff[1][3] = > ff.[1].[2] => ['ff', '[1]', [2]]
   const pathParts = moldPath.replace(/\[/g, '.[');
   return _.compact(pathParts.split('.'));
 }
 
 export function joinPath(pathArray) {
+  // TODO: поддержка string id
   const joined = pathArray.join('.');
   // ['ff', '[1]', [2]] => ff.[1].[2] => ff[1][3]
   return joined.replace(/\.\[/g, '[');
 }
 
-export function omitUnsaveable(payload, documentSchema) {
-  const unsaveableParamsNames = [];
-  _.each(documentSchema.schema, (item, name) => {
-    if (item.saveable === false) unsaveableParamsNames.push(name);
-  });
-  return _.omit(payload, unsaveableParamsNames);
-}
+
+
+
+// export function getFirstChildPath(path) {
+//   if (_.isNumber(path)) return `[${path}]`;
+//   if (!path || !_.isString(path)) return '';
+//
+//   const pathSplit = path.split('.');
+//   return pathSplit[0];
+// }
 
 // export function convertFromMoldToDocumentStoragePath(moldPath) {
 //   return moldPath.replace(/(\[\d+])$/, '.documents$1');
