@@ -57,9 +57,9 @@ describe 'Functional. PouchDb driver.', ->
     this.init('collection_create')
     driverHelpers.documentsCollection_create(this.mold, 'root.documentsCollection', done)
 
-  it 'documentsCollection_delete', (done) ->
-    this.init('delete')
-    driverHelpers.documentsCollection_delete(this.mold, 'root.documentsCollection', done)
+  it 'documentsCollection_remove', (done) ->
+    this.init('remove')
+    driverHelpers.documentsCollection_remove(this.mold, 'root.documentsCollection', done)
 
 #  it 'documentsCollection_filter', (done) ->
 #    this.init('filter')

@@ -190,7 +190,7 @@ export default class DocumentsCollection extends PagedCollection {
     // change with event rising
     this._updateDoc(documentMold, { $deleting: true });
     return this._main.$$state.$$request.sendRequest(
-        'delete', this._moldPath, this._schema, documentMold, metaParams, this.getUrlParams())
+        'remove', this._moldPath, this._schema, documentMold, metaParams, this.getUrlParams())
       .then((resp) => {
         this._updateDoc(documentMold, {
           $deleting: false,

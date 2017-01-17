@@ -90,7 +90,7 @@ module.exports =
     promise = cleanPromise( collection.create(payload) )
     expect(promise).to.eventually.deep.equal({body: {name: 'value'}, request: request}).notify(done)
 
-  documentsCollection_delete: (mold, pathToDocColl, done) ->
+  documentsCollection_remove: (mold, pathToDocColl, done) ->
     collection = mold.child(pathToDocColl)
 
     item1 = {name: 'value1'}
@@ -99,7 +99,7 @@ module.exports =
     collection.push(item2)
     expect(collection.create(item1)).to.eventually.notify =>
       expect(collection.create(item2)).to.eventually.notify =>
-        request = generateRequest(pathToDocColl, 'delete', {payload: {$id: collection.mold[0][0].$id}})
+        request = generateRequest(pathToDocColl, 'remove', {payload: {$id: collection.mold[0][0].$id}})
         deletePromise = collection.remove(_.pick(collection.mold[0][0], '$id', '$pageIndex', '$index'))
         expect(deletePromise).to.eventually.notify =>
           loadPromise = cleanPromise( collection.load(0) )

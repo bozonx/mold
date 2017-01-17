@@ -152,7 +152,7 @@ class LocalMemory {
     });
   }
 
-  delete(request) {
+  remove(request) {
     return new Promise((resolve, reject) => {
       const collection = _.get(this._db, convertFromUrlToLodash(request.url));
 

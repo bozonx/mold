@@ -245,7 +245,7 @@ class LocalPouchDb {
     }, this._rejectHandler.bind(this, request));
   }
 
-  delete(request) {
+  remove(request) {
     const docId = `${request.url}/${request.payload.$id}`;
 
     // first - find the element
