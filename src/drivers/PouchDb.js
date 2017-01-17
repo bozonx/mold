@@ -1,13 +1,11 @@
 import _ from 'lodash';
-import moment from 'moment';
+import cuid from 'cuid';
 
 import { correctUpdatePayload } from '../helpers';
 
-// It generates an id of 25 chars
-//import cuid from 'cuid';
 
 // from 0 to 19
-let uniqCreatedId = Math.floor(Math.random() * 20);
+//let uniqCreatedId = Math.floor(Math.random() * 20);
 
 class LocalPouchDb {
   constructor(driverConfig, instanceConfig, db) {
@@ -220,11 +218,9 @@ class LocalPouchDb {
    * @returns {Promise}
    */
   create(request) {
-    const timePart = parseInt(moment().format('x'));
-    const itemId = timePart + uniqCreatedId;
+    // It generates an id of 25 chars
+    const itemId = cuid();
     const uniqDocId = `${request.url}/${itemId}`;
-    // increment by random int from 1 to 10
-    uniqCreatedId += Math.ceil(Math.random() * 10);
 
     const payload = {
       ...request.payload,
@@ -232,8 +228,6 @@ class LocalPouchDb {
       $parent: request.url,
       $url: uniqDocId,
       $id: itemId,
-      // TODO: remove
-      //id: itemId,
     };
 
     return this._db.put(payload, request.options)
@@ -244,8 +238,6 @@ class LocalPouchDb {
           _id: resp.id,
           _rev: resp.rev,
           $id: itemId,
-          // TODO: remove
-          //id: itemId,
         },
         driverResponse: resp,
         request,
@@ -301,4 +293,5 @@ export default function(driverConfig) {
     return new LocalPouchDb(this.driverConfig, instanceConfig, this.db);
   };
 
+  this.generateId = () => cuid();
 }
