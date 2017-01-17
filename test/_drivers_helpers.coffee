@@ -16,11 +16,11 @@ cleanPromise = (promise) ->
       return _.defaults({
         # TODO: плохо что не проверяем id - он разный у pouch and memory
         body: _.map resp.body, (item) =>
-          _.omit(item, '_id', '_rev', 'id', '$url', '$id', '$parent')
+          _.omit(item, '_id', '_rev', '$url', '$id', '$parent')
       }, resp)
     else if (_.isPlainObject(resp.body))
       return _.defaults({
-        body: _.omit(resp.body, '_id', '_rev', 'id', '$url', '$id', '$parent')
+        body: _.omit(resp.body, '_id', '_rev', '$url', '$id', '$parent')
       }, resp)
     return resp
 
@@ -85,8 +85,7 @@ module.exports =
     collection = mold.child(pathToDocColl)
     payload =
       name: 'value'
-    request = generateRequest(pathToDocColl, 'create', {
-      payload: payload, primaryKeyName: 'id'})
+    request = generateRequest(pathToDocColl, 'create', {payload: payload})
 
     promise = cleanPromise( collection.create(payload) )
     expect(promise).to.eventually.deep.equal({body: {name: 'value'}, request: request}).notify(done)
@@ -100,9 +99,8 @@ module.exports =
     collection.push(item2)
     expect(collection.create(item1)).to.eventually.notify =>
       expect(collection.create(item2)).to.eventually.notify =>
-        request = generateRequest(pathToDocColl, 'delete', {
-          primaryKeyName: 'id', payload: {id: collection.mold[0][0].id}})
-        deletePromise = collection.remove(_.pick(collection.mold[0][0], 'id', '$pageIndex', '$index'))
+        request = generateRequest(pathToDocColl, 'delete', {payload: {$id: collection.mold[0][0].$id}})
+        deletePromise = collection.remove(_.pick(collection.mold[0][0], '$id', '$pageIndex', '$index'))
         expect(deletePromise).to.eventually.notify =>
           loadPromise = cleanPromise( collection.load(0) )
 
@@ -138,7 +136,6 @@ module.exports =
     collection = mold.child(pathToDocColl)
     collection.perPage = 2
     request = generateRequest(pathToDocColl, 'filter', {
-      primaryKeyName: 'id'
       meta: {
         pageNum: 1,
         perPage: 2,

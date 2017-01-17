@@ -228,11 +228,12 @@ class LocalPouchDb {
 
     const payload = {
       ...request.payload,
-      [request.primaryKeyName]: itemId,
       _id: uniqDocId,
       $parent: request.url,
       $url: uniqDocId,
       $id: itemId,
+      // TODO: remove
+      //id: itemId,
     };
 
     return this._db.put(payload, request.options)
@@ -242,7 +243,9 @@ class LocalPouchDb {
           ...request.payload,
           _id: resp.id,
           _rev: resp.rev,
-          [request.primaryKeyName]: itemId,
+          $id: itemId,
+          // TODO: remove
+          //id: itemId,
         },
         driverResponse: resp,
         request,
@@ -251,7 +254,7 @@ class LocalPouchDb {
   }
 
   delete(request) {
-    const docId = `${request.url}/${request.payload[request.primaryKeyName]}`;
+    const docId = `${request.url}/${request.payload.$id}`;
 
     // first - find the element
     return this._db.get(docId).then((getResp) => {

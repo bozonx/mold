@@ -88,10 +88,10 @@ describe 'Functional. Document type.', ->
         item:
           type: 'document'
           schema:
-            id: {type: 'number', primary: true}
+            $id: {type: 'number', primary: true}
 
     testDoc = {
-      id: 0,
+      $id: 0,
       $pageIndex: 0,
       $index: 0,
     }
@@ -117,7 +117,7 @@ describe 'Functional. Document type.', ->
         expect(Promise.resolve(document.mold.$deleted)).to.eventually.equal(true)
         expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.pages)).to.eventually.deep.equal([[]])
         # don't delete form documents
-        expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.documents['0'].id)).to.eventually.equal(0)
+        expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.documents['0'].$id)).to.eventually.equal(0)
         expect(Promise.resolve(moldMain.$$schemaManager.$defaultMemoryDb.documentsCollection)).to.eventually.deep.equal([])
       ])).to.eventually.notify(done)
 
@@ -126,15 +126,15 @@ describe 'Functional. Document type.', ->
       document:
         type: 'document'
         schema:
-          id: {type: 'number'}
+          $id: {type: 'number'}
           unsaveable: {type: 'string', saveable: false}
 
     moldMain = mold( {silent: true}, testSchema() )
     document = moldMain.child('document')
 
-    expect(document.put({id: 0, unsaveable: 'newValue'})).to.eventually
+    expect(document.put({$id: 0, unsaveable: 'newValue'})).to.eventually
     .property('request').property('payload').deep.equal({
-      id: 0,
+      $id: 0,
     })
 
   it "update read only - it throws an error", ->
@@ -142,9 +142,9 @@ describe 'Functional. Document type.', ->
       document:
         type: 'document'
         schema:
-          id: {type: 'number', readOnly: true}
+          $id: {type: 'number', readOnly: true}
 
     moldMain = mold( {silent: true}, testSchema() )
     document = moldMain.child('document')
 
-    assert.throws(document.update.bind(document, {id: 5}))
+    assert.throws(document.update.bind(document, {$id: 5}))

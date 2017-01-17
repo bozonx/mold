@@ -8,7 +8,7 @@ describe 'Functional. DocumentsCollection type.', ->
         item:
           type: 'document'
           schema:
-            id: {type: 'number', primary: true}
+            $id: {type: 'number', primary: true}
             name: {type: 'string'}
     this.mold = mold( {silent: true}, this.testSchema() )
     this.documentsCollection = this.mold.child('documentsCollection')
@@ -22,31 +22,31 @@ describe 'Functional. DocumentsCollection type.', ->
     moldInstance = mold( {silent: true}, schema )
     documentsCollection = moldInstance.child('documentsCollection')
 
-    items = [{id: 0}]
+    items = [{$id: 0}]
     _.set(moldInstance.$$schemaManager.$defaultMemoryDb, 'documentsCollection', items)
 
     expect(documentsCollection.load(0)).to.eventually.notify =>
       expect(Promise.resolve(documentsCollection.mold)).to.eventually
-      .deep.equal([[{ id: 0, $index: 0, $pageIndex: 0 }]])
+      .deep.equal([[{ $id: 0, $index: 0, $pageIndex: 0 }]])
       .notify(done)
 
   it "clear()", ->
     _.set(this.mold.$$state._storage._storage, 'documentsCollection', {
-      pages: [{id: 0}],
+      pages: [{$id: 0}],
       state: {loading: [0]},
-      documents: {'0': {id: 0}}
+      documents: {'0': {$id: 0}}
     })
     this.documentsCollection.clear();
     assert.deepEqual(this.mold.$$state._storage._storage.documentsCollection, {
       pages: [],
       state: {loading: [0]},
-      documents: {'0': {id: 0}}
+      documents: {'0': {$id: 0}}
     })
 
 
   describe "load", ->
     beforeEach () ->
-      this.items = [{id: 0}]
+      this.items = [{$id: 0}]
       _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', this.items)
 
     it 'load(page) - check promise', ->
@@ -57,11 +57,11 @@ describe 'Functional. DocumentsCollection type.', ->
     it 'load(page) - check mold', (done) ->
       expect(this.documentsCollection.load(0)).to.eventually.notify =>
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
-        .deep.equal([[{ id: 0, $index: 0, $pageIndex: 0 }]])
+        .deep.equal([[{ $id: 0, $index: 0, $pageIndex: 0 }]])
         .notify(done)
 
     it 'load(1) - load second page', (done) ->
-      this.items = [{id: 0}, {id: 1}, {id: 2}, {id: 3}, {id: 4}]
+      this.items = [{$id: 0}, {$id: 1}, {$id: 2}, {$id: 3}, {$id: 4}]
       _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'documentsCollection', this.items)
 
       this.documentsCollection.perPage = 2
@@ -69,8 +69,8 @@ describe 'Functional. DocumentsCollection type.', ->
       expect(this.documentsCollection.load(1)).to.eventually.notify =>
         expect(Promise.resolve(this.documentsCollection.mold)).to.eventually
         .property(1).deep.equal([
-          { id: 2, $index: 0, $pageIndex: 1 },
-          { id: 3, $index: 1, $pageIndex: 1 },
+          { $id: 2, $index: 0, $pageIndex: 1 },
+          { $id: 3, $index: 1, $pageIndex: 1 },
         ])
         .notify(done)
 
@@ -101,7 +101,7 @@ describe 'Functional. DocumentsCollection type.', ->
     it "check response", ->
       promise = this.documentsCollection.create(this.newDoc)
       expect(promise).to.eventually.property('body').deep.equal({
-        id: 0,
+        $id: 0,
         name: 'a'
       })
 
@@ -121,14 +121,14 @@ describe 'Functional. DocumentsCollection type.', ->
             $saving: false,
             $index: 0,
             name: 'a',
-            id: 0,
+            $id: 0,
           }
         ]])
         .notify(done)
 
   describe "remove", ->
     beforeEach () ->
-      this.doc = {id: 0, name: 'a', $index: 0}
+      this.doc = {$id: 0, name: 'a', $index: 0}
 
     it "check response", (done) ->
       expect(this.documentsCollection.create(this.doc)).to.eventually.notify =>

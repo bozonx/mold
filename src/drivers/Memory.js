@@ -130,13 +130,15 @@ class LocalMemory {
 
       // increment primary id
       if (collection.length) {
-        primaryId = _.last(collection)[request.primaryKeyName] + 1;
+        primaryId = _.last(collection).$id + 1;
       }
 
       // add id param
       const newValue = {
         ...request.payload,
-        [request.primaryKeyName]: primaryId,
+        $id: primaryId,
+        // TODO: remove
+        //id: primaryId,
       };
 
       // set item to existent collection
@@ -161,8 +163,8 @@ class LocalMemory {
         return;
       }
 
-      const item = _.find(collection, {[request.primaryKeyName]: request.payload[request.primaryKeyName]});
-      if (!item || !_.isNumber(item[request.primaryKeyName])) {
+      const item = _.find(collection, {$id: request.payload.$id});
+      if (!item || !_.isNumber(item.$id)) {
         reject({
           driverError: 'Item not found',
           request,

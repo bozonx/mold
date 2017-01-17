@@ -71,7 +71,7 @@ export default class Request {
       driverRoot,
       meta,
       url: '',
-      primaryKeyName: schema.item && findPrimary(schema.item),
+      //primaryKeyName: schema.item && findPrimary(schema.item),
     };
     request.url = this._prepareUrl(schema.url, urlParams, request, driverRoot);
 
