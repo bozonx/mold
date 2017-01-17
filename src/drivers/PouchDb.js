@@ -33,7 +33,7 @@ class LocalPouchDb {
    * @return {Promise}
    */
   get(request) {
-    return this._db.get(request.url, request.options)
+    return this._db.get(request.url, request.options || {})
     .then((resp) => {
       return {
         body: resp,
@@ -129,7 +129,10 @@ class LocalPouchDb {
   put(request) {
     const sendPut = (payload, resolve, reject) => {
       return this._db.put(payload, request.options).then((resp) => {
-        //if (!resp.ok) reject(this._rejectHandler.bind(request, err));
+        // if (!resp.ok) {
+        //   reject(this._rejectHandler(request, resp));
+        //   return;
+        // }
 
         resolve({
           body: {
@@ -150,20 +153,28 @@ class LocalPouchDb {
       this._db.get(request.url).then((resp) => {
         // full update
         const payload = {
-          ..._.omit(request.payload, '_id', '_rev', '$root'),
-          ..._.pick(resp, '_id', '_rev', '$root'),
+          ..._.omit(request.payload, '_id', '_rev', '$parent', '$id', '$url'),
+          ..._.pick(resp, '_id', '_rev', '$parent', '$id', '$url'),
         };
 
         // update
         sendPut(payload, resolve, reject);
       }, (err) => {
+        // create new
         if (err.status != 404)
           return reject(this._rejectHandler(request, err));
+
+        const urlSplit = _.trim(request.url, '/').split('/');
+        const $id = _.last(urlSplit);
+        const preLastIndex = (urlSplit.length) ? urlSplit.length - 1 : 0;
+        const $parent = '/' + urlSplit.slice(0, preLastIndex).join('/');
 
         const payload = {
           ...request.payload,
           _id: request.url,
           $url: request.url,
+          $id,
+          $parent,
         };
 
         sendPut(payload, resolve, reject);
@@ -183,11 +194,17 @@ class LocalPouchDb {
 
       // update
       return this._db.put(payload, request.options).then((resp) => {
+        // if (!resp.ok) {
+        //   this._rejectHandler(request, resp);
+        //   return;
+        // }
+
         return {
           body: {
             ...payload,
             _id: resp.id,
             _rev: resp.rev,
+            ..._.pick(resp, '$parent', '$id', '$url'),
           },
           driverResponse: resp,
           request,

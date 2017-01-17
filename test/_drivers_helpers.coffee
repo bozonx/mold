@@ -20,7 +20,7 @@ cleanPromise = (promise) ->
       }, resp)
     else if (_.isPlainObject(resp.body))
       return _.defaults({
-        body: _.omit(resp.body, '_id', '_rev', 'id', '$url')
+        body: _.omit(resp.body, '_id', '_rev', 'id', '$url', '$id', '$parent')
       }, resp)
     return resp
 
