@@ -19,7 +19,7 @@ export default class Request {
    * @returns {Promise}
    */
   sendRequest(method, moldPath, schema, payload, options, metaParams, urlParams) {
-    const promise = this._startDriverRequest(method, moldPath, schema, payload, urlParams, options, metaParams)
+    const promise = this._startDriverRequest(method, moldPath, schema, payload, options, metaParams, urlParams)
     promise.then((resp) => {
       this._main.$$log.info('---> finish request: ', resp);
       return resp;
@@ -37,26 +37,26 @@ export default class Request {
    * @param {string} moldPath - path in mold
    * @param {string} schema
    * @param {*} [payload] - data to save
-   * @param {object} urlParams - dynamic part of source path
    * @param {object|undefined} options
    * @param {object|undefined} metaParams
+   * @param {object} urlParams - dynamic part of source path
    * @returns {Promise}
    * @private
    */
-  _startDriverRequest(method, moldPath, schema, payload, urlParams, options, metaParams) {
+  _startDriverRequest(method, moldPath, schema, payload, options, metaParams, urlParams) {
     const driverRoot = this._main.$$schemaManager.getClosestDriverPath(moldPath);
 
     const driver = this._main.$$schemaManager.getDriver(driverRoot);
     // // It rise an error if path doesn't consist with schema
     // const schema = this._main.$$schemaManager.get(schemaPath);
 
-    const req = this._generateRequest(method, moldPath, payload, urlParams, schema, driverRoot, options, metaParams);
+    const req = this._generateRequest(method, moldPath, schema, payload, driverRoot, options, metaParams, urlParams);
     this._main.$$log.info('---> start request: ', req);
 
     return driver.startRequest(req);
   }
 
-  _generateRequest(method, moldPath, rawPayload, urlParams, schema, driverRoot, options, meta) {
+  _generateRequest(method, moldPath, schema, rawPayload, driverRoot, options, meta, urlParams) {
     let payload = rawPayload;
     if (_.isPlainObject(payload)) {
       payload = _.omit(_.cloneDeep(payload), ...this._main.$$config.omitParamsToRequest);
