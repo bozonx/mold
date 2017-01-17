@@ -93,8 +93,11 @@ export function convertFromSchemaToLodash(path) {
 }
 
 export function convertFromLodashToUrl(path) {
-  // TODO: поддержка string id
-  const preUrl = path.replace(/\[(\d+)]/g, '.$1');
+  // TODO: use url encode
+  let preUrl;
+  // ["123-df"] [1]
+  preUrl = path.replace(/\[["']?([^\s.\[\]'"]+)["']?]/g, '.$1');
+
   return preUrl.replace(/\./g, '/');
 }
 

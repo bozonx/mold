@@ -74,6 +74,17 @@ describe 'Unit. helpers.', ->
         helpers.convertFromLodashToSchema('dir1["fg45-fg"]'),
         'dir1.item')
 
+  describe 'convertFromLodashToUrl.', ->
+    it 'numeric id', ->
+      assert.deepEqual(
+        helpers.convertFromLodashToUrl('dir1.dir2[1]'),
+        'dir1/dir2/1')
+
+    it 'string id', ->
+      assert.deepEqual(
+        helpers.convertFromLodashToUrl('dir1.dir2["1fg-4tg"]'),
+        'dir1/dir2/1fg-4tg')
+
 
 
 #  describe 'splitLastParamPath.', ->
