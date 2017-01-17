@@ -43,6 +43,8 @@ class LocalMemory {
       return this.get(request);
     }
 
+    // TODO: поддержка сортировки - desc по полю
+
     return new Promise((resolve, reject) => {
       const lastItemIndex = (request.meta.pageNum + 1) * request.meta.perPage;
 
@@ -137,8 +139,6 @@ class LocalMemory {
       const newValue = {
         ...request.payload,
         $id: primaryId,
-        // TODO: remove
-        //id: primaryId,
       };
 
       // set item to existent collection
