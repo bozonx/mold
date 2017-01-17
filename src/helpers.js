@@ -125,7 +125,6 @@ export function getTheBestMatchPath(sourcePath, pathsList) {
  * @returns {string}
  */
 export function concatPath(root, relativePath) {
-  // TODO: поддержка string id
   if (_.isNumber(relativePath))
     return `${root}[${relativePath}]`;
 
@@ -150,14 +149,12 @@ export function findTheClosestParentPath(path, assoc) {
 }
 
 export function splitPath(moldPath) {
-  // TODO: поддержка string id
   // ff[1][3] = > ff.[1].[2] => ['ff', '[1]', [2]]
   const pathParts = moldPath.replace(/\[/g, '.[');
   return _.compact(pathParts.split('.'));
 }
 
 export function joinPath(pathArray) {
-  // TODO: поддержка string id
   const joined = pathArray.join('.');
   // ['ff', '[1]', [2]] => ff.[1].[2] => ff[1][3]
   return joined.replace(/\.\[/g, '[');

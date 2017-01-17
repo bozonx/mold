@@ -58,6 +58,10 @@ describe 'Unit. helpers.', ->
     it 'concat array', ->
       assert.deepEqual(helpers.concatPath('dir1.dir2', '[1]'), 'dir1.dir2[1]')
 
+    it 'concat sting id', ->
+      assert.deepEqual(helpers.concatPath('dir1.dir2', '["f-4"]'), 'dir1.dir2["f-4"]')
+
+
   describe 'convertFromLodashToSchema.', ->
     it 'nested collections', ->
       assert.deepEqual(
@@ -77,13 +81,30 @@ describe 'Unit. helpers.', ->
   describe 'convertFromLodashToUrl.', ->
     it 'numeric id', ->
       assert.deepEqual(
-        helpers.convertFromLodashToUrl('dir1.dir2[1]'),
-        'dir1/dir2/1')
+        helpers.convertFromLodashToUrl('dir1.dir2[1]'), 'dir1/dir2/1')
 
     it 'string id', ->
       assert.deepEqual(
-        helpers.convertFromLodashToUrl('dir1.dir2["1fg-4tg"]'),
-        'dir1/dir2/1fg-4tg')
+        helpers.convertFromLodashToUrl('dir1.dir2["1-g"]'), 'dir1/dir2/1-g')
+
+
+  describe 'splitPath.', ->
+    it 'numeric id', ->
+      assert.deepEqual(
+        helpers.splitPath('dir1.dir2[1]'), ['dir1', 'dir2', '[1]'])
+
+    it 'string id', ->
+      assert.deepEqual(
+        helpers.splitPath('dir1.dir2["1-g"]'), ['dir1', 'dir2', '["1-g"]'])
+
+  describe 'joinPath.', ->
+    it 'numeric id', ->
+      assert.deepEqual(
+        helpers.joinPath(['dir1', 'dir2', '[1]']), 'dir1.dir2[1]')
+
+    it 'string id', ->
+      assert.deepEqual(
+        helpers.joinPath(['dir1', 'dir2', '["1-g"]']), 'dir1.dir2["1-g"]')
 
 
 
