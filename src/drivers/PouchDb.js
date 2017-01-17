@@ -3,18 +3,11 @@ import moment from 'moment';
 
 import { correctUpdatePayload } from '../helpers';
 
+// It generates an id of 25 chars
+//import cuid from 'cuid';
+
 // from 0 to 19
 let uniqCreatedId = Math.floor(Math.random() * 20);
-
-// function makeid() {
-//   var text = "";
-//   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-//
-//   for( var i=0; i < 10; i++ )
-//     text += possible.charAt(Math.floor(Math.random() * possible.length));
-//
-//   return text;
-// }
 
 class LocalPouchDb {
   constructor(driverConfig, instanceConfig, db) {
