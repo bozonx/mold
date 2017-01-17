@@ -121,7 +121,7 @@ class LocalPouchDb {
   }
 
   /**
-   * It create or save(all fields) document.
+   * It creates or saves(all fields) document.
    * It doesn't generate id, it uses whole url.
    * @param {object} request
    * @returns {Promise}
