@@ -101,6 +101,15 @@ export function convertFromLodashToUrl(path) {
   return preUrl.replace(/\./g, '/');
 }
 
+export function convertFromUrlToLodash(url) {
+  // TODO: поддержка строковых параметров
+  let converted = url;
+  converted = converted.replace(/\/(\d+)/g, '[$1]');
+  converted = converted.replace(/\//g, '.');
+  converted = _.trim(converted, '.');
+  return converted;
+}
+
 export function getTheBestMatchPath(sourcePath, pathsList) {
   let matchList = _.map(pathsList, (path) => {
     if (sourcePath.indexOf(path) === 0) return path;

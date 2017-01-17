@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { correctUpdatePayload } from '../helpers';
+import { correctUpdatePayload, convertFromUrlToLodash } from '../helpers';
 
 class LocalMemory {
   constructor(driverConfig, instanceConfig, db) {
@@ -21,7 +21,7 @@ class LocalMemory {
 
   get(request) {
     return new Promise((resolve, reject) => {
-      const resp = _.get(this._db, this._convertToLodash(request.url));
+      const resp = _.get(this._db, convertFromUrlToLodash(request.url));
       if (!_.isUndefined(resp)) {
         resolve({
           body: resp,
@@ -48,7 +48,7 @@ class LocalMemory {
 
       const start = request.meta.pageNum * request.meta.perPage;
       const end = lastItemIndex;
-      const collection = _.get(this._db, this._convertToLodash(request.url));
+      const collection = _.get(this._db, convertFromUrlToLodash(request.url));
       const result = collection.slice(start, end);
 
       if (_.isEmpty(result)) {
@@ -79,7 +79,7 @@ class LocalMemory {
    */
   put(request) {
     return new Promise((resolve) => {
-      _.set(this._db, this._convertToLodash(request.url), request.payload);
+      _.set(this._db, convertFromUrlToLodash(request.url), request.payload);
       resolve({
         body: request.payload,
         driverResponse: request.payload,
@@ -96,12 +96,12 @@ class LocalMemory {
    */
   patch(request) {
     return new Promise((resolve, reject) => {
-      const document = _.get(this._db, this._convertToLodash(request.url));
+      const document = _.get(this._db, convertFromUrlToLodash(request.url));
 
       if (document) {
         const newState = correctUpdatePayload(document, request.payload);
 
-        _.set(this._db, this._convertToLodash(request.url), newState);
+        _.set(this._db, convertFromUrlToLodash(request.url), newState);
         resolve({
           body: newState,
           driverResponse: request.payload,
@@ -118,7 +118,7 @@ class LocalMemory {
 
   create(request) {
     return new Promise((resolve) => {
-      const lodashPath = this._convertToLodash(request.url);
+      const lodashPath = convertFromUrlToLodash(request.url);
       let collection = _.get(this._db, lodashPath);
       let primaryId = 0;
 
@@ -154,7 +154,7 @@ class LocalMemory {
 
   delete(request) {
     return new Promise((resolve, reject) => {
-      const collection = _.get(this._db, this._convertToLodash(request.url));
+      const collection = _.get(this._db, convertFromUrlToLodash(request.url));
 
       if (!collection) {
         reject({
@@ -187,13 +187,6 @@ class LocalMemory {
     return this[request.method](request);
   }
 
-  _convertToLodash(url) {
-    let converted = url;
-    converted = converted.replace(/\/(\d+)/g, '[$1]');
-    converted = converted.replace(/\//g, '.');
-    converted = _.trim(converted, '.');
-    return converted;
-  }
 }
 
 /**
