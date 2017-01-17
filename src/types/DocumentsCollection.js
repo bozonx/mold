@@ -129,8 +129,10 @@ export default class DocumentsCollection extends PagedCollection {
     // rise an event
     this._main.$$state.storageEmit(this._moldPath);
 
+    const options = undefined;
+
     return this._main.$$state.$$request.sendRequest(
-        'filter', this._moldPath, this._schema, undefined, metaParams, this.getUrlParams())
+        'filter', this._moldPath, this._schema, undefined, options, metaParams, this.getUrlParams())
       .then((resp) => {
         this._setPageLoadingState(pageNum, false);
         // update mold with server response data
@@ -156,8 +158,10 @@ export default class DocumentsCollection extends PagedCollection {
       $saving: true,
     });
 
+    const options = undefined;
+
     return this._main.$$state.$$request.sendRequest(
-        'create', this._moldPath, this._schema, documentMold, metaParams, this.getUrlParams())
+        'create', this._moldPath, this._schema, documentMold, options, metaParams, this.getUrlParams())
       .then((resp) => {
         // update document if it's in storage
         this._updateDoc(documentMold, {
@@ -189,8 +193,11 @@ export default class DocumentsCollection extends PagedCollection {
   remove(documentMold, metaParams=undefined) {
     // change with event rising
     this._updateDoc(documentMold, { $deleting: true });
+
+    const options = undefined;
+
     return this._main.$$state.$$request.sendRequest(
-        'remove', this._moldPath, this._schema, documentMold, metaParams, this.getUrlParams())
+        'remove', this._moldPath, this._schema, documentMold, options, metaParams, this.getUrlParams())
       .then((resp) => {
         this._updateDoc(documentMold, {
           $deleting: false,

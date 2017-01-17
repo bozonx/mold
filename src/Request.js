@@ -12,13 +12,14 @@ export default class Request {
    * @param {string} method - one of: get, put, patch, filter, create, delete
    * @param {string} moldPath - path in mold
    * @param {string} schema
+   * @param {object|undefined} options - raw params to request which do driver.
    * @param {object|array|undefined} payload - data to save
    * @param {object|undefined} metaParams - parameters to pass to driver
    * @param {object|undefined} urlParams
    * @returns {Promise}
    */
-  sendRequest(method, moldPath, schema, payload, metaParams, urlParams) {
-    const promise = this._startDriverRequest(method, moldPath, schema, payload, urlParams, metaParams)
+  sendRequest(method, moldPath, schema, payload, options, metaParams, urlParams) {
+    const promise = this._startDriverRequest(method, moldPath, schema, payload, urlParams, options, metaParams)
     promise.then((resp) => {
       this._main.$$log.info('---> finish request: ', resp);
       return resp;
@@ -37,24 +38,25 @@ export default class Request {
    * @param {string} schema
    * @param {*} [payload] - data to save
    * @param {object} urlParams - dynamic part of source path
+   * @param {object|undefined} options
    * @param {object|undefined} metaParams
    * @returns {Promise}
    * @private
    */
-  _startDriverRequest(method, moldPath, schema, payload, urlParams, metaParams) {
+  _startDriverRequest(method, moldPath, schema, payload, urlParams, options, metaParams) {
     const driverRoot = this._main.$$schemaManager.getClosestDriverPath(moldPath);
 
     const driver = this._main.$$schemaManager.getDriver(driverRoot);
     // // It rise an error if path doesn't consist with schema
     // const schema = this._main.$$schemaManager.get(schemaPath);
 
-    const req = this._generateRequest(method, moldPath, payload, urlParams, schema, driverRoot, metaParams);
+    const req = this._generateRequest(method, moldPath, payload, urlParams, schema, driverRoot, options, metaParams);
     this._main.$$log.info('---> start request: ', req);
 
     return driver.startRequest(req);
   }
 
-  _generateRequest(method, moldPath, rawPayload, urlParams, schema, driverRoot, meta) {
+  _generateRequest(method, moldPath, rawPayload, urlParams, schema, driverRoot, options, meta) {
     let payload = rawPayload;
     if (_.isPlainObject(payload)) {
       payload = _.omit(_.cloneDeep(payload), ...this._main.$$config.omitParamsToRequest);
@@ -70,6 +72,7 @@ export default class Request {
       moldPath,
       driverRoot,
       meta,
+      options,
       url: '',
       //primaryKeyName: schema.item && findPrimary(schema.item),
     };
