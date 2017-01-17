@@ -107,10 +107,10 @@ export default class DocumentsCollection extends PagedCollection {
    * Load the specified page.
    * It updates mold automatically.
    * @param {number} pageNum
-   * @param {object} metaOverrides - override request's meta params
+   * @param {object} options - raw params to driver's request
    * @returns {Promise}
    */
-  load(pageNum, metaOverrides) {
+  load(pageNum, options=undefined) {
     if (!_.isNumber(pageNum)) this._main.$$log.fatal(`The "pageNum" param is required!`);
 
     let metaParams = _.omitBy({
@@ -118,18 +118,9 @@ export default class DocumentsCollection extends PagedCollection {
       perPage: this._perPage,
     }, _.isUndefined);
 
-    if (_.isPlainObject(metaOverrides)) {
-      metaParams = {
-        ...metaParams,
-        ...metaOverrides,
-      }
-    }
-
     this._setPageLoadingState(pageNum, true);
     // rise an event
     this._main.$$state.storageEmit(this._moldPath);
-
-    const options = undefined;
 
     return this._main.$$state.$$request.sendRequest(
         'filter', this._moldPath, this._schema, undefined, options, metaParams, this.getUrlParams())
@@ -149,16 +140,16 @@ export default class DocumentsCollection extends PagedCollection {
    * Send request to create document.
    * You can use recently added document.
    * @param {object} documentMold
-   * @param {object} metaParams
+   * @param {object} options - raw params to driver's request
    * @returns {Promise}
    */
-  create(documentMold, metaParams=undefined) {
+  create(documentMold, options=undefined) {
+    const metaParams = undefined;
+
     // change with event rising
     this._updateDoc(documentMold, {
       $saving: true,
     });
-
-    const options = undefined;
 
     return this._main.$$state.$$request.sendRequest(
         'create', this._moldPath, this._schema, documentMold, options, metaParams, this.getUrlParams())
@@ -187,14 +178,14 @@ export default class DocumentsCollection extends PagedCollection {
    * It adds "$deleting" prop to document.
    * After success response, it remove document from page in storage.
    * @param {object} documentMold - like {id: 0, $pageIndex: 0, $index: 0}
-   * @param {object} metaParams
+   * @param {object} options - raw params to driver's request
    * @returns {Promise}
    */
-  remove(documentMold, metaParams=undefined) {
+  remove(documentMold, options=undefined) {
+    const metaParams = undefined;
+
     // change with event rising
     this._updateDoc(documentMold, { $deleting: true });
-
-    const options = undefined;
 
     return this._main.$$state.$$request.sendRequest(
         'remove', this._moldPath, this._schema, documentMold, options, metaParams, this.getUrlParams())

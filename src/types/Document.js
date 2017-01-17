@@ -54,13 +54,13 @@ export default class Document extends Container{
 
   /**
    * Load data from driver.
-   * @param {object} metaParams
+   * @param {object} options - raw params to driver's request
    * @returns {Promise}
    */
-  load(metaParams=undefined) {
-    this._main.$$state.update(this._storagePath, {$loading: true});
+  load(options=undefined) {
+    const metaParams = undefined;
 
-    const options = undefined;
+    this._main.$$state.update(this._storagePath, {$loading: true});
 
     return this._main.$$state.$$request.sendRequest(
         'get', this._moldPath, this._schema, undefined, options, metaParams, this.getUrlParams())
@@ -81,16 +81,16 @@ export default class Document extends Container{
   /**
    * Save actual state.
    * @param {object|undefined} newState
-   * @param {object} metaParams
+   * @param {object} options - raw params to driver's request
    * @returns {Promise}
    */
-  put(newState=undefined, metaParams=undefined) {
+  put(newState=undefined, options=undefined) {
+    const metaParams = undefined;
+
     if (newState) this.update(newState);
     this._main.$$state.update(this._storagePath, {$saving: true});
 
     const payload = omitUnsaveable(this._mold, this.schema);
-
-    const options = undefined;
 
     return this._main.$$state.$$request.sendRequest(
         'put', this._moldPath, this._schema, payload, options, metaParams, this.getUrlParams()).then((resp) => {
@@ -111,16 +111,16 @@ export default class Document extends Container{
   /**
    * Save actual state.
    * @param {object|undefined} newState
-   * @param {object} metaParams
+   * @param {object} options - raw params to driver's request
    * @returns {Promise}
    */
-  patch(newState=undefined, metaParams=undefined) {
+  patch(newState=undefined, options=undefined) {
+    const metaParams = undefined;
+
     if (newState) this.update(newState);
     this._main.$$state.update(this._storagePath, {$saving: true});
 
     const payload = omitUnsaveable(this._lastChanges, this.schema);
-
-    const options = undefined;
 
     return this._main.$$state.$$request.sendRequest(
       'patch', this._moldPath, this._schema, payload, options, metaParams, this.getUrlParams()).then((resp) => {
