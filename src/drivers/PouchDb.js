@@ -22,12 +22,18 @@ class LocalPouchDb {
    * @param {Main} main
    */
   init(root, main) {
+    // TODO: зачем????
     this._root = root;
     this._main = main;
   }
 
+  /**
+   * Get a document
+   * @param {object} request
+   * @return {Promise}
+   */
   get(request) {
-    return this._db.get(request.url)
+    return this._db.get(request.url, request.options)
     .then((resp) => {
       return {
         body: resp,
@@ -122,7 +128,7 @@ class LocalPouchDb {
    */
   put(request) {
     const sendPut = (payload, resolve, reject) => {
-      return this._db.put(payload).then((resp) => {
+      return this._db.put(payload, request.options).then((resp) => {
         //if (!resp.ok) reject(this._rejectHandler.bind(request, err));
 
         resolve({
@@ -176,7 +182,7 @@ class LocalPouchDb {
       const payload = correctUpdatePayload(resp, _.omit(request.payload, '_id', '_rev'));
 
       // update
-      return this._db.put(payload).then((resp) => {
+      return this._db.put(payload, request.options).then((resp) => {
         return {
           body: {
             ...payload,
@@ -212,7 +218,7 @@ class LocalPouchDb {
       $id: itemId,
     };
 
-    return this._db.put(payload)
+    return this._db.put(payload, request.options)
     .then((resp) => {
       return {
         body: {
@@ -233,7 +239,7 @@ class LocalPouchDb {
     // first - find the element
     return this._db.get(docId).then((getResp) => {
       // remove item
-      return this._db.remove(getResp).then((resp) => {
+      return this._db.remove(getResp, request.options).then((resp) => {
         return {
           body: undefined,
           driverResponse: resp,
