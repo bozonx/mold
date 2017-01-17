@@ -102,12 +102,21 @@ export function convertFromLodashToUrl(path) {
 }
 
 export function convertFromUrlToLodash(url) {
-  // TODO: поддержка строковых параметров
-  let converted = url;
-  converted = converted.replace(/\/(\d+)/g, '[$1]');
-  converted = converted.replace(/\//g, '.');
-  converted = _.trim(converted, '.');
-  return converted;
+  let converted = '';
+  const urlParts = url.split('/');
+  _.each(urlParts, (part) => {
+    // TODO: наверное сначала надо использовать url decode
+    if (part.match(/[^a-zA-Z\d_]/)) {
+      converted += `["${part}"]`;
+    }
+    else if (part.match(/^\d+$/)) {
+      converted += `[${part}]`;
+    }
+    else {
+      converted += `.${part}`;
+    }
+  });
+  return _.trimStart(converted, '.');
 }
 
 export function getTheBestMatchPath(sourcePath, pathsList) {

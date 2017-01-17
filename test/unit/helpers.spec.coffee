@@ -67,12 +67,10 @@ describe 'Unit. helpers.', ->
       assert.deepEqual(
         helpers.convertFromLodashToSchema('dir1.dir2[1].file[2].name'),
         'dir1.schema.dir2.item.schema.file.item.schema.name')
-
     it 'paged collection', ->
       assert.deepEqual(
         helpers.convertFromLodashToSchema('dir1[1][2].name'),
         'dir1.item.item.schema.name')
-
     it 'string id', ->
       assert.deepEqual(
         helpers.convertFromLodashToSchema('dir1["fg45-fg"]'),
@@ -82,17 +80,22 @@ describe 'Unit. helpers.', ->
     it 'numeric id', ->
       assert.deepEqual(
         helpers.convertFromLodashToUrl('dir1.dir2[1]'), 'dir1/dir2/1')
-
     it 'string id', ->
       assert.deepEqual(
         helpers.convertFromLodashToUrl('dir1.dir2["1-g"]'), 'dir1/dir2/1-g')
 
+  describe 'convertFromUrlToLodash.', ->
+    it 'numeric id', ->
+      assert.deepEqual(
+        helpers.convertFromUrlToLodash('dir1/dir2/1'), 'dir1.dir2[1]')
+    it 'string id', ->
+      assert.deepEqual(
+        helpers.convertFromUrlToLodash('dir1/dir2/1-g'), 'dir1.dir2["1-g"]')
 
   describe 'splitPath.', ->
     it 'numeric id', ->
       assert.deepEqual(
         helpers.splitPath('dir1.dir2[1]'), ['dir1', 'dir2', '[1]'])
-
     it 'string id', ->
       assert.deepEqual(
         helpers.splitPath('dir1.dir2["1-g"]'), ['dir1', 'dir2', '["1-g"]'])
@@ -101,7 +104,6 @@ describe 'Unit. helpers.', ->
     it 'numeric id', ->
       assert.deepEqual(
         helpers.joinPath(['dir1', 'dir2', '[1]']), 'dir1.dir2[1]')
-
     it 'string id', ->
       assert.deepEqual(
         helpers.joinPath(['dir1', 'dir2', '["1-g"]']), 'dir1.dir2["1-g"]')
