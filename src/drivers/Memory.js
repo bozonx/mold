@@ -164,6 +164,7 @@ class LocalMemory {
       }
 
       const item = _.find(collection, {$id: request.payload.$id});
+      // TODO: !!!!! ругаться есть $id не номер
       if (!item || !_.isNumber(item.$id)) {
         reject({
           driverError: 'Item not found',

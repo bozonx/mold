@@ -90,12 +90,12 @@ export default class DocumentsCollection extends PagedCollection {
 
   /**
    * Get instance of element. (not page!).
-   * @param {string} primaryId - id of element, like '[0]'
+   * @param {string} primaryId - id of element, like '[0]' or ["s-3"]
    * @returns {Object|undefined} - if undefined - it means not found.
    */
   $getChildInstance(primaryId) {
     if (!primaryId || !_.isString(primaryId)) return;
-    if (!primaryId.match(/^\[\d+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
+    if (!primaryId.match(/^\[[^\s\[\]]+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
 
     const paths = this.$getChildPaths(primaryId);
 
