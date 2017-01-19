@@ -40,8 +40,14 @@ describe 'Functional. Action.', ->
     expect(this.handlerCustomAction).to.have.been.calledOnce
     expect(this.handlerCustomAction).to.have.been.calledWith('param')
 
+  it "Overwrote load", ->
+    this.documentsCollection.load(1);
+
+    expect(this.handlerLoad).to.have.been.calledOnce
+    #expect(this.handlerLoad).to.have.been.calledWith('param')
+
+
 # TODO: load with defaults
-# TODO: custom action
 # TODO: сделать custom action с запуском load внутри и возвращает промис
 # TODO: document action
 

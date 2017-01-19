@@ -254,7 +254,7 @@ export default class DocumentsCollection extends PagedCollection {
     _.each(this.schema.action, (item, name) => {
       if (!_.isFunction(item)) return;
       // custom method or overwrote method
-      this.action[name] = item.bind(this);
+      this.action[name] = (...params) => item.bind(this)(...params, this);
     });
 
     _.each(this.schema.actionDefaults, (item, name) => {
