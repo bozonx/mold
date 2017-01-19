@@ -47,6 +47,10 @@ export default class DocumentsCollection extends PagedCollection {
       loading: [],
     };
     this._loading = this._mold.state.loading;
+
+    this.action = {};
+    this.actionDefaults = {};
+    this._initActions();
   }
 
   /**
@@ -244,6 +248,22 @@ export default class DocumentsCollection extends PagedCollection {
 
     // remove page from loading state
     this._loading.splice(findedIndex, 1);
+  }
+
+  _initActions() {
+    _.each(this.schema.action, (item, name) => {
+      if (!_.isFunction(item)) return;
+      // custom method or overwrote method
+      this.action[name] = item.bind(this);
+    });
+
+    _.each(this.schema.actionDefaults, (item, name) => {
+      if (!_.isPlainObject(item)) return;
+      // Default acton's params
+      this.actionDefaults[name] = item;
+    });
+
+
   }
 
 }
