@@ -70,23 +70,28 @@ class LocalPouchDb {
     //   }
     // }
 
+    if (request.options) {
+      query = {...query, ...request.options};
+    }
+    else {
+      // default query
+      query = {
+        ...query,
+        selector: {
+          // _id: {
+          //   $elemMatch: {
+          //     //$regex: "^\/blog\/",
+          //     $regex: preparedUrl,
+          //   }
+          // },
+          // body: {$gt: null},
+          $parent: {$eq: preparedUrl222}
+        },
+        //sort: ['$parent', {'$id': 'desc'}],
+      };
+    }
 
-    // TODO: указываем запрос только если не передан свыше
 
-    query = {
-      ...query,
-      selector: {
-        // _id: {
-        //   $elemMatch: {
-        //     //$regex: "^\/blog\/",
-        //     $regex: preparedUrl,
-        //   }
-        // },
-        // body: {$gt: null},
-        $parent: {$eq: preparedUrl222}
-      },
-      //sort: ['$parent', {'$id': 'desc'}],
-    };
 
     if (usePaged) {
       query = {
