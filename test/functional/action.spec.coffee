@@ -83,9 +83,9 @@ describe 'Functional. Action.', ->
     it "load defaults", ->
       handlerSendRequest = sinon.spy();
       savedMethod = this.documentsCollection._main.$$state.$$request._applyDefaults.bind(this.documentsCollection._main.$$state.$$request)
-      this.documentsCollection._main.$$state.$$request._applyDefaults = (r) ->
-        handlerSendRequest(r)
-        return savedMethod(r)
+      this.documentsCollection._main.$$state.$$request._applyDefaults = (request, schema) ->
+        handlerSendRequest(request, schema)
+        return savedMethod(request, schema)
       this.documentsCollection.load(1);
 
       expect(handlerSendRequest).to.have.been.calledOnce
@@ -93,8 +93,11 @@ describe 'Functional. Action.', ->
         method: 'filter',
         moldPath: 'documentsCollection',
         metaParams: { pageNum: 1 },
-        options: undefined,
-      })
+        #options: undefined ,
+        options: {
+          param1: 'value1',
+        },
+      }, this.testSchema.documentsCollection)
 
 # TODO: load with defaults
 # TODO: каждый action должен иметь свое хранилище

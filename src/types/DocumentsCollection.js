@@ -139,7 +139,7 @@ export default class DocumentsCollection extends PagedCollection {
         moldPath: this._moldPath,
         options,
         metaParams,
-      }, this._schema, this.getUrlParams())
+      }, this.schema, this.getUrlParams())
       .then((resp) => {
         this._setPageLoadingState(pageNum, false);
         // update mold with server response data
@@ -174,7 +174,7 @@ export default class DocumentsCollection extends PagedCollection {
         payload: documentMold,
         options,
         metaParams,
-      }, this._schema, this.getUrlParams())
+      }, this.schema, this.getUrlParams())
       .then((resp) => {
         // update document if it's in storage
         this._updateDoc(documentMold, {
@@ -217,7 +217,7 @@ export default class DocumentsCollection extends PagedCollection {
         options,
         metaParams,
       },
-      this._schema, this.getUrlParams())
+      this.schema, this.getUrlParams())
       .then((resp) => {
         this._updateDoc(documentMold, {
           $deleting: false,
