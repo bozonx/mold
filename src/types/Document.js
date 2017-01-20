@@ -77,7 +77,12 @@ export default class Document extends Container{
     this._main.$$state.update(this._storagePath, {$loading: true});
 
     return this._main.$$state.$$request.sendRequest(
-        'get', this._moldPath, this._schema, undefined, options, metaParams, this.getUrlParams())
+      {
+        method: 'get',
+        moldPath: this._moldPath,
+        options,
+        metaParams,
+      }, this._schema, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
         this._main.$$state.update(this._storagePath, {$loading: false});
@@ -107,7 +112,13 @@ export default class Document extends Container{
     const payload = omitUnsaveable(this._mold, this.schema);
 
     return this._main.$$state.$$request.sendRequest(
-        'put', this._moldPath, this._schema, payload, options, metaParams, this.getUrlParams()).then((resp) => {
+      {
+        method: 'put',
+        moldPath: this._moldPath,
+        payload,
+        options,
+        metaParams,
+      }, this._schema, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.update(this._storagePath, {
         ...resp.body,
@@ -137,7 +148,13 @@ export default class Document extends Container{
     const payload = omitUnsaveable(this._lastChanges, this.schema);
 
     return this._main.$$state.$$request.sendRequest(
-      'patch', this._moldPath, this._schema, payload, options, metaParams, this.getUrlParams()).then((resp) => {
+      {
+        method: 'patch',
+        moldPath: this._moldPath,
+        payload,
+        options,
+        metaParams,
+      }, this._schema, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.update(this._storagePath, {
         ...resp.body,
