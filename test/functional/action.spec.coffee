@@ -15,7 +15,7 @@ describe 'Functional. Action.', ->
             load: (v) => handlerLoad(v),
             customAction: (v) -> handlerCustomAction(v),
           }
-          actionDefaults: {
+          driverDefaults: {
             load: {
               options: {
                 param1: 'value1',
@@ -63,13 +63,13 @@ describe 'Functional. Action.', ->
         expect(this.handlerLoad).to.have.been.calledWith(1)
 
 
-  describe "actionDefaults", ->
+  describe "driverDefaults", ->
     beforeEach () ->
       testSchema = () ->
         documentsCollection:
           type: 'documentsCollection'
-          actionDefaults: {
-            load: {
+          driverDefaults: {
+            filter: {
               options: {
                 param1: 'value1',
               }
