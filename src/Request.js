@@ -15,7 +15,15 @@ export default class Request {
    * @returns {Promise}
    */
   sendRequest(rawRequest, schema, urlParams) {
-    const promise = this._startDriverRequest(rawRequest.method, rawRequest.moldPath, schema, rawRequest.payload, rawRequest.options, rawRequest.metaParams, urlParams)
+    const requestWithDefaults = this._applyDefaults(rawRequest);
+    const promise = this._startDriverRequest(
+      requestWithDefaults.method,
+      requestWithDefaults.moldPath,
+      schema,
+      requestWithDefaults.payload,
+      requestWithDefaults.options,
+      requestWithDefaults.metaParams,
+      urlParams);
     promise.then((resp) => {
       this._main.$$log.info('---> finish request: ', resp);
       return resp;
@@ -27,29 +35,10 @@ export default class Request {
     return promise;
   }
 
-  // /**
-  //  * Send request to driver
-  //  * @param {string} method - one of: get, put, patch, filter, create, delete
-  //  * @param {string} moldPath - path in mold
-  //  * @param {string} schema
-  //  * @param {object|undefined} options - raw params to request which do driver.
-  //  * @param {object|array|undefined} payload - data to save
-  //  * @param {object|undefined} metaParams - parameters to pass to driver
-  //  * @param {object|undefined} urlParams
-  //  * @returns {Promise}
-  //  */
-  // sendRequest(method, moldPath, schema, payload, options, metaParams, urlParams) {
-  //   const promise = this._startDriverRequest(method, moldPath, schema, payload, options, metaParams, urlParams)
-  //   promise.then((resp) => {
-  //     this._main.$$log.info('---> finish request: ', resp);
-  //     return resp;
-  //   }).catch((err) => {
-  //     this._main.$$log.info('---> failed request: ', err);
-  //     return err;
-  //   });
-  //
-  //   return promise;
-  // }
+  _applyDefaults(rawRequest) {
+    const result = rawRequest;
+    return result;
+  }
 
   /**
    * Send query to driver for data.
