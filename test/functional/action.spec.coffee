@@ -82,10 +82,10 @@ describe 'Functional. Action.', ->
 
     it "load defaults", ->
       handlerSendRequest = sinon.spy();
-      savedMethod = this.documentsCollection._main.$$state.$$request._applyDefaults.bind(this.documentsCollection._main.$$state.$$request)
-      this.documentsCollection._main.$$state.$$request._applyDefaults = (request, schema) ->
-        handlerSendRequest(request, schema)
-        return savedMethod(request, schema)
+      savedMethod = this.documentsCollection._main.$$state.$$request._startDriverRequest.bind(this.documentsCollection._main.$$state.$$request)
+      this.documentsCollection._main.$$state.$$request._startDriverRequest = (rawRequest, schema, urlParams) ->
+        handlerSendRequest(rawRequest, schema, urlParams)
+        return savedMethod(rawRequest, schema, urlParams)
       this.documentsCollection.load(1);
 
       expect(handlerSendRequest).to.have.been.calledOnce
@@ -98,7 +98,3 @@ describe 'Functional. Action.', ->
           param1: 'value1',
         },
       }, this.testSchema.documentsCollection)
-
-# TODO: load with defaults
-# TODO: каждый action должен иметь свое хранилище
-# TODO: сделать custom action с запуском load внутри и возвращает промис

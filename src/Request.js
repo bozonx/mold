@@ -16,14 +16,7 @@ export default class Request {
    */
   sendRequest(rawRequest, schema, urlParams) {
     const requestWithDefaults = this._applyDefaults(rawRequest, schema);
-    const promise = this._startDriverRequest(
-      requestWithDefaults.method,
-      requestWithDefaults.moldPath,
-      schema,
-      requestWithDefaults.payload,
-      requestWithDefaults.options,
-      requestWithDefaults.metaParams,
-      urlParams);
+    const promise = this._startDriverRequest(requestWithDefaults, schema, urlParams);
     promise.then((resp) => {
       this._main.$$log.info('---> finish request: ', resp);
       return resp;
@@ -41,32 +34,33 @@ export default class Request {
 
     const defaults = schema.driverDefaults[rawRequest.method];
 
-    console.log(1111111111111, rawRequest, defaults)
-    console.log(2222222, _.defaultsDeep(_.cloneDeep(rawRequest), defaults))
-
     return _.defaultsDeep(_.cloneDeep(rawRequest), defaults);
   }
 
   /**
    * Send query to driver for data.
-   * @param {string} method - one of: get, set, filter, create, delete
-   * @param {string} moldPath - path in mold
+   * @param {string} rawRequest - method, moldPath, payload, options, metaParams
    * @param {string} schema
-   * @param {*} [payload] - data to save
-   * @param {object|undefined} options
-   * @param {object|undefined} metaParams
-   * @param {object} urlParams - dynamic part of source path
+   * @param {object|undefined} urlParams
    * @returns {Promise}
    * @private
    */
-  _startDriverRequest(method, moldPath, schema, payload, options, metaParams, urlParams) {
-    const driverRoot = this._main.$$schemaManager.getClosestDriverPath(moldPath);
+  _startDriverRequest(rawRequest, schema, urlParams) {
+    const driverRoot = this._main.$$schemaManager.getClosestDriverPath(rawRequest.moldPath);
 
     const driver = this._main.$$schemaManager.getDriver(driverRoot);
     // // It rise an error if path doesn't consist with schema
     // const schema = this._main.$$schemaManager.get(schemaPath);
 
-    const req = this._generateRequest(method, moldPath, schema, payload, driverRoot, options, metaParams, urlParams);
+    const req = this._generateRequest(
+      rawRequest.method,
+      rawRequest.moldPath,
+      schema,
+      rawRequest.payload,
+      driverRoot,
+      rawRequest.options,
+      rawRequest.metaParams,
+      urlParams);
     this._main.$$log.info('---> start request: ', req);
 
     return driver.startRequest(req);
