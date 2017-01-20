@@ -49,15 +49,9 @@ export default class DocumentsCollection extends PagedCollection {
     this._loading = this._mold.state.loading;
 
     this.action = {
-      load: (...params) => {
-        return this._load(...params);
-      },
-      create: (...params) => {
-        return this._create(...params);
-      },
-      remove: (...params) => {
-        return this._remove(...params);
-      },
+      load: (...params) => { return this._load(...params) },
+      create: (...params) => { return this._create(...params) },
+      remove: (...params) => { return this._remove(...params) },
     };
     this.actionDefaults = {};
     this._initActions();
@@ -116,16 +110,9 @@ export default class DocumentsCollection extends PagedCollection {
     return this._main.$$schemaManager.$getInstanceByFullPath(paths);
   }
 
-  load(...params) {
-    return this.action.load(...params);
-  }
-  create(...params) {
-    return this.action.create(...params);
-  }
-  remove(...params) {
-    return this.action.remove(...params);
-  }
-
+  load(...params) { return this.action.load(...params) }
+  create(...params) { return this.action.create(...params) }
+  remove(...params) { return this.action.remove(...params) }
 
   /**
    * Load the specified page.
@@ -282,8 +269,6 @@ export default class DocumentsCollection extends PagedCollection {
       // Default acton's params
       this.actionDefaults[name] = item;
     });
-
-
   }
 
 }

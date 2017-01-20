@@ -23,28 +23,44 @@ describe 'Functional. Action.', ->
         }
         item:
           type: 'document'
+          action: {
+            load: (v) => handlerLoad(v),
+            customAction: (v) -> handlerCustomAction(v),
+          }
           schema:
             $id: {type: 'number', primary: true}
 
     this.testSchema = testSchema()
     this.mold = mold( {silent: true}, this.testSchema )
     this.documentsCollection = this.mold.child('documentsCollection')
+    this.document = this.mold.child('documentsCollection[0]')
 
+  describe "DocumentsCollection", ->
+    it "custom action", ->
+      this.documentsCollection.action.customAction('param');
 
-  it "custom action", ->
-    this.documentsCollection.action.customAction('param');
+      expect(this.handlerCustomAction).to.have.been.calledOnce
+      expect(this.handlerCustomAction).to.have.been.calledWith('param')
 
-    expect(this.handlerCustomAction).to.have.been.calledOnce
-    expect(this.handlerCustomAction).to.have.been.calledWith('param')
+    it "Overwrote load", ->
+      this.documentsCollection.load(1);
 
-  it "Overwrote load", ->
-    this.documentsCollection.load(1);
+      expect(this.handlerLoad).to.have.been.calledOnce
+      expect(this.handlerLoad).to.have.been.calledWith(1)
 
-    expect(this.handlerLoad).to.have.been.calledOnce
-    expect(this.handlerLoad).to.have.been.calledWith(1)
+  describe "Document", ->
+    it "custom action", ->
+      this.document.action.customAction('param');
 
+      expect(this.handlerCustomAction).to.have.been.calledOnce
+      expect(this.handlerCustomAction).to.have.been.calledWith('param')
 
+    it "Overwrote load", ->
+      this.document.load(1);
+
+      expect(this.handlerLoad).to.have.been.calledOnce
+      expect(this.handlerLoad).to.have.been.calledWith(1)
+
+# TODO: каждый action должен иметь свое хранилище
 # TODO: load with defaults
 # TODO: сделать custom action с запуском load внутри и возвращает промис
-# TODO: document action
-
