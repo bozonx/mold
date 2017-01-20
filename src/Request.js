@@ -15,7 +15,7 @@ export default class Request {
    * @returns {Promise}
    */
   sendRequest(rawRequest, schema, urlParams) {
-    const requestWithDefaults = this._applyDefaults(rawRequest);
+    const requestWithDefaults = this._applyDefaults(rawRequest, schema);
     const promise = this._startDriverRequest(
       requestWithDefaults.method,
       requestWithDefaults.moldPath,
@@ -35,7 +35,14 @@ export default class Request {
     return promise;
   }
 
-  _applyDefaults(rawRequest) {
+  _applyDefaults(rawRequest, schema) {
+    console.log(11111111111, schema)
+
+    if (!_.isPlainObject(schema.actionDefaults)) return rawRequest;
+
+
+    const defaults = schema.actionDefaults;
+
     const result = rawRequest;
     return result;
   }

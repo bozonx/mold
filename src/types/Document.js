@@ -82,7 +82,7 @@ export default class Document extends Container{
         moldPath: this._moldPath,
         options,
         metaParams,
-      }, this._schema, this.getUrlParams())
+      }, this.schema, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
         this._main.$$state.update(this._storagePath, {$loading: false});
@@ -118,7 +118,7 @@ export default class Document extends Container{
         payload,
         options,
         metaParams,
-      }, this._schema, this.getUrlParams()).then((resp) => {
+      }, this.schema, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.update(this._storagePath, {
         ...resp.body,
@@ -154,7 +154,7 @@ export default class Document extends Container{
         payload,
         options,
         metaParams,
-      }, this._schema, this.getUrlParams()).then((resp) => {
+      }, this.schema, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.update(this._storagePath, {
         ...resp.body,
