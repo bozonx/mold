@@ -36,15 +36,15 @@ export default class Request {
   }
 
   _applyDefaults(rawRequest, schema) {
-    console.log(11111111111, schema)
+    if (!_.isPlainObject(schema.driverDefaults)) return rawRequest;
+    if (!_.isPlainObject(schema.driverDefaults[rawRequest.method])) return rawRequest;
 
-    if (!_.isPlainObject(schema.actionDefaults)) return rawRequest;
+    const defaults = schema.driverDefaults[rawRequest.method];
 
+    console.log(1111111111111, rawRequest, defaults)
+    console.log(2222222, _.defaultsDeep(_.cloneDeep(rawRequest), defaults))
 
-    const defaults = schema.actionDefaults;
-
-    const result = rawRequest;
-    return result;
+    return _.defaultsDeep(_.cloneDeep(rawRequest), defaults);
   }
 
   /**

@@ -53,7 +53,7 @@ export default class DocumentsCollection extends PagedCollection {
       create: (...params) => { return this._create(...params) },
       remove: (...params) => { return this._remove(...params) },
     };
-    this.actionDefaults = {};
+    this.driverDefaults = {};
     this._initActions();
   }
 
@@ -282,10 +282,10 @@ export default class DocumentsCollection extends PagedCollection {
       this.action[name] = (...params) => item.bind(this)(...params, this);
     });
 
-    _.each(this.schema.actionDefaults, (item, name) => {
+    _.each(this.schema.driverDefaults, (item, name) => {
       if (!_.isPlainObject(item)) return;
       // Default acton's params
-      this.actionDefaults[name] = item;
+      this.driverDefaults[name] = item;
     });
   }
 
