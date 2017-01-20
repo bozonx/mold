@@ -37,6 +37,15 @@ export default class Document extends Container{
 
   $init(paths, schema) {
     super.$init(paths, schema);
+
+    this.action = {
+      load: (...params) => { return this._load(...params) },
+      put: (...params) => { return this._put(...params) },
+      patch: (...params) => { return this._patch(...params) },
+      remove: (...params) => { return this._remove(...params) },
+    };
+    this.actionDefaults = {};
+    this._initActions();
   }
 
   getUrlParams() {
@@ -52,12 +61,17 @@ export default class Document extends Container{
     super.update(newState, eventData);
   }
 
+  load(...params) { return this.action.load(...params) }
+  put(...params) { return this.action.put(...params) }
+  patch(...params) { return this.action.patch(...params) }
+  remove(...params) { return this.action.remove(...params) }
+
   /**
    * Load data from driver.
    * @param {object} options - raw params to driver's request
    * @returns {Promise}
    */
-  load(options=undefined) {
+  _load(options=undefined) {
     const metaParams = undefined;
 
     this._main.$$state.update(this._storagePath, {$loading: true});
@@ -84,7 +98,7 @@ export default class Document extends Container{
    * @param {object} options - raw params to driver's request
    * @returns {Promise}
    */
-  put(newState=undefined, options=undefined) {
+  _put(newState=undefined, options=undefined) {
     const metaParams = undefined;
 
     if (newState) this.update(newState);
@@ -114,7 +128,7 @@ export default class Document extends Container{
    * @param {object} options - raw params to driver's request
    * @returns {Promise}
    */
-  patch(newState=undefined, options=undefined) {
+  _patch(newState=undefined, options=undefined) {
     const metaParams = undefined;
 
     if (newState) this.update(newState);
@@ -144,7 +158,7 @@ export default class Document extends Container{
    * @param {object} metaParams
    * @return {Promise}
    */
-  remove(metaParams=undefined) {
+  _remove(metaParams=undefined) {
     const myDocumentsCollection = this.getParent();
 
     if (!myDocumentsCollection)
@@ -154,6 +168,20 @@ export default class Document extends Container{
       this._main.$$log.fatal(`The parent of document isn't a DocumentsCollection. You can remove only from DocumentsCollection`);
 
     return myDocumentsCollection.remove(this.mold, metaParams);
+  }
+
+  _initActions() {
+    _.each(this.schema.action, (item, name) => {
+      if (!_.isFunction(item)) return;
+      // custom method or overwrote method
+      this.action[name] = (...params) => item.bind(this)(...params, this);
+    });
+
+    _.each(this.schema.actionDefaults, (item, name) => {
+      if (!_.isPlainObject(item)) return;
+      // Default acton's params
+      this.actionDefaults[name] = item;
+    });
   }
 
 }
