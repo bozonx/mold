@@ -23,6 +23,11 @@ describe 'Functional. Action.', ->
           item:
             type: 'document'
             action: {
+              load: {
+                options: {
+                  param1: 'value1',
+                }
+              },
               put: (v) => handlerCreate(v),
               customAction: (v) -> handlerCustomAction(v),
             }
@@ -33,25 +38,6 @@ describe 'Functional. Action.', ->
       this.mold = mold( {silent: true}, this.testSchema )
       this.documentsCollection = this.mold.child('documentsCollection')
       this.document = this.mold.child('documentsCollection[0]')
-
-    it "action defaults", ->
-      handlerSendRequest = sinon.spy();
-      savedMethod = this.documentsCollection._main.$$state.$$request.sendRequest.bind(this.documentsCollection._main.$$state.$$request)
-      this.documentsCollection._main.$$state.$$request.sendRequest = (rawRequest, schema, urlParams) ->
-        handlerSendRequest(rawRequest, schema, urlParams)
-        return savedMethod(rawRequest, schema, urlParams)
-      this.documentsCollection.load(1);
-
-      expect(handlerSendRequest).to.have.been.calledOnce
-      expect(handlerSendRequest).to.have.been.calledWith({
-        method: 'filter',
-        moldPath: 'documentsCollection',
-        metaParams: { pageNum: 1 },
-        #options: undefined ,
-        options: {
-          param1: 'value1',
-        },
-      }, this.testSchema.documentsCollection)
 
     describe "DocumentsCollection", ->
       it "custom action", ->
@@ -66,6 +52,25 @@ describe 'Functional. Action.', ->
         expect(this.handlerCreate).to.have.been.calledOnce
         expect(this.handlerCreate).to.have.been.calledWith(1)
 
+    it "action defaults", ->
+      handlerSendRequest = sinon.spy();
+      savedMethod = this.documentsCollection._main.$$state.$$request.sendRequest.bind(this.documentsCollection._main.$$state.$$request)
+      this.documentsCollection._main.$$state.$$request.sendRequest = (rawRequest, schema, urlParams) ->
+        handlerSendRequest(rawRequest, schema, urlParams)
+        return savedMethod(rawRequest, schema, urlParams)
+      this.documentsCollection.load(1);
+
+      expect(handlerSendRequest).to.have.been.calledOnce
+      expect(handlerSendRequest).to.have.been.calledWith({
+        method: 'filter',
+        moldPath: 'documentsCollection',
+        metaParams: { pageNum: 1 },
+        options: {
+          param1: 'value1',
+        },
+      }, this.testSchema.documentsCollection)
+
+
     describe "Document", ->
       it "custom action", ->
         this.document.action.customAction('param');
@@ -79,42 +84,19 @@ describe 'Functional. Action.', ->
         expect(this.handlerCreate).to.have.been.calledOnce
         expect(this.handlerCreate).to.have.been.calledWith(1)
 
+      it "action defaults", ->
+        handlerSendRequest = sinon.spy();
+        savedMethod = this.document._main.$$state.$$request.sendRequest.bind(this.document._main.$$state.$$request)
+        this.document._main.$$state.$$request.sendRequest = (rawRequest, schema, urlParams) ->
+          handlerSendRequest(rawRequest, schema, urlParams)
+          return savedMethod(rawRequest, schema, urlParams)
+        this.document.load(1);
 
-
-
-#
-#  describe "driverDefaults", ->
-#    beforeEach () ->
-#      testSchema = () ->
-#        documentsCollection:
-#          type: 'documentsCollection'
-#          driverDefaults: {
-#            filter: {
-#              options: {
-#                param1: 'value1',
-#              }
-#            }
-#          }
-#
-#      this.testSchema = testSchema()
-#      this.mold = mold( {silent: true}, this.testSchema )
-#      this.documentsCollection = this.mold.child('documentsCollection')
-#
-#    it "load defaults", ->
-#      handlerSendRequest = sinon.spy();
-#      savedMethod = this.documentsCollection._main.$$state.$$request._startDriverRequest.bind(this.documentsCollection._main.$$state.$$request)
-#      this.documentsCollection._main.$$state.$$request._startDriverRequest = (rawRequest, schema, urlParams) ->
-#        handlerSendRequest(rawRequest, schema, urlParams)
-#        return savedMethod(rawRequest, schema, urlParams)
-#      this.documentsCollection.load(1);
-#
-#      expect(handlerSendRequest).to.have.been.calledOnce
-#      expect(handlerSendRequest).to.have.been.calledWith({
-#        method: 'filter',
-#        moldPath: 'documentsCollection',
-#        metaParams: { pageNum: 1 },
-#        #options: undefined ,
-#        options: {
-#          param1: 'value1',
-#        },
-#      }, this.testSchema.documentsCollection)
+        expect(handlerSendRequest).to.have.been.calledOnce
+        expect(handlerSendRequest).to.have.been.calledWith({
+          method: 'get',
+          moldPath: 'documentsCollection[0]',
+          options: {
+            param1: 'value1',
+          },
+        }, this.testSchema.documentsCollection.item)

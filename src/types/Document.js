@@ -76,14 +76,11 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   _load(preRequest=undefined) {
-    const metaParams = undefined;
-
     this._main.$$state.update(this._storagePath, {$loading: true});
 
     const request = _.defaultsDeep({
       method: 'get',
       moldPath: this._moldPath,
-      metaParams,
     }, preRequest);
 
     return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
@@ -108,8 +105,6 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   _put(newState=undefined, preRequest=undefined) {
-    const metaParams = undefined;
-
     if (newState) this.update(newState);
     this._main.$$state.update(this._storagePath, {$saving: true});
 
@@ -117,7 +112,6 @@ export default class Document extends Container{
       method: 'put',
       moldPath: this._moldPath,
       payload: omitUnsaveable(this._mold, this.schema),
-      metaParams,
     }, preRequest);
 
     return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
@@ -142,8 +136,6 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   _patch(newState=undefined, preRequest=undefined) {
-    const metaParams = undefined;
-
     if (newState) this.update(newState);
     this._main.$$state.update(this._storagePath, {$saving: true});
 
@@ -151,7 +143,6 @@ export default class Document extends Container{
       method: 'patch',
       moldPath: this._moldPath,
       payload: omitUnsaveable(this._lastChanges, this.schema),
-      metaParams,
     }, preRequest);
 
     return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
