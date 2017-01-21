@@ -32,13 +32,15 @@ describe 'Functional. DocumentsCollection type.', ->
 
   it "clear()", ->
     _.set(this.mold.$$state._storage._storage, 'documentsCollection', {
-      pages: [{$id: 0}],
+      action:
+        load: [{$id: 0}],
       state: {loading: [0]},
       documents: {'0': {$id: 0}}
     })
     this.documentsCollection.clear();
     assert.deepEqual(this.mold.$$state._storage._storage.documentsCollection, {
-      pages: [],
+      action:
+        load: [],
       state: {loading: [0]},
       documents: {'0': {$id: 0}}
     })

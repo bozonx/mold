@@ -24,13 +24,15 @@ export default class DocumentsCollection extends PagedCollection {
    * Overwrote. Get real mold.
    */
   get mold() {
-    return this._mold.pages;
+    return this._mold.action.load;
   }
 
   $initStorage() {
     if (!_.isPlainObject(this._main.$$state.getMold(this._storagePath))) {
       this._main.$$state.setSilent(this._storagePath, {
-        pages: [],
+        action: {
+          load: [],
+        },
         state: {},
         documents: {},
       });
@@ -39,7 +41,7 @@ export default class DocumentsCollection extends PagedCollection {
 
   $init(paths, schema) {
     this._storagePath = paths.storage;
-    this._storagePagesPath = paths.storage + '.pages';
+    this._storagePagesPath = paths.storage + '.action.load';
 
     super.$init(paths, schema);
 

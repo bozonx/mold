@@ -52,7 +52,8 @@ describe 'Integration.', ->
         expect(Promise.resolve(this.document._main.$getWholeStorageState())).to.eventually
         .deep.equal({
           documentsCollection: {
-            pages:[],
+            action:
+              load: [],
             state: {loading: []},
             documents: {
               '0': {
