@@ -121,10 +121,10 @@ export default class DocumentsCollection extends PagedCollection {
    * Load the specified page.
    * It updates mold automatically.
    * @param {number} pageNum
-   * @param {object} options - raw params to driver's request
+   * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _load(pageNum, options=undefined) {
+  _load(pageNum, preRequest=undefined) {
     if (!_.isNumber(pageNum)) this._main.$$log.fatal(`The "pageNum" param is required!`);
 
     let metaParams = _.omitBy({
@@ -136,13 +136,13 @@ export default class DocumentsCollection extends PagedCollection {
     // rise an event
     this._main.$$state.storageEmit(this._moldPath);
 
-    return this._main.$$state.$$request.sendRequest(
-      {
-        method: 'filter',
-        moldPath: this._moldPath,
-        options,
-        metaParams,
-      }, this.schema, this.getUrlParams())
+    const request = _.defaultsDeep({
+      method: 'filter',
+      moldPath: this._moldPath,
+      metaParams,
+    }, preRequest);
+
+    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         this._setPageLoadingState(pageNum, false);
         // update mold with server response data
@@ -159,10 +159,10 @@ export default class DocumentsCollection extends PagedCollection {
    * Send request to create document.
    * You can use recently added document.
    * @param {object} documentMold
-   * @param {object} options - raw params to driver's request
+   * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _create(documentMold, options=undefined) {
+  _create(documentMold, preRequest=undefined) {
     const metaParams = undefined;
 
     // change with event rising
@@ -170,14 +170,14 @@ export default class DocumentsCollection extends PagedCollection {
       $saving: true,
     });
 
-    return this._main.$$state.$$request.sendRequest(
-      {
-        method: 'create',
-        moldPath: this._moldPath,
-        payload: documentMold,
-        options,
-        metaParams,
-      }, this.schema, this.getUrlParams())
+    const request = _.defaultsDeep({
+      method: 'create',
+      moldPath: this._moldPath,
+      payload: documentMold,
+      metaParams,
+    }, preRequest);
+
+    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         // update document if it's in storage
         this._updateDoc(documentMold, {
@@ -203,24 +203,23 @@ export default class DocumentsCollection extends PagedCollection {
    * It adds "$deleting" prop to document.
    * After success response, it remove document from page in storage.
    * @param {object} documentMold - like {id: 0, $pageIndex: 0, $index: 0}
-   * @param {object} options - raw params to driver's request
+   * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _remove(documentMold, options=undefined) {
+  _remove(documentMold, preRequest=undefined) {
     const metaParams = undefined;
 
     // change with event rising
     this._updateDoc(documentMold, { $deleting: true });
 
-    return this._main.$$state.$$request.sendRequest(
-      {
-        method: 'remove',
-        moldPath: this._moldPath,
-        payload: documentMold,
-        options,
-        metaParams,
-      },
-      this.schema, this.getUrlParams())
+    const request = _.defaultsDeep({
+      method: 'remove',
+      moldPath: this._moldPath,
+      payload: documentMold,
+      metaParams,
+    }, preRequest);
+
+    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         this._updateDoc(documentMold, {
           $deleting: false,
