@@ -49,9 +49,12 @@ export default class DocumentsCollection extends PagedCollection {
     this._loading = this._mold.state.loading;
 
     this.action = {
-      load: (...params) => { return this._load(...params) },
-      create: (...params) => { return this._create(...params) },
-      remove: (...params) => { return this._remove(...params) },
+      load: (pageNum, preRequest) => {
+        return this._load(pageNum, this._applyDefaults(preRequest, 'load')) },
+      create: (documentMold, preRequest) => {
+        return this._create(documentMold, this._applyDefaults(preRequest, 'create')) },
+      remove: (documentMold, preRequest) => {
+        return this._remove(documentMold, this._applyDefaults(preRequest, 'remove')) },
     };
     this.actionDefaults = {};
     this._initActions();
@@ -275,26 +278,22 @@ export default class DocumentsCollection extends PagedCollection {
     this._loading.splice(findedIndex, 1);
   }
 
-  _applyDefaults(rawRequest, schema) {
-    if (!_.isPlainObject(schema.actionDefaults)) return rawRequest;
-    if (!_.isPlainObject(schema.actionDefaults[rawRequest.method])) return rawRequest;
+  _applyDefaults(preRequest, actionName) {
+    if (!this.actionDefaults[actionName]) return preRequest;
 
-    const defaults = schema.actionDefaults[rawRequest.method];
-
-    return _.defaultsDeep(_.cloneDeep(rawRequest), defaults);
+    return _.defaultsDeep(_.cloneDeep(preRequest), this.actionDefaults[actionName]);
   }
 
   _initActions() {
     _.each(this.schema.action, (item, name) => {
-      if (!_.isFunction(item)) return;
-      // custom method or overwrote method
-      this.action[name] = (...params) => item.bind(this)(...params, this);
-    });
-
-    _.each(this.schema.actionDefaults, (item, name) => {
-      if (!_.isPlainObject(item)) return;
-      // Default acton's params
-      this.actionDefaults[name] = item;
+      if (_.isFunction(item)) {
+        // custom method or overwrote method
+        this.action[name] = (...params) => item.bind(this)(...params, this);
+      }
+      else if (_.isPlainObject(item)) {
+        // Default acton's params
+        this.actionDefaults[name] = item;
+      }
     });
   }
 
