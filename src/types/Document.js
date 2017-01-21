@@ -39,10 +39,14 @@ export default class Document extends Container{
     super.$init(paths, schema);
 
     this.action = {
-      load: (...params) => { return this._load(...params) },
-      put: (...params) => { return this._put(...params) },
-      patch: (...params) => { return this._patch(...params) },
-      remove: (...params) => { return this._remove(...params) },
+      load: (preRequest) => {
+        return this._load(this._applyDefaults(preRequest, 'load')) },
+      put: (newState, preRequest) => {
+        return this._put(newState, this._applyDefaults(preRequest, 'put')) },
+      patch: (newState, preRequest) => {
+        return this._patch(newState, this._applyDefaults(preRequest, 'patch')) },
+      remove: (preRequest) => {
+        return this._remove(this._applyDefaults(preRequest, 'remove')) },
     };
     this.actionDefaults = {};
     this._initActions();
@@ -168,10 +172,10 @@ export default class Document extends Container{
   /**
    * Delete a document via documentsCollection.
    * You can't remove document that not inside a collection.
-   * @param {object} metaParams
+   * @param {object} preRequest
    * @return {Promise}
    */
-  _remove(metaParams=undefined) {
+  _remove(preRequest=undefined) {
     const myDocumentsCollection = this.getParent();
 
     if (!myDocumentsCollection)
@@ -180,20 +184,25 @@ export default class Document extends Container{
     if (myDocumentsCollection.type != 'documentsCollection')
       this._main.$$log.fatal(`The parent of document isn't a DocumentsCollection. You can remove only from DocumentsCollection`);
 
-    return myDocumentsCollection.remove(this.mold, metaParams);
+    return myDocumentsCollection.remove(this.mold, preRequest);
+  }
+
+  _applyDefaults(preRequest, actionName) {
+    if (!this.actionDefaults[actionName]) return preRequest;
+
+    return _.defaultsDeep(_.cloneDeep(preRequest), this.actionDefaults[actionName]);
   }
 
   _initActions() {
     _.each(this.schema.action, (item, name) => {
-      if (!_.isFunction(item)) return;
-      // custom method or overwrote method
-      this.action[name] = (...params) => item.bind(this)(...params, this);
-    });
-
-    _.each(this.schema.actionDefaults, (item, name) => {
-      if (!_.isPlainObject(item)) return;
-      // Default acton's params
-      this.actionDefaults[name] = item;
+      if (_.isFunction(item)) {
+        // custom method or overwrote method
+        this.action[name] = (...params) => item.bind(this)(...params, this);
+      }
+      else if (_.isPlainObject(item)) {
+        // Default acton's params
+        this.actionDefaults[name] = item;
+      }
     });
   }
 
