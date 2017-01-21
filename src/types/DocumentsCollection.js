@@ -50,11 +50,11 @@ export default class DocumentsCollection extends PagedCollection {
 
     this.action = {
       load: (pageNum, preRequest) => {
-        return this._load(pageNum, this._applyDefaults(preRequest, 'load')) },
+        return this.$load(pageNum, this._applyDefaults(preRequest, 'load')) },
       create: (documentMold, preRequest) => {
-        return this._create(documentMold, this._applyDefaults(preRequest, 'create')) },
+        return this.$create(documentMold, this._applyDefaults(preRequest, 'create')) },
       remove: (documentMold, preRequest) => {
-        return this._remove(documentMold, this._applyDefaults(preRequest, 'remove')) },
+        return this.$remove(documentMold, this._applyDefaults(preRequest, 'remove')) },
     };
     this.actionDefaults = {};
     this._initActions();
@@ -124,7 +124,7 @@ export default class DocumentsCollection extends PagedCollection {
    * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _load(pageNum, preRequest=undefined) {
+  $load(pageNum, preRequest=undefined) {
     if (!_.isNumber(pageNum)) this._main.$$log.fatal(`The "pageNum" param is required!`);
 
     let metaParams = _.omitBy({
@@ -162,9 +162,7 @@ export default class DocumentsCollection extends PagedCollection {
    * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _create(documentMold, preRequest=undefined) {
-    const metaParams = undefined;
-
+  $create(documentMold, preRequest=undefined) {
     // change with event rising
     this._updateDoc(documentMold, {
       $saving: true,
@@ -174,7 +172,6 @@ export default class DocumentsCollection extends PagedCollection {
       method: 'create',
       moldPath: this._moldPath,
       payload: documentMold,
-      metaParams,
     }, preRequest);
 
     return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
@@ -206,9 +203,7 @@ export default class DocumentsCollection extends PagedCollection {
    * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _remove(documentMold, preRequest=undefined) {
-    const metaParams = undefined;
-
+  $remove(documentMold, preRequest=undefined) {
     // change with event rising
     this._updateDoc(documentMold, { $deleting: true });
 
@@ -216,7 +211,6 @@ export default class DocumentsCollection extends PagedCollection {
       method: 'remove',
       moldPath: this._moldPath,
       payload: documentMold,
-      metaParams,
     }, preRequest);
 
     return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())

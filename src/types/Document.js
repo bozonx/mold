@@ -40,13 +40,13 @@ export default class Document extends Container{
 
     this.action = {
       load: (preRequest) => {
-        return this._load(this._applyDefaults(preRequest, 'load')) },
+        return this.$load(this._applyDefaults(preRequest, 'load')) },
       put: (newState, preRequest) => {
-        return this._put(newState, this._applyDefaults(preRequest, 'put')) },
+        return this.$put(newState, this._applyDefaults(preRequest, 'put')) },
       patch: (newState, preRequest) => {
-        return this._patch(newState, this._applyDefaults(preRequest, 'patch')) },
+        return this.$patch(newState, this._applyDefaults(preRequest, 'patch')) },
       remove: (preRequest) => {
-        return this._remove(this._applyDefaults(preRequest, 'remove')) },
+        return this.$remove(this._applyDefaults(preRequest, 'remove')) },
     };
     this.actionDefaults = {};
     this._initActions();
@@ -75,7 +75,7 @@ export default class Document extends Container{
    * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _load(preRequest=undefined) {
+  $load(preRequest=undefined) {
     this._main.$$state.update(this._storagePath, {$loading: true});
 
     const request = _.defaultsDeep({
@@ -104,7 +104,7 @@ export default class Document extends Container{
    * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _put(newState=undefined, preRequest=undefined) {
+  $put(newState=undefined, preRequest=undefined) {
     if (newState) this.update(newState);
     this._main.$$state.update(this._storagePath, {$saving: true});
 
@@ -135,7 +135,7 @@ export default class Document extends Container{
    * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _patch(newState=undefined, preRequest=undefined) {
+  $patch(newState=undefined, preRequest=undefined) {
     if (newState) this.update(newState);
     this._main.$$state.update(this._storagePath, {$saving: true});
 
@@ -166,7 +166,7 @@ export default class Document extends Container{
    * @param {object} preRequest
    * @return {Promise}
    */
-  _remove(preRequest=undefined) {
+  $remove(preRequest=undefined) {
     const myDocumentsCollection = this.getParent();
 
     if (!myDocumentsCollection)
