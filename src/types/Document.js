@@ -68,21 +68,21 @@ export default class Document extends Container{
 
   /**
    * Load data from driver.
-   * @param {object} options - raw params to driver's request
+   * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _load(options=undefined) {
+  _load(preRequest=undefined) {
     const metaParams = undefined;
 
     this._main.$$state.update(this._storagePath, {$loading: true});
 
-    return this._main.$$state.$$request.sendRequest(
-      {
-        method: 'get',
-        moldPath: this._moldPath,
-        options,
-        metaParams,
-      }, this.schema, this.getUrlParams())
+    const request = _.defaultsDeep({
+      method: 'get',
+      moldPath: this._moldPath,
+      metaParams,
+    }, preRequest);
+
+    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
         this._main.$$state.update(this._storagePath, {$loading: false});
@@ -100,25 +100,23 @@ export default class Document extends Container{
   /**
    * Save actual state.
    * @param {object|undefined} newState
-   * @param {object} options - raw params to driver's request
+   * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _put(newState=undefined, options=undefined) {
+  _put(newState=undefined, preRequest=undefined) {
     const metaParams = undefined;
 
     if (newState) this.update(newState);
     this._main.$$state.update(this._storagePath, {$saving: true});
 
-    const payload = omitUnsaveable(this._mold, this.schema);
+    const request = _.defaultsDeep({
+      method: 'put',
+      moldPath: this._moldPath,
+      payload: omitUnsaveable(this._mold, this.schema),
+      metaParams,
+    }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(
-      {
-        method: 'put',
-        moldPath: this._moldPath,
-        payload,
-        options,
-        metaParams,
-      }, this.schema, this.getUrlParams()).then((resp) => {
+    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.update(this._storagePath, {
         ...resp.body,
@@ -136,25 +134,23 @@ export default class Document extends Container{
   /**
    * Save actual state.
    * @param {object|undefined} newState
-   * @param {object} options - raw params to driver's request
+   * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  _patch(newState=undefined, options=undefined) {
+  _patch(newState=undefined, preRequest=undefined) {
     const metaParams = undefined;
 
     if (newState) this.update(newState);
     this._main.$$state.update(this._storagePath, {$saving: true});
 
-    const payload = omitUnsaveable(this._lastChanges, this.schema);
+    const request = _.defaultsDeep({
+      method: 'patch',
+      moldPath: this._moldPath,
+      payload: omitUnsaveable(this._lastChanges, this.schema),
+      metaParams,
+    }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(
-      {
-        method: 'patch',
-        moldPath: this._moldPath,
-        payload,
-        options,
-        metaParams,
-      }, this.schema, this.getUrlParams()).then((resp) => {
+    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.update(this._storagePath, {
         ...resp.body,
