@@ -53,7 +53,7 @@ export default class DocumentsCollection extends PagedCollection {
       create: (...params) => { return this._create(...params) },
       remove: (...params) => { return this._remove(...params) },
     };
-    this.driverDefaults = {};
+    this.actionDefaults = {};
     this._initActions();
   }
 
@@ -275,6 +275,15 @@ export default class DocumentsCollection extends PagedCollection {
     this._loading.splice(findedIndex, 1);
   }
 
+  _applyDefaults(rawRequest, schema) {
+    if (!_.isPlainObject(schema.actionDefaults)) return rawRequest;
+    if (!_.isPlainObject(schema.actionDefaults[rawRequest.method])) return rawRequest;
+
+    const defaults = schema.actionDefaults[rawRequest.method];
+
+    return _.defaultsDeep(_.cloneDeep(rawRequest), defaults);
+  }
+
   _initActions() {
     _.each(this.schema.action, (item, name) => {
       if (!_.isFunction(item)) return;
@@ -282,10 +291,10 @@ export default class DocumentsCollection extends PagedCollection {
       this.action[name] = (...params) => item.bind(this)(...params, this);
     });
 
-    _.each(this.schema.driverDefaults, (item, name) => {
+    _.each(this.schema.actionDefaults, (item, name) => {
       if (!_.isPlainObject(item)) return;
       // Default acton's params
-      this.driverDefaults[name] = item;
+      this.actionDefaults[name] = item;
     });
   }
 

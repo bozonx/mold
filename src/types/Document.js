@@ -44,7 +44,7 @@ export default class Document extends Container{
       patch: (...params) => { return this._patch(...params) },
       remove: (...params) => { return this._remove(...params) },
     };
-    this.driverDefaults = {};
+    this.actionDefaults = {};
     this._initActions();
   }
 
@@ -194,10 +194,10 @@ export default class Document extends Container{
       this.action[name] = (...params) => item.bind(this)(...params, this);
     });
 
-    _.each(this.schema.driverDefaults, (item, name) => {
+    _.each(this.schema.actionDefaults, (item, name) => {
       if (!_.isPlainObject(item)) return;
       // Default acton's params
-      this.driverDefaults[name] = item;
+      this.actionDefaults[name] = item;
     });
   }
 

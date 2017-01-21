@@ -15,8 +15,7 @@ export default class Request {
    * @returns {Promise}
    */
   sendRequest(rawRequest, schema, urlParams) {
-    const requestWithDefaults = this._applyDefaults(rawRequest, schema);
-    const promise = this._startDriverRequest(requestWithDefaults, schema, urlParams);
+    const promise = this._startDriverRequest(rawRequest, schema, urlParams);
     promise.then((resp) => {
       this._main.$$log.info('---> finish request: ', resp);
       return resp;
@@ -26,15 +25,6 @@ export default class Request {
     });
 
     return promise;
-  }
-
-  _applyDefaults(rawRequest, schema) {
-    if (!_.isPlainObject(schema.driverDefaults)) return rawRequest;
-    if (!_.isPlainObject(schema.driverDefaults[rawRequest.method])) return rawRequest;
-
-    const defaults = schema.driverDefaults[rawRequest.method];
-
-    return _.defaultsDeep(_.cloneDeep(rawRequest), defaults);
   }
 
   /**
