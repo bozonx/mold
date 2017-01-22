@@ -46,9 +46,11 @@ class LocalPouchDb {
     const preparedUrl = _.trimEnd(request.url, '/') + '/';
     const preparedUrl222 = _.trimEnd(request.url, '/');
     // simple query without paging
-    let query = {
-      include_docs: true,
-    };
+
+    const include_docs = (this._driverConfig.defaults && _.isBoolean(this._driverConfig.defaults.include_docs))
+      ? this._driverConfig.defaults.include_docs : true;
+
+    let query = { include_docs };
 
     // TODO: убрать meta.descending - это параметр sort
 
