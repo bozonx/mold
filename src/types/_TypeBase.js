@@ -17,6 +17,14 @@ export default class _TypeBase {
    * Get schema path
    * @returns {string}
    */
+  get storagePath() {
+    return '' + this._storagePath;
+  }
+
+  /**
+   * Get schema path
+   * @returns {string}
+   */
   get schemaPath() {
     return '' + this._schemaPath;
   }

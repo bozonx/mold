@@ -27,6 +27,13 @@ export default class DocumentsCollection extends PagedCollection {
     return this._mold.action.load;
   }
 
+  /**
+   * Overwrote. Get real mold.
+   */
+  get realMold() {
+    return this._mold;
+  }
+
   $initStorage() {
     if (!_.isPlainObject(this._main.$$state.getMold(this._storagePath))) {
       this._main.$$state.setSilent(this._storagePath, {
