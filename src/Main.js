@@ -36,10 +36,18 @@ export default class Main {
   /**
    * Get real storage. Use it only for binding to frameworks.
    * For other ways use exportStorage.
-   * @returns {*}
+   * @returns {object}
    */
   $getWholeStorageState() {
     return this._storage.$getWholeStorageState();
+  }
+
+  /**
+   * Set storage data. Only for test or dev purposes.
+   * @param {object} newStorage
+   */
+  $setWholeStorageState(newStorage) {
+    return this._storage.$init(newStorage);
   }
 
   /**
