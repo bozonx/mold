@@ -1,6 +1,6 @@
 {
   "name": "composite",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "Composite toolbox framework for rich mobile and web apps.",
   "repository": "git@bitbucket.org:ipkozyrin/composite.git",
   "license": "MIT",
