@@ -103,13 +103,15 @@ export default class State {
    * Add change event handler on path.
    * @param {string} storagePath
    * @param {function} userHandler
+   * @param {boolean} anyChange
    */
-  addListener(storagePath, userHandler) {
+  addListener(storagePath, userHandler, anyChange=false) {
     const wrapperHandler = (event) => {
       if (event.storagePath == storagePath) userHandler(event);
     };
 
-    this._addListener(storagePath, userHandler, wrapperHandler, 'change');
+    const eventName = (anyChange) ? 'anyChange' : 'change';
+    this._addListener(storagePath, userHandler, wrapperHandler, eventName);
   }
 
   /**
@@ -117,13 +119,15 @@ export default class State {
    * It means it rises on each change of any child of any deep.
    * @param {string} storagePath
    * @param {function} userHandler
+   * @param {boolean} anyChange
    */
-  addDeepListener(storagePath, userHandler) {
+  addDeepListener(storagePath, userHandler, anyChange=false) {
     const wrapperHandler = (event) => {
       if (event.storagePath.startsWith(storagePath)) userHandler(event);
     };
 
-    this._addListener(storagePath, userHandler, wrapperHandler, 'change');
+    const eventName = (anyChange) ? 'anyChange' : 'change';
+    this._addListener(storagePath, userHandler, wrapperHandler, eventName);
   }
 
   /**
@@ -152,6 +156,7 @@ export default class State {
 
     // Unbind listener
     this._main.$$events.removeListener('change', found.wrapperHandler);
+    this._main.$$events.removeListener('anyChange', found.wrapperHandler);
   }
 
   /**
@@ -163,6 +168,7 @@ export default class State {
     const clearing = (path) => {
       _.each(this._handlers[path], (item) => {
         this._main.$$events.removeListener('change', item.wrapperHandler);
+        this._main.$$events.removeListener('anyChange', item.wrapperHandler);
       });
       this._handlers[path] = [];
     };

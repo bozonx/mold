@@ -77,8 +77,7 @@ export default class _TypeBase {
   }
 
   onAnyChange(handler) {
-    // TODO: вешать на все изменения включая silent
-    //this._main.$$state.addListener(this._storagePath, handler);
+    this._main.$$state.addListener(this._storagePath, handler, true);
   }
 
   /**
@@ -90,8 +89,7 @@ export default class _TypeBase {
   }
 
   onAnyChangeDeep(handler) {
-    // TODO: вешать на все изменения включая silent
-    //this._main.$$state.addDeepListener(this._storagePath, handler);
+    this._main.$$state.addDeepListener(this._storagePath, handler, true);
   }
 
   /**

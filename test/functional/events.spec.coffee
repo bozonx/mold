@@ -138,3 +138,5 @@ describe 'Functional. Events.', ->
 
       expect(this.handlerContainer).to.not.have.been.called
       expect(this.handlerNested).to.not.have.been.called
+
+  describe 'any change', ->

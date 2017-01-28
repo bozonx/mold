@@ -73,12 +73,12 @@ export default class Main {
   }
 
   onAnyChange(handler) {
-    // TODO: слушать все изменения включая silent
-    this.$$events.on('change', handler);
+    this.$$events.on('anyChange', handler);
   }
 
   off(handler) {
     this.$$events.off('change', handler);
+    this.$$events.off('anyChange', handler);
   }
 
   registerType(typeName, typeClass) {
