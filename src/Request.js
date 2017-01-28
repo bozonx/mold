@@ -45,18 +45,18 @@ export default class Request {
     const req = this._generateRequest(
       rawRequest.method,
       rawRequest.moldPath,
-      schema,
       rawRequest.payload,
-      driverRoot,
       rawRequest.options,
       rawRequest.metaParams,
+      driverRoot,
+      schema,
       urlParams);
     this._main.$$log.info('---> start request: ', req);
 
     return driver.startRequest(req);
   }
 
-  _generateRequest(method, moldPath, schema, rawPayload, driverRoot, options, meta, urlParams) {
+  _generateRequest(method, moldPath, rawPayload, options, meta, driverRoot, schema, urlParams) {
     let payload = rawPayload;
     if (_.isPlainObject(payload)) {
       payload = _.omit(_.cloneDeep(payload), ...this._main.$$config.omitParamsToRequest);
