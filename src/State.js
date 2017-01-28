@@ -63,6 +63,7 @@ export default class State {
   unshift(...params) { this._storage.unshift(...params) }
   push(...params) { this._storage.push(...params) }
   storageEmit(...params) { this._storage.emit(...params) }
+  storageEmitSilent(...params) { this._storage.emitSilent(...params) }
 
   /**
    * Remove item from collection.

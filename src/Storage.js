@@ -47,10 +47,15 @@ export default class Storage {
    */
   update(storagePath, newValue, eventData=undefined) {
     // run mutates and get list of changes
-    var wereChanges = this.updateSilent(storagePath, newValue);
+    var wereChanges = mutate(this._storage, storagePath).update(newValue);
 
     // run update event
-    if (wereChanges) this._riseEvents(storagePath, 'change', eventData);
+    if (wereChanges) {
+      this._riseUserChange(storagePath, 'change', eventData);
+      this._riseAnyChange(storagePath, 'change', eventData);
+    }
+
+    return wereChanges;
   }
 
   /**
@@ -62,7 +67,14 @@ export default class Storage {
    */
   updateSilent(storagePath, newValue, eventData=undefined) {
     // run mutates and get list of changes
-    return mutate(this._storage, storagePath).update(newValue);
+    var wereChanges =  mutate(this._storage, storagePath).update(newValue);
+
+    if (wereChanges) {
+      this._riseSilentChange(storagePath, 'change', eventData);
+      this._riseAnyChange(storagePath, 'change', eventData);
+    }
+
+    return wereChanges;
   }
 
   /**
@@ -72,6 +84,8 @@ export default class Storage {
    */
   setSilent(storagePath, newValue) {
     _.set(this._storage, storagePath, newValue);
+    this._riseSilentChange(storagePath, 'change');
+    this._riseAnyChange(storagePath, 'change');
   }
 
   /**
@@ -81,7 +95,19 @@ export default class Storage {
    * @param {object|undefined} eventData - additional data to event
    */
   emit(storagePath, action='change', eventData=undefined) {
-    this._riseEvents(storagePath, action, eventData);
+    this._riseUserChange(storagePath, action, eventData);
+    this._riseAnyChange(storagePath, action, eventData);
+  }
+
+  /**
+   * Emit an event silently
+   * @param {string} storagePath
+   * @param {string} action - 'change', 'add' etc.
+   * @param {object|undefined} eventData - additional data to event
+   */
+  emitSilent(storagePath, action='change', eventData=undefined) {
+    this._riseUserChange(storagePath, action, eventData);
+    this._riseAnyChange(storagePath, action, eventData);
   }
 
   /**
@@ -105,7 +131,8 @@ export default class Storage {
     updateIndexes(collection, pageIndex);
 
     // run update event
-    this._riseEvents(storagePathToCollection, 'add', eventData);
+    this._riseUserChange(storagePathToCollection, 'add', eventData);
+    this._riseAnyChange(storagePathToCollection, 'add', eventData);
   }
 
   /**
@@ -145,13 +172,17 @@ export default class Storage {
       collection.splice(index, 1, newItem);
       updateIndexes(collection, pageIndex);
       // run update event
-      this._riseEvents(storagePathToCollection, 'add', eventData);
+      this._riseUserChange(storagePathToCollection, 'add', eventData);
+      this._riseAnyChange(storagePathToCollection, 'add', eventData);
     }
     else {
       // change existent item
       const wereChanges = mutate(this._storage, concatPath(storagePathToCollection, index)).update(newItem);
       updateIndexes(collection, pageIndex);
-      if (wereChanges) this._riseEvents(storagePathToCollection, 'change', eventData);
+      if (wereChanges) {
+        this._riseUserChange(storagePathToCollection, 'change', eventData);
+        this._riseAnyChange(storagePathToCollection, 'change', eventData);
+      }
     }
   }
 
@@ -173,7 +204,8 @@ export default class Storage {
     collection.splice($index, 1);
     updateIndexes(collection);
     // run update event
-    this._riseEvents(storagePathToCollection, 'remove', eventData);
+    this._riseUserChange(storagePathToCollection, 'remove', eventData);
+    this._riseAnyChange(storagePathToCollection, 'remove', eventData);
   }
 
   /**
@@ -186,7 +218,8 @@ export default class Storage {
     if (_.isEmpty(containerOrArray)) return;
 
     this._clearRecursive(containerOrArray);
-    this._riseEvents(storagePathToCollection, 'change', eventData);
+    this._riseUserChange(storagePathToCollection, 'change', eventData);
+    this._riseAnyChange(storagePathToCollection, 'change', eventData);
   }
 
   /**
@@ -210,8 +243,23 @@ export default class Storage {
       });
     }
   }
-  _riseEvents(storagePath, action, eventData) {
+
+  _riseUserChange(storagePath, action, eventData) {
     this._events.emit('change', _.omitBy({
+      storagePath,
+      action,
+      data: eventData,
+    }, _.isUndefined));
+  }
+  _riseAnyChange(storagePath, action, eventData) {
+    this._events.emit('anyChange', _.omitBy({
+      storagePath,
+      action,
+      data: eventData,
+    }, _.isUndefined));
+  }
+  _riseSilentChange(storagePath, action, eventData) {
+    this._events.emit('silentChange', _.omitBy({
       storagePath,
       action,
       data: eventData,

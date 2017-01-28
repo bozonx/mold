@@ -9,7 +9,7 @@ describe 'Unit. Storage.', ->
     this.storage = new Storage(this.eventsMock)
 
     this.checkEvent = (storagePath, action) =>
-      expect(this.emitSpy).to.have.been.calledOnce
+      expect(this.emitSpy).to.have.been.calledTwice
       expect(this.emitSpy).to.have.been.calledWith('change', {
         storagePath: storagePath,
         action: action,

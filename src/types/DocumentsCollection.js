@@ -143,7 +143,7 @@ export default class DocumentsCollection extends PagedCollection {
 
     this._setPageLoadingState(pageNum, true);
     // rise an event
-    this._main.$$state.storageEmit(this._moldPath);
+    this._main.$$state.storageEmitSilent(this._moldPath);
 
     const request = _.defaultsDeep({
       method: 'filter',
