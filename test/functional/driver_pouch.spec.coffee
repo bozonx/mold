@@ -41,21 +41,21 @@ describe 'Functional. PouchDb driver.', ->
     this.init('document_get')
     driverHelpers.document_get(this.mold, 'root.document', done)
 
-  it 'document_get_error', (done) ->
+  it 'document_get_error', () ->
     this.init('document_get_error')
-    driverHelpers.document_get_error(this.mold, 'root.document', done)
+    driverHelpers.document_get_error(this.mold, 'root.document')
 
-  it 'document_put', (done) ->
+  it 'document_put', () ->
     this.init('document_put')
-    driverHelpers.document_put(this.mold, 'root.document', done)
+    driverHelpers.document_put(this.mold, 'root.document')
 
   it 'document_patch', (done) ->
     this.init('document_patch')
     driverHelpers.document_patch(this.mold, 'root.document', done)
 
-  it 'documentsCollection_create', (done) ->
+  it 'documentsCollection_create', () ->
     this.init('collection_create')
-    driverHelpers.documentsCollection_create(this.mold, 'root.documentsCollection', done)
+    driverHelpers.documentsCollection_create(this.mold, 'root.documentsCollection')
 
   it 'documentsCollection_remove', (done) ->
     this.init('remove')

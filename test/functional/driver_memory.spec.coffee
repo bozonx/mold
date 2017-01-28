@@ -32,14 +32,14 @@ describe 'Functional. Memory driver.', ->
   it 'document_get', (done) ->
     driverHelpers.document_get(this.mold, 'root.document', done)
 
-  it 'document_put', (done) ->
-    driverHelpers.document_put(this.mold, 'root.document', done)
+  it 'document_put', () ->
+    driverHelpers.document_put(this.mold, 'root.document')
 
   it 'document_patch', (done) ->
     driverHelpers.document_patch(this.mold, 'root.document', done)
 
-  it 'documentsCollection_create', (done) ->
-    driverHelpers.documentsCollection_create(this.mold, 'root.documentsCollection', done)
+  it 'documentsCollection_create', () ->
+    driverHelpers.documentsCollection_create(this.mold, 'root.documentsCollection')
 
   it 'documentsCollection_remove', (done) ->
     driverHelpers.documentsCollection_remove(this.mold, 'root.documentsCollection', done)

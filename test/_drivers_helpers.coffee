@@ -40,7 +40,7 @@ module.exports =
       expect(promise).to.eventually
       .deep.equal({body: payload, request: request}).notify(done)
 
-  document_get_error: (mold, pathToDoc, done) ->
+  document_get_error: (mold, pathToDoc) ->
     err = ['driverError', 'request']
     document = mold.child(pathToDoc)
     document.load()
@@ -49,9 +49,8 @@ module.exports =
       .catch (errResp) =>
         expect(Promise.resolve(_.keys(errResp))).to.eventually
         .deep.equal(err)
-        .notify(done)
 
-  document_put: (mold, pathToDoc, done) ->
+  document_put: (mold, pathToDoc) ->
     payload =
       booleanParam: true
       stringParam: 'newValue'
@@ -61,7 +60,7 @@ module.exports =
     document = mold.child(pathToDoc)
 
     promise = cleanPromise( document.put(payload) )
-    expect(promise).to.eventually.deep.equal({body: payload, request: request}).notify(done)
+    expect(promise).to.eventually.deep.equal({body: payload, request: request})
 
   document_patch: (mold, pathToDoc, done) ->
     firstData =
@@ -81,14 +80,14 @@ module.exports =
       expect(promise).to.eventually.deep.equal({body: resultData, request: request})
       .notify(done)
 
-  documentsCollection_create: (mold, pathToDocColl, done) ->
+  documentsCollection_create: (mold, pathToDocColl) ->
     collection = mold.child(pathToDocColl)
     payload =
       name: 'value'
     request = generateRequest(pathToDocColl, 'create', {payload: payload})
 
     promise = cleanPromise( collection.create(payload) )
-    expect(promise).to.eventually.deep.equal({body: {name: 'value'}, request: request}).notify(done)
+    expect(promise).to.eventually.deep.equal({body: {name: 'value'}, request: request})
 
   documentsCollection_remove: (mold, pathToDocColl, done) ->
     collection = mold.child(pathToDocColl)
