@@ -15,32 +15,8 @@ export default class Request {
    * @returns {Promise}
    */
   sendRequest(rawRequest, schema, urlParams) {
-    const promise = this._startDriverRequest(rawRequest, schema, urlParams);
-    promise.then((resp) => {
-      this._main.$$log.info('---> finish request: ', resp);
-      return resp;
-    }).catch((err) => {
-      this._main.$$log.info('---> failed request: ', err);
-      return err;
-    });
-
-    return promise;
-  }
-
-  /**
-   * Send query to driver for data.
-   * @param {object} rawRequest - method, moldPath, payload, options, metaParams
-   * @param {object} schema
-   * @param {object|undefined} urlParams
-   * @returns {Promise}
-   * @private
-   */
-  _startDriverRequest(rawRequest, schema, urlParams) {
     const driverRoot = this._main.$$schemaManager.getClosestDriverPath(rawRequest.moldPath);
-
     const driver = this._main.$$schemaManager.getDriver(driverRoot);
-    // // It rise an error if path doesn't consist with schema
-    // const schema = this._main.$$schemaManager.get(schemaPath);
 
     const request = this._generateRequest(
       {
@@ -49,9 +25,15 @@ export default class Request {
       },
       schema,
       urlParams);
+
     this._main.$$log.info('---> start request: ', request);
 
-    return driver.startRequest(request);
+    const promise = driver.startRequest(request);
+    promise
+      .then((resp) => this._main.$$log.info('---> finish request: ', resp))
+      .catch((err) => this._main.$$log.info('---> failed request: ', err));
+
+    return promise;
   }
 
   /**
