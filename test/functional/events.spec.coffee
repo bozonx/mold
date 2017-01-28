@@ -139,4 +139,13 @@ describe 'Functional. Events.', ->
       expect(this.handlerContainer).to.not.have.been.called
       expect(this.handlerNested).to.not.have.been.called
 
-  describe 'any change', ->
+  describe 'silent / any change', ->
+    it 'on cintainer init', ->
+      this.mold.onAnyChange(this.handlerContainer)
+      this.container = this.mold.child('container')
+
+      expect(this.handlerContainer).to.have.been.calledOnce
+      expect(this.handlerContainer).to.have.been.calledWith({
+        storagePath: 'container'
+        action: 'change'
+      })
