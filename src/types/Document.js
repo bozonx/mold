@@ -76,7 +76,7 @@ export default class Document extends Container{
    * @returns {Promise}
    */
   $load(preRequest=undefined) {
-    this._main.$$state.update(this._storagePath, {$loading: true});
+    this._main.$$state.updateSilent(this._storagePath, {$loading: true});
 
     const request = _.defaultsDeep({
       method: 'get',
@@ -86,14 +86,14 @@ export default class Document extends Container{
     return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
-        this._main.$$state.update(this._storagePath, {$loading: false});
+        this._main.$$state.updateSilent(this._storagePath, {$loading: false});
 
-        this._main.$$state.update(this._storagePath, resp.body);
+        this._main.$$state.updateSilent(this._storagePath, resp.body);
         this._lastChanges = {};
 
         return resp;
       }, (err) => {
-        this._main.$$state.update(this._storagePath, {$loading: false});
+        this._main.$$state.updateSilent(this._storagePath, {$loading: false});
         return Promise.reject(err);
       });
   }
@@ -106,7 +106,7 @@ export default class Document extends Container{
    */
   $put(newState=undefined, preRequest=undefined) {
     if (newState) this.update(newState);
-    this._main.$$state.update(this._storagePath, {$saving: true});
+    this._main.$$state.updateSilent(this._storagePath, {$saving: true});
 
     const request = _.defaultsDeep({
       method: 'put',
@@ -116,7 +116,7 @@ export default class Document extends Container{
 
     return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
       // update mold with server response data
-      this._main.$$state.update(this._storagePath, {
+      this._main.$$state.updateSilent(this._storagePath, {
         ...resp.body,
         $saving: false,
       });
@@ -124,7 +124,7 @@ export default class Document extends Container{
 
       return resp;
     }, (err) => {
-      this._main.$$state.update(this._storagePath, {$saving: false});
+      this._main.$$state.updateSilent(this._storagePath, {$saving: false});
       return Promise.reject(err);
     });
   }
@@ -137,7 +137,7 @@ export default class Document extends Container{
    */
   $patch(newState=undefined, preRequest=undefined) {
     if (newState) this.update(newState);
-    this._main.$$state.update(this._storagePath, {$saving: true});
+    this._main.$$state.updateSilent(this._storagePath, {$saving: true});
 
     const request = _.defaultsDeep({
       method: 'patch',
@@ -147,7 +147,7 @@ export default class Document extends Container{
 
     return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
       // update mold with server response data
-      this._main.$$state.update(this._storagePath, {
+      this._main.$$state.updateSilent(this._storagePath, {
         ...resp.body,
         $saving: false,
       });
@@ -155,7 +155,7 @@ export default class Document extends Container{
 
       return resp;
     }, (err) => {
-      this._main.$$state.update(this._storagePath, {$saving: false});
+      this._main.$$state.updateSilent(this._storagePath, {$saving: false});
       return Promise.reject(err);
     });
   }

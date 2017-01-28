@@ -249,7 +249,7 @@ export default class DocumentsCollection extends PagedCollection {
         concatPath(this._storagePagesPath, documentMold.$pageIndex),
         documentMold.$index);
 
-      this._main.$$state.update(storagePathToDocInPages, newState);
+      this._main.$$state.updateSilent(storagePathToDocInPages, newState);
     }
 
     // update document in "documents"
@@ -258,7 +258,7 @@ export default class DocumentsCollection extends PagedCollection {
       concatPath(this._storagePath, 'documents'), `[${documentMold[primaryName]}]`);
 
     if (!this._main.$$state.getMold(storagePathToDocInDocuments)) return;
-    this._main.$$state.update(storagePathToDocInDocuments, newState);
+    this._main.$$state.updateSilent(storagePathToDocInDocuments, newState);
   }
 
   _setPageLoadingState(pageNum, loading) {
