@@ -4,6 +4,7 @@ chai = require('chai')
 sinon = require("sinon")
 sinonChai = require('sinon-chai')
 chaiAsPromised = require('chai-as-promised')
+
 chai.use(sinonChai)
 chai.use(chaiAsPromised)
 require('mocha-sinon')

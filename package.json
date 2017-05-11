@@ -1,16 +1,13 @@
 {
-  "name": "composite",
+  "name": "mold",
   "version": "0.19.0",
-  "description": "Composite toolbox framework for rich mobile and web apps.",
-  "repository": "git@bitbucket.org:ipkozyrin/composite.git",
+  "description": "Structure state management",
+  "repository": "git@bitbucket.org:ipkozyrin/mold.git",
   "license": "MIT",
   "engines": {
     "node": ">=5.9.1"
   },
-  "author": {
-    "name": "Ivan Kozyrin",
-    "email": "ipkozyrin@gmail.com"
-  },
+  "author": "Ivan Kozyrin <ipkozyrin@gmail.com>",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha",
