@@ -1,5 +1,7 @@
 import _ from 'lodash';
-import cuid from 'cuid';
+// TODO: use real cuid repo or other collision resistance id generator
+import Cuid from './node-cuid.js';
+const cuid = Cuid().cuid;
 
 import { correctUpdatePayload } from '../helpers';
 
