@@ -35,7 +35,7 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "coffee-coverage": "^1.0.1",
-    "coffee-script": "^1.12.7",
+    "coffeescript": "next",
     "eslint": "^3.14.0",
     "istanbul": "^0.4.3",
     "memdown": "^1.2.0",
