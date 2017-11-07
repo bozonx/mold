@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import { findPrimary, convertFromLodashToUrl } from './helpers';
 
+
 export default class Request {
   constructor(main) {
     this._main = main;

@@ -27,6 +27,10 @@ class LocalPouchDb {
     this._main = main;
   }
 
+  getDb() {
+    return this._db;
+  }
+
   /**
    * Get a document
    * @param {object} request
