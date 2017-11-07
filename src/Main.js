@@ -72,12 +72,13 @@ export default class Main {
 
   /**
    * Get driver by path in schema.
-   * You cat pass path deeper than certain driver path
+   * You cat pass path deeper than certain driver path.
+   * If no one driver has found it returns a default driver (memory)
    * @param {string} pathInSchema
    * @return {Object|undefined}
    */
   getDriver(pathInSchema) {
-    return this.$$schemaManager.getClosestDriver(pathInSchema);
+    return this.$$schemaManager.getDriver(pathInSchema);
   }
 
   /**

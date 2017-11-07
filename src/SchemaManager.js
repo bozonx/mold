@@ -61,10 +61,15 @@ export default class SchemaManager {
    * @param pathInSchema
    * @return {Object|undefined}
    */
-  getClosestDriver(pathInSchema) {
+  getDriver(pathInSchema) {
     const driverRoot = this.getClosestDriverPath(pathInSchema);
 
-    return this.getDriverStrict(driverRoot);
+    const driver = this.getDriverStrict(driverRoot);
+
+    if (driver) return driver;
+
+    // else return default memory driver
+    return this.mainMemoryDriver;
   }
 
   /**
