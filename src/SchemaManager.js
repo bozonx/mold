@@ -126,6 +126,7 @@ export default class SchemaManager {
       childPathParts = pathParts.slice(1);
       // get root instance
       rootInstance = this.$getInstanceByFullPath({
+        // TODO: use moldPath, schemaPath, storagePath
         mold: pathParts[0],
         schema: convertFromLodashToSchema(pathParts[0]),
         storage: pathParts[0],
@@ -135,6 +136,7 @@ export default class SchemaManager {
       if (childPathParts.length === 0) return rootInstance;
     }
 
+    // TODO: throw an Error if instant hasn't found
     return this._findInstance(childPathParts, rootInstance);
   }
 
@@ -173,6 +175,8 @@ export default class SchemaManager {
   }
 
   _findInstance(pathParts, rootInstance) {
+    // TODO: вывалить ошибку при попытке получить тип по несуществующему пути
+
     let currentInstance = rootInstance;
     let result = undefined;
     _.each(pathParts, (currentPathPiece, index) => {
@@ -189,6 +193,7 @@ export default class SchemaManager {
         currentInstance = currentInstance.$getChildInstance(currentPathPiece);
       }
     });
+
     return result;
   }
 }

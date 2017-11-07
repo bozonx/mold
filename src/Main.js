@@ -61,6 +61,14 @@ export default class Main {
   }
 
   /**
+   * Get instance of type by schema path.
+   * @param {string} pathInSchema - absolute path in schema
+   */
+  get(pathInSchema) {
+    return this.$$schemaManager.getInstance(pathInSchema);
+  }
+
+  /**
    * Get instance of one of the types by a path
    * @param {string} path - absolute path or relative if context is used
    * @param {object} context - instance of root element
