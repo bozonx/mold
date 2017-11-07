@@ -21,11 +21,11 @@ export default class SchemaManager {
 
   init(schema) {
     this._schema = schema;
-
     const memoryDriver = new Memory({
       db: this.$defaultMemoryDb,
     });
-    this.mainMemoryDriver = memoryDriver.instance({});
+    this._defaultDriver = memoryDriver.instance({});
+
     this._checkSchema();
   }
 
@@ -55,6 +55,10 @@ export default class SchemaManager {
     return schema;
   }
 
+  getDefaultDriver() {
+    return this._defaultDriver;
+  }
+
   /**
    * Get driver on path or upper on path.
    * It no one driver has found it returns defaultDriver (memory)
@@ -63,25 +67,25 @@ export default class SchemaManager {
    */
   getDriver(pathInSchema) {
     const driverRoot = this.getClosestDriverPath(pathInSchema);
-
     const driver = this.getDriverStrict(driverRoot);
 
     if (driver) return driver;
 
     // else return default memory driver
-    return this.mainMemoryDriver;
+    return this._defaultDriver;
   }
 
   /**
    * Get driver by path.
-   * @param {string} driverPath - absolute path to driver
-   * @returns {object|undefined} If driver doesnt exists, returns undefined
+   * @param {string} driverPath - absolute path to driver.
+   *   If driverPath doesn't specified or '' it means defautl memory driver
+   * @returns {object|undefined} If driver doesn't exists, returns undefined
    */
   getDriverStrict(driverPath) {
     if (driverPath) return this._drivers[driverPath];
 
     // if not driverPath it means default memory driver
-    return this.mainMemoryDriver;
+    return this._defaultDriver;
   }
 
   /**
