@@ -4,6 +4,7 @@ import { convertFromLodashToSchema, convertFromSchemaToLodash, getTheBestMatchPa
 import Memory from './drivers/Memory';
 import { eachSchema, splitPath } from './helpers';
 
+
 /**
  * It's schema manager
  * You can set schema only once on creating instance
@@ -55,17 +56,34 @@ export default class SchemaManager {
   }
 
   /**
+   * Get driver on path or upper on path.
+   * It no one driver has found it returns defaultDriver (memory)
+   * @param pathInSchema
+   * @return {Object|undefined}
+   */
+  getClosestDriver(pathInSchema) {
+    const driverRoot = this.getClosestDriverPath(pathInSchema);
+
+    return this.getDriverStrict(driverRoot);
+  }
+
+  /**
    * Get driver by path.
    * @param {string} driverPath - absolute path to driver
    * @returns {object|undefined} If driver doesnt exists, returns undefined
    */
-  getDriver(driverPath) {
+  getDriverStrict(driverPath) {
     if (driverPath) return this._drivers[driverPath];
 
-    // no-one === default memory driver
+    // if not driverPath it means default memory driver
     return this.mainMemoryDriver;
   }
 
+  /**
+   * Return driver path which is deriver specified on schema.
+   * @param {string} moldPath
+   * @return {string|undefined} real driver path
+   */
   getClosestDriverPath(moldPath) {
     if (!_.isString(moldPath))
       this._main.$$log.fatal(`You must pass the moldPath argument!`);

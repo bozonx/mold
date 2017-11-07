@@ -28,6 +28,8 @@ export default class Main {
     this.$$schemaManager.registerType('document', Document);
     this.$$schemaManager.registerType('documentsCollection', DocumentsCollection);
 
+    // TODO: run plugins
+
     // initialize
     this.$$schemaManager.init(schema);
     this.$$state.init(this, this._storage);
@@ -68,10 +70,29 @@ export default class Main {
     return this.$$schemaManager.getInstance(path, context);
   }
 
+  /**
+   * Get driver by path in schema.
+   * You cat pass path deeper than certain driver path
+   * @param {string} pathInSchema
+   * @return {Object|undefined}
+   */
+  getDriver(pathInSchema) {
+    return this.$$schemaManager.getClosestDriver(pathInSchema);
+  }
+
+  /**
+   * Listen to all the changes made by user.
+   * @param {function} handler
+   */
   onChange(handler) {
     this.$$events.on('change', handler);
   }
 
+  /**
+   * Listen to all the changes silent or by user.
+   * Don't use it in common purpose. It's only usual for application or component inner state updates.
+   * @param handler
+   */
   onAnyChange(handler) {
     this.$$events.on('anyChange', handler);
   }

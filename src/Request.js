@@ -16,7 +16,7 @@ export default class Request {
    */
   sendRequest(rawRequest, schema, urlParams) {
     const driverRoot = this._main.$$schemaManager.getClosestDriverPath(rawRequest.moldPath);
-    const driver = this._main.$$schemaManager.getDriver(driverRoot);
+    const driver = this._main.$$schemaManager.getDriverStrict(driverRoot);
 
     const request = this._generateRequest(
       {
