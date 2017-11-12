@@ -17,14 +17,26 @@ export default class SchemaManager {
     this.$defaultMemoryDb = {};
     this._drivers = {};
     this._registeredTypes = {};
+    this._schema = null;
+    this._defaultDriver = null;
   }
 
-  init(schema) {
-    this._schema = schema;
+  init() {
+    this._schema = {};
+
     const memoryDriver = new Memory({
       db: this.$defaultMemoryDb,
     });
     this._defaultDriver = memoryDriver.instance({});
+  }
+
+  setSchema(mountPath, schema) {
+    if (!mountPath) {
+      this._schema = schema;
+    }
+    else {
+      _.set(this._schema, mountPath, schema);
+    }
 
     this._checkSchema();
   }
@@ -139,6 +151,8 @@ export default class SchemaManager {
     // TODO: throw an Error if instant hasn't found
     return this._findInstance(childPathParts, rootInstance);
   }
+
+
 
   /**
    * It just returns an instance

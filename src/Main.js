@@ -31,7 +31,8 @@ export default class Main {
     // TODO: run plugins
 
     // initialize
-    this.$$schemaManager.init(schema);
+    this.$$schemaManager.init();
+    this.$$schemaManager.setSchema('', schema);
     this.$$state.init(this, this._storage);
   }
 
@@ -111,8 +112,17 @@ export default class Main {
     this.$$events.off('anyChange', handler);
   }
 
+  /**
+   * Register your own type
+   * @param typeName
+   * @param typeClass
+   */
   registerType(typeName, typeClass) {
     this.$$schemaManager.registerType(typeName, typeClass);
+  }
+
+  setSchema(mountPath, schema) {
+    this.$$schemaManager.setSchema(mountPath, schema);
   }
 
 }
