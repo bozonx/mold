@@ -65,6 +65,8 @@ describe 'Integration.', ->
         })
         .notify(done)
 
+  describe 'set schema to specific mount point', ->
+    it 'set schema', ->
 
 
 
