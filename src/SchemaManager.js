@@ -30,22 +30,6 @@ export default class SchemaManager {
     this._defaultDriver = memoryDriver.instance({});
   }
 
-  /**
-   * Set schema to certain mount point
-   * @param {string} mountPath - if it '' it means set to root
-   * @param {object} schema
-   */
-  setSchema(mountPath, schema) {
-    if (!mountPath) {
-      this._schema = schema;
-    }
-    else {
-      _.set(this._schema, mountPath, schema);
-    }
-
-    this._checkSchema();
-  }
-
   registerType(typeName, typeClass) {
     this._registeredTypes[typeName] = typeClass;
   }
@@ -157,7 +141,22 @@ export default class SchemaManager {
     return this._findInstance(childPathParts, rootInstance);
   }
 
+  /**
+   * Set schema to certain mount point
+   * @param {string} moldMountPath - if it '' it means set to root
+   * @param {object} schema
+   */
+  setSchema(moldMountPath, schema) {
+    if (!moldMountPath) {
+      this._schema = schema;
+    }
+    else {
+      const schemaPath = convertFromLodashToSchema(moldMountPath);
+      _.set(this._schema, schemaPath, schema);
+    }
 
+    this._checkSchema();
+  }
 
   /**
    * It just returns an instance

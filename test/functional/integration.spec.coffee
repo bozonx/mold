@@ -84,7 +84,7 @@ describe 'Integration.', ->
 
     it 'set schema', ->
       @mold.setSchema('container.childContainer', @testSchemaChild)
-      expect(@mold.$$schemaManager.getFullSchema()).to.be.equal {
+      expect(@mold.$$schemaManager.getFullSchema()).to.be.deep.equal {
         container:  {
           type: 'container'
           schema: {
