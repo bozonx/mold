@@ -66,8 +66,38 @@ describe 'Integration.', ->
         .notify(done)
 
   describe 'set schema to specific mount point', ->
-    it 'set schema', ->
+    beforeEach () ->
+      testSchemaRoot = () ->
+        container:
+          type: 'container'
+          schema:
+            paramOfRootContainer: {type: 'string'}
 
+      testSchemaChild = () ->
+        type: 'container'
+        schema:
+          paramOfChildContainer: {type: 'string'}
+
+      @testSchemaRoot = testSchemaRoot()
+      @testSchemaChild = testSchemaChild()
+      @mold = mold( {silent: true}, @testSchemaRoot )
+
+    it 'set schema', ->
+      @mold.setSchema('container.childContainer', @testSchemaChild)
+      expect(@mold.$$schemaManager.getFullSchema()).to.be.equal {
+        container:  {
+          type: 'container'
+          schema: {
+            paramOfRootContainer: {type: 'string'}
+            childContainer: {
+              type: 'container'
+              schema: {
+                paramOfChildContainer: {type: 'string'}
+              }
+            }
+          }
+        }
+      }
 
 
 

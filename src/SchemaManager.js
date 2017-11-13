@@ -30,6 +30,11 @@ export default class SchemaManager {
     this._defaultDriver = memoryDriver.instance({});
   }
 
+  /**
+   * Set schema to certain mount point
+   * @param {string} mountPath - if it '' it means set to root
+   * @param {object} schema
+   */
   setSchema(mountPath, schema) {
     if (!mountPath) {
       this._schema = schema;
