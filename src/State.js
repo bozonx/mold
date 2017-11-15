@@ -107,6 +107,7 @@ export default class State {
    * @param {boolean} anyChange
    */
   addListener(storagePath, userHandler, anyChange=false) {
+    // TODO: правильней наверное использовать mold path
     const wrapperHandler = (event) => {
       if (event.storagePath == storagePath) userHandler(event);
     };

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { correctUpdatePayload, omitUnsaveable } from '../helpers';
 import Container from './Container';
 
-export default class Document extends Container{
+export default class Document extends Container {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema))
       return `Schema definition of document on "${schemaPath}" must have a "schema" param!`;
