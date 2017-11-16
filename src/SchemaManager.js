@@ -16,7 +16,6 @@ export default class SchemaManager {
     this._main = main;
     this.$defaultMemoryDb = {};
     this._drivers = {};
-    this._registeredTypes = {};
     this._schema = null;
     this._defaultDriver = null;
   }
@@ -28,10 +27,6 @@ export default class SchemaManager {
       db: this.$defaultMemoryDb,
     });
     this._defaultDriver = memoryDriver.instance({});
-  }
-
-  registerType(typeName, typeClass) {
-    this._registeredTypes[typeName] = typeClass;
   }
 
   /**
@@ -165,7 +160,7 @@ export default class SchemaManager {
   $getInstanceByFullPath(paths) {
     // It rise an error if path doesn't consist with schema
     const schema = this.getSchema(paths.schema);
-    const instance = new this._registeredTypes[schema.type](this._main);
+    const instance = this._main.$$typeManager.getInstance(schema.type);
     instance.$init(paths, schema);
 
     return instance;
@@ -180,11 +175,8 @@ export default class SchemaManager {
       }
 
       // schema validation
-      if (this._registeredTypes[schema.type]) {
-        if (this._registeredTypes[schema.type].validateSchema) {
-          const result = this._registeredTypes[schema.type].validateSchema(schema, schemaPath);
-          if (_.isString(result)) this._main.$$log.fatal(result);
-        }
+      if ( this._main.$$typeManager.isRegistered(schema.type) ) {
+        this._main.$$typeManager.validateType(schema.type, schema, schemaPath);
       }
       else if (!_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
         this._main.$$log.fatal(`Unknown schema node ${JSON.stringify(schema)} !`);

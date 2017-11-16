@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Storage from './Storage';
 import SchemaManager from './SchemaManager';
 import State from './State';
+import TypeManager from './TypeManager';
 import Config from './Config';
 
 import PagedCollection from './types/PagedCollection';
@@ -17,16 +18,17 @@ export default class Main {
     this.$$config = configInstance.get();
     this.$$events = this.$$config.eventEmitter;
     this.$$log = this.$$config.logger;
+    this.$$typeManager = new TypeManager(this);
     this.$$schemaManager = new SchemaManager(this);
     this.$$state = new State();
     this._storage = new Storage(this.$$events, this.$$log);
 
     // register base types
-    this.$$schemaManager.registerType('pagedCollection', PagedCollection);
-    this.$$schemaManager.registerType('collection', Collection);
-    this.$$schemaManager.registerType('container', Container);
-    this.$$schemaManager.registerType('document', Document);
-    this.$$schemaManager.registerType('documentsCollection', DocumentsCollection);
+    this.$$typeManager.register('pagedCollection', PagedCollection);
+    this.$$typeManager.register('collection', Collection);
+    this.$$typeManager.register('container', Container);
+    this.$$typeManager.register('document', Document);
+    this.$$typeManager.register('documentsCollection', DocumentsCollection);
 
     // TODO: run plugins
 
@@ -118,7 +120,7 @@ export default class Main {
    * @param typeClass
    */
   registerType(typeName, typeClass) {
-    this.$$schemaManager.registerType(typeName, typeClass);
+    this.$$typeManager.register(typeName, typeClass);
   }
 
   setSchema(mountPath, schema) {
