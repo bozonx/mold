@@ -29,7 +29,7 @@ describe 'Functional. Document type.', ->
     this.document = this.mold.child('document')
 
   it 'load() and check mold', (done) ->
-    _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'document', this.testValues)
+    _.set(this.mold.$$driverManager.$defaultMemoryDb, 'document', this.testValues)
 
     expect(this.document.load()).to.eventually.notify =>
       expect(Promise.resolve(this.document.mold)).to.eventually
@@ -37,7 +37,7 @@ describe 'Functional. Document type.', ->
       .notify(done)
 
   it 'load() and check response', ->
-    _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'document', this.testValues)
+    _.set(this.mold.$$driverManager.$defaultMemoryDb, 'document', this.testValues)
 
     expect(this.document.load()).to.eventually.property('body').deep.equal(this.testValues)
 
@@ -51,7 +51,7 @@ describe 'Functional. Document type.', ->
     .property('body').deep.equal(this.testValues)
 
   it "loading", (done) ->
-    _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'document', this.testValues)
+    _.set(this.mold.$$driverManager.$defaultMemoryDb, 'document', this.testValues)
 
     assert.isUndefined(this.document.mold.$loading)
     promise = this.document.load()
@@ -99,11 +99,11 @@ describe 'Functional. Document type.', ->
     moldMain = mold( {silent: true}, testSchema() )
     document = moldMain.child('documentsCollection[0]')
 
-    _.set(moldMain.$$schemaManager.$defaultMemoryDb, 'documentsCollection', [testDoc])
+    _.set(moldMain.$$driverManager.$defaultMemoryDb, 'documentsCollection', [testDoc])
     _.set(moldMain.$$state._storage._storage, 'documentsCollection.action.load[0]', [testDoc])
     _.extend(_.get(moldMain.$$state._storage._storage, 'documentsCollection.documents.0'), testDoc)
 
-    assert.deepEqual(moldMain.$$schemaManager.$defaultMemoryDb.documentsCollection, [testDoc])
+    assert.deepEqual(moldMain.$$driverManager.$defaultMemoryDb.documentsCollection, [testDoc])
     assert.deepEqual(moldMain.$$state._storage._storage.documentsCollection.action.load, [[testDoc]])
     assert.deepEqual(document.mold, testDoc)
 
@@ -118,7 +118,7 @@ describe 'Functional. Document type.', ->
         expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.action.load)).to.eventually.deep.equal([[]])
         # don't delete form documents
         expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.documents['0'].$id)).to.eventually.equal(0)
-        expect(Promise.resolve(moldMain.$$schemaManager.$defaultMemoryDb.documentsCollection)).to.eventually.deep.equal([])
+        expect(Promise.resolve(moldMain.$$driverManager.$defaultMemoryDb.documentsCollection)).to.eventually.deep.equal([])
       ])).to.eventually.notify(done)
 
   it "try to save unsaveable", ->

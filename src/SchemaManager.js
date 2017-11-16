@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
-import { convertFromLodashToSchema, convertFromSchemaToLodash, getTheBestMatchPath } from './helpers';
-import Memory from './drivers/Memory';
+import { convertFromLodashToSchema, convertFromSchemaToLodash } from './helpers';
 import { eachSchema, splitPath } from './helpers';
 
 
@@ -14,19 +13,20 @@ import { eachSchema, splitPath } from './helpers';
 export default class SchemaManager {
   constructor(main) {
     this._main = main;
-    this.$defaultMemoryDb = {};
-    this._drivers = {};
+    //this.$defaultMemoryDb = {};
+    //this._drivers = {};
     this._schema = null;
-    this._defaultDriver = null;
+    //this._defaultDriver = null;
   }
 
   init() {
     this._schema = {};
+    this._main.$$driverManager.initDefaultDriver();
 
-    const memoryDriver = new Memory({
-      db: this.$defaultMemoryDb,
-    });
-    this._defaultDriver = memoryDriver.instance({});
+    // const memoryDriver = new Memory({
+    //   db: this.$defaultMemoryDb,
+    // });
+    // this._defaultDriver = memoryDriver.instance({});
   }
 
   /**
@@ -50,51 +50,47 @@ export default class SchemaManager {
 
     return schema;
   }
-
-  getDefaultDriver() {
-    return this._defaultDriver;
-  }
-
-  /**
-   * Get driver on path or upper on path.
-   * It no one driver has found it returns defaultDriver (memory)
-   * @param pathInSchema
-   * @return {Object|undefined}
-   */
-  getDriver(pathInSchema) {
-    const driverRoot = this.getClosestDriverPath(pathInSchema);
-    const driver = this.getDriverStrict(driverRoot);
-
-    if (driver) return driver;
-
-    // else return default memory driver
-    return this._defaultDriver;
-  }
-
-  /**
-   * Get driver by path.
-   * @param {string} driverPath - absolute path to driver.
-   *   If driverPath doesn't specified or '' it means defautl memory driver
-   * @returns {object|undefined} If driver doesn't exists, returns undefined
-   */
-  getDriverStrict(driverPath) {
-    if (driverPath) return this._drivers[driverPath];
-
-    // if not driverPath it means default memory driver
-    return this._defaultDriver;
-  }
-
-  /**
-   * Return driver path which is deriver specified on schema.
-   * @param {string} moldPath
-   * @return {string|undefined} real driver path
-   */
-  getClosestDriverPath(moldPath) {
-    if (!_.isString(moldPath))
-      this._main.$$log.fatal(`You must pass the moldPath argument!`);
-
-    return getTheBestMatchPath(moldPath, _.keys(this._drivers));
-  }
+  //
+  // /**
+  //  * Get driver on path or upper on path.
+  //  * It no one driver has found it returns defaultDriver (memory)
+  //  * @param pathInSchema
+  //  * @return {Object|undefined}
+  //  */
+  // getDriver(pathInSchema) {
+  //   const driverRoot = this.getClosestDriverPath(pathInSchema);
+  //   const driver = this.getDriverStrict(driverRoot);
+  //
+  //   if (driver) return driver;
+  //
+  //   // else return default memory driver
+  //   return this._defaultDriver;
+  // }
+  //
+  // /**
+  //  * Get driver by path.
+  //  * @param {string} driverPath - absolute path to driver.
+  //  *   If driverPath doesn't specified or '' it means defautl memory driver
+  //  * @returns {object|undefined} If driver doesn't exists, returns undefined
+  //  */
+  // getDriverStrict(driverPath) {
+  //   if (driverPath) return this._drivers[driverPath];
+  //
+  //   // if not driverPath it means default memory driver
+  //   return this._defaultDriver;
+  // }
+  //
+  // /**
+  //  * Return driver path which is deriver specified on schema.
+  //  * @param {string} moldPath
+  //  * @return {string|undefined} real driver path
+  //  */
+  // getClosestDriverPath(moldPath) {
+  //   if (!_.isString(moldPath))
+  //     this._main.$$log.fatal(`You must pass the moldPath argument!`);
+  //
+  //   return getTheBestMatchPath(moldPath, _.keys(this._drivers));
+  // }
 
   /**
    * Get instance of type
@@ -170,8 +166,10 @@ export default class SchemaManager {
     eachSchema(this._schema, (schemaPath, schema) => {
       // init driver if it has set
       if (schema.driver) {
+        // TODO: почему именно так???
         schema.driver.init(convertFromSchemaToLodash(schemaPath), this._main);
-        this._drivers[schemaPath] = schema.driver;
+        // this._drivers[schemaPath] = schema.driver;
+        this._main.$$driverManager.registerDriver(schemaPath, schema.driver);
       }
 
       // schema validation

@@ -4,6 +4,7 @@ import Storage from './Storage';
 import SchemaManager from './SchemaManager';
 import State from './State';
 import TypeManager from './TypeManager';
+import DriverManager from './DriverManager';
 import Config from './Config';
 
 import PagedCollection from './types/PagedCollection';
@@ -19,6 +20,7 @@ export default class Main {
     this.$$events = this.$$config.eventEmitter;
     this.$$log = this.$$config.logger;
     this.$$typeManager = new TypeManager(this);
+    this.$$driverManager = new DriverManager(this);
     this.$$schemaManager = new SchemaManager(this);
     this.$$state = new State();
     this._storage = new Storage(this.$$events, this.$$log);
@@ -89,7 +91,7 @@ export default class Main {
    * @return {Object|undefined}
    */
   getDriver(pathInSchema) {
-    return this.$$schemaManager.getDriver(pathInSchema);
+    return this.$$driverManager.getDriver(pathInSchema);
   }
 
   /**
