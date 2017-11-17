@@ -9,6 +9,7 @@ export default class State {
   init(main, storage) {
     this._main = main;
     this._storage = storage;
+    // TODO: сделать общим в main
     this.$$request = new Request(this._main);
     this._handlers = {};
     this._urlParams = {};
@@ -142,7 +143,7 @@ export default class State {
 
     let itemIndex = -1;
 
-    var found = _.find(this._handlers[storagePath], (item, index) => {
+    const found = _.find(this._handlers[storagePath], (item, index) => {
       if (item.userHandler === handler) {
         itemIndex = index;
         return item;

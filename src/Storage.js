@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { concatPath } from './helpers';
 import { mutate, updateIndexes } from './mutate';
 
+
 export default class Storage {
   constructor(events, log) {
     this._events = events;
@@ -47,7 +48,7 @@ export default class Storage {
    */
   update(storagePath, newValue, eventData=undefined) {
     // run mutates and get list of changes
-    var wereChanges = mutate(this._storage, storagePath).update(newValue);
+    const wereChanges = mutate(this._storage, storagePath).update(newValue);
 
     // run update event
     if (wereChanges) {
@@ -67,7 +68,7 @@ export default class Storage {
    */
   updateSilent(storagePath, newValue, eventData=undefined) {
     // run mutates and get list of changes
-    var wereChanges =  mutate(this._storage, storagePath).update(newValue);
+    const wereChanges =  mutate(this._storage, storagePath).update(newValue);
 
     if (wereChanges) {
       this._riseSilentChange(storagePath, 'change', eventData);
