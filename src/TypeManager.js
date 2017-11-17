@@ -19,8 +19,21 @@ export default class TypeManager {
     this._registeredTypes[typeName] = typeClass;
   }
 
-  getInstance(typeName) {
+  _newInstance(typeName) {
     return new this._registeredTypes[typeName](this._main);
+  }
+
+  /**
+   * It just returns an instance
+   * @param {{mold: string, schema: string, storage: string}} paths
+   */
+  $getInstanceByFullPath(paths) {
+    // It rise an error if path doesn't consist with schema
+    const schema = this._main.$$schemaManager.getSchema(paths.schema);
+    const instance = this._newInstance(schema.type);
+    instance.$init(paths, schema);
+
+    return instance;
   }
 
   validateType(typeName, schema, schemaPath) {

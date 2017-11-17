@@ -13,20 +13,12 @@ import { eachSchema, splitPath } from './helpers';
 export default class SchemaManager {
   constructor(main) {
     this._main = main;
-    //this.$defaultMemoryDb = {};
-    //this._drivers = {};
     this._schema = null;
-    //this._defaultDriver = null;
   }
 
   init() {
     this._schema = {};
     this._main.$$driverManager.initDefaultDriver();
-
-    // const memoryDriver = new Memory({
-    //   db: this.$defaultMemoryDb,
-    // });
-    // this._defaultDriver = memoryDriver.instance({});
   }
 
   /**
@@ -50,47 +42,6 @@ export default class SchemaManager {
 
     return schema;
   }
-  //
-  // /**
-  //  * Get driver on path or upper on path.
-  //  * It no one driver has found it returns defaultDriver (memory)
-  //  * @param pathInSchema
-  //  * @return {Object|undefined}
-  //  */
-  // getDriver(pathInSchema) {
-  //   const driverRoot = this.getClosestDriverPath(pathInSchema);
-  //   const driver = this.getDriverStrict(driverRoot);
-  //
-  //   if (driver) return driver;
-  //
-  //   // else return default memory driver
-  //   return this._defaultDriver;
-  // }
-  //
-  // /**
-  //  * Get driver by path.
-  //  * @param {string} driverPath - absolute path to driver.
-  //  *   If driverPath doesn't specified or '' it means defautl memory driver
-  //  * @returns {object|undefined} If driver doesn't exists, returns undefined
-  //  */
-  // getDriverStrict(driverPath) {
-  //   if (driverPath) return this._drivers[driverPath];
-  //
-  //   // if not driverPath it means default memory driver
-  //   return this._defaultDriver;
-  // }
-  //
-  // /**
-  //  * Return driver path which is deriver specified on schema.
-  //  * @param {string} moldPath
-  //  * @return {string|undefined} real driver path
-  //  */
-  // getClosestDriverPath(moldPath) {
-  //   if (!_.isString(moldPath))
-  //     this._main.$$log.fatal(`You must pass the moldPath argument!`);
-  //
-  //   return getTheBestMatchPath(moldPath, _.keys(this._drivers));
-  // }
 
   /**
    * Get instance of type
@@ -99,6 +50,7 @@ export default class SchemaManager {
    * @returns {object|undefined} - instance of type
    */
   getInstance(path, context=undefined) {
+    // TODO: может перенести в $$typeManager ?
     if (!_.isString(path)) this._main.$$log.fatal(`You must pass a path argument.`);
     if (!path && !context) this._main.$$log.fatal(`Path is empty.`);
     if (!path && context) return context;
@@ -117,7 +69,7 @@ export default class SchemaManager {
       // get path parts after start from index of 1
       childPathParts = pathParts.slice(1);
       // get root instance
-      rootInstance = this.$getInstanceByFullPath({
+      rootInstance = this._main.$$typeManager.$getInstanceByFullPath({
         // TODO: use moldPath, schemaPath, storagePath
         mold: pathParts[0],
         schema: convertFromLodashToSchema(pathParts[0]),
@@ -147,19 +99,6 @@ export default class SchemaManager {
     }
 
     this._checkSchema();
-  }
-
-  /**
-   * It just returns an instance
-   * @param {{mold: string, schema: string, storage: string}} paths
-   */
-  $getInstanceByFullPath(paths) {
-    // It rise an error if path doesn't consist with schema
-    const schema = this.getSchema(paths.schema);
-    const instance = this._main.$$typeManager.getInstance(schema.type);
-    instance.$init(paths, schema);
-
-    return instance;
   }
 
   _checkSchema() {
