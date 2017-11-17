@@ -70,7 +70,7 @@ export default class Main {
    * @param {string} pathInSchema - absolute path in schema
    */
   get(pathInSchema) {
-    return this.$$schemaManager.getInstance(pathInSchema);
+    return this.$$typeManager.getInstance(pathInSchema);
   }
 
   /**
@@ -80,7 +80,7 @@ export default class Main {
    * @returns {object|undefined} - instance of one of the types
    */
   child(path, context=undefined) {
-    return this.$$schemaManager.getInstance(path, context);
+    return this.$$typeManager.getInstance(path, context);
   }
 
   /**
