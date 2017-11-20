@@ -49,6 +49,18 @@ export default class Storage {
     if (!moldPath) throw new Error(`ERROR: path is empty`);
     // TODO: проверить путь
     // TODO: !!!
+
+    const currentData = this._storage.topLevel[moldPath];
+
+    if (_.isUndefined(currentData)) {
+      // create first data
+      this._storage.topLevel[moldPath] = partialData;
+    }
+    else {
+      // merge
+      // TODO: делать мутацию
+      this._storage.topLevel[moldPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
+    }
   }
 
   /**
@@ -72,8 +84,8 @@ export default class Storage {
   _getCombined(moldPath) {
     // TODO: если нет ничего - возвращать undefined
 
-    // TODO: !!!
-    return this._storage.bottomLevel[moldPath];
+    // TODO: смержить с учетом массивов
+    return _.defaultsDeep(_.cloneDeep(this._storage.topLevel[moldPath]), this._storage.bottomLevel[moldPath] );
   }
 
 }
