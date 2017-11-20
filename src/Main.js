@@ -7,11 +7,10 @@ import TypeManager from './TypeManager';
 import DriverManager from './DriverManager';
 import Config from './Config';
 
-import PagedCollection from './types/PagedCollection';
-import Collection from '../__old/types/Collection';
 import Container from './types/Container';
+import StateType from './types/State';
 import Document from './types/Document';
-import DocumentsCollection from './types/DocumentsCollection';
+import Catalogue from './types/Catalogue';
 
 export default class Main {
   constructor(config, schema) {
@@ -26,11 +25,10 @@ export default class Main {
     this._storage = new Storage(this.$$events, this.$$log);
 
     // register base types
-    this.$$typeManager.register('pagedCollection', PagedCollection);
-    this.$$typeManager.register('collection', Collection);
     this.$$typeManager.register('container', Container);
+    this.$$typeManager.register('state', StateType);
     this.$$typeManager.register('document', Document);
-    this.$$typeManager.register('documentsCollection', DocumentsCollection);
+    this.$$typeManager.register('catalogue', Catalogue);
 
     // TODO: run plugins
 
