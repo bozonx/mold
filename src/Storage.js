@@ -34,9 +34,10 @@ export default class Storage {
    */
   get(moldPath) {
     if (!moldPath) throw new Error(`ERROR: path is empty`);
+
     // TODO: проверить путь
-    // TODO: если нет ничего - возвращать undefined
-    // TODO: !!!
+
+    return this._getCombined(moldPath);
   }
 
   /**
@@ -60,6 +61,7 @@ export default class Storage {
     // TODO: проверить путь
     // TODO: делать мутацию
     this._storage.bottomLevel[moldPath] = newData;
+    // TODO: rise an event
   }
 
   /**
@@ -68,7 +70,10 @@ export default class Storage {
    * @private
    */
   _getCombined(moldPath) {
+    // TODO: если нет ничего - возвращать undefined
+
     // TODO: !!!
+    return this._storage.bottomLevel[moldPath];
   }
 
 }

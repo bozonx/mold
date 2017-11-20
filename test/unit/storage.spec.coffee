@@ -11,20 +11,24 @@ describe.only 'Unit. Storage.', ->
 
   describe 'bottom level', ->
     it 'set new data', ->
-      newData = {
+      newData1 = {
         id: 1
-        param: 'value'
+        param1: 'value1'
+        param2: 'value2'
+      }
+      newData2 = {
+        id: 2
+        param1: 'value11'
       }
       @storage.$init({})
-      @storage.setBottomLevel(@moldPath, newData)
+      @storage.setBottomLevel(@moldPath, newData1)
+      @storage.setBottomLevel(@moldPath, newData2)
 
-      expect(@storage._storage).to.be.deep.equal {
-        topLevel: {}
-        meta: {}
-        bottomLevel: {
-          "#{@moldPath}": newData
-        }
-      }
+      expect(@storage.get(@moldPath)).to.be.deep.equal(newData2)
+
+  describe 'top level', ->
+    it 'set new data and update it', ->
+
 
 #  beforeEach ->
 #    this.emitSpy = sinon.spy();
