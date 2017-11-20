@@ -1,27 +1,25 @@
 import EventEmitter from 'eventemitter3';
 const eventEmitter =  new EventEmitter();
 
-// TODO: продумать - path
 
 class Events {
   constructor(main) {
   }
 
-  // path, eventName, byWhom, eventData
-  emit(eventName, eventData) {
-    eventEmitter.emit(eventName, eventData);
+  emit(path, eventName, eventData) {
+    eventEmitter.emit(this._getEventName(path, eventName), eventData);
   }
 
-  onChange(event, handler) {
-    this.on(event, handler);
+  onChange(path,  handler) {
+    this.on(path, 'change', handler);
   }
 
-  onAnyChange(event, handler) {
-    this.on(event, handler);
+  onAnyChange(path,  handler) {
+    this.on(path, 'any', handler);
   }
 
-  on(eventName, handler) {
-    eventEmitter.on(eventName, handler);
+  on(path, eventName, handler) {
+    eventEmitter.on(this._getEventName(path, eventName), handler);
   }
 
   onDeep(path, eventName, handler) {
@@ -33,6 +31,14 @@ class Events {
   }
 
   offAll(path, deep=false) {
+    // TODO: продумать
+  }
+
+  _getEventName(path, eventName) {
+    return `${path}|${eventName}`;
+  }
+
+  _parseEventName(fullEventName) {
     // TODO: продумать
   }
 

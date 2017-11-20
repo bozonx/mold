@@ -61,6 +61,12 @@ export default class Storage {
       // TODO: делать мутацию
       this._storage.topLevel[moldPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
     }
+
+    // TODO: поднимать ещё и any change
+    this._events.emit(moldPath, 'change', {
+      data: partialData,
+      by: 'user',
+    });
   }
 
   /**
@@ -73,7 +79,12 @@ export default class Storage {
     // TODO: проверить путь
     // TODO: делать мутацию
     this._storage.bottomLevel[moldPath] = newData;
-    // TODO: rise an event
+
+    // TODO: поднимать ещё и any change
+    this._events.emit(moldPath, 'silent', {
+      data: newData,
+      by: 'program',
+    });
   }
 
   /**
