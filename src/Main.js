@@ -99,7 +99,7 @@ export default class Main {
    * @param {function} handler
    */
   onChange(handler) {
-    this.$$events.on('change', handler);
+    this.$$events.onChange('change', handler);
   }
 
   /**
@@ -108,7 +108,7 @@ export default class Main {
    * @param handler
    */
   onAnyChange(handler) {
-    this.$$events.on('anyChange', handler);
+    this.$$events.onChange('anyChange', handler);
   }
 
   off(handler) {

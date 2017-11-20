@@ -158,8 +158,8 @@ export default class State {
     }
 
     // Unbind listener
-    this._main.$$events.removeListener('change', found.wrapperHandler);
-    this._main.$$events.removeListener('anyChange', found.wrapperHandler);
+    this._main.$$events.off('change', found.wrapperHandler);
+    this._main.$$events.off('anyChange', found.wrapperHandler);
   }
 
   /**
@@ -170,8 +170,8 @@ export default class State {
   destroyListeners(storagePath, deep=false) {
     const clearing = (path) => {
       _.each(this._handlers[path], (item) => {
-        this._main.$$events.removeListener('change', item.wrapperHandler);
-        this._main.$$events.removeListener('anyChange', item.wrapperHandler);
+        this._main.$$events.off('change', item.wrapperHandler);
+        this._main.$$events.off('anyChange', item.wrapperHandler);
       });
       this._handlers[path] = [];
     };

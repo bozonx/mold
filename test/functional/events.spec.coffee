@@ -140,7 +140,7 @@ describe 'Functional. Events.', ->
       expect(this.handlerNested).to.not.have.been.called
 
   describe 'silent / any change', ->
-    it 'on cintainer init', ->
+    it 'on container init', ->
       this.mold.onAnyChange(this.handlerContainer)
       this.container = this.mold.child('container')
 
