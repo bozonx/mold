@@ -35,7 +35,7 @@ export default class DocumentsCollection extends PagedCollection {
   }
 
   $initStorage() {
-    if (!_.isPlainObject(this._main.$$state.getMold(this._storagePath))) {
+    if (!_.isPlainObject(this._main.$$state.getStorageData(this._storagePath))) {
       this._main.$$state.setSilent(this._storagePath, {
         action: {
           load: [],
@@ -257,7 +257,7 @@ export default class DocumentsCollection extends PagedCollection {
     const storagePathToDocInDocuments = concatPath(
       concatPath(this._storagePath, 'documents'), `[${documentMold[primaryName]}]`);
 
-    if (!this._main.$$state.getMold(storagePathToDocInDocuments)) return;
+    if (!this._main.$$state.getStorageData(storagePathToDocInDocuments)) return;
     this._main.$$state.updateSilent(storagePathToDocInDocuments, newState);
   }
 

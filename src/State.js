@@ -41,23 +41,20 @@ export default class State {
   }
 
   /**
-   * Get mold by path
+   * Get storage data by path
    * @param {string} storagePath
    * @returns {*} - value from mold
    */
-  getMold(storagePath) {
+  getStorageData(storagePath) {
     return this._storage.get(storagePath);
   }
 
   /**
-   * Set to mold silently
+   * Set to storage silently
    * @param {string} storagePath
    * @param {*} value - valid value
    */
-  setSilent(storagePath, value) {
-    this._storage.setSilent(storagePath, value);
-  }
-
+  setSilent(storagePath, value) { this._storage.setSilent(storagePath, value) }
   // these methods are only wrappers of storage's methods
   update(...params) { this._storage.update(...params) }
   updateSilent(...params) { this._storage.updateSilent(...params) }
@@ -65,6 +62,8 @@ export default class State {
   push(...params) { this._storage.push(...params) }
   storageEmit(...params) { this._storage.emit(...params) }
   storageEmitSilent(...params) { this._storage.emitSilent(...params) }
+  clear(storagePath) { this._storage.clear(storagePath) }
+
 
   /**
    * Remove item from collection.
@@ -73,8 +72,9 @@ export default class State {
    * @param {object|undefined} eventData - additional data to event
    */
   remove(storagePath, itemToRemove, eventData=undefined) {
-    if (!_.isNumber(itemToRemove.$index))
+    if (!_.isNumber(itemToRemove.$index)) {
       this._main.$$log.fatal(`Deleted item must has an $index param.`);
+    }
 
     this._storage.remove(storagePath, itemToRemove.$index, eventData);
   }
@@ -108,6 +108,7 @@ export default class State {
    * @param {boolean} anyChange
    */
   addListener(storagePath, userHandler, anyChange=false) {
+    // TODO: review
     // TODO: правильней наверное использовать mold path
     const wrapperHandler = (event) => {
       if (event.storagePath == storagePath) userHandler(event);
@@ -139,6 +140,7 @@ export default class State {
    * @param {function} handler
    */
   removeListener(storagePath, handler) {
+    // TODO: почему так сложно???
     if (!this._handlers[storagePath]) return;
 
     let itemIndex = -1;
@@ -168,6 +170,7 @@ export default class State {
    * @param deep
    */
   destroyListeners(storagePath, deep=false) {
+    // TODO: почему так сложно???
     const clearing = (path) => {
       _.each(this._handlers[path], (item) => {
         this._main.$$events.off('change', item.wrapperHandler);
@@ -187,11 +190,6 @@ export default class State {
       clearing(storagePath);
     }
   }
-
-  clear(storagePath) {
-    this._storage.clear(storagePath);
-  }
-
 
   _addListener(storagePath, userHandler, wrapperHandler, eventName) {
     // Save listener

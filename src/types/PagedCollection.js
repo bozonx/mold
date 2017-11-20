@@ -31,7 +31,7 @@ export default class PagedCollection extends _TypeBase {
   }
 
   $initStorage() {
-    if (!_.isArray(this._main.$$state.getMold(this._storagePagesPath))) {
+    if (!_.isArray(this._main.$$state.getStorageData(this._storagePagesPath))) {
       this._main.$$state.setSilent(this._storagePagesPath, []);
     }
   }

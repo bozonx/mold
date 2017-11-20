@@ -20,7 +20,7 @@ export default class Collection extends _TypeBase {
   }
 
   $initStorage(paths) {
-    if (!_.isArray(this._main.$$state.getMold(paths.storage))) {
+    if (!_.isArray(this._main.$$state.getStorageData(paths.storage))) {
       this._main.$$state.setSilent(paths.storage, []);
     }
   }
