@@ -8,7 +8,7 @@ import DriverManager from './DriverManager';
 import Config from './Config';
 
 import PagedCollection from './types/PagedCollection';
-import Collection from './types/Collection';
+import Collection from '../__old/types/Collection';
 import Container from './types/Container';
 import Document from './types/Document';
 import DocumentsCollection from './types/DocumentsCollection';

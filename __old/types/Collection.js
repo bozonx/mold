@@ -2,8 +2,8 @@
 
 import _ from 'lodash';
 
-import { concatPath } from '../helpers';
-import _TypeBase from './_TypeBase';
+import { concatPath } from '../../src/helpers';
+import _TypeBase from '../../src/types/_TypeBase';
 
 export default class Collection extends _TypeBase {
   static validateSchema(schema, schemaPath) {
