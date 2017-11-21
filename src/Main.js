@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import Storage from './Storage';
 import SchemaManager from './SchemaManager';
-import State from './State';
+import StateManager from './StateManager';
 import TypeManager from './TypeManager';
 import DriverManager from './DriverManager';
 import Config from './Config';
@@ -20,7 +20,7 @@ export default class Main {
     this.$$typeManager = new TypeManager(this);
     this.$$driverManager = new DriverManager(this);
     this.$$schemaManager = new SchemaManager(this);
-    this.$$state = new State();
+    this.$$stateManager = new StateManager();
     this._storage = new Storage(this.$$events, this.$$log);
 
     // register base types
@@ -33,7 +33,7 @@ export default class Main {
     // initialize
     this.$$schemaManager.init();
     this.$$schemaManager.setSchema('', schema);
-    this.$$state.init(this, this._storage);
+    this.$$stateManager.init(this, this._storage);
   }
 
   /**

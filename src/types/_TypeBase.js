@@ -14,22 +14,6 @@ export default class _TypeBase {
   }
 
   /**
-   * Get schema path
-   * @returns {string}
-   */
-  get storagePath() {
-    return '' + this._storagePath;
-  }
-
-  /**
-   * Get schema path
-   * @returns {string}
-   */
-  get schemaPath() {
-    return '' + this._schemaPath;
-  }
-
-  /**
    * Get real mold.
    */
   get mold() {
@@ -40,32 +24,18 @@ export default class _TypeBase {
     return this._schema;
   }
 
-  /**
-   * Get copy of mold.
-   */
-  getMold() {
-    return _.cloneDeep(this._mold);
-  }
+  // /**
+  //  * Get copy of mold.
+  //  */
+  // getMold() {
+  //   return _.cloneDeep(this._mold);
+  // }
 
-  $init(paths, schema) {
-    this._moldPath = this._moldPath || paths.mold;
-    this._schemaPath = this._schemaPath || paths.schema;
-    this._storagePath = this._storagePath || paths.storage;
+  $init(moldPath, schema) {
+    this._moldPath = this._moldPath || moldPath;
     this._schema = schema;
     // mold is just a link to the storage
-    this._mold = this._mold || this._main.$$state.getStorageData(this._storagePath);
-  }
-
-  /**
-   * Get instance of parent by mold path.
-   * @return {object|undefined}
-   */
-  getParent() {
-    const pathParts = splitPath(this._moldPath);
-    pathParts.pop();
-    if (!pathParts.length) return;
-    const parentPath = joinPath(pathParts);
-    return this._main.child(parentPath);
+    this._mold = this._mold || this._main.$$stateManager.getStorageData(this._moldPath);
   }
 
   /**

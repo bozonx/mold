@@ -1,18 +1,40 @@
 mold = require('../../src/index').default
 
-describe 'Functional. Container type.', ->
+describe.only 'Functional. State type.', ->
   beforeEach () ->
     testSchema = () ->
       container:
-        containerInner:
-          state:
-            type: 'state'
+        state: {
+          type: 'state'
+          schema: {
+            boolParam: {type: 'boolean'}
+            stringParam: {type: 'string'}
+            numberParam: {type: 'number'}
+            arrayParam: {
+              type: 'array'
+              itemsType: 'number'
+            }
+            collection: {
+              type: 'collection'
+              item: {
+                id: { type: 'number', key: true }
+                itemStringParam: {type: 'string'}
+              }
+            }
+            nested: {
+              type: 'assoc'
+              items: {
+                nestedStringParam: {type: 'string'}
+              }
+            }
+          }
+        }
 
     @testSchema = testSchema()
     @mold = mold( {silent: true}, @testSchema )
 
-  it "", ->
-    
+  it "init", ->
+
 
 
 
