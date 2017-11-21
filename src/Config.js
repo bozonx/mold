@@ -28,7 +28,8 @@ export default class Config {
 
   _initModules() {
     if (!this._config.eventEmitter) {
-      this._config.eventEmitter = require('./events').default;
+      const Events = require('./Events').default;
+      this._config.eventEmitter = new Events();
     }
     if (!this._config.logger) {
       const Log = require('./Log').default;

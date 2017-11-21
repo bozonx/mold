@@ -26,8 +26,26 @@ export default class State {
   }
 
   initStorageData(moldPath, newData) {
-    this._storage.updateTopLevel(moldPath, newData);
+    this.updateTopLevelSilent(moldPath, newData);
   }
+
+  updateTopLevel(moldPath, partialData) {
+    // TODO: check data - it has to consist with schema
+    this._storage.updateTopLevel(moldPath, _.cloneDeep(partialData));
+  }
+
+  updateTopLevelSilent(moldPath, partialData) {
+    // TODO: check data - it has to consist with schema
+    this._storage.updateTopLevelSilent(moldPath, _.cloneDeep(partialData));
+  }
+
+
+  setBottomLevel(moldPath, newData) {
+    // TODO: check data - it has to consist with schema
+
+    this._storage.updateTopLevel(moldPath, _.cloneDeep(partialData));
+  }
+
 
 
 

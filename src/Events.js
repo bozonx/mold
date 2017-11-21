@@ -1,13 +1,13 @@
 import EventEmitter from 'eventemitter3';
-const eventEmitter =  new EventEmitter();
 
 
-class Events {
-  constructor(main) {
+export default class Events {
+  constructor() {
+    this.eventEmitter =  new EventEmitter();
   }
 
   emit(path, eventName, eventData) {
-    eventEmitter.emit(this._getEventName(path, eventName), eventData);
+    this.eventEmitter.emit(this._getEventName(path, eventName), eventData);
   }
 
   onChange(path,  handler) {
@@ -19,7 +19,7 @@ class Events {
   }
 
   on(path, eventName, handler) {
-    eventEmitter.on(this._getEventName(path, eventName), handler);
+    this.eventEmitter.on(this._getEventName(path, eventName), handler);
   }
 
   onDeep(path, eventName, handler) {
@@ -27,7 +27,7 @@ class Events {
   }
 
   off(event, handler) {
-    eventEmitter.off(event, handler);
+    this.eventEmitter.off(event, handler);
   }
 
   offAll(path, deep=false) {
@@ -43,6 +43,3 @@ class Events {
   }
 
 }
-
-const events = new Events;
-export default events;

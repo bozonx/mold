@@ -46,24 +46,20 @@ export default class Storage {
    * @param {object} partialData
    */
   updateTopLevel(moldPath, partialData) {
-    if (!moldPath) throw new Error(`ERROR: path is empty`);
-    // TODO: проверить путь
-    // TODO: !!!
-
-    const currentData = this._storage.topLevel[moldPath];
-
-    if (_.isUndefined(currentData)) {
-      // create first data
-      this._storage.topLevel[moldPath] = partialData;
-    }
-    else {
-      // merge
-      // TODO: делать мутацию
-      this._storage.topLevel[moldPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
-    }
+    this._update(moldPath, partialData);
 
     // TODO: поднимать ещё и any change
     this._events.emit(moldPath, 'change', {
+      data: partialData,
+      by: 'user',
+    });
+  }
+
+  updateTopLevelSilent(moldPath, partialData) {
+    this._update(moldPath, partialData);
+
+    // TODO: поднимать ещё и any change
+    this._events.emit(moldPath, 'silent', {
       data: partialData,
       by: 'user',
     });
@@ -81,10 +77,28 @@ export default class Storage {
     this._storage.bottomLevel[moldPath] = newData;
 
     // TODO: поднимать ещё и any change
-    this._events.emit(moldPath, 'silent', {
+    this._events.emit(moldPath, 'bottom', {
       data: newData,
       by: 'program',
     });
+  }
+
+  _update(moldPath, partialData) {
+    if (!moldPath) throw new Error(`ERROR: path is empty`);
+    // TODO: проверить путь
+    // TODO: !!!
+
+    const currentData = this._storage.topLevel[moldPath];
+
+    if (_.isUndefined(currentData)) {
+      // create first data
+      this._storage.topLevel[moldPath] = partialData;
+    }
+    else {
+      // merge
+      // TODO: делать мутацию
+      this._storage.topLevel[moldPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
+    }
   }
 
   /**

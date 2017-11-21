@@ -43,12 +43,14 @@ export default class Container extends _TypeBase {
    */
   update(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
-    this._main.$$stateManager.updateTopLevel(this._storagePath, _.cloneDeep(newState), eventData);
+    // TODO: eventData
+    this._main.$$stateManager.updateTopLevel(this._storagePath, newState, eventData);
   }
 
   updateSilent(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
-    this._main.$$stateManager.updateSilent(this._storagePath, _.cloneDeep(newState), eventData);
+    // TODO: eventData
+    this._main.$$stateManager.updateTopLevelSilent(this._storagePath, newState, eventData);
   }
 
   _checkForUpdateReadOnly(newState) {

@@ -1,12 +1,11 @@
 Storage = require('../../src/Storage').default
+Events = require('../../src/Events').default
 
-describe 'Unit. Storage.', ->
+
+describe.only 'Unit. Storage.', ->
   beforeEach ->
-    @emitSpy = sinon.spy()
-    @eventsMock = {
-      emit: @emitSpy
-    }
-    @storage = new Storage(@eventsMock)
+    @events = new Events()
+    @storage = new Storage(@events)
     @moldPath = 'path.to[256]'
 
   describe 'bottom level', ->
@@ -70,3 +69,5 @@ describe 'Unit. Storage.', ->
         param2: 'value22'
         param3: 'value3'
       }
+
+  # TODO: updateTopLevelSilent
