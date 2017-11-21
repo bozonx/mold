@@ -48,8 +48,11 @@ export default class Storage {
   updateTopLevel(moldPath, partialData) {
     this._update(moldPath, partialData);
 
-    // TODO: поднимать ещё и any change
     this._events.emit(moldPath, 'change', {
+      data: partialData,
+      by: 'user',
+    });
+    this._events.emit(moldPath, 'any', {
       data: partialData,
       by: 'user',
     });
@@ -58,10 +61,13 @@ export default class Storage {
   updateTopLevelSilent(moldPath, partialData) {
     this._update(moldPath, partialData);
 
-    // TODO: поднимать ещё и any change
     this._events.emit(moldPath, 'silent', {
       data: partialData,
-      by: 'user',
+      by: 'program',
+    });
+    this._events.emit(moldPath, 'any', {
+      data: partialData,
+      by: 'program',
     });
   }
 
@@ -76,8 +82,11 @@ export default class Storage {
     // TODO: делать мутацию
     this._storage.bottomLevel[moldPath] = newData;
 
-    // TODO: поднимать ещё и any change
     this._events.emit(moldPath, 'bottom', {
+      data: newData,
+      by: 'program',
+    });
+    this._events.emit(moldPath, 'any', {
       data: newData,
       by: 'program',
     });

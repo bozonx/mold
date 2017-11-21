@@ -9,7 +9,11 @@ describe.only 'Unit. Storage.', ->
     @moldPath = 'path.to[256]'
 
   describe 'bottom level', ->
-    it 'set new data twice', ->
+    it 'set new data twice', () ->
+      bottomHandler = sinon.spy()
+      anyHandler = sinon.spy()
+      @events.on(@moldPath, 'bottom', bottomHandler)
+      @events.on(@moldPath, 'any', anyHandler)
       newData1 = {
         id: 1
         param1: 'value1'
@@ -25,6 +29,8 @@ describe.only 'Unit. Storage.', ->
       @storage.setBottomLevel(@moldPath, newData2)
 
       expect(@storage.get(@moldPath)).to.be.deep.equal(newData2)
+      expect(bottomHandler).to.be.calledTwice
+      expect(anyHandler).to.be.calledTwice
 
   describe 'top level', ->
     it 'set new data and update it', ->
