@@ -28,6 +28,8 @@ export default class Storage {
     return this._storage;
   }
 
+
+
   /**
    * Get merged levels
    * @param {string} moldPath
@@ -47,8 +49,6 @@ export default class Storage {
    */
   updateTopLevel(moldPath, partialData) {
     this._update(moldPath, partialData);
-
-    console.log(11111, moldPath, partialData, this._storage )
 
     this._events.emit(moldPath, 'change', {
       data: partialData,
@@ -107,8 +107,12 @@ export default class Storage {
     }
     else {
       // merge
+
+      // TODO: не поднимать события если не было изменений
+      const wereChanges = mutate(currentData, '').update(partialData);
+
       // TODO: делать мутацию
-      this._storage.topLevel[moldPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
+      //this._storage.topLevel[moldPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
     }
   }
 
@@ -118,10 +122,14 @@ export default class Storage {
    * @private
    */
   _getCombined(moldPath) {
-    // TODO: если нет ничего - возвращать undefined
+    const top = this._storage.topLevel[moldPath];
+    const bottom = this._storage.bottomLevel[moldPath];
+
+    // return undefined if there isn't any data
+    if (_.isUndefined(top) && _.isUndefined(bottom)) return;
 
     // TODO: смержить с учетом массивов
-    return _.defaultsDeep(_.cloneDeep(this._storage.topLevel[moldPath]), this._storage.bottomLevel[moldPath] );
+    return _.defaultsDeep(_.cloneDeep(top), bottom );
   }
 
 }

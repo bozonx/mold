@@ -31,8 +31,10 @@ describe.only 'Functional. State type.', ->
         }
 
     @testSchema = testSchema()
+    @moldPath = 'container.state'
     @mold = mold( {silent: true}, @testSchema )
-    @state = this.mold.get('container.state')
+    @state = this.mold.get(@moldPath)
+    @state.$init(@moldPath, @testSchema.container.state)
 
   it "init", ->
     assert.deepEqual(@state.mold, {})
