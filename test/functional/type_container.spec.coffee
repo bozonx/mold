@@ -15,12 +15,11 @@ describe.only 'Functional. Container type.', ->
     # TODO: !!!!
 
   it "Try to get container - it throws an error", ->
-    # TODO: !!!!
+    expect(() => @mold.get('container.containerInner')).to.throw('You can\'t get instance of simple container on path "container.containerInner"')
 
   it "Get state type via containers", ->
-# TODO: !!!!
-
-
+    state = @mold.get('container.containerInner.state')
+    expect(state.type).to.be.equal('state')
 
 #
 #  beforeEach () ->

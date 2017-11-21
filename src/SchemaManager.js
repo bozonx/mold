@@ -58,7 +58,8 @@ export default class SchemaManager {
       _.set(this._schema, schemaPath, schema);
     }
 
-    this._checkSchema();
+    // TODO: вернуть
+    //this._checkSchema();
   }
 
   _checkSchema() {

@@ -32,6 +32,11 @@ export default class TypeManager {
       this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
     }
 
+    if (_.isUndefined(schema.type)) {
+      // it means a container
+      this._main.$$log.fatal(`You can't get instance of simple container on path "${schemaPath}"`);
+    }
+
     return this._newInstance(moldPath, schema);
 
     // // use instance of first level of path

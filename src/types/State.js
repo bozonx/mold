@@ -25,12 +25,13 @@ export default class Container extends _TypeBase{
   }
 
   $init(paths, schema) {
-    this.$initStorage(paths);
-    super.$init(paths, schema);
-    this.__readOnlyProps = [];
-    _.each(this.schema.schema, (item, name) => {
-      if (item.readOnly) this.__readOnlyProps.push(name);
-    });
+    // TODO: !!!!
+    // this.$initStorage(paths);
+    // super.$init(paths, schema);
+    // this.__readOnlyProps = [];
+    // _.each(this.schema.schema, (item, name) => {
+    //   if (item.readOnly) this.__readOnlyProps.push(name);
+    // });
   }
 
   /**
