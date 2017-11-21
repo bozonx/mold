@@ -20,9 +20,6 @@ export default class Storage {
   $init(newStorage) {
     this._storage = newStorage;
     this._storage.items = {}
-    // this._storage.topLevel = {};
-    // this._storage.bottomLevel = {};
-    //this._storage.meta = {};
   }
 
   $getWholeStorageState() {
@@ -31,6 +28,7 @@ export default class Storage {
 
 
   getNode(moldPath) {
+    // TODO: test it
     if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
 
     // TODO: проверить moldPath
@@ -66,7 +64,7 @@ export default class Storage {
    * @param {object} partialData
    */
   updateTopLevel(moldPath, partialData) {
-    this._update(moldPath, partialData);
+    this._update(moldPath, 'state', partialData);
 
     this._events.emit(moldPath, 'change', {
       data: partialData,
@@ -79,7 +77,7 @@ export default class Storage {
   }
 
   updateTopLevelSilent(moldPath, partialData) {
-    this._update(moldPath, partialData);
+    this._update(moldPath, 'state', partialData);
 
     this._events.emit(moldPath, 'silent', {
       data: partialData,
@@ -89,6 +87,12 @@ export default class Storage {
       data: partialData,
       by: 'program',
     });
+  }
+
+  updateMeta(moldPath, partialData) {
+    // TODO: test it
+    this._update(moldPath, 'meta', partialData);
+    // TODO: поднимать ли событие any???
   }
 
   /**
@@ -115,14 +119,14 @@ export default class Storage {
     });
   }
 
-  _update(moldPath, partialData) {
+  _update(moldPath, subPath, partialData) {
     if (!moldPath) throw new Error(`ERROR: path is empty`);
     // TODO: проверить путь
     // TODO: !!!
 
     this.initNodeIfNeed(moldPath);
 
-    const currentData = this._storage.items[moldPath].state;
+    const currentData = this._storage.items[moldPath][subPath];
 
     // merge
 
