@@ -1,9 +1,10 @@
 import _ from 'lodash';
 
 import { correctUpdatePayload, omitUnsaveable } from '../helpers';
-import _TypeBase from './_TypeBase';
+import State from './State';
 
-export default class Document extends _TypeBase {
+
+export default class Document extends State {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema))
       return `Schema definition of document on "${schemaPath}" must have a "schema" param!`;
@@ -12,6 +13,7 @@ export default class Document extends _TypeBase {
   constructor(main) {
     super(main);
 
+    // TODO: move to storage meta
     this._lastChanges = {};
   }
 
@@ -20,10 +22,12 @@ export default class Document extends _TypeBase {
   }
 
   get loading() {
+    // TODO: use storage meta
     return this.mold.$loading;
   }
 
   get saving() {
+    // TODO: use storage meta
     return this.mold.$saving;
   }
 
@@ -32,6 +36,7 @@ export default class Document extends _TypeBase {
    * @returns {object}
    */
   get lastChanges() {
+    // TODO: use storage meta
     return this._lastChanges;
   }
 
@@ -40,23 +45,30 @@ export default class Document extends _TypeBase {
 
     this.action = {
       load: (preRequest) => {
-        return this.$load(this._applyDefaults(preRequest, 'load')) },
+        return this.$load(this._applyDefaults(preRequest, 'load'))
+      },
       put: (newState, preRequest) => {
-        return this.$put(newState, this._applyDefaults(preRequest, 'put')) },
+        return this.$put(newState, this._applyDefaults(preRequest, 'put'))
+      },
       patch: (newState, preRequest) => {
-        return this.$patch(newState, this._applyDefaults(preRequest, 'patch')) },
+        return this.$patch(newState, this._applyDefaults(preRequest, 'patch'))
+      },
       remove: (preRequest) => {
-        return this.$remove(this._applyDefaults(preRequest, 'remove')) },
+        return this.$remove(this._applyDefaults(preRequest, 'remove'))
+      },
     };
     this.actionDefaults = {};
     this._initActions();
   }
 
   getUrlParams() {
+    // TODO: use storage meta
+    // TODO: по идее на каждый запрос надо сохранять свои url params
     return this._main.$$state.getUrlParams(this._moldPath);
   }
 
   setUrlParams(params) {
+    // TODO: use storage meta
     this._main.$$state.setUrlParams(this._moldPath, params);
   }
 
@@ -64,6 +76,8 @@ export default class Document extends _TypeBase {
     this._lastChanges = correctUpdatePayload(this._lastChanges, newState);
     super.update(newState, eventData);
   }
+
+  // TODO: updateSilent
 
   load(...params) { return this.action.load(...params) }
   put(...params) { return this.action.put(...params) }
