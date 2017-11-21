@@ -32,11 +32,28 @@ describe.only 'Functional. State type.', ->
 
     @testSchema = testSchema()
     @mold = mold( {silent: true}, @testSchema )
+    @state = this.mold.get('container.state')
 
   it "init", ->
+    assert.deepEqual(@state.mold, {})
+
+  # TODO: check schema - все внутренние sub types
+
+  it "update", ->
+    partialData = {
+      boolParam: true
+      stringParam: 'value'
+      numberParam: 5
+      arrayParam: [1,2]
+      # TODO: !!! collection
+      # TODO: !!! nested
+    }
+    @state.update(partialData)
+
+    assert.deepEqual(@state.mold, partialData)
 
 
-
+  # TODO: валидация при update не верных параметров
 
 
 #

@@ -26,10 +26,10 @@ export default class Container extends _TypeBase {
     }
   }
 
-  $init(paths, schema) {
-    this.$initStorage(paths);
+  $init(moldPath, schema) {
+    this.$initStorage(moldPath);
     // TODO: !!!! review
-    super.$init(paths, schema);
+    super.$init(moldPath, schema);
     // this.__readOnlyProps = [];
     // _.each(this.schema.schema, (item, name) => {
     //   if (item.readOnly) this.__readOnlyProps.push(name);
@@ -44,13 +44,13 @@ export default class Container extends _TypeBase {
   update(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
     // TODO: eventData
-    this._main.$$stateManager.updateTopLevel(this._storagePath, newState, eventData);
+    this._main.$$stateManager.updateTopLevel(this._moldPath, newState, eventData);
   }
 
   updateSilent(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
     // TODO: eventData
-    this._main.$$stateManager.updateTopLevelSilent(this._storagePath, newState, eventData);
+    this._main.$$stateManager.updateTopLevelSilent(this._moldPath, newState, eventData);
   }
 
   _checkForUpdateReadOnly(newState) {

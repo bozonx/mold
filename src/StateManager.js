@@ -31,17 +31,20 @@ export default class State {
 
   updateTopLevel(moldPath, partialData) {
     // TODO: check data - it has to consist with schema
+    // TODO: ??? add eventData
     this._storage.updateTopLevel(moldPath, _.cloneDeep(partialData));
   }
 
   updateTopLevelSilent(moldPath, partialData) {
     // TODO: check data - it has to consist with schema
+    // TODO: ??? add eventData
     this._storage.updateTopLevelSilent(moldPath, _.cloneDeep(partialData));
   }
 
 
   setBottomLevel(moldPath, newData) {
     // TODO: check data - it has to consist with schema
+    // TODO: ??? add eventData
 
     this._storage.updateTopLevel(moldPath, _.cloneDeep(partialData));
   }

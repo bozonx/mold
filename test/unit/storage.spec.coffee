@@ -3,7 +3,7 @@ Events = require('../../src/Events').default
 
 # TODO: test event data
 
-describe.only 'Unit. Storage.', ->
+describe 'Unit. Storage.', ->
   beforeEach ->
     @events = new Events()
     @storage = new Storage(@events)

@@ -33,7 +33,7 @@ export default class Storage {
    * @param {string} moldPath
    */
   get(moldPath) {
-    if (!moldPath) throw new Error(`ERROR: path is empty`);
+    if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
 
     // TODO: проверить путь
 
@@ -47,6 +47,8 @@ export default class Storage {
    */
   updateTopLevel(moldPath, partialData) {
     this._update(moldPath, partialData);
+
+    console.log(11111, moldPath, partialData, this._storage )
 
     this._events.emit(moldPath, 'change', {
       data: partialData,
