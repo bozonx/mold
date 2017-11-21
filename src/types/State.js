@@ -19,11 +19,7 @@ export default class Container extends _TypeBase {
   }
 
   $initStorage(moldPath) {
-    const storageData = this._main.$$stateManager.getState(moldPath);
-    if (!_.isPlainObject(storageData)) {
-      // initialize new data container
-      this._main.$$stateManager.initStorageData(moldPath, {});
-    }
+    this._main.$$stateManager.initStorageIfNeed(moldPath);
   }
 
   $init(moldPath, schema) {

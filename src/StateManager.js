@@ -25,8 +25,8 @@ export default class State {
     return this._storage.getState(moldPath);
   }
 
-  initStorageData(moldPath, newData) {
-    this.updateTopLevelSilent(moldPath, newData);
+  initStorageIfNeed(moldPath) {
+    this._storage.initNodeIfNeed(moldPath)
   }
 
   updateTopLevel(moldPath, partialData) {
