@@ -1,6 +1,7 @@
 Storage = require('../../src/Storage').default
 Events = require('../../src/Events').default
 
+# TODO: test event data
 
 describe.only 'Unit. Storage.', ->
   beforeEach ->
@@ -9,7 +10,7 @@ describe.only 'Unit. Storage.', ->
     @moldPath = 'path.to[256]'
 
   describe 'bottom level', ->
-    it 'set new data twice', () ->
+    it 'set new data twice', ->
       bottomHandler = sinon.spy()
       anyHandler = sinon.spy()
       @events.on(@moldPath, 'bottom', bottomHandler)
@@ -34,6 +35,10 @@ describe.only 'Unit. Storage.', ->
 
   describe 'top level', ->
     it 'set new data and update it', ->
+      changeHandler = sinon.spy()
+      anyHandler = sinon.spy()
+      @events.on(@moldPath, 'change', changeHandler)
+      @events.on(@moldPath, 'any', anyHandler)
       newData1 = {
         id: 1
         param1: 'value1'
@@ -53,6 +58,25 @@ describe.only 'Unit. Storage.', ->
         param1: 'value11'
         param2: 'value2'
       }
+      expect(changeHandler).to.be.calledTwice
+      expect(anyHandler).to.be.calledTwice
+
+    it 'updateTopLevelSilent', ->
+      silentHandler = sinon.spy()
+      anyHandler = sinon.spy()
+      @events.on(@moldPath, 'silent', silentHandler)
+      @events.on(@moldPath, 'any', anyHandler)
+      newData1 = {
+        id: 1
+        param1: 'value1'
+      }
+
+      @storage.$init({})
+      @storage.updateTopLevelSilent(@moldPath, newData1)
+
+      expect(@storage.get(@moldPath)).to.be.deep.equal(newData1)
+      expect(silentHandler).to.be.calledOnce
+      expect(anyHandler).to.be.calledOnce
 
     it 'combine with bottom level', ->
       bottomData = {
@@ -75,5 +99,3 @@ describe.only 'Unit. Storage.', ->
         param2: 'value22'
         param3: 'value3'
       }
-
-  # TODO: updateTopLevelSilent
