@@ -7,7 +7,6 @@ import TypeManager from './TypeManager';
 import DriverManager from './DriverManager';
 import Config from './Config';
 
-import Container from './types/Container';
 import StateType from './types/State';
 import Document from './types/Document';
 import Catalogue from './types/Catalogue';
@@ -25,7 +24,6 @@ export default class Main {
     this._storage = new Storage(this.$$events, this.$$log);
 
     // register base types
-    this.$$typeManager.register('container', Container);
     this.$$typeManager.register('state', StateType);
     this.$$typeManager.register('document', Document);
     this.$$typeManager.register('catalogue', Catalogue);
