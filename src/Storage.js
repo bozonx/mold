@@ -109,6 +109,7 @@ export default class Storage {
       // merge
 
       // TODO: не поднимать события если не было изменений
+      // TODO: впринципе не обязательно делать mutate - можно просто заменить, но правильно обработать массивы
       const wereChanges = mutate(currentData, '').update(partialData);
 
       // TODO: делать мутацию
