@@ -15,7 +15,7 @@ export default class Container extends _TypeBase{
   }
 
   get type() {
-    return 'container';
+    return 'state';
   }
 
   $initStorage(paths) {

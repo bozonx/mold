@@ -1,6 +1,6 @@
 mold = require('../../src/index').default
 
-describe.only 'Functional. Container type.', ->
+describe 'Functional. Container type.', ->
   beforeEach () ->
     testSchema = () ->
       container:
@@ -11,14 +11,9 @@ describe.only 'Functional. Container type.', ->
     @testSchema = testSchema()
     @mold = mold( {silent: true}, @testSchema )
 
-  it "container has to have only other containers, state, document or Catalogue as a child", ->
-    # TODO: !!!!
+  it "", ->
+    
 
-  it "Try to get container - it throws an error", ->
-    # TODO: !!!!
-
-  it "Get state type via containers", ->
-# TODO: !!!!
 
 
 

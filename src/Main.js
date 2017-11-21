@@ -72,16 +72,6 @@ export default class Main {
   }
 
   /**
-   * Get instance of one of the types by a path
-   * @param {string} path - absolute path or relative if context is used
-   * @param {object} context - instance of root element
-   * @returns {object|undefined} - instance of one of the types
-   */
-  child(path, context=undefined) {
-    return this.$$typeManager.getInstance(path, context);
-  }
-
-  /**
    * Get driver by path in schema.
    * You cat pass path deeper than certain driver path.
    * If no one driver has found it returns a default driver (memory)

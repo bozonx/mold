@@ -31,15 +31,14 @@ export default class SchemaManager {
   /**
    * get schema part by path
    * @param {string} schemaPath - absolute mold or schema path
-   * @returns {object} schema part on path
+   * @returns {object|undefined} schema part on path or undefined if schema hasn't found
    */
   getSchema(schemaPath) {
     if (schemaPath === '') return this.getFullSchema();
 
-    const schema = _.get(this._schema, schemaPath);
-    if (_.isUndefined(schema)) this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
+    // TODO: проверить как будет работать с новыми контейнерами
 
-    return schema;
+    return _.get(this._schema, schemaPath);
   }
 
   /**
@@ -48,6 +47,9 @@ export default class SchemaManager {
    * @param {object} schema
    */
   setSchema(moldMountPath, schema) {
+
+    // TODO: проверить как будет работать с новыми контейнерами
+
     if (!moldMountPath) {
       this._schema = schema;
     }
@@ -60,6 +62,9 @@ export default class SchemaManager {
   }
 
   _checkSchema() {
+
+    // TODO: проверить как будет работать с новыми контейнерами
+
     eachSchema(this._schema, (schemaPath, schema) => {
       // init driver if it has set
       if (schema.driver) {
