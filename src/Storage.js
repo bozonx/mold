@@ -19,9 +19,10 @@ export default class Storage {
    */
   $init(newStorage) {
     this._storage = newStorage;
-    this._storage.topLevel = {};
-    this._storage.bottomLevel = {};
-    this._storage.meta = {};
+    this._storage.items = {}
+    // this._storage.topLevel = {};
+    // this._storage.bottomLevel = {};
+    //this._storage.meta = {};
   }
 
   $getWholeStorageState() {
@@ -29,17 +30,34 @@ export default class Storage {
   }
 
 
+  getNode(moldPath) {
+    if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
+
+    // TODO: проверить moldPath
+
+    return this._storage.items[moldPath];
+  }
 
   /**
    * Get merged levels
    * @param {string} moldPath
    */
-  get(moldPath) {
+  getState(moldPath) {
     if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
 
-    // TODO: проверить путь
+    // TODO: проверить moldPath
 
     return this._getCombined(moldPath);
+  }
+
+  initNodeIfNeed(moldPath) {
+    if (this._storage.items[moldPath]) return;
+
+    this._storage.items[moldPath] = {
+      state: {},
+      solid: {},
+      meta: {},
+    };
   }
 
   /**
@@ -80,9 +98,12 @@ export default class Storage {
    */
   setBottomLevel(moldPath, newData) {
     if (!moldPath) throw new Error(`ERROR: path is empty`);
+
+    this.initNodeIfNeed(moldPath);
+
     // TODO: проверить путь
-    // TODO: делать мутацию
-    this._storage.bottomLevel[moldPath] = newData;
+    // TODO: ??? делать мутацию
+    this._storage.items[moldPath].solid = newData;
 
     this._events.emit(moldPath, 'bottom', {
       data: newData,
@@ -99,22 +120,18 @@ export default class Storage {
     // TODO: проверить путь
     // TODO: !!!
 
-    const currentData = this._storage.topLevel[moldPath];
+    this.initNodeIfNeed(moldPath);
 
-    if (_.isUndefined(currentData)) {
-      // create first data
-      this._storage.topLevel[moldPath] = partialData;
-    }
-    else {
-      // merge
+    const currentData = this._storage.items[moldPath].state;
 
-      // TODO: не поднимать события если не было изменений
-      // TODO: впринципе не обязательно делать mutate - можно просто заменить, но правильно обработать массивы
-      const wereChanges = mutate(currentData, '').update(partialData);
+    // merge
 
-      // TODO: делать мутацию
-      //this._storage.topLevel[moldPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
-    }
+    // TODO: не поднимать события если не было изменений
+    // TODO: впринципе не обязательно делать mutate - можно просто заменить, но правильно обработать массивы
+    const wereChanges = mutate(currentData, '').update(partialData);
+
+    // TODO: ???? делать мутацию
+    //this._storage.topLevel[moldPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
   }
 
   /**
@@ -123,8 +140,8 @@ export default class Storage {
    * @private
    */
   _getCombined(moldPath) {
-    const top = this._storage.topLevel[moldPath];
-    const bottom = this._storage.bottomLevel[moldPath];
+    const top = this._storage.items[moldPath].state;
+    const bottom = this._storage.items[moldPath].solid;
 
     // return undefined if there isn't any data
     if (_.isUndefined(top) && _.isUndefined(bottom)) return;

@@ -21,8 +21,8 @@ export default class State {
    * @param {string} moldPath
    * @returns {*} - value from mold
    */
-  getStorageData(moldPath) {
-    return this._storage.get(moldPath);
+  getState(moldPath) {
+    return this._storage.getState(moldPath);
   }
 
   initStorageData(moldPath, newData) {

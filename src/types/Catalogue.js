@@ -33,7 +33,7 @@ export default class Catalogue {
   }
 
   $initStorage() {
-    if (!_.isPlainObject(this._main.$$state.getStorageData(this._storagePath))) {
+    if (!_.isPlainObject(this._main.$$state.getState(this._storagePath))) {
       this._main.$$state.setSilent(this._storagePath, {
         action: {
           load: [],
@@ -255,7 +255,7 @@ export default class Catalogue {
     const storagePathToDocInDocuments = concatPath(
       concatPath(this._storagePath, 'documents'), `[${documentMold[primaryName]}]`);
 
-    if (!this._main.$$state.getStorageData(storagePathToDocInDocuments)) return;
+    if (!this._main.$$state.getState(storagePathToDocInDocuments)) return;
     this._main.$$state.updateSilent(storagePathToDocInDocuments, newState);
   }
 

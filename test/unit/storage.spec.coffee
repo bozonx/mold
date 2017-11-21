@@ -3,7 +3,7 @@ Events = require('../../src/Events').default
 
 # TODO: test event data
 
-describe 'Unit. Storage.', ->
+describe.only 'Unit. Storage.', ->
   beforeEach ->
     @events = new Events()
     @storage = new Storage(@events)
@@ -29,7 +29,7 @@ describe 'Unit. Storage.', ->
       @storage.setBottomLevel(@moldPath, newData1)
       @storage.setBottomLevel(@moldPath, newData2)
 
-      expect(@storage.get(@moldPath)).to.be.deep.equal(newData2)
+      expect(@storage.getState(@moldPath)).to.be.deep.equal(newData2)
       expect(bottomHandler).to.be.calledTwice
       expect(anyHandler).to.be.calledTwice
 
@@ -53,7 +53,7 @@ describe 'Unit. Storage.', ->
       @storage.updateTopLevel(@moldPath, newData1)
       @storage.updateTopLevel(@moldPath, newData2)
 
-      expect(@storage.get(@moldPath)).to.be.deep.equal {
+      expect(@storage.getState(@moldPath)).to.be.deep.equal {
         id: 2
         param1: 'value11'
         param2: 'value2'
@@ -74,7 +74,7 @@ describe 'Unit. Storage.', ->
       @storage.$init({})
       @storage.updateTopLevelSilent(@moldPath, newData1)
 
-      expect(@storage.get(@moldPath)).to.be.deep.equal(newData1)
+      expect(@storage.getState(@moldPath)).to.be.deep.equal(newData1)
       expect(silentHandler).to.be.calledOnce
       expect(anyHandler).to.be.calledOnce
 
@@ -93,7 +93,7 @@ describe 'Unit. Storage.', ->
       @storage.setBottomLevel(@moldPath, bottomData)
       @storage.updateTopLevel(@moldPath, topData)
 
-      expect(@storage.get(@moldPath)).to.be.deep.equal {
+      expect(@storage.getState(@moldPath)).to.be.deep.equal {
         id: 1
         param1: 'value1'
         param2: 'value22'

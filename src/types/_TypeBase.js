@@ -18,7 +18,7 @@ export default class _TypeBase {
    */
   get mold() {
     //return this._mold;
-    return this._main.$$stateManager.getStorageData(this._moldPath);
+    return this._main.$$stateManager.getState(this._moldPath);
   }
 
   get schema() {
@@ -36,7 +36,7 @@ export default class _TypeBase {
     this._moldPath = this._moldPath || moldPath;
     this._schema = schema;
     // mold is just a link to the storage
-    //this._mold = this._mold || this._main.$$stateManager.getStorageData(this._moldPath);
+    //this._mold = this._mold || this._main.$$stateManager.getState(this._moldPath);
   }
 
   /**
