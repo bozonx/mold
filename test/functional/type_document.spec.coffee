@@ -13,23 +13,23 @@ describe.only 'Functional. Document type.', ->
             type: 'array'
             itemsType: 'number'
           }
-          collection: {
-            type: 'collection'
-            item: {
-              id: { type: 'number', key: true }
-              itemStringParam: {type: 'string'}
-            }
-          }
           nested: {
             type: 'assoc'
             items: {
               nestedStringParam: {type: 'string'}
             }
           }
+#          collection: {
+#            type: 'collection'
+#            item: {
+#              id: { type: 'number', key: true }
+#              itemStringParam: {type: 'string'}
+#            }
+#          }
         }
       }
 
-    this.testValues = {
+    @testValues = {
       boolParam: true,
       stringParam: 'newValue',
       numberParam: 5,
@@ -49,7 +49,7 @@ describe.only 'Functional. Document type.', ->
 
     assert.isFalse(@document.loading)
 
-    promise = this.document.load()
+    promise = @document.load()
 
     assert.isTrue(@document.loading)
 
@@ -69,7 +69,7 @@ describe.only 'Functional. Document type.', ->
       stringParam: 'overlay',
       numberParam: 7,
     }
-    promise = this.document.put(newData)
+    promise = @document.put(newData)
 
     assert.isTrue(@document.saving)
 
@@ -92,7 +92,7 @@ describe.only 'Functional. Document type.', ->
       stringParam: 'overlay',
       numberParam: 5,
     }
-    promise = this.document.patch(newData)
+    promise = @document.patch(newData)
 
     assert.isTrue(@document.saving)
 

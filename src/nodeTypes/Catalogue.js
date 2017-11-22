@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import { concatPath, findPrimary } from '../helpers';
+import _Action from './_Action';
 import _TypeBase from './_TypeBase';
 
 
@@ -24,7 +25,7 @@ export default class Catalogue extends _TypeBase {
   $init(moldPath, schema) {
     super.$init(moldPath, schema);
 
-    this.action = {
+    this.actions = {
       load: this._generateLoadAction(),
       create: this._generateCreateAction(),
       remove: this._generateRemoveAction(),
@@ -54,7 +55,6 @@ export default class Catalogue extends _TypeBase {
   }
 
   _generateLoadAction() {
-    // TODO: !!!!!
     return this._createAction(undefined, (Action) => {
       return class extends Action {
         init() {
