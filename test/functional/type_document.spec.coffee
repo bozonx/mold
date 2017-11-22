@@ -67,7 +67,6 @@ describe.only 'Functional. Document type.', ->
     newData = {
       boolParam: false,
       stringParam: 'overlay',
-      stringParam: 'overlay',
       numberParam: 7,
     }
     promise = this.document.put(newData)
@@ -78,6 +77,29 @@ describe.only 'Functional. Document type.', ->
       .then (response) =>
         assert.deepEqual(response.body, newData)
         assert.deepEqual(@document.mold, newData)
+        assert.isFalse(@document.saving)
+
+  it 'patch()', ->
+    _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
+
+    assert.isFalse(@document.saving)
+
+    newData = {
+      stringParam: 'overlay',
+    }
+    resultData = {
+      boolParam: true,
+      stringParam: 'overlay',
+      numberParam: 5,
+    }
+    promise = this.document.patch(newData)
+
+    assert.isTrue(@document.saving)
+
+    promise
+      .then (response) =>
+        assert.deepEqual(response.body, resultData)
+        assert.deepEqual(@document.mold, resultData)
         assert.isFalse(@document.saving)
 
 
