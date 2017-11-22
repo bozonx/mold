@@ -47,7 +47,7 @@ describe.only 'Functional. Document type.', ->
   it 'load()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
 
-    assert.isUndefined(@document.loading)
+    assert.isFalse(@document.loading)
 
     promise = this.document.load()
 
@@ -57,9 +57,28 @@ describe.only 'Functional. Document type.', ->
       .then (response) =>
         assert.deepEqual(response.body, @testValues)
         assert.deepEqual(@document.mold, @testValues)
+        assert.isFalse(@document.loading)
 
+  it 'put()', ->
+    _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
 
+    assert.isFalse(@document.saving)
 
+    newData = {
+      boolParam: false,
+      stringParam: 'overlay',
+      stringParam: 'overlay',
+      numberParam: 7,
+    }
+    promise = this.document.put(newData)
+
+    assert.isTrue(@document.saving)
+
+    promise
+      .then (response) =>
+        assert.deepEqual(response.body, newData)
+        assert.deepEqual(@document.mold, newData)
+        assert.isFalse(@document.saving)
 
 
 

@@ -20,11 +20,11 @@ export default class Document extends State {
   }
 
   get loading() {
-    return this.actions.load.isPending();
+    return this.actions.load.pending || false;
   }
 
   get saving() {
-    return this.actions.put.isPending() || this.actions.patch.isPending();
+    return this.actions.put.pending || this.actions.patch.pending || false;
   }
 
   $init(paths, schema) {
@@ -43,6 +43,12 @@ export default class Document extends State {
 
   load() {
     return this.actions.load.request();
+  }
+  put(payload) {
+    return this.actions.put.request(payload);
+  }
+  patch(payload) {
+    return this.actions.patch.request(payload);
   }
 
 

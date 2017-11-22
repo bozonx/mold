@@ -9,6 +9,10 @@ export default class Action {
     this.responseTransformCb = null;
   }
 
+  get pending() {
+    return this._stateManager.getMeta(this._moldPath, 'pending', this._actionName);
+  }
+
   init() {
   }
 
@@ -18,10 +22,6 @@ export default class Action {
 
   setDriverParams(driverParams) {
     this._stateManager.updateMeta(this._moldPath, { driverParams }, this._actionName);
-  }
-
-  isPending() {
-    return this._stateManager.getMeta(this._moldPath, 'pending', this._actionName);
   }
 
   update(partialData) {
