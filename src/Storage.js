@@ -48,6 +48,14 @@ export default class Storage {
     return this._getCombined(moldPath);
   }
 
+  getMeta(moldPath, metaPath) {
+    // TODO: test it
+
+    if (!this._storage.items[moldPath]) return;
+
+    return _.get(this._storage.items[moldPath].meta, metaPath);
+  }
+
   initNodeIfNeed(moldPath) {
     if (this._storage.items[moldPath]) return;
 
@@ -58,40 +66,61 @@ export default class Storage {
     };
   }
 
+  initActionIfNeed(moldPath, action) {
+    if (this._storage.items[moldPath]
+      && this._storage.items[moldPath].actions
+      && this._storage.items[moldPath].actions[action]) return;
+
+    if (!this._storage.items[moldPath].actions) {
+      this._storage.items[moldPath].actions = {};
+    }
+
+    this._storage.items[moldPath].actions[action] = {
+      state: {},
+      solid: {},
+      meta: {},
+    };
+  }
+
   /**
    * Update partly top level data.
    * @param {string} moldPath
    * @param {object} partialData
+   * @param {string} action
    */
-  updateTopLevel(moldPath, partialData) {
-    this._update(moldPath, 'state', partialData);
+  updateTopLevel(moldPath, partialData, action) {
+    this._update(moldPath, 'state', partialData, action);
 
     this._events.emit(moldPath, 'change', {
       data: partialData,
       by: 'user',
+      action,
     });
     this._events.emit(moldPath, 'any', {
       data: partialData,
       by: 'user',
+      action,
     });
   }
 
-  updateTopLevelSilent(moldPath, partialData) {
-    this._update(moldPath, 'state', partialData);
+  updateTopLevelSilent(moldPath, partialData, action) {
+    this._update(moldPath, 'state', partialData, action);
 
     this._events.emit(moldPath, 'silent', {
       data: partialData,
       by: 'program',
+      action,
     });
     this._events.emit(moldPath, 'any', {
       data: partialData,
       by: 'program',
+      action,
     });
   }
 
-  updateMeta(moldPath, partialData) {
+  updateMeta(moldPath, partialData, action) {
     // TODO: test it
-    this._update(moldPath, 'meta', partialData);
+    this._update(moldPath, 'meta', partialData, action);
     // TODO: поднимать ли событие any???
   }
 
@@ -99,34 +128,50 @@ export default class Storage {
    * Replace data of bottom level and rise silent event.
    * @param {string} moldPath
    * @param {object} newData
+   * @param {string} action
    */
-  setBottomLevel(moldPath, newData) {
+  setBottomLevel(moldPath, newData, action) {
     if (!moldPath) throw new Error(`ERROR: path is empty`);
 
     this.initNodeIfNeed(moldPath);
+    this.initActionIfNeed(moldPath, action);
 
     // TODO: проверить путь
     // TODO: ??? делать мутацию
-    this._storage.items[moldPath].solid = newData;
+    if (action) {
+      this._storage.items[moldPath].actions[action].solid = newData;
+    }
+    else {
+      this._storage.items[moldPath].solid = newData;
+    }
 
     this._events.emit(moldPath, 'bottom', {
       data: newData,
       by: 'program',
+      action,
     });
     this._events.emit(moldPath, 'any', {
       data: newData,
       by: 'program',
+      action,
     });
   }
 
-  _update(moldPath, subPath, partialData) {
+  _update(moldPath, subPath, partialData, action) {
     if (!moldPath) throw new Error(`ERROR: path is empty`);
     // TODO: проверить путь
     // TODO: !!!
 
     this.initNodeIfNeed(moldPath);
+    this.initActionIfNeed(moldPath, action);
 
-    const currentData = this._storage.items[moldPath][subPath];
+    let currentData;
+    if (action) {
+      currentData = this._storage.items[moldPath].actions[action][subPath];
+    }
+    else {
+      currentData = this._storage.items[moldPath][subPath];
+    }
 
     // merge
 
@@ -141,11 +186,21 @@ export default class Storage {
   /**
    * Get combined top and bottom levels.
    * @param {string} moldPath
+   * @param {string} action
    * @private
    */
-  _getCombined(moldPath) {
-    const top = this._storage.items[moldPath].state;
-    const bottom = this._storage.items[moldPath].solid;
+  _getCombined(moldPath, action) {
+    let top;
+    let bottom;
+
+    if (action) {
+      top = this._storage.items[moldPath].actions[action].state;
+      bottom = this._storage.items[moldPath].actions[action].solid;
+    }
+    else {
+      top = this._storage.items[moldPath].state;
+      bottom = this._storage.items[moldPath].solid;
+    }
 
     // return undefined if there isn't any data
     if (_.isUndefined(top) && _.isUndefined(bottom)) return;

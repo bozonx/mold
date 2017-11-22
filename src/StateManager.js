@@ -25,6 +25,10 @@ export default class State {
     return this._storage.getState(moldPath);
   }
 
+  getMeta(moldPath, metaPath) {
+    this._storage.getMeta(moldPath, metaPath)
+  }
+
   initStorageIfNeed(moldPath) {
     this._storage.initNodeIfNeed(moldPath)
   }
@@ -41,12 +45,15 @@ export default class State {
     this._storage.updateTopLevelSilent(moldPath, _.cloneDeep(partialData));
   }
 
-
   setBottomLevel(moldPath, newData) {
     // TODO: check data - it has to consist with schema
     // TODO: ??? add eventData
 
-    this._storage.updateTopLevel(moldPath, _.cloneDeep(partialData));
+    this._storage.updateTopLevel(moldPath, _.cloneDeep(newData));
+  }
+
+  updateMeta(moldPath, partialData) {
+    this._storage.updateMeta(moldPath, _.cloneDeep(partialData));
   }
 
 

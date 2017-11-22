@@ -2,6 +2,7 @@ Storage = require('../../src/Storage').default
 Events = require('../../src/Events').default
 
 # TODO: test event data
+# TODO: test actions
 
 describe.only 'Unit. Storage.', ->
   beforeEach ->

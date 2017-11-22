@@ -21,14 +21,12 @@ export default class Document extends State {
     return 'document';
   }
 
-  get loading() {
-    // TODO: use storage meta
-    return this.mold.$loading;
+  get isLoading() {
+    return this._main.$$stateManager.getMeta(this._moldPath, 'isLoading');
   }
 
-  get saving() {
-    // TODO: use storage meta
-    return this.mold.$saving;
+  get isSaving() {
+    return this._main.$$stateManager.getMeta(this._moldPath, 'isSaving');
   }
 
   /**
@@ -86,18 +84,15 @@ export default class Document extends State {
 
   /**
    * Load data from driver.
-   * @param {object} preRequest - raw params to driver's request
+   * @param {string|undefined} action - name of action
+   * @param {object|undefined} driversRequestParams - params for driver's request
    * @returns {Promise}
    */
-  $load(preRequest=undefined) {
-    this._main.$$state.updateSilent(this._storagePath, {$loading: true});
+  $load(action=undefined, driversRequestParams=undefined) {
+    // TODO: refactor
+    this._updateActionMeta(action, { isSaving: true });
 
-    const request = _.defaultsDeep({
-      method: 'get',
-      moldPath: this._moldPath,
-    }, preRequest);
-
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+    return this._loadRequest(driversRequestParams)
       .then((resp) => {
         // update mold with server response data
         this._main.$$state.updateSilent(this._storagePath, {$loading: false});
@@ -110,6 +105,28 @@ export default class Document extends State {
         this._main.$$state.updateSilent(this._storagePath, {$loading: false});
         return Promise.reject(err);
       });
+  }
+
+  _updateActionMeta(action, partialData) {
+    // TODO: ??? Does move it to stateManager?
+    if (action) {
+      this._main.$$stateManager.updateMeta(this._moldPath, {
+        [action]: partialData
+      });
+    }
+    else {
+      this._main.$$stateManager.updateMeta(this._moldPath, partialData);
+    }
+  }
+
+  _loadRequest(driversRequestParams) {
+    const request = _.defaultsDeep({
+      method: 'get',
+      moldPath: this._moldPath,
+    }, driversRequestParams);
+
+    // TODO: ??? getUrlParams
+    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams());
   }
 
   /**
@@ -128,19 +145,20 @@ export default class Document extends State {
       payload: omitUnsaveable(this._mold, this.schema),
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
-      // update mold with server response data
-      this._main.$$state.updateSilent(this._storagePath, {
-        ...resp.body,
-        $saving: false,
-      });
-      this._lastChanges = {};
+    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+      .then((resp) => {
+        // update mold with server response data
+        this._main.$$state.updateSilent(this._storagePath, {
+          ...resp.body,
+          $saving: false,
+        });
+        this._lastChanges = {};
 
-      return resp;
-    }, (err) => {
-      this._main.$$state.updateSilent(this._storagePath, {$saving: false});
-      return Promise.reject(err);
-    });
+        return resp;
+      }, (err) => {
+        this._main.$$state.updateSilent(this._storagePath, {$saving: false});
+        return Promise.reject(err);
+      });
   }
 
   /**
@@ -159,19 +177,20 @@ export default class Document extends State {
       payload: omitUnsaveable(this._lastChanges, this.schema),
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
-      // update mold with server response data
-      this._main.$$state.updateSilent(this._storagePath, {
-        ...resp.body,
-        $saving: false,
-      });
-      this._lastChanges = {};
+    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+      .then((resp) => {
+        // update mold with server response data
+        this._main.$$state.updateSilent(this._storagePath, {
+          ...resp.body,
+          $saving: false,
+        });
+        this._lastChanges = {};
 
-      return resp;
-    }, (err) => {
-      this._main.$$state.updateSilent(this._storagePath, {$saving: false});
-      return Promise.reject(err);
-    });
+        return resp;
+      }, (err) => {
+        this._main.$$state.updateSilent(this._storagePath, {$saving: false});
+        return Promise.reject(err);
+      });
   }
 
   /**
