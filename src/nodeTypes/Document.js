@@ -55,34 +55,6 @@ export default class Document extends State {
     return this.actions.remove.request();
   }
 
-
-  update(newState, eventData=undefined) {
-    // const lastChanges = correctUpdatePayload(
-    //   this._main.$$stateManager.getMeta(this._moldPath, 'lastChanges', action), newState);
-    // this._main.$$stateManager.updateMeta(this._moldPath, { lastChanges }, action);
-
-    // TODO: use action load|default
-    // TODO: use super.update
-
-    //this._main.$$stateManager.updateTopLevel(this._moldPath, newState, 'default');
-
-    super.update(newState, eventData);
-  }
-
-  // getUrlParams() {
-  //   // TODO: use storage meta
-  //   // TODO: по идее на каждый запрос надо сохранять свои url params
-  //   return this._main.$$state.getUrlParams(this._moldPath);
-  // }
-  //
-  // setUrlParams(params) {
-  //   // TODO: use storage meta
-  //   this._main.$$state.setUrlParams(this._moldPath, params);
-  // }
-
-
-  // TODO: updateSilent
-
   _createAction(actionName, cb) {
     const ActionClass = cb(_Action);
 
@@ -156,6 +128,34 @@ export default class Document extends State {
     });
   }
 
+
+  _initCustomActions() {
+    _.each(this.schema.actions, (item, name) => {
+      this.actions[name] = this._createAction(name, item);
+
+      // if (_.isFunction(item)) {
+      //   // custom method or overwrote method
+      //   this.action[name] = (...params) => item.bind(this)(...params, this);
+      // }
+      // else if (_.isPlainObject(item)) {
+      //   // Default acton's params
+      //   this.actionDefaults[name] = item;
+      // }
+    });
+  }
+
+
+  // getUrlParams() {
+  //   // TODO: use storage meta
+  //   // TODO: по идее на каждый запрос надо сохранять свои url params
+  //   return this._main.$$state.getUrlParams(this._moldPath);
+  // }
+  //
+  // setUrlParams(params) {
+  //   // TODO: use storage meta
+  //   this._main.$$state.setUrlParams(this._moldPath, params);
+  // }
+
   // /**
   //  * Delete a document via documentsCollection.
   //  * You can't remove document that not inside a collection.
@@ -174,49 +174,10 @@ export default class Document extends State {
   //   return myDocumentsCollection.remove(this.mold, preRequest);
   // }
 
-  _doLoadRequest(driverRequestParams) {
-    const request = _.defaultsDeep({
-      method: 'get',
-      moldPath: this._moldPath,
-    }, driverRequestParams);
-
-    // TODO: ??? getUrlParams
-    return this._main.$$stateManager.$$request.sendRequest(request, this.schema, this.getUrlParams());
-  }
-
-
-  _doSaveRequest(method, driverRequestParams) {
-    const request = _.defaultsDeep({
-      method: method,
-      moldPath: this._moldPath,
-      // TODO: WTF???
-      payload: omitUnsaveable(this._mold, this.schema),
-    }, driverRequestParams);
-
-    // TODO: ??? getUrlParams
-    return this._main.$$stateManager.$$request.sendRequest(request, this.schema, this.getUrlParams());
-  }
-
-
-  _applyDefaults(preRequest, actionName) {
-    if (!this.actionDefaults[actionName]) return preRequest;
-
-    return _.defaultsDeep(_.cloneDeep(preRequest), this.actionDefaults[actionName]);
-  }
-
-  _initCustomActions() {
-    _.each(this.schema.actions, (item, name) => {
-      this.actions[name] = this._createAction(name, item);
-
-      // if (_.isFunction(item)) {
-      //   // custom method or overwrote method
-      //   this.action[name] = (...params) => item.bind(this)(...params, this);
-      // }
-      // else if (_.isPlainObject(item)) {
-      //   // Default acton's params
-      //   this.actionDefaults[name] = item;
-      // }
-    });
-  }
+  // _applyDefaults(preRequest, actionName) {
+  //   if (!this.actionDefaults[actionName]) return preRequest;
+  //
+  //   return _.defaultsDeep(_.cloneDeep(preRequest), this.actionDefaults[actionName]);
+  // }
 
 }

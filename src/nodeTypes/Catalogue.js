@@ -1,128 +1,96 @@
 import _ from 'lodash';
 
 import { concatPath, findPrimary } from '../helpers';
+import _TypeBase from './_TypeBase';
 
 
-export default class Catalogue {
+export default class Catalogue extends _TypeBase {
   static validateSchema(schema, schemaPath) {
+    // TODO: !!!!
   }
 
   constructor(main) {
+    super(main);
   }
 
   get type() {
-    return 'documentsCollection';
+    return 'catalogue';
   }
 
   get loading() {
-    return this._loading;
+    return this.actions.load.pending;
   }
 
-  /**
-   * Overwrote. Get real mold.
-   */
-  get mold() {
-    return this._mold.action.load;
-  }
-
-  /**
-   * Overwrote. Get real mold.
-   */
-  get realMold() {
-    return this._mold;
-  }
-
-  $initStorage() {
-    if (!_.isPlainObject(this._main.$$state.getState(this._storagePath))) {
-      this._main.$$state.setSilent(this._storagePath, {
-        action: {
-          load: [],
-        },
-        state: {},
-        documents: {},
-      });
-    }
-  }
-
-  $init(paths, schema) {
-    this._storagePath = paths.storage;
-    this._storagePagesPath = paths.storage + '.action.load';
-
-    super.$init(paths, schema);
-
-    this._mold.state = {
-      loading: [],
-    };
-    this._loading = this._mold.state.loading;
+  $init(moldPath, schema) {
+    super.$init(moldPath, schema);
 
     this.action = {
-      load: (pageNum, preRequest) => {
-        return this.$load(pageNum, this._applyDefaults(preRequest, 'load')) },
-      create: (documentMold, preRequest) => {
-        return this.$create(documentMold, this._applyDefaults(preRequest, 'create')) },
-      remove: (documentMold, preRequest) => {
-        return this.$remove(documentMold, this._applyDefaults(preRequest, 'remove')) },
+      load: this._generateLoadAction(),
+      create: this._generateCreateAction(),
+      remove: this._generateRemoveAction(),
     };
-    this.actionDefaults = {};
+
+    //this.actionDefaults = {};
     this._initActions();
   }
 
-  /**
-   * Overwrote clear.
-   * @param {object|undefined} eventData - additional data to event
-   */
-  clear(eventData=undefined) {
-    this._main.$$state.clear(this._storagePagesPath, eventData);
+  load() {
+    return this.actions.load.request();
+  }
+  create(payload) {
+    return this.actions.create.request(payload);
+  }
+  remove() {
+    return this.actions.remove.request();
   }
 
-  getUrlParams() {
-    return this._main.$$state.getUrlParams(this._moldPath);
+  _createAction(actionName, cb) {
+    const ActionClass = cb(_Action);
+
+    const instance =  new ActionClass(this._main.$$stateManager, this, this._moldPath, actionName);
+    instance.init();
+
+    return instance;
   }
 
-  setUrlParams(params) {
-    this._main.$$state.setUrlParams(this._moldPath, params);
+  _generateLoadAction() {
+    // TODO: !!!!!
+    return this._createAction(undefined, (Action) => {
+      return class extends Action {
+        init() {
+          this.setDriverParams({
+            method: 'filter',
+          });
+        }
+      };
+    });
   }
 
-  /**
-   * Get instance of child
-   * @param {string|number} primaryId - primary id like 0 or '[0]'
-   * @returns {object} - instance of child
-   */
-  child(primaryId) {
-    const preparedPath = (_.isNumber(primaryId)) ? `[${primaryId}]` : primaryId;
-    return this._main.child(preparedPath, this);
+  _generateCreateAction() {
+    // TODO: !!!!!
+    return this._createAction(undefined, (Action) => {
+      return class extends Action {
+        init() {
+          this.setDriverParams({
+            method: 'create',
+          });
+        }
+      };
+    });
   }
 
-  /**
-   * Get paths of child of first level.
-   * @param {string} primaryId
-   * @returns {{mold: string, schema: string, storage: string|undefined}}
-   */
-  $getChildPaths(primaryId) {
-    return {
-      mold: concatPath(this._moldPath, primaryId),
-      schema: concatPath(this._schemaPath, 'item'),
-      storage: concatPath(this._storagePath, concatPath('documents', primaryId)),
-    }
+  _generateRemoveAction() {
+    // TODO: !!!!!
+    return this._createAction(undefined, (Action) => {
+      return class extends Action {
+        init() {
+          this.setDriverParams({
+            method: 'remove',
+          });
+        }
+      };
+    });
   }
-
-  /**
-   * Get instance of element. (not page!).
-   * @param {string} primaryId - id of element, like '[0]' or ["s-3"]
-   * @returns {Object|undefined} - if undefined - it means not found.
-   */
-  $getChildInstance(primaryId) {
-    if (!primaryId || !_.isString(primaryId)) return;
-    if (!primaryId.match(/^\[[^\s\[\]]+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
-
-    const paths = this.$getChildPaths(primaryId);
-
-    return this._main.$$nodeManager.$getInstanceByFullPath(paths);
-  }
-
-  load(...params) { return this.action.load(...params) }
-  create(...params) { return this.action.create(...params) }
-  remove(...params) { return this.action.remove(...params) }
 
   /**
    * Load the specified page.
@@ -239,62 +207,80 @@ export default class Catalogue {
       });
   }
 
-  _updateDoc(documentMold, newState) {
-    const isDocumentInPage = _.isNumber(documentMold.$pageIndex) && _.isNumber(documentMold.$index);
-    // update document in one of page
-    if (isDocumentInPage) {
-      const storagePathToDocInPages = concatPath(
-        concatPath(this._storagePagesPath, documentMold.$pageIndex),
-        documentMold.$index);
-
-      this._main.$$state.updateSilent(storagePathToDocInPages, newState);
-    }
-
-    // update document in "documents"
-    const primaryName = findPrimary(this.schema.item);
-    const storagePathToDocInDocuments = concatPath(
-      concatPath(this._storagePath, 'documents'), `[${documentMold[primaryName]}]`);
-
-    if (!this._main.$$state.getState(storagePathToDocInDocuments)) return;
-    this._main.$$state.updateSilent(storagePathToDocInDocuments, newState);
-  }
-
-  _setPageLoadingState(pageNum, loading) {
-    if (loading) {
-      this._loading.push(pageNum);
-      return;
-    }
-
-    // remove page's loading state
-
-    const findedIndex = _.findIndex(this._loading, (item) => {
-      return item === pageNum;
-    });
-
-    // if it didn't find - do nothing
-    if (findedIndex === -1) return;
-
-    // remove page from loading state
-    this._loading.splice(findedIndex, 1);
-  }
-
-  _applyDefaults(preRequest, actionName) {
-    if (!this.actionDefaults[actionName]) return preRequest;
-
-    return _.defaultsDeep(_.cloneDeep(preRequest), this.actionDefaults[actionName]);
-  }
 
   _initActions() {
-    _.each(this.schema.action, (item, name) => {
-      if (_.isFunction(item)) {
-        // custom method or overwrote method
-        this.action[name] = (...params) => item.bind(this)(...params, this);
-      }
-      else if (_.isPlainObject(item)) {
-        // Default acton's params
-        this.actionDefaults[name] = item;
-      }
+    _.each(this.schema.actions, (item, name) => {
+      this.actions[name] = this._createAction(name, item);
+      // if (_.isFunction(item)) {
+      //   // custom method or overwrote method
+      //   this.action[name] = (...params) => item.bind(this)(...params, this);
+      // }
+      // else if (_.isPlainObject(item)) {
+      //   // Default acton's params
+      //   this.actionDefaults[name] = item;
+      // }
     });
   }
+
+  //
+  // _updateDoc(documentMold, newState) {
+  //   const isDocumentInPage = _.isNumber(documentMold.$pageIndex) && _.isNumber(documentMold.$index);
+  //   // update document in one of page
+  //   if (isDocumentInPage) {
+  //     const storagePathToDocInPages = concatPath(
+  //       concatPath(this._storagePagesPath, documentMold.$pageIndex),
+  //       documentMold.$index);
+  //
+  //     this._main.$$state.updateSilent(storagePathToDocInPages, newState);
+  //   }
+  //
+  //   // update document in "documents"
+  //   const primaryName = findPrimary(this.schema.item);
+  //   const storagePathToDocInDocuments = concatPath(
+  //     concatPath(this._storagePath, 'documents'), `[${documentMold[primaryName]}]`);
+  //
+  //   if (!this._main.$$state.getState(storagePathToDocInDocuments)) return;
+  //   this._main.$$state.updateSilent(storagePathToDocInDocuments, newState);
+  // }
+  // _setPageLoadingState(pageNum, loading) {
+  //   if (loading) {
+  //     this._loading.push(pageNum);
+  //     return;
+  //   }
+  //
+  //   // remove page's loading state
+  //
+  //   const findedIndex = _.findIndex(this._loading, (item) => {
+  //     return item === pageNum;
+  //   });
+  //
+  //   // if it didn't find - do nothing
+  //   if (findedIndex === -1) return;
+  //
+  //   // remove page from loading state
+  //   this._loading.splice(findedIndex, 1);
+  // }
+  //
+  // _applyDefaults(preRequest, actionName) {
+  //   if (!this.actionDefaults[actionName]) return preRequest;
+  //
+  //   return _.defaultsDeep(_.cloneDeep(preRequest), this.actionDefaults[actionName]);
+  // }
+
+  // /**
+  //  * Overwrote clear.
+  //  * @param {object|undefined} eventData - additional data to event
+  //  */
+  // clear(eventData=undefined) {
+  //   this._main.$$state.clear(this._storagePagesPath, eventData);
+  // }
+
+  // getUrlParams() {
+  //   return this._main.$$state.getUrlParams(this._moldPath);
+  // }
+  //
+  // setUrlParams(params) {
+  //   this._main.$$state.setUrlParams(this._moldPath, params);
+  // }
 
 }
