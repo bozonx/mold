@@ -102,29 +102,13 @@ describe.only 'Functional. Document type.', ->
         assert.deepEqual(response.body, resultData)
         assert.deepEqual(@document.actions.patch.mold, resultData)
 
+  it 'custom action', ->
+
+
+
 # TODO: test delete
 # TODO: test custom action
 
-
-#  it 'update() and put()', ->
-#    this.document.update(this.testValues)
-#    expect(this.document.put()).to.eventually
-#    .property('body').deep.equal(this.testValues)
-#
-#  it "put(newState)", ->
-#    expect(this.document.put(this.testValues)).to.eventually
-#    .property('body').deep.equal(this.testValues)
-#
-#  it "saving", (done) ->
-#    assert.isUndefined(this.document.mold.$saving)
-#    promise = this.document.put()
-#    assert.isTrue(this.document.mold.$saving)
-#
-#    expect(promise).to.eventually.notify =>
-#      expect(Promise.resolve(this.document.mold.$saving)).to.eventually
-#      .equal(false)
-#      .notify(done)
-#
 #  it "clear()", ->
 #    this.document.update({
 #      stringParam: 'newValue',
@@ -132,7 +116,6 @@ describe.only 'Functional. Document type.', ->
 #    })
 #    this.document.clear();
 #    assert.deepEqual(this.document.mold, {})
-#
 #
 #  it "remove", (done) ->
 #    testSchema = () ->

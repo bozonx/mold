@@ -7,8 +7,9 @@ import State from './State';
 
 export default class Document extends State {
   static validateSchema(schema, schemaPath) {
-    if (!_.isPlainObject(schema.schema))
+    if (!_.isPlainObject(schema.schema)) {
       return `Schema definition of document on "${schemaPath}" must has a "schema" param!`;
+    }
   }
 
   constructor(main) {
@@ -34,7 +35,7 @@ export default class Document extends State {
       load: this._generateLoadAction(),
       put: this._generatePutAction(),
       patch: this._generatePatchAction(),
-      //remove: this._generateLoadAction(),
+      remove: this._generateRemoveAction(),
     };
 
     // this.actionDefaults = {};
@@ -49,6 +50,9 @@ export default class Document extends State {
   }
   patch(payload) {
     return this.actions.patch.request(payload);
+  }
+  remove() {
+    return this.actions.remove.request();
   }
 
 
@@ -78,12 +82,6 @@ export default class Document extends State {
 
 
   // TODO: updateSilent
-
-  // load(...params) { return this.action.load(...params) }
-  // put(...params) { return this.action.put(...params) }
-  // patch(...params) { return this.action.patch(...params) }
-  // remove(...params) { return this.action.remove(...params) }
-
 
   _createAction(actionName, cb) {
     const ActionClass = cb(_Action);
@@ -144,23 +142,37 @@ export default class Document extends State {
     });
   }
 
-  /**
-   * Delete a document via documentsCollection.
-   * You can't remove document that not inside a collection.
-   * @param {object} preRequest
-   * @return {Promise}
-   */
-  $remove(preRequest=undefined) {
-    const myDocumentsCollection = this.getParent();
 
-    if (!myDocumentsCollection)
-      this._main.$$log.fatal(`You can remove only from DocumentsCollection`);
-
-    if (myDocumentsCollection.type != 'documentsCollection')
-      this._main.$$log.fatal(`The parent of document isn't a DocumentsCollection. You can remove only from DocumentsCollection`);
-
-    return myDocumentsCollection.remove(this.mold, preRequest);
+  _generateRemoveAction() {
+    // TODO: test it, доделать
+    return this._createAction('delete', (Action) => {
+      return class extends Action {
+        init() {
+          this.setDriverParams({
+            method: 'delete',
+          });
+        }
+      };
+    });
   }
+
+  // /**
+  //  * Delete a document via documentsCollection.
+  //  * You can't remove document that not inside a collection.
+  //  * @param {object} preRequest
+  //  * @return {Promise}
+  //  */
+  // $remove(preRequest=undefined) {
+  //   const myDocumentsCollection = this.getParent();
+  //
+  //   if (!myDocumentsCollection)
+  //     this._main.$$log.fatal(`You can remove only from DocumentsCollection`);
+  //
+  //   if (myDocumentsCollection.type != 'documentsCollection')
+  //     this._main.$$log.fatal(`The parent of document isn't a DocumentsCollection. You can remove only from DocumentsCollection`);
+  //
+  //   return myDocumentsCollection.remove(this.mold, preRequest);
+  // }
 
   _doLoadRequest(driverRequestParams) {
     const request = _.defaultsDeep({
