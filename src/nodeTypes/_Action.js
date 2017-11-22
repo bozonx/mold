@@ -4,10 +4,20 @@ export default class Action {
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
+    // You have to set driver params like method etc
+    this.driverParams = null;
+    this.responseTransformCb = null;
   }
 
   init() {
+  }
 
+  getDriverParams() {
+    return this._stateManager.getMeta(this._moldPath, 'driverParams', this._actionName);
+  }
+
+  setDriverParams(driverParams) {
+    this._stateManager.updateMeta(this._moldPath, { driverParams }, this._actionName);
   }
 
   isPending() {
@@ -22,12 +32,18 @@ export default class Action {
     return this._stateManager.updateTopLevelSilent(this._moldPath, partialData, this._actionName);
   }
 
-  request(method, driverRequestParams, payload) {
+  request(payload) {
     this._stateManager.updateMeta(this._moldPath, { pending: true }, this._actionName);
 
-    return this._doRequest(method, driverRequestParams, payload)
+    return this._doRequest(this.getDriverParams(), payload)
       .then((resp) => {
+        let result = resp.body;
+        if (this.responseTransformCb) {
+          result = this.responseTransformCb(resp);
+        }
+
         this._stateManager.updateMeta(this._moldPath, { pending: false }, this._actionName);
+        this._stateManager.setBottomLevel(this._moldPath, result);
 
         return resp;
       })
@@ -38,14 +54,15 @@ export default class Action {
       });
   }
 
-  _doRequest(method, driverRequestParams, payload) {
-    const request = _.defaultsDeep({
-      method,
+  _doRequest(driverRequestParams, payload) {
+    const request = {
+      ...driverRequestParams,
+      //method: driverRequestParams.method,
       moldPath: this._moldPath,
       // TODO: WTF???
       //payload: omitUnsaveable(this._mold, this.schema),
       payload: payload,
-    }, driverRequestParams);
+    };
 
     // TODO: ??? getUrlParams
     // TODO: ??? this.schema

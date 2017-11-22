@@ -37,43 +37,31 @@ export default class Document extends State {
       //remove: this._generateLoadAction(),
     };
 
-    // this.action = {
-    //   load: (preRequest) => {
-    //     return this.$load(this._applyDefaults(preRequest, 'load'))
-    //   },
-    //   put: (newState, preRequest) => {
-    //     return this.$put(newState, this._applyDefaults(preRequest, 'put'))
-    //   },
-    //   patch: (newState, preRequest) => {
-    //     return this.$patch(newState, this._applyDefaults(preRequest, 'patch'))
-    //   },
-    //   remove: (preRequest) => {
-    //     return this.$remove(this._applyDefaults(preRequest, 'remove'))
-    //   },
-    // };
-    this.actionDefaults = {};
-    this._initActions();
+    // this.actionDefaults = {};
+    // this._initActions();
   }
 
-  getUrlParams() {
-    // TODO: use storage meta
-    // TODO: по идее на каждый запрос надо сохранять свои url params
-    return this._main.$$state.getUrlParams(this._moldPath);
-  }
 
-  setUrlParams(params) {
-    // TODO: use storage meta
-    this._main.$$state.setUrlParams(this._moldPath, params);
-  }
-
-  update(newState, eventData=undefined, action=undefined) {
+  update(newState, eventData=undefined) {
     // const lastChanges = correctUpdatePayload(
     //   this._main.$$stateManager.getMeta(this._moldPath, 'lastChanges', action), newState);
     // this._main.$$stateManager.updateMeta(this._moldPath, { lastChanges }, action);
 
-    // TODO: use action
+    // TODO: use action load|default
     super.update(newState, eventData);
   }
+
+  // getUrlParams() {
+  //   // TODO: use storage meta
+  //   // TODO: по идее на каждый запрос надо сохранять свои url params
+  //   return this._main.$$state.getUrlParams(this._moldPath);
+  // }
+  //
+  // setUrlParams(params) {
+  //   // TODO: use storage meta
+  //   this._main.$$state.setUrlParams(this._moldPath, params);
+  // }
+
 
   // TODO: updateSilent
 
@@ -86,120 +74,149 @@ export default class Document extends State {
   _createAction(actionName, cb) {
     const ActionClass = cb(_Action);
 
-    return new ActionClass(this._main.$$stateManager, this, this._moldPath, actionName);
+    const instance =  new ActionClass(this._main.$$stateManager, this, this._moldPath, actionName);
+    instance.init();
+
+    return instance;
   }
 
   _generateLoadAction() {
     this._createAction((Action) => {
       return class extends Action {
-        request(method, driverRequestParams, payload) {
-          return super.request(method, driverRequestParams, payload)
-            .then((resp) => {
-              // update mold with server response data
-              this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body);
-
-              return resp;
-            });
+        init() {
+          this.setDriverParams({
+            method: 'get',
+          });
         }
-      }
+      };
     });
   }
 
   _generatePutAction() {
+    this._createAction((Action) => {
+      return class extends Action {
+        init() {
+          this.setDriverParams({
+            method: 'put',
+          });
+        }
 
+        request(...params) {
+          // if we set new data - update default action
+          if (params.payload) this.update(params.payload);
+
+          return super.request(...params);
+        }
+      };
+    });
   }
 
   _generatePatchAction() {
+    this._createAction((Action) => {
+      return class extends Action {
+        init() {
+          this.setDriverParams({
+            method: 'patch',
+          });
+        }
 
+        request(...params) {
+          // if we set new data - update default action
+          if (params.payload) this.update(params.payload);
+
+          return super.request(...params);
+        }
+      };
+    });
   }
 
-  /**
-   * Load data from driver.
-   * @param {object|undefined} driversRequestParams - params for driver's request
-   * @returns {Promise}
-   */
-  $defaultLoad(driversRequestParams=undefined) {
-    this._main.$$stateManager.updateMeta(this._moldPath, { loading: true });
+  // /**
+  //  * Load data from driver.
+  //  * @param {object|undefined} driversRequestParams - params for driver's request
+  //  * @returns {Promise}
+  //  */
+  // $defaultLoad(driversRequestParams=undefined) {
+  //   this._main.$$stateManager.updateMeta(this._moldPath, { loading: true });
+  //
+  //   return this._doLoadRequest(driversRequestParams)
+  //     .then((resp) => {
+  //       // update mold with server response data
+  //       this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body);
+  //       this._main.$$stateManager.updateMeta(this._moldPath, {
+  //         loading: false,
+  //         //lastChanges: {},
+  //       });
+  //
+  //       return resp;
+  //     }, (err) => {
+  //       this._main.$$stateManager.updateMeta(this._moldPath, { loading: false });
+  //
+  //       return Promise.reject(err);
+  //     });
+  // }
 
-    return this._doLoadRequest(driversRequestParams)
-      .then((resp) => {
-        // update mold with server response data
-        this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body);
-        this._main.$$stateManager.updateMeta(this._moldPath, {
-          loading: false,
-          //lastChanges: {},
-        });
+  // /**
+  //  * Save actual state.
+  //  * @param {object|undefined} newState
+  //  * @param {object} preRequest - raw params to driver's request
+  //  * @returns {Promise}
+  //  */
+  // $defaultPut(newState=undefined, preRequest=undefined) {
+  //   const action = 'put';
+  //   if (newState) this.update(newState);
+  //   this._main.$$stateManager.updateMeta(this._moldPath, { pending: true }, action);
+  //   this._main.$$stateManager.updateMeta(this._moldPath, { saving: true });
+  //
+  //   return this._doSaveRequest('put', preRequest)
+  //     .then((resp) => {
+  //       // update mold with server response data
+  //       this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body, action);
+  //       this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
+  //       this._main.$$stateManager.updateMeta(this._moldPath, {
+  //         saving: false,
+  //         //lastChanges: {},
+  //       });
+  //
+  //       return resp;
+  //     }, (err) => {
+  //       this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
+  //       this._main.$$stateManager.updateMeta(this._moldPath, { saving: false });
+  //
+  //       return Promise.reject(err);
+  //     });
+  // }
 
-        return resp;
-      }, (err) => {
-        this._main.$$stateManager.updateMeta(this._moldPath, { loading: false });
-
-        return Promise.reject(err);
-      });
-  }
-
-  /**
-   * Save actual state.
-   * @param {object|undefined} newState
-   * @param {object} preRequest - raw params to driver's request
-   * @returns {Promise}
-   */
-  $defaultPut(newState=undefined, preRequest=undefined) {
-    const action = 'put';
-    if (newState) this.update(newState);
-    this._main.$$stateManager.updateMeta(this._moldPath, { pending: true }, action);
-    this._main.$$stateManager.updateMeta(this._moldPath, { saving: true });
-
-    return this._doSaveRequest('put', preRequest)
-      .then((resp) => {
-        // update mold with server response data
-        this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body, action);
-        this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
-        this._main.$$stateManager.updateMeta(this._moldPath, {
-          saving: false,
-          //lastChanges: {},
-        });
-
-        return resp;
-      }, (err) => {
-        this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
-        this._main.$$stateManager.updateMeta(this._moldPath, { saving: false });
-
-        return Promise.reject(err);
-      });
-  }
-
-  /**
-   * Save actual state.
-   * @param {object|undefined} newState
-   * @param {object} preRequest - raw params to driver's request
-   * @param {string|undefined} action - name of action
-   * @returns {Promise}
-   */
-  $defaultPatch(newState=undefined, preRequest=undefined) {
-    const action = 'put';
-    if (newState) this.update(newState);
-    this._main.$$stateManager.updateMeta(this._moldPath, { pending: true }, action);
-    this._main.$$stateManager.updateMeta(this._moldPath, { saving: true });
-
-    return this._doSaveRequest('patch', preRequest)
-      .then((resp) => {
-        // update mold with server response data
-        this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body, action);
-        this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
-        this._main.$$stateManager.updateMeta(this._moldPath, {
-          saving: false,
-          //lastChanges: {},
-        });
-
-        return resp;
-      }, (err) => {
-        this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
-        this._main.$$stateManager.updateMeta(this._moldPath, { saving: false });
-
-        return Promise.reject(err);
-      });
-  }
+  // /**
+  //  * Save actual state.
+  //  * @param {object|undefined} newState
+  //  * @param {object} preRequest - raw params to driver's request
+  //  * @param {string|undefined} action - name of action
+  //  * @returns {Promise}
+  //  */
+  // $defaultPatch(newState=undefined, preRequest=undefined) {
+  //   const action = 'put';
+  //   if (newState) this.update(newState);
+  //   this._main.$$stateManager.updateMeta(this._moldPath, { pending: true }, action);
+  //   this._main.$$stateManager.updateMeta(this._moldPath, { saving: true });
+  //
+  //   return this._doSaveRequest('patch', preRequest)
+  //     .then((resp) => {
+  //       // update mold with server response data
+  //       this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body, action);
+  //       this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
+  //       this._main.$$stateManager.updateMeta(this._moldPath, {
+  //         saving: false,
+  //         //lastChanges: {},
+  //       });
+  //
+  //       return resp;
+  //     }, (err) => {
+  //       this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
+  //       this._main.$$stateManager.updateMeta(this._moldPath, { saving: false });
+  //
+  //       return Promise.reject(err);
+  //     });
+  // }
 
 
   /**
@@ -250,17 +267,17 @@ export default class Document extends State {
     return _.defaultsDeep(_.cloneDeep(preRequest), this.actionDefaults[actionName]);
   }
 
-  _initActions() {
-    _.each(this.schema.action, (item, name) => {
-      if (_.isFunction(item)) {
-        // custom method or overwrote method
-        this.action[name] = (...params) => item.bind(this)(...params, this);
-      }
-      else if (_.isPlainObject(item)) {
-        // Default acton's params
-        this.actionDefaults[name] = item;
-      }
-    });
-  }
+  // _initActions() {
+  //   _.each(this.schema.action, (item, name) => {
+  //     if (_.isFunction(item)) {
+  //       // custom method or overwrote method
+  //       this.action[name] = (...params) => item.bind(this)(...params, this);
+  //     }
+  //     else if (_.isPlainObject(item)) {
+  //       // Default acton's params
+  //       this.actionDefaults[name] = item;
+  //     }
+  //   });
+  // }
 
 }
