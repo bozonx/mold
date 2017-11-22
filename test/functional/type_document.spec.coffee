@@ -41,7 +41,7 @@ describe.only 'Functional. Document type.', ->
     @testSchema = testSchema()
     @moldPath = 'document'
     @mold = mold( {silent: true}, @testSchema )
-    @document = this.mold.get(@moldPath)
+    @document = @mold.get(@moldPath)
     @document.$init(@moldPath, @testSchema.document)
 
   it 'load()', ->
@@ -103,6 +103,21 @@ describe.only 'Functional. Document type.', ->
         assert.deepEqual(@document.actions.patch.mold, resultData)
 
   it 'custom action', ->
+    @testSchema.document.actions = {
+      custom: (Action) ->
+        class extends Action
+          init: ->
+            this.setDriverParams({
+              method: 'get',
+            });
+    }
+    @document = @mold.get(@moldPath)
+    @document.$init(@moldPath, @testSchema.document)
+
+    assert.isFalse(@document.actions.custom.pending)
+
+    #promise = this.document.actions.custom.request()
+    # TODO: make request with custom driver params and check driver request
 
 
 

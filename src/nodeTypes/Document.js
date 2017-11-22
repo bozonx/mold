@@ -21,15 +21,15 @@ export default class Document extends State {
   }
 
   get loading() {
-    return this.actions.load.pending || false;
+    return this.actions.load.pending;
   }
 
   get saving() {
-    return this.actions.put.pending || this.actions.patch.pending || false;
+    return this.actions.put.pending || this.actions.patch.pending;
   }
 
-  $init(paths, schema) {
-    super.$init(paths, schema);
+  $init(moldPath, schema) {
+    super.$init(moldPath, schema);
 
     this.actions = {
       load: this._generateLoadAction(),
@@ -39,7 +39,7 @@ export default class Document extends State {
     };
 
     // this.actionDefaults = {};
-    // this._initActions();
+    this._initCustomActions();
   }
 
   load() {
@@ -204,17 +204,19 @@ export default class Document extends State {
     return _.defaultsDeep(_.cloneDeep(preRequest), this.actionDefaults[actionName]);
   }
 
-  // _initActions() {
-  //   _.each(this.schema.action, (item, name) => {
-  //     if (_.isFunction(item)) {
-  //       // custom method or overwrote method
-  //       this.action[name] = (...params) => item.bind(this)(...params, this);
-  //     }
-  //     else if (_.isPlainObject(item)) {
-  //       // Default acton's params
-  //       this.actionDefaults[name] = item;
-  //     }
-  //   });
-  // }
+  _initCustomActions() {
+    _.each(this.schema.actions, (item, name) => {
+      this.actions[name] = this._createAction(name, item);
+
+      // if (_.isFunction(item)) {
+      //   // custom method or overwrote method
+      //   this.action[name] = (...params) => item.bind(this)(...params, this);
+      // }
+      // else if (_.isPlainObject(item)) {
+      //   // Default acton's params
+      //   this.actionDefaults[name] = item;
+      // }
+    });
+  }
 
 }

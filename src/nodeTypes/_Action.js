@@ -10,7 +10,7 @@ export default class Action {
   }
 
   get pending() {
-    return this._stateManager.getMeta(this._moldPath, 'pending', this._actionName);
+    return this._stateManager.getMeta(this._moldPath, 'pending', this._actionName) || false;
   }
 
   get mold() {
