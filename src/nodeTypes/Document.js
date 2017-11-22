@@ -120,14 +120,16 @@ export default class Document extends State {
   $defaultPut(newState=undefined, preRequest=undefined) {
     const action = 'put';
     if (newState) this.update(newState);
+    this._main.$$stateManager.updateMeta(this._moldPath, { pending: true }, action);
     this._main.$$stateManager.updateMeta(this._moldPath, { saving: true });
 
     return this._doSaveRequest('put', preRequest)
       .then((resp) => {
         // update mold with server response data
         this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body, action);
+        this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
         this._main.$$stateManager.updateMeta(this._moldPath, {
-          loading: false,
+          saving: false,
           //lastChanges: {},
         });
 
@@ -147,22 +149,26 @@ export default class Document extends State {
    * @param {string|undefined} action - name of action
    * @returns {Promise}
    */
-  $defaultPatch(newState=undefined, preRequest=undefined, action='path') {
+  $defaultPatch(newState=undefined, preRequest=undefined) {
+    const action = 'put';
     if (newState) this.update(newState);
-    this._main.$$stateManager.updateMeta(this._moldPath, { saving: true }, action);
+    this._main.$$stateManager.updateMeta(this._moldPath, { pending: true }, action);
+    this._main.$$stateManager.updateMeta(this._moldPath, { saving: true });
 
     return this._doSaveRequest('patch', preRequest)
       .then((resp) => {
         // update mold with server response data
         this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body, action);
+        this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
         this._main.$$stateManager.updateMeta(this._moldPath, {
-          loading: false,
+          saving: false,
           //lastChanges: {},
-        }, action);
+        });
 
         return resp;
       }, (err) => {
-        this._main.$$stateManager.updateMeta(this._moldPath, { saving: false }, action);
+        this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
+        this._main.$$stateManager.updateMeta(this._moldPath, { saving: false });
 
         return Promise.reject(err);
       });
