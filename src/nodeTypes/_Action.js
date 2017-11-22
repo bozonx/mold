@@ -13,6 +13,10 @@ export default class Action {
     return this._stateManager.getMeta(this._moldPath, 'pending', this._actionName);
   }
 
+  get mold() {
+    return this._stateManager.getState(this._moldPath, this._actionName);
+  }
+
   init() {
   }
 
@@ -44,7 +48,7 @@ export default class Action {
         }
 
         this._stateManager.updateMeta(this._moldPath, { pending: false }, this._actionName);
-        this._stateManager.setBottomLevel(this._moldPath, result);
+        this._stateManager.setBottomLevel(this._moldPath, result, this._actionName);
 
         return resp;
       })

@@ -75,9 +75,9 @@ describe.only 'Functional. Document type.', ->
 
     promise
       .then (response) =>
-        assert.deepEqual(response.body, newData)
-        assert.deepEqual(@document.mold, newData)
         assert.isFalse(@document.saving)
+        assert.deepEqual(response.body, newData)
+        assert.deepEqual(@document.actions.put.mold, newData)
 
   it 'patch()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
@@ -98,14 +98,10 @@ describe.only 'Functional. Document type.', ->
 
     promise
       .then (response) =>
-        assert.deepEqual(response.body, resultData)
-        assert.deepEqual(@document.mold, resultData)
         assert.isFalse(@document.saving)
+        assert.deepEqual(response.body, resultData)
+        assert.deepEqual(@document.actions.patch.mold, resultData)
 
-
-
-# TODO: test path
-# TODO: test put
 # TODO: test delete
 # TODO: test custom action
 
