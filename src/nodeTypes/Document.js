@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import { correctUpdatePayload, omitUnsaveable } from '../helpers';
+import _Action from './_Action';
 import State from './State';
 
 
@@ -41,20 +42,24 @@ export default class Document extends State {
   $init(paths, schema) {
     super.$init(paths, schema);
 
-    this.action = {
-      load: (preRequest) => {
-        return this.$load(this._applyDefaults(preRequest, 'load'))
-      },
-      put: (newState, preRequest) => {
-        return this.$put(newState, this._applyDefaults(preRequest, 'put'))
-      },
-      patch: (newState, preRequest) => {
-        return this.$patch(newState, this._applyDefaults(preRequest, 'patch'))
-      },
-      remove: (preRequest) => {
-        return this.$remove(this._applyDefaults(preRequest, 'remove'))
-      },
+    this.actions = {
+      load: this._generateLoadAction(),
     };
+
+    // this.action = {
+    //   load: (preRequest) => {
+    //     return this.$load(this._applyDefaults(preRequest, 'load'))
+    //   },
+    //   put: (newState, preRequest) => {
+    //     return this.$put(newState, this._applyDefaults(preRequest, 'put'))
+    //   },
+    //   patch: (newState, preRequest) => {
+    //     return this.$patch(newState, this._applyDefaults(preRequest, 'patch'))
+    //   },
+    //   remove: (preRequest) => {
+    //     return this.$remove(this._applyDefaults(preRequest, 'remove'))
+    //   },
+    // };
     this.actionDefaults = {};
     this._initActions();
   }
@@ -85,6 +90,41 @@ export default class Document extends State {
   put(...params) { return this.action.put(...params) }
   patch(...params) { return this.action.patch(...params) }
   remove(...params) { return this.action.remove(...params) }
+
+
+  _createAction(actionName) {
+    new _Action(this._moldPath, actionName);
+  }
+
+
+  _generateLoadAction() {
+    const actionInstance = new _Action(this._moldPath, 'load');
+
+    this._createAction((Action) => {
+      return class extends Action {
+        request(method, driverRequestParams, payload) {
+          this._main.$$stateManager.updateMeta(this._moldPath, { loading: true });
+
+          return super.request(method, driverRequestParams, payload)
+            .then((resp) => {
+              // update mold with server response data
+              this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body);
+              this._main.$$stateManager.updateMeta(this._moldPath, {
+                loading: false,
+                //lastChanges: {},
+              });
+
+              return resp;
+            })
+            .catch((err) => {
+              this._main.$$stateManager.updateMeta(this._moldPath, { loading: false });
+
+              return Promise.reject(err);
+            });
+        }
+      }
+    });
+  }
 
   /**
    * Load data from driver.
@@ -193,24 +233,24 @@ export default class Document extends State {
     return myDocumentsCollection.remove(this.mold, preRequest);
   }
 
-  _doLoadRequest(driversRequestParams) {
+  _doLoadRequest(driverRequestParams) {
     const request = _.defaultsDeep({
       method: 'get',
       moldPath: this._moldPath,
-    }, driversRequestParams);
+    }, driverRequestParams);
 
     // TODO: ??? getUrlParams
     return this._main.$$stateManager.$$request.sendRequest(request, this.schema, this.getUrlParams());
   }
 
 
-  _doSaveRequest(method, driversRequestParams) {
+  _doSaveRequest(method, driverRequestParams) {
     const request = _.defaultsDeep({
       method: method,
       moldPath: this._moldPath,
       // TODO: WTF???
       payload: omitUnsaveable(this._mold, this.schema),
-    }, driversRequestParams);
+    }, driverRequestParams);
 
     // TODO: ??? getUrlParams
     return this._main.$$stateManager.$$request.sendRequest(request, this.schema, this.getUrlParams());

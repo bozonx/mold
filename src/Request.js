@@ -16,6 +16,9 @@ export default class Request {
    * @returns {Promise}
    */
   sendRequest(rawRequest, schema, urlParams) {
+    // TODO: schema не нужна
+    // TODO: ??? urlParams
+
     const driverRoot = this._main.$$driverManager.getClosestDriverPath(rawRequest.moldPath);
     const driver = this._main.$$driverManager.getDriverStrict(driverRoot);
 
