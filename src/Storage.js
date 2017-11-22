@@ -54,7 +54,12 @@ export default class Storage {
 
     if (!this._storage.items[moldPath]) return;
 
-    return _.get(this._storage.items[moldPath].meta, metaPath);
+    if (action) {
+      return _.get(this._storage.items[moldPath].actions[action].meta, metaPath);
+    }
+    else {
+      return _.get(this._storage.items[moldPath].meta, metaPath);
+    }
   }
 
   initNodeIfNeed(moldPath) {
@@ -68,6 +73,9 @@ export default class Storage {
   }
 
   initActionIfNeed(moldPath, action) {
+    // it's not need to create default action
+    if (!action) return;
+
     if (this._storage.items[moldPath]
       && this._storage.items[moldPath].actions
       && this._storage.items[moldPath].actions[action]) return;

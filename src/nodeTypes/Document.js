@@ -41,6 +41,10 @@ export default class Document extends State {
     // this._initActions();
   }
 
+  load() {
+    return this.actions.load.request();
+  }
+
 
   update(newState, eventData=undefined) {
     // const lastChanges = correctUpdatePayload(
@@ -48,6 +52,10 @@ export default class Document extends State {
     // this._main.$$stateManager.updateMeta(this._moldPath, { lastChanges }, action);
 
     // TODO: use action load|default
+    // TODO: use super.update
+
+    //this._main.$$stateManager.updateTopLevel(this._moldPath, newState, 'default');
+
     super.update(newState, eventData);
   }
 
@@ -81,7 +89,7 @@ export default class Document extends State {
   }
 
   _generateLoadAction() {
-    this._createAction((Action) => {
+    return this._createAction(undefined, (Action) => {
       return class extends Action {
         init() {
           this.setDriverParams({
@@ -93,7 +101,7 @@ export default class Document extends State {
   }
 
   _generatePutAction() {
-    this._createAction((Action) => {
+    return this._createAction('put', (Action) => {
       return class extends Action {
         init() {
           this.setDriverParams({
@@ -112,7 +120,7 @@ export default class Document extends State {
   }
 
   _generatePatchAction() {
-    this._createAction((Action) => {
+    return this._createAction('patch', (Action) => {
       return class extends Action {
         init() {
           this.setDriverParams({

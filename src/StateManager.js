@@ -27,7 +27,7 @@ export default class State {
   }
 
   getMeta(moldPath, metaPath, action) {
-    this._storage.getMeta(moldPath, metaPath, action);
+    return this._storage.getMeta(moldPath, metaPath, action);
   }
 
   initStorageIfNeed(moldPath) {
