@@ -47,29 +47,28 @@ describe.only 'Functional. Document type.', ->
   it 'load()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
 
+    assert.isUndefined(@document.loading)
+
     promise = this.document.load()
-    assert.equal(@document.loading, true)
+
+    assert.isTrue(@document.loading)
+
+    promise
+      .then (response) =>
+        assert.deepEqual(response.body, @testValues)
+        assert.deepEqual(@document.mold, @testValues)
 
 
 
 
 
 
+# TODO: test path
+# TODO: test put
+# TODO: test delete
+# TODO: test custom action
 
-#
-#  it 'load() and check mold', (done) ->
-#    _.set(this.mold.$$driverManager.$defaultMemoryDb, 'document', this.testValues)
-#
-#    expect(this.document.load()).to.eventually.notify =>
-#      expect(Promise.resolve(this.document.mold)).to.eventually
-#      .deep.equal(_.defaults(_.clone(this.testValues), {$loading: false}))
-#      .notify(done)
-#
-#  it 'load() and check response', ->
-#    _.set(this.mold.$$driverManager.$defaultMemoryDb, 'document', this.testValues)
-#
-#    expect(this.document.load()).to.eventually.property('body').deep.equal(this.testValues)
-#
+
 #  it 'update() and put()', ->
 #    this.document.update(this.testValues)
 #    expect(this.document.put()).to.eventually
@@ -78,18 +77,6 @@ describe.only 'Functional. Document type.', ->
 #  it "put(newState)", ->
 #    expect(this.document.put(this.testValues)).to.eventually
 #    .property('body').deep.equal(this.testValues)
-#
-#  it "loading", (done) ->
-#    _.set(this.mold.$$driverManager.$defaultMemoryDb, 'document', this.testValues)
-#
-#    assert.isUndefined(this.document.mold.$loading)
-#    promise = this.document.load()
-#    assert.isTrue(this.document.mold.$loading)
-#
-#    expect(promise).to.eventually.notify =>
-#      expect(Promise.resolve(this.document.mold.$loading)).to.eventually
-#      .equal(false)
-#      .notify(done)
 #
 #  it "saving", (done) ->
 #    assert.isUndefined(this.document.mold.$saving)
