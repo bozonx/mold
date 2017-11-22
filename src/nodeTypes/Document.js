@@ -7,36 +7,36 @@ import State from './State';
 export default class Document extends State {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema))
-      return `Schema definition of document on "${schemaPath}" must have a "schema" param!`;
+      return `Schema definition of document on "${schemaPath}" must has a "schema" param!`;
   }
 
   constructor(main) {
     super(main);
 
     // TODO: move to storage meta
-    this._lastChanges = {};
+    //this._lastChanges = {};
   }
 
   get type() {
     return 'document';
   }
 
-  get isLoading() {
-    return this._main.$$stateManager.getMeta(this._moldPath, 'isLoading');
+  isLoading(action=undefined) {
+    return this._main.$$stateManager.getMeta(this._moldPath, 'loading', action);
   }
 
-  get isSaving() {
-    return this._main.$$stateManager.getMeta(this._moldPath, 'isSaving');
+  isSaving(action=undefined) {
+    return this._main.$$stateManager.getMeta(this._moldPath, 'saving', action);
   }
 
-  /**
-   * Get changes from last save to the moment.
-   * @returns {object}
-   */
-  get lastChanges() {
-    // TODO: use storage meta
-    return this._lastChanges;
-  }
+  // /**
+  //  * Get changes from last save to the moment.
+  //  * @param {string|undefined} action - name of action
+  //  * @returns {object}
+  //  */
+  // getLastChanges(action=undefined) {
+  //   return this._main.$$stateManager.getMeta(this._moldPath, 'lastChanges', action);
+  // }
 
   $init(paths, schema) {
     super.$init(paths, schema);
@@ -70,8 +70,12 @@ export default class Document extends State {
     this._main.$$state.setUrlParams(this._moldPath, params);
   }
 
-  update(newState, eventData=undefined) {
-    this._lastChanges = correctUpdatePayload(this._lastChanges, newState);
+  update(newState, eventData=undefined, action=undefined) {
+    // const lastChanges = correctUpdatePayload(
+    //   this._main.$$stateManager.getMeta(this._moldPath, 'lastChanges', action), newState);
+    // this._main.$$stateManager.updateMeta(this._moldPath, { lastChanges }, action);
+
+    // TODO: use action
     super.update(newState, eventData);
   }
 
@@ -84,24 +88,24 @@ export default class Document extends State {
 
   /**
    * Load data from driver.
-   * @param {string|undefined} action - name of action
    * @param {object|undefined} driversRequestParams - params for driver's request
    * @returns {Promise}
    */
-  $load(action=undefined, driversRequestParams=undefined) {
-    this._main.$$stateManager.updateMeta(this._moldPath, { isSaving: true }, action);
+  $defaultLoad(driversRequestParams=undefined) {
+    this._main.$$stateManager.updateMeta(this._moldPath, { loading: true });
 
     return this._doLoadRequest(driversRequestParams)
       .then((resp) => {
         // update mold with server response data
-        this._main.$$stateManager.updateMeta(this._moldPath, { isSaving: false }, action);
-        this._main.$$stateManager.updateTopLevelSilent(this._moldPath, resp.body, action);
-        // TODO: use meta
-        this._lastChanges = {};
+        this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body);
+        this._main.$$stateManager.updateMeta(this._moldPath, {
+          loading: false,
+          //lastChanges: {},
+        });
 
         return resp;
       }, (err) => {
-        this._main.$$stateManager.updateMeta(this._moldPath, { isSaving: false }, action);
+        this._main.$$stateManager.updateMeta(this._moldPath, { loading: false });
 
         return Promise.reject(err);
       });
@@ -113,28 +117,25 @@ export default class Document extends State {
    * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  $put(newState=undefined, preRequest=undefined) {
+  $defaultPut(newState=undefined, preRequest=undefined) {
+    const action = 'put';
     if (newState) this.update(newState);
-    this._main.$$state.updateSilent(this._storagePath, {$saving: true});
+    this._main.$$stateManager.updateMeta(this._moldPath, { saving: true });
 
-    const request = _.defaultsDeep({
-      method: 'put',
-      moldPath: this._moldPath,
-      payload: omitUnsaveable(this._mold, this.schema),
-    }, preRequest);
-
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+    return this._doSaveRequest('put', preRequest)
       .then((resp) => {
         // update mold with server response data
-        this._main.$$state.updateSilent(this._storagePath, {
-          ...resp.body,
-          $saving: false,
+        this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body, action);
+        this._main.$$stateManager.updateMeta(this._moldPath, {
+          loading: false,
+          //lastChanges: {},
         });
-        this._lastChanges = {};
 
         return resp;
       }, (err) => {
-        this._main.$$state.updateSilent(this._storagePath, {$saving: false});
+        this._main.$$stateManager.updateMeta(this._moldPath, { pending: false }, action);
+        this._main.$$stateManager.updateMeta(this._moldPath, { saving: false });
+
         return Promise.reject(err);
       });
   }
@@ -143,33 +144,30 @@ export default class Document extends State {
    * Save actual state.
    * @param {object|undefined} newState
    * @param {object} preRequest - raw params to driver's request
+   * @param {string|undefined} action - name of action
    * @returns {Promise}
    */
-  $patch(newState=undefined, preRequest=undefined) {
+  $defaultPatch(newState=undefined, preRequest=undefined, action='path') {
     if (newState) this.update(newState);
-    this._main.$$state.updateSilent(this._storagePath, {$saving: true});
+    this._main.$$stateManager.updateMeta(this._moldPath, { saving: true }, action);
 
-    const request = _.defaultsDeep({
-      method: 'patch',
-      moldPath: this._moldPath,
-      payload: omitUnsaveable(this._lastChanges, this.schema),
-    }, preRequest);
-
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+    return this._doSaveRequest('patch', preRequest)
       .then((resp) => {
         // update mold with server response data
-        this._main.$$state.updateSilent(this._storagePath, {
-          ...resp.body,
-          $saving: false,
-        });
-        this._lastChanges = {};
+        this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body, action);
+        this._main.$$stateManager.updateMeta(this._moldPath, {
+          loading: false,
+          //lastChanges: {},
+        }, action);
 
         return resp;
       }, (err) => {
-        this._main.$$state.updateSilent(this._storagePath, {$saving: false});
+        this._main.$$stateManager.updateMeta(this._moldPath, { saving: false }, action);
+
         return Promise.reject(err);
       });
   }
+
 
   /**
    * Delete a document via documentsCollection.
@@ -196,8 +194,22 @@ export default class Document extends State {
     }, driversRequestParams);
 
     // TODO: ??? getUrlParams
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams());
+    return this._main.$$stateManager.$$request.sendRequest(request, this.schema, this.getUrlParams());
   }
+
+
+  _doSaveRequest(method, driversRequestParams) {
+    const request = _.defaultsDeep({
+      method: method,
+      moldPath: this._moldPath,
+      // TODO: WTF???
+      payload: omitUnsaveable(this._mold, this.schema),
+    }, driversRequestParams);
+
+    // TODO: ??? getUrlParams
+    return this._main.$$stateManager.$$request.sendRequest(request, this.schema, this.getUrlParams());
+  }
+
 
   _applyDefaults(preRequest, actionName) {
     if (!this.actionDefaults[actionName]) return preRequest;
