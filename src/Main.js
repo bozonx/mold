@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Storage from './Storage';
 import SchemaManager from './SchemaManager';
 import StateManager from './StateManager';
-import TypeManager from './TypeManager';
+import NodeManager from './NodeManager';
 import DriverManager from './DriverManager';
 import Config from './Config';
 
@@ -17,16 +17,16 @@ export default class Main {
     this.$$config = configInstance.get();
     this.$$events = this.$$config.eventEmitter;
     this.$$log = this.$$config.logger;
-    this.$$typeManager = new TypeManager(this);
+    this.$$nodeManager = new NodeManager(this);
     this.$$driverManager = new DriverManager(this);
     this.$$schemaManager = new SchemaManager(this);
     this.$$stateManager = new StateManager();
     this._storage = new Storage(this.$$events, this.$$log);
 
     // register base types
-    this.$$typeManager.register('state', StateType);
-    this.$$typeManager.register('document', Document);
-    this.$$typeManager.register('catalogue', Catalogue);
+    this.$$nodeManager.register('state', StateType);
+    this.$$nodeManager.register('document', Document);
+    this.$$nodeManager.register('catalogue', Catalogue);
 
     // TODO: run plugins
 
@@ -66,7 +66,7 @@ export default class Main {
    * @param {string} pathInSchema - absolute path in schema
    */
   get(pathInSchema) {
-    return this.$$typeManager.getInstance(pathInSchema);
+    return this.$$nodeManager.getInstance(pathInSchema);
   }
 
   /**
@@ -108,7 +108,7 @@ export default class Main {
    * @param typeClass
    */
   registerType(typeName, typeClass) {
-    this.$$typeManager.register(typeName, typeClass);
+    this.$$nodeManager.register(typeName, typeClass);
   }
 
   setSchema(mountPath, schema) {

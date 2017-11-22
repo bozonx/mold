@@ -76,8 +76,8 @@ export default class SchemaManager {
       }
 
       // schema validation
-      if ( this._main.$$typeManager.isRegistered(schema.type) ) {
-        this._main.$$typeManager.validateType(schema.type, schema, schemaPath);
+      if ( this._main.$$nodeManager.isRegistered(schema.type) ) {
+        this._main.$$nodeManager.validateType(schema.type, schema, schemaPath);
       }
       else if (!_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
         this._main.$$log.fatal(`Unknown schema node ${JSON.stringify(schema)} !`);

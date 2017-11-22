@@ -117,7 +117,7 @@ export default class Catalogue {
 
     const paths = this.$getChildPaths(primaryId);
 
-    return this._main.$$typeManager.$getInstanceByFullPath(paths);
+    return this._main.$$nodeManager.$getInstanceByFullPath(paths);
   }
 
   load(...params) { return this.action.load(...params) }

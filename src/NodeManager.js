@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { splitPath, convertFromLodashToSchema } from './helpers';
 
 
-export default class TypeManager {
+export default class NodeManager {
   constructor(main) {
     this._main = main;
     this._registeredTypes = {};
