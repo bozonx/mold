@@ -7,9 +7,9 @@ import TypeManager from './TypeManager';
 import DriverManager from './DriverManager';
 import Config from './Config';
 
-import StateType from './types/State';
-import Document from './types/Document';
-import Catalogue from './types/Catalogue';
+import StateType from './nodeTypes/State';
+import Document from './nodeTypes/Document';
+import Catalogue from './nodeTypes/Catalogue';
 
 export default class Main {
   constructor(config, schema) {
