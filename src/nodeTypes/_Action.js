@@ -1,6 +1,7 @@
 export default class Action {
-  constructor(stateManager, moldPath, actionName) {
+  constructor(stateManager, nodeInstance, moldPath, actionName) {
     this._stateManager = stateManager;
+    this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
   }
@@ -26,9 +27,7 @@ export default class Action {
 
     return this._doRequest(method, driverRequestParams, payload)
       .then((resp) => {
-        // update mold with server response data
         this._stateManager.updateMeta(this._moldPath, { pending: false }, this._actionName);
-        //this._stateManager.setBottomLevel(this._moldPath, resp.body, this._actionName);
 
         return resp;
       })

@@ -13,37 +13,28 @@ export default class Document extends State {
 
   constructor(main) {
     super(main);
-
-    // TODO: move to storage meta
-    //this._lastChanges = {};
   }
 
   get type() {
     return 'document';
   }
 
-  isLoading(action=undefined) {
-    return this._main.$$stateManager.getMeta(this._moldPath, 'loading', action);
+  get loading() {
+    return this.actions.load.isPending();
   }
 
-  isSaving(action=undefined) {
-    return this._main.$$stateManager.getMeta(this._moldPath, 'saving', action);
+  get saving() {
+    return this.actions.put.isPending() || this.actions.patch.isPending();
   }
-
-  // /**
-  //  * Get changes from last save to the moment.
-  //  * @param {string|undefined} action - name of action
-  //  * @returns {object}
-  //  */
-  // getLastChanges(action=undefined) {
-  //   return this._main.$$stateManager.getMeta(this._moldPath, 'lastChanges', action);
-  // }
 
   $init(paths, schema) {
     super.$init(paths, schema);
 
     this.actions = {
       load: this._generateLoadAction(),
+      put: this._generatePutAction(),
+      patch: this._generatePatchAction(),
+      //remove: this._generateLoadAction(),
     };
 
     // this.action = {
@@ -86,44 +77,40 @@ export default class Document extends State {
 
   // TODO: updateSilent
 
-  load(...params) { return this.action.load(...params) }
-  put(...params) { return this.action.put(...params) }
-  patch(...params) { return this.action.patch(...params) }
-  remove(...params) { return this.action.remove(...params) }
+  // load(...params) { return this.action.load(...params) }
+  // put(...params) { return this.action.put(...params) }
+  // patch(...params) { return this.action.patch(...params) }
+  // remove(...params) { return this.action.remove(...params) }
 
 
-  _createAction(actionName) {
-    new _Action(this._moldPath, actionName);
+  _createAction(actionName, cb) {
+    const ActionClass = cb(_Action);
+
+    return new ActionClass(this._main.$$stateManager, this, this._moldPath, actionName);
   }
 
-
   _generateLoadAction() {
-    const actionInstance = new _Action(this._moldPath, 'load');
-
     this._createAction((Action) => {
       return class extends Action {
         request(method, driverRequestParams, payload) {
-          this._main.$$stateManager.updateMeta(this._moldPath, { loading: true });
-
           return super.request(method, driverRequestParams, payload)
             .then((resp) => {
               // update mold with server response data
               this._main.$$stateManager.setBottomLevel(this._moldPath, resp.body);
-              this._main.$$stateManager.updateMeta(this._moldPath, {
-                loading: false,
-                //lastChanges: {},
-              });
 
               return resp;
-            })
-            .catch((err) => {
-              this._main.$$stateManager.updateMeta(this._moldPath, { loading: false });
-
-              return Promise.reject(err);
             });
         }
       }
     });
+  }
+
+  _generatePutAction() {
+
+  }
+
+  _generatePatchAction() {
+
   }
 
   /**
