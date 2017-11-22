@@ -39,16 +39,17 @@ export default class Storage {
   /**
    * Get merged levels
    * @param {string} moldPath
+   * @param {string} action
    */
-  getState(moldPath) {
+  getState(moldPath, action) {
     if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
 
     // TODO: проверить moldPath
 
-    return this._getCombined(moldPath);
+    return this._getCombined(moldPath, action);
   }
 
-  getMeta(moldPath, metaPath) {
+  getMeta(moldPath, metaPath, action) {
     // TODO: test it
 
     if (!this._storage.items[moldPath]) return;

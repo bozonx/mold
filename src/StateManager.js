@@ -19,41 +19,42 @@ export default class State {
   /**
    * Get storage data by path
    * @param {string} moldPath
+   * @param {string} action
    * @returns {*} - value from mold
    */
-  getState(moldPath) {
-    return this._storage.getState(moldPath);
+  getState(moldPath, action) {
+    return this._storage.getState(moldPath, action);
   }
 
-  getMeta(moldPath, metaPath) {
-    this._storage.getMeta(moldPath, metaPath)
+  getMeta(moldPath, metaPath, action) {
+    this._storage.getMeta(moldPath, metaPath, action);
   }
 
   initStorageIfNeed(moldPath) {
     this._storage.initNodeIfNeed(moldPath)
   }
 
-  updateTopLevel(moldPath, partialData) {
+  updateTopLevel(moldPath, partialData, action) {
     // TODO: check data - it has to consist with schema
     // TODO: ??? add eventData
-    this._storage.updateTopLevel(moldPath, _.cloneDeep(partialData));
+    this._storage.updateTopLevel(moldPath, _.cloneDeep(partialData), action);
   }
 
-  updateTopLevelSilent(moldPath, partialData) {
+  updateTopLevelSilent(moldPath, partialData, action) {
     // TODO: check data - it has to consist with schema
     // TODO: ??? add eventData
-    this._storage.updateTopLevelSilent(moldPath, _.cloneDeep(partialData));
+    this._storage.updateTopLevelSilent(moldPath, _.cloneDeep(partialData), action);
   }
 
-  setBottomLevel(moldPath, newData) {
+  setBottomLevel(moldPath, newData, action) {
     // TODO: check data - it has to consist with schema
     // TODO: ??? add eventData
 
-    this._storage.updateTopLevel(moldPath, _.cloneDeep(newData));
+    this._storage.updateTopLevel(moldPath, _.cloneDeep(newData), action);
   }
 
-  updateMeta(moldPath, partialData) {
-    this._storage.updateMeta(moldPath, _.cloneDeep(partialData));
+  updateMeta(moldPath, partialData, action) {
+    this._storage.updateMeta(moldPath, _.cloneDeep(partialData), action);
   }
 
 
@@ -67,52 +68,52 @@ export default class State {
    * @param {string} storagePath
    * @param {*} value - valid value
    */
-  setSilent(storagePath, value) { this._storage.setSilent(storagePath, value) }
-  // these methods are only wrappers of storage's methods
-  update(...params) { this._storage.update(...params) }
-  updateSilent(...params) { this._storage.updateSilent(...params) }
-  unshift(...params) { this._storage.unshift(...params) }
-  push(...params) { this._storage.push(...params) }
-  storageEmit(...params) { this._storage.emit(...params) }
-  storageEmitSilent(...params) { this._storage.emitSilent(...params) }
-  clear(storagePath) { this._storage.clear(storagePath) }
+  // setSilent(storagePath, value) { this._storage.setSilent(storagePath, value) }
+  // // these methods are only wrappers of storage's methods
+  // update(...params) { this._storage.update(...params) }
+  // updateSilent(...params) { this._storage.updateSilent(...params) }
+  // unshift(...params) { this._storage.unshift(...params) }
+  // push(...params) { this._storage.push(...params) }
+  // storageEmit(...params) { this._storage.emit(...params) }
+  // storageEmitSilent(...params) { this._storage.emitSilent(...params) }
+  // clear(storagePath) { this._storage.clear(storagePath) }
 
 
-  /**
-   * Remove item from collection.
-   * @param {string} storagePath
-   * @param {object} itemToRemove
-   * @param {object|undefined} eventData - additional data to event
-   */
-  remove(storagePath, itemToRemove, eventData=undefined) {
-    if (!_.isNumber(itemToRemove.$index)) {
-      this._main.$$log.fatal(`Deleted item must has an $index param.`);
-    }
+  // /**
+  //  * Remove item from collection.
+  //  * @param {string} storagePath
+  //  * @param {object} itemToRemove
+  //  * @param {object|undefined} eventData - additional data to event
+  //  */
+  // remove(storagePath, itemToRemove, eventData=undefined) {
+  //   if (!_.isNumber(itemToRemove.$index)) {
+  //     this._main.$$log.fatal(`Deleted item must has an $index param.`);
+  //   }
+  //
+  //   this._storage.remove(storagePath, itemToRemove.$index, eventData);
+  // }
 
-    this._storage.remove(storagePath, itemToRemove.$index, eventData);
-  }
-
-  /**
-   * Set page to paged collection in store.
-   * It doesn't mark items as unsaved.
-   * @param {string} storagePath
-   * @param {Array} page
-   * @param {number} pageNum. It's required.
-   * @param {object|undefined} eventData - additional data to event
-   */
-  setPage(storagePath, page, pageNum, eventData=undefined) {
-    this._storage.addTo(storagePath, page, pageNum, eventData);
-  }
-
-  /**
-   * Set undefined instead page. It doesn't reduce pagedCollection length.
-   * @param {string} storagePath
-   * @param pageNum
-   * @param {object|undefined} eventData - additional data to event
-   */
-  removePage(storagePath, pageNum, eventData=undefined) {
-    this._storage.update(concatPath(storagePath, pageNum), undefined, eventData);
-  }
+  // /**
+  //  * Set page to paged collection in store.
+  //  * It doesn't mark items as unsaved.
+  //  * @param {string} storagePath
+  //  * @param {Array} page
+  //  * @param {number} pageNum. It's required.
+  //  * @param {object|undefined} eventData - additional data to event
+  //  */
+  // setPage(storagePath, page, pageNum, eventData=undefined) {
+  //   this._storage.addTo(storagePath, page, pageNum, eventData);
+  // }
+  //
+  // /**
+  //  * Set undefined instead page. It doesn't reduce pagedCollection length.
+  //  * @param {string} storagePath
+  //  * @param pageNum
+  //  * @param {object|undefined} eventData - additional data to event
+  //  */
+  // removePage(storagePath, pageNum, eventData=undefined) {
+  //   this._storage.update(concatPath(storagePath, pageNum), undefined, eventData);
+  // }
 
   /**
    * Add change event handler on path.

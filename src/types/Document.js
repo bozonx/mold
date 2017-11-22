@@ -89,44 +89,22 @@ export default class Document extends State {
    * @returns {Promise}
    */
   $load(action=undefined, driversRequestParams=undefined) {
-    // TODO: refactor
-    this._updateActionMeta(action, { isSaving: true });
+    this._main.$$stateManager.updateMeta(this._moldPath, { isSaving: true }, action);
 
-    return this._loadRequest(driversRequestParams)
+    return this._doLoadRequest(driversRequestParams)
       .then((resp) => {
         // update mold with server response data
-        this._main.$$state.updateSilent(this._storagePath, {$loading: false});
-
-        this._main.$$state.updateSilent(this._storagePath, resp.body);
+        this._main.$$stateManager.updateMeta(this._moldPath, { isSaving: false }, action);
+        this._main.$$stateManager.updateTopLevelSilent(this._moldPath, resp.body, action);
+        // TODO: use meta
         this._lastChanges = {};
 
         return resp;
       }, (err) => {
-        this._main.$$state.updateSilent(this._storagePath, {$loading: false});
+        this._main.$$stateManager.updateMeta(this._moldPath, { isSaving: false }, action);
+
         return Promise.reject(err);
       });
-  }
-
-  _updateActionMeta(action, partialData) {
-    // TODO: ??? Does move it to stateManager?
-    if (action) {
-      this._main.$$stateManager.updateMeta(this._moldPath, {
-        [action]: partialData
-      });
-    }
-    else {
-      this._main.$$stateManager.updateMeta(this._moldPath, partialData);
-    }
-  }
-
-  _loadRequest(driversRequestParams) {
-    const request = _.defaultsDeep({
-      method: 'get',
-      moldPath: this._moldPath,
-    }, driversRequestParams);
-
-    // TODO: ??? getUrlParams
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams());
   }
 
   /**
@@ -209,6 +187,16 @@ export default class Document extends State {
       this._main.$$log.fatal(`The parent of document isn't a DocumentsCollection. You can remove only from DocumentsCollection`);
 
     return myDocumentsCollection.remove(this.mold, preRequest);
+  }
+
+  _doLoadRequest(driversRequestParams) {
+    const request = _.defaultsDeep({
+      method: 'get',
+      moldPath: this._moldPath,
+    }, driversRequestParams);
+
+    // TODO: ??? getUrlParams
+    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams());
   }
 
   _applyDefaults(preRequest, actionName) {
