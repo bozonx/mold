@@ -40,7 +40,7 @@ export default class Action {
     this._stateManager.updateMeta(this._moldPath, { pending: true }, this._actionName);
     const driverRequestParams = this.getDriverParams();
 
-    return this._doRequest(this.getDriverParams(), payload)
+    return this._doRequest(driverRequestParams, payload)
       .then((resp) => {
         let result = resp.body;
         if (this.responseTransformCb) {

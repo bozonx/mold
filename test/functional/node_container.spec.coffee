@@ -1,6 +1,6 @@
 mold = require('../../src/index').default
 
-describe 'Functional. Container type.', ->
+describe 'Functional. Container node.', ->
   beforeEach () ->
     testSchema = () ->
       container:

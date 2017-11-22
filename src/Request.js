@@ -32,6 +32,8 @@ export default class Request {
 
     this._main.$$log.info('---> start request: ', request);
 
+    console.log(11111, request)
+
     const promise = driver.startRequest(request);
     promise
       .then((resp) => this._main.$$log.info('---> finish request: ', resp))
