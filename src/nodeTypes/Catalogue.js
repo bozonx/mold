@@ -68,7 +68,7 @@ export default class Catalogue extends _TypeBase {
 
   _generateCreateAction() {
     // TODO: !!!!!
-    return this._createAction(undefined, (Action) => {
+    return this._createAction('create', (Action) => {
       return class extends Action {
         init() {
           this.setDriverParams({
@@ -81,7 +81,7 @@ export default class Catalogue extends _TypeBase {
 
   _generateRemoveAction() {
     // TODO: !!!!!
-    return this._createAction(undefined, (Action) => {
+    return this._createAction('remove', (Action) => {
       return class extends Action {
         init() {
           this.setDriverParams({

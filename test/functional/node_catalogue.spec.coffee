@@ -28,13 +28,13 @@ describe.only 'Functional. Catalogue node.', ->
 
     promise = @catalogue.load()
 
-#    assert.isTrue(@catalogue.loading)
-#
-#    promise
-#      .then (response) =>
-#        assert.deepEqual(response.body, @testValues)
-#        assert.deepEqual(@catalogue.mold, @testValues)
-#        assert.isFalse(@catalogue.loading)
+    assert.isTrue(@catalogue.loading)
+
+    promise
+      .then (response) =>
+        assert.deepEqual(response.body, @testValues)
+        assert.deepEqual(@catalogue.mold, @testValues)
+        assert.isFalse(@catalogue.loading)
 
   it 'load page', ->
 
