@@ -27,16 +27,20 @@ export default class Storage {
   }
 
   initState(moldPath, action, initialState) {
-    // TODO: test it
     this._checkParams(moldPath, action);
-    this.initActionIfNeed(moldPath, initialState, action);
+    this.initActionIfNeed(moldPath, action);
 
     this._storage.items[moldPath][action].state = initialState;
   }
 
   initActionIfNeed(moldPath, action) {
-    if (!this._storage.items[moldPath][action]) return;
-    this._storage.items[moldPath][action] = {};
+    if (!this._storage.items[moldPath]) {
+      this._storage.items[moldPath] = {};
+    }
+
+    if (!this._storage.items[moldPath][action]) {
+      this._storage.items[moldPath][action] = {};
+    }
   }
 
   getNode(moldPath) {
@@ -55,8 +59,10 @@ export default class Storage {
     // TODO: test it
     this._checkParams(moldPath, action);
 
+    return this._storage.items[moldPath][action].state;
+
     // TODO: просто вернуть стейт
-    return this._getCombined(moldPath, action);
+    //return this._getCombined(moldPath, action);
   }
 
   getSolid(moldPath, action) {
