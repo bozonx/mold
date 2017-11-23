@@ -6,6 +6,7 @@ Events = require('../../src/Events').default
 
 describe.only 'Unit. Storage.', ->
   beforeEach ->
+    @defaultAction = 'default'
     @events = new Events()
     @storage = new Storage(@events)
     @moldPath = 'path.to[256]'
@@ -27,9 +28,9 @@ describe.only 'Unit. Storage.', ->
       }
 
       @storage.$init({})
-      @storage.initState(@moldPath, {})
-      @storage.setBottomLevel(@moldPath, newData1)
-      @storage.setBottomLevel(@moldPath, newData2)
+      @storage.initState(@moldPath, @defaultAction, {})
+      @storage.setBottomLevel(@moldPath, @defaultAction, newData1)
+      @storage.setBottomLevel(@moldPath, @defaultAction, newData2)
 
       expect(@storage.getState(@moldPath)).to.be.deep.equal(newData2)
       expect(bottomHandler).to.be.calledTwice
@@ -52,9 +53,9 @@ describe.only 'Unit. Storage.', ->
       }
 
       @storage.$init({})
-      @storage.initState(@moldPath, {})
-      @storage.updateTopLevel(@moldPath, newData1)
-      @storage.updateTopLevel(@moldPath, newData2)
+      @storage.initState(@moldPath, @defaultAction, {})
+      @storage.updateTopLevel(@moldPath, @defaultAction, newData1)
+      @storage.updateTopLevel(@moldPath, @defaultAction, newData2)
 
       expect(@storage.getState(@moldPath)).to.be.deep.equal {
         id: 2
@@ -75,8 +76,8 @@ describe.only 'Unit. Storage.', ->
       }
 
       @storage.$init({})
-      @storage.initState(@moldPath, {})
-      @storage.updateTopLevelSilent(@moldPath, newData1)
+      @storage.initState(@moldPath, @defaultAction, {})
+      @storage.updateTopLevelSilent(@moldPath, @defaultAction, newData1)
 
       expect(@storage.getState(@moldPath)).to.be.deep.equal(newData1)
       expect(silentHandler).to.be.calledOnce
@@ -94,9 +95,9 @@ describe.only 'Unit. Storage.', ->
       }
 
       @storage.$init({})
-      @storage.initState(@moldPath, {})
-      @storage.setBottomLevel(@moldPath, bottomData)
-      @storage.updateTopLevel(@moldPath, topData)
+      @storage.initState(@moldPath, @defaultAction, {})
+      @storage.setBottomLevel(@moldPath, @defaultAction, bottomData)
+      @storage.updateTopLevel(@moldPath, @defaultAction, topData)
 
       expect(@storage.getState(@moldPath)).to.be.deep.equal {
         id: 1

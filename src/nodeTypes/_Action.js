@@ -8,7 +8,7 @@ export default class Action {
   }
 
   get pending() {
-    return this._stateManager.getMeta(this._moldPath, 'pending', this._actionName) || false;
+    return this._stateManager.getMeta(this._moldPath, this._actionName, 'pending') || false;
   }
 
   get mold() {
@@ -19,23 +19,23 @@ export default class Action {
   }
 
   getDriverParams() {
-    return this._stateManager.getMeta(this._moldPath, 'driverParams', this._actionName);
+    return this._stateManager.getMeta(this._moldPath, this._actionName, 'driverParams');
   }
 
   setDriverParams(driverParams) {
-    this._stateManager.updateMeta(this._moldPath, { driverParams }, this._actionName);
+    this._stateManager.updateMeta(this._moldPath, this._actionName, { driverParams });
   }
 
   update(partialData) {
-    return this._stateManager.updateTopLevel(this._moldPath, partialData, this._actionName);
+    return this._stateManager.updateTopLevel(this._moldPath, this._actionName, partialData);
   }
 
   updateSilent(partialData) {
-    return this._stateManager.updateTopLevelSilent(this._moldPath, partialData, this._actionName);
+    return this._stateManager.updateTopLevelSilent(this._moldPath, this._actionName, partialData);
   }
 
   request(payload) {
-    this._stateManager.updateMeta(this._moldPath, { pending: true }, this._actionName);
+    this._stateManager.updateMeta(this._moldPath, this._actionName, { pending: true });
     const driverRequestParams = this.getDriverParams();
 
     return this._doRequest(driverRequestParams, payload)
@@ -45,13 +45,13 @@ export default class Action {
           result = this.responseTransformCb(resp);
         }
 
-        this._stateManager.updateMeta(this._moldPath, { pending: false }, this._actionName);
-        this._stateManager.setBottomLevel(this._moldPath, result, this._actionName);
+        this._stateManager.updateMeta(this._moldPath, this._actionName, { pending: false });
+        this._stateManager.setBottomLevel(this._moldPath, this._actionName, result);
 
         return resp;
       })
       .catch((err) => {
-        this._stateManager.updateMeta(this._moldPath, { pending: false }, this._actionName);
+        this._stateManager.updateMeta(this._moldPath, this._actionName, { pending: false });
 
         return Promise.reject(err);
       });

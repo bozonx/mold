@@ -12,6 +12,8 @@ export default class Catalogue extends _TypeBase {
 
   constructor(main) {
     super(main);
+
+    this._actionName = 'default';
   }
 
   get type() {
@@ -23,7 +25,7 @@ export default class Catalogue extends _TypeBase {
   }
 
   $initStorage(moldPath) {
-    this._main.$$stateManager.initState(moldPath, []);
+    this._main.$$stateManager.initState(moldPath, this._actionName, []);
   }
 
   $init(moldPath, schema) {

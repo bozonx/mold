@@ -12,6 +12,8 @@ export default class Container extends _TypeBase {
 
   constructor(main) {
     super(main);
+
+    this._actionName = 'default';
   }
 
   get type() {
@@ -21,7 +23,7 @@ export default class Container extends _TypeBase {
   $initStorage(moldPath) {
     // TODO: зачем???
     // this._main.$$stateManager.initStorageIfNeed(moldPath);
-    this._main.$$stateManager.initState(moldPath, {});
+    this._main.$$stateManager.initState(moldPath, this._actionName, {});
   }
 
   $init(moldPath, schema) {
@@ -42,21 +44,21 @@ export default class Container extends _TypeBase {
   update(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
     // TODO: eventData
-    this._main.$$stateManager.updateTopLevel(this._moldPath, newState, eventData);
+    this._main.$$stateManager.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
   }
 
   updateSilent(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
     // TODO: eventData
-    this._main.$$stateManager.updateTopLevelSilent(this._moldPath, newState, eventData);
+    this._main.$$stateManager.updateTopLevelSilent(this._moldPath, this._actionName, newState, eventData);
   }
 
-  _checkForUpdateReadOnly(newState) {
-    const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);
-
-    if (!_.isEmpty(forbiddenRoProps)) {
-      this._main.$$log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
-    }
-  }
+  // _checkForUpdateReadOnly(newState) {
+  //   const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);
+  //
+  //   if (!_.isEmpty(forbiddenRoProps)) {
+  //     this._main.$$log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
+  //   }
+  // }
 
 }

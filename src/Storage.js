@@ -26,12 +26,22 @@ export default class Storage {
     return this._storage;
   }
 
+  initState(moldPath, action, initialState) {
+    // TODO: test it
+    this._checkParams(moldPath, action);
+    this.initActionIfNeed(moldPath, initialState, action);
+
+    this._storage.items[moldPath][action].state = initialState;
+  }
+
+  initActionIfNeed(moldPath, action) {
+    if (!this._storage.items[moldPath][action]) return;
+    this._storage.items[moldPath][action] = {};
+  }
 
   getNode(moldPath) {
     // TODO: test it
     if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
-
-    // TODO: проверить moldPath
 
     return this._storage.items[moldPath];
   }
@@ -42,87 +52,37 @@ export default class Storage {
    * @param {string} action
    */
   getState(moldPath, action) {
-    if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
+    // TODO: test it
+    this._checkParams(moldPath, action);
 
-    // TODO: проверить moldPath
-
+    // TODO: просто вернуть стейт
     return this._getCombined(moldPath, action);
   }
 
-  getMeta(moldPath, metaPath, action) {
+  getSolid(moldPath, action) {
     // TODO: test it
+    this._checkParams(moldPath, action);
 
-    if (!this._storage.items[moldPath]) return;
-
-    if (action) {
-      if (!this._storage.items[moldPath].actions
-        || !this._storage.items[moldPath].actions[action]
-        || !this._storage.items[moldPath].actions[action].meta) return;
-
-      return _.get(this._storage.items[moldPath].actions[action].meta, metaPath);
-    }
-    else {
-      if (!this._storage.items[moldPath].meta) return;
-
-      return _.get(this._storage.items[moldPath].meta, metaPath);
-    }
+    return this._storage.items[moldPath][action].solid;
   }
 
-  initState(moldPath, initialState, action) {
-    this.initNodeIfNeed(moldPath);
+  getMeta(moldPath, action, metaPath) {
+    // TODO: test it
+    this._checkParams(moldPath, action);
 
-    if (action) {
-      if (!this._storage.items[moldPath].actions) {
-        this._storage.items[moldPath].actions = {};
-      }
-      if (!this._storage.items[moldPath].actions[action]) {
-        this._storage.items[moldPath].actions[action] = {};
-      }
-
-      this._storage.items[moldPath].actions[action].state = initialState;
-    }
-    else {
-      this._storage.items[moldPath].state = initialState;
-    }
-  }
-
-  initNodeIfNeed(moldPath) {
-    if (this._storage.items[moldPath]) return;
-
-    this._storage.items[moldPath] = {
-      // state: undefined,
-      // solid: undefined,
-      meta: {},
-    };
-  }
-
-  initActionIfNeed(moldPath, action) {
-    // it's not need to create default action
-    if (!action) return;
-
-    if (this._storage.items[moldPath]
-      && this._storage.items[moldPath].actions
-      && this._storage.items[moldPath].actions[action]) return;
-
-    if (!this._storage.items[moldPath].actions) {
-      this._storage.items[moldPath].actions = {};
-    }
-
-    this._storage.items[moldPath].actions[action] = {
-      // state: undefined,
-      // solid: undefined,
-      meta: {},
-    };
+    return _.get(this._storage.items[moldPath][action].meta, metaPath);
   }
 
   /**
    * Update partly top level data.
    * @param {string} moldPath
-   * @param {object} partialData
    * @param {string} action
+   * @param {object} partialData
    */
-  updateTopLevel(moldPath, partialData, action) {
-    this._update(moldPath, 'state', partialData, action);
+  updateTopLevel(moldPath, action, partialData) {
+    this._checkParams(moldPath, action);
+
+    this._update(moldPath, action, 'state', partialData);
 
     this._events.emit(moldPath, 'change', {
       data: partialData,
@@ -136,8 +96,10 @@ export default class Storage {
     });
   }
 
-  updateTopLevelSilent(moldPath, partialData, action) {
-    this._update(moldPath, 'state', partialData, action);
+  updateTopLevelSilent(moldPath, action, partialData) {
+    this._checkParams(moldPath, action);
+
+    this._update(moldPath, action, 'state', partialData);
 
     this._events.emit(moldPath, 'silent', {
       data: partialData,
@@ -151,32 +113,27 @@ export default class Storage {
     });
   }
 
-  updateMeta(moldPath, partialData, action) {
+  updateMeta(moldPath, action, partialData) {
+    this._checkParams(moldPath, action);
+
     // TODO: test it
-    this._update(moldPath, 'meta', partialData, action);
+    this._update(moldPath, action, 'meta', partialData);
     // TODO: поднимать ли событие any???
   }
 
   /**
    * Replace data of bottom level and rise silent event.
    * @param {string} moldPath
-   * @param {object} newData
    * @param {string} action
+   * @param {object} newData
    */
-  setBottomLevel(moldPath, newData, action) {
-    if (!moldPath) throw new Error(`ERROR: path is empty`);
+  setBottomLevel(moldPath, action, newData) {
+    this._checkParams(moldPath, action);
 
-    this.initNodeIfNeed(moldPath);
     this.initActionIfNeed(moldPath, action);
 
-    // TODO: проверить путь
     // TODO: ??? делать мутацию
-    if (action) {
-      this._storage.items[moldPath].actions[action].solid = newData;
-    }
-    else {
-      this._storage.items[moldPath].solid = newData;
-    }
+    this._storage.items[moldPath][action].solid = newData;
 
     this._events.emit(moldPath, 'bottom', {
       data: newData,
@@ -190,30 +147,16 @@ export default class Storage {
     });
   }
 
-  _update(moldPath, subPath, partialData, action) {
+  _update(moldPath, action, subPath, partialData) {
     if (!moldPath) throw new Error(`ERROR: path is empty`);
-    // TODO: проверить путь
-    // TODO: !!!
 
-    this.initNodeIfNeed(moldPath);
     this.initActionIfNeed(moldPath, action);
 
-    let currentData;
-    if (action) {
-      currentData = this._storage.items[moldPath].actions[action][subPath];
-    }
-    else {
-      currentData = this._storage.items[moldPath][subPath];
-    }
+    const currentData = this._storage.items[moldPath][action][subPath];
 
     // if there isn't any current data - just set it
     if (_.isUndefined(currentData)) {
-      if (action) {
-        this._storage.items[moldPath].actions[action][subPath] = _.cloneDeep(partialData);
-      }
-      else {
-        this._storage.items[moldPath][subPath] = _.cloneDeep(partialData);
-      }
+      this._storage.items[moldPath][action][subPath] = _.cloneDeep(partialData);
 
       return;
     }
@@ -235,6 +178,9 @@ export default class Storage {
    * @private
    */
   _getCombined(moldPath, action) {
+    // if item hasn't initialized yet - return undefined
+    if (!this._storage.items[moldPath]) return;
+
     let top;
     let bottom;
 
@@ -252,6 +198,11 @@ export default class Storage {
 
     // TODO: смержить с учетом массивов
     return _.defaultsDeep(_.cloneDeep(top), bottom );
+  }
+
+  _checkParams(moldPath, action) {
+    if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
+    if (!action) throw new Error(`ERROR: action is empty`);
   }
 
 }

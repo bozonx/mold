@@ -26,39 +26,39 @@ export default class State {
     return this._storage.getState(moldPath, action);
   }
 
-  getMeta(moldPath, metaPath, action) {
-    return this._storage.getMeta(moldPath, metaPath, action);
+  getMeta(moldPath, action, metaPath) {
+    return this._storage.getMeta(moldPath, action, metaPath);
   }
 
-  initState(moldPath, initialValue, action) {
-    this._storage.initState(moldPath, initialValue, action);
+  initState(moldPath, action, initialValue) {
+    this._storage.initState(moldPath, action, initialValue);
   }
 
   initStorageIfNeed(moldPath) {
     this._storage.initNodeIfNeed(moldPath)
   }
 
-  updateTopLevel(moldPath, partialData, action) {
+  updateTopLevel(moldPath, action, partialData) {
     // TODO: check data - it has to consist with schema
     // TODO: ??? add eventData
-    this._storage.updateTopLevel(moldPath, _.cloneDeep(partialData), action);
+    this._storage.updateTopLevel(moldPath, action, _.cloneDeep(partialData));
   }
 
-  updateTopLevelSilent(moldPath, partialData, action) {
+  updateTopLevelSilent(moldPath, action, partialData) {
     // TODO: check data - it has to consist with schema
     // TODO: ??? add eventData
-    this._storage.updateTopLevelSilent(moldPath, _.cloneDeep(partialData), action);
+    this._storage.updateTopLevelSilent(moldPath, action, _.cloneDeep(partialData));
   }
 
-  setBottomLevel(moldPath, newData, action) {
+  setBottomLevel(moldPath, action, newData) {
     // TODO: check data - it has to consist with schema
     // TODO: ??? add eventData
 
-    this._storage.updateTopLevel(moldPath, _.cloneDeep(newData), action);
+    this._storage.updateTopLevel(moldPath, action, _.cloneDeep(newData));
   }
 
-  updateMeta(moldPath, partialData, action) {
-    this._storage.updateMeta(moldPath, _.cloneDeep(partialData), action);
+  updateMeta(moldPath, action, partialData) {
+    this._storage.updateMeta(moldPath, action, _.cloneDeep(partialData));
   }
 
 
