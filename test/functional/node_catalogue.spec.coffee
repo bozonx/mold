@@ -1,6 +1,6 @@
 mold = require('../../src/index').default
 
-describe.only 'Functional. Catalogue node.', ->
+describe 'Functional. Catalogue node.', ->
   beforeEach () ->
     testSchema = () ->
       catalogue: {

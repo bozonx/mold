@@ -18,7 +18,10 @@ export default class _TypeBase {
    */
   get mold() {
     //return this._mold;
-    return this._main.$$stateManager.getState(this._moldPath);
+    //return this._main.$$stateManager.getState(this._moldPath);
+    return this.actions.default.mold;
+
+    //return this._mold.state;
   }
 
   get schema() {

@@ -13,7 +13,7 @@ export default class Container extends _TypeBase {
   constructor(main) {
     super(main);
 
-    this._actionName = 'default';
+    this._defaultAction = 'default';
   }
 
   get type() {
@@ -21,15 +21,18 @@ export default class Container extends _TypeBase {
   }
 
   $initStorage(moldPath) {
-    // TODO: зачем???
-    // this._main.$$stateManager.initStorageIfNeed(moldPath);
-    this._main.$$stateManager.initState(moldPath, this._actionName, {});
+    this._main.$$stateManager.initState(moldPath, this._defaultAction, {});
   }
 
   $init(moldPath, schema) {
     this.$initStorage(moldPath);
     // TODO: !!!! review
     super.$init(moldPath, schema);
+
+    this.actions = {
+      'default': this._generateLoadAction(),
+    };
+
     // this.__readOnlyProps = [];
     // _.each(this.schema.schema, (item, name) => {
     //   if (item.readOnly) this.__readOnlyProps.push(name);
@@ -44,13 +47,15 @@ export default class Container extends _TypeBase {
   update(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
     // TODO: eventData
-    this._main.$$stateManager.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
+    // TODO: use default action
+    this._main.$$stateManager.updateTopLevel(this._moldPath, this._defaultAction, newState, eventData);
   }
 
   updateSilent(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
     // TODO: eventData
-    this._main.$$stateManager.updateTopLevelSilent(this._moldPath, this._actionName, newState, eventData);
+    // TODO: use default action
+    this._main.$$stateManager.updateTopLevelSilent(this._moldPath, this._defaultAction, newState, eventData);
   }
 
   // _checkForUpdateReadOnly(newState) {

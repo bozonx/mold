@@ -1,6 +1,6 @@
 mold = require('../../src/index').default
 
-describe.only 'Functional. Document node.', ->
+describe 'Functional. Document node.', ->
   beforeEach () ->
     testSchema = () ->
       document: {
