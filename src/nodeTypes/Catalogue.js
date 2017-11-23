@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { concatPath, findPrimary } from '../helpers';
 import _Action from './_Action';
-import _TypeBase from './_TypeBase';
+import _TypeBase from './_NodeBase';
 
 
 export default class Catalogue extends _TypeBase {

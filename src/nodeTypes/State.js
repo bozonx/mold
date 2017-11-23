@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { concatPath, convertFromLodashToSchema } from '../helpers';
-import _TypeBase from './_TypeBase';
+import _TypeBase from './_NodeBase';
 
 
 export default class Container extends _TypeBase {
