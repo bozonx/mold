@@ -65,9 +65,10 @@ export default class Document extends State {
   }
 
   _generateLoadAction() {
-    return this._createAction(undefined, (Action) => {
+    return this._createAction(undefined, function (Action) {
       return class extends Action {
         init() {
+          this._stateManager.initState(this._moldPath, {}, this._actionName);
           this.setDriverParams({
             method: 'get',
           });
@@ -80,6 +81,7 @@ export default class Document extends State {
     return this._createAction('put', (Action) => {
       return class extends Action {
         init() {
+          this._stateManager.initState(this._moldPath, {}, this._actionName);
           this.setDriverParams({
             method: 'put',
           });
@@ -99,6 +101,7 @@ export default class Document extends State {
     return this._createAction('patch', (Action) => {
       return class extends Action {
         init() {
+          this._stateManager.initState(this._moldPath, {}, this._actionName);
           this.setDriverParams({
             method: 'patch',
           });
@@ -120,6 +123,7 @@ export default class Document extends State {
     return this._createAction('delete', (Action) => {
       return class extends Action {
         init() {
+          this._stateManager.initState(this._moldPath, {}, this._actionName);
           this.setDriverParams({
             method: 'delete',
           });

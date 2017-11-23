@@ -27,6 +27,7 @@ describe.only 'Unit. Storage.', ->
       }
 
       @storage.$init({})
+      @storage.initState(@moldPath, {})
       @storage.setBottomLevel(@moldPath, newData1)
       @storage.setBottomLevel(@moldPath, newData2)
 
@@ -51,6 +52,7 @@ describe.only 'Unit. Storage.', ->
       }
 
       @storage.$init({})
+      @storage.initState(@moldPath, {})
       @storage.updateTopLevel(@moldPath, newData1)
       @storage.updateTopLevel(@moldPath, newData2)
 
@@ -73,6 +75,7 @@ describe.only 'Unit. Storage.', ->
       }
 
       @storage.$init({})
+      @storage.initState(@moldPath, {})
       @storage.updateTopLevelSilent(@moldPath, newData1)
 
       expect(@storage.getState(@moldPath)).to.be.deep.equal(newData1)
@@ -91,6 +94,7 @@ describe.only 'Unit. Storage.', ->
       }
 
       @storage.$init({})
+      @storage.initState(@moldPath, {})
       @storage.setBottomLevel(@moldPath, bottomData)
       @storage.updateTopLevel(@moldPath, topData)
 

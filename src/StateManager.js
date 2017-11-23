@@ -30,6 +30,10 @@ export default class State {
     return this._storage.getMeta(moldPath, metaPath, action);
   }
 
+  initState(moldPath, initialValue, action) {
+    this._storage.initState(moldPath, initialValue, action);
+  }
+
   initStorageIfNeed(moldPath) {
     this._storage.initNodeIfNeed(moldPath)
   }

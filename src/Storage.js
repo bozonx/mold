@@ -55,10 +55,34 @@ export default class Storage {
     if (!this._storage.items[moldPath]) return;
 
     if (action) {
+      if (!this._storage.items[moldPath].actions
+        || !this._storage.items[moldPath].actions[action]
+        || !this._storage.items[moldPath].actions[action].meta) return;
+
       return _.get(this._storage.items[moldPath].actions[action].meta, metaPath);
     }
     else {
+      if (!this._storage.items[moldPath].meta) return;
+
       return _.get(this._storage.items[moldPath].meta, metaPath);
+    }
+  }
+
+  initState(moldPath, initialState, action) {
+    this.initNodeIfNeed(moldPath);
+
+    if (action) {
+      if (!this._storage.items[moldPath].actions) {
+        this._storage.items[moldPath].actions = {};
+      }
+      if (!this._storage.items[moldPath].actions[action]) {
+        this._storage.items[moldPath].actions[action] = {};
+      }
+
+      this._storage.items[moldPath].actions[action].state = initialState;
+    }
+    else {
+      this._storage.items[moldPath].state = initialState;
     }
   }
 
@@ -66,8 +90,8 @@ export default class Storage {
     if (this._storage.items[moldPath]) return;
 
     this._storage.items[moldPath] = {
-      state: {},
-      solid: {},
+      // state: undefined,
+      // solid: undefined,
       meta: {},
     };
   }
@@ -85,8 +109,8 @@ export default class Storage {
     }
 
     this._storage.items[moldPath].actions[action] = {
-      state: {},
-      solid: {},
+      // state: undefined,
+      // solid: undefined,
       meta: {},
     };
   }
@@ -180,6 +204,18 @@ export default class Storage {
     }
     else {
       currentData = this._storage.items[moldPath][subPath];
+    }
+
+    // if there isn't any current data - just set it
+    if (_.isUndefined(currentData)) {
+      if (action) {
+        this._storage.items[moldPath].actions[action][subPath] = _.cloneDeep(partialData);
+      }
+      else {
+        this._storage.items[moldPath][subPath] = _.cloneDeep(partialData);
+      }
+
+      return;
     }
 
     // merge

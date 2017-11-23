@@ -19,7 +19,9 @@ export default class Container extends _TypeBase {
   }
 
   $initStorage(moldPath) {
-    this._main.$$stateManager.initStorageIfNeed(moldPath);
+    // TODO: зачем???
+    // this._main.$$stateManager.initStorageIfNeed(moldPath);
+    this._main.$$stateManager.initState(moldPath, {});
   }
 
   $init(moldPath, schema) {

@@ -4,8 +4,6 @@ export default class Action {
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
-    // You have to set driver params like method etc
-    this.driverParams = null;
     this.responseTransformCb = null;
   }
 
