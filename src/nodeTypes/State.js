@@ -30,13 +30,9 @@ export default class Container extends _TypeBase {
     super.$init(moldPath, schema);
 
     this.actions = {
+      // TODO: !!!!
       'default': this._generateLoadAction(),
     };
-
-    // this.__readOnlyProps = [];
-    // _.each(this.schema.schema, (item, name) => {
-    //   if (item.readOnly) this.__readOnlyProps.push(name);
-    // });
   }
 
   /**
@@ -44,26 +40,12 @@ export default class Container extends _TypeBase {
    * @param {string} newState
    * @param {object|undefined} eventData - additional data to event
    */
-  update(newState, eventData=undefined) {
-    //this._checkForUpdateReadOnly(newState);
-    // TODO: eventData
-    // TODO: use default action
-    this._main.$$stateManager.updateTopLevel(this._moldPath, this._defaultAction, newState, eventData);
+  update(newState, eventData) {
+    this.actions.default.update(newState, eventData);
   }
 
   updateSilent(newState, eventData=undefined) {
-    //this._checkForUpdateReadOnly(newState);
-    // TODO: eventData
-    // TODO: use default action
-    this._main.$$stateManager.updateTopLevelSilent(this._moldPath, this._defaultAction, newState, eventData);
+    this.actions.default.updateSilent(newState, eventData);
   }
-
-  // _checkForUpdateReadOnly(newState) {
-  //   const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);
-  //
-  //   if (!_.isEmpty(forbiddenRoProps)) {
-  //     this._main.$$log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
-  //   }
-  // }
 
 }
