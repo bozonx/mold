@@ -22,7 +22,12 @@ export default class Catalogue extends _TypeBase {
     return this.actions.load.pending;
   }
 
+  $initStorage(moldPath) {
+    this._main.$$stateManager.initState(moldPath, []);
+  }
+
   $init(moldPath, schema) {
+    this.$initStorage(moldPath);
     super.$init(moldPath, schema);
 
     this.actions = {
