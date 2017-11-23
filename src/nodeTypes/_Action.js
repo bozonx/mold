@@ -1,14 +1,15 @@
 import _Mold from './_Mold';
 
 export default class Action {
-  constructor(stateManager, nodeInstance, moldPath, actionName) {
+  constructor(stateManager, nodeInstance, moldPath, actionName, schema) {
     this._stateManager = stateManager;
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
+    this._schema = schema;
     this.responseTransformCb = null;
 
-    this._mold = new _Mold(moldPath, actionName);
+    this._mold = new _Mold(this._stateManager, this._moldPath, this._actionName, this._schema);
   }
 
   get pending() {

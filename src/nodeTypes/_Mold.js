@@ -1,9 +1,13 @@
+import _ from 'lodash';
+
+import { eachSchema } from '../helpers';
+
 
 export default class _Mold {
-  constructor(stateManager, moldPath, action, schema) {
+  constructor(stateManager, moldPath, actionName, schema) {
     this._stateManager = stateManager;
     this._moldPath = moldPath;
-    this._action = action;
+    this._actionName = actionName;
     this._schema = schema;
     this._state = undefined;
   }
@@ -13,8 +17,7 @@ export default class _Mold {
   }
 
   init() {
-    // TODO: берем корневой элемент и инициализируем его и берем у него mold
-    //this._state;
+    this._initSchema();
 
     // this.__readOnlyProps = [];
     // _.each(this.schema.schema, (item, name) => {
@@ -24,14 +27,24 @@ export default class _Mold {
 
   update(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
-    this._stateManager.updateTopLevel(this._moldPath, this._action, newState, eventData);
+    this._stateManager.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
+    // TODO: сделать мутацию this._state - спрашивая каждый тип
   }
 
   updateSilent(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
-    this._stateManager.updateTopLevel(this._moldPath, this._action, newState, eventData);
+    this._stateManager.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
+    // TODO: сделать мутацию this._state - спрашивая каждый тип
   }
 
+  _initSchema() {
+    // TODO: берем корневой элемент и инициализируем его и берем у него mold
+    //this._state;
+
+    eachSchema(this._schema, (schemaPath, schema) => {
+
+    });
+  }
 
   // _checkForUpdateReadOnly(newState) {
   //   const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);

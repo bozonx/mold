@@ -26,12 +26,15 @@ export default class Container extends _TypeBase {
 
   $init(moldPath, schema) {
     this.$initStorage(moldPath);
+    this._fullSchema = {
+      type: 'assoc',
+      schema,
+    };
     // TODO: !!!! review
     super.$init(moldPath, schema);
 
     this.actions = {
-      // TODO: !!!!
-      'default': this._generateLoadAction(),
+      'default': this._generateDefaultAction(),
     };
   }
 
@@ -46,6 +49,21 @@ export default class Container extends _TypeBase {
 
   updateSilent(newState, eventData=undefined) {
     this.actions.default.updateSilent(newState, eventData);
+  }
+
+  _generateDefaultAction() {
+    return this.$createAction(undefined, function (Action) {
+      return class extends Action {
+        init() {
+          //this._stateManager.initState(this._moldPath, {}, this._actionName);
+          //this._mold.init();
+        }
+
+        request() {
+          throw new Error(`ERROR: State can't do requests`);
+        }
+      };
+    });
   }
 
 }

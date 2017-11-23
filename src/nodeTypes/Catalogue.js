@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import { concatPath, findPrimary } from '../helpers';
-import _Action from './_Action';
 import _TypeBase from './_NodeBase';
 
 
@@ -13,7 +12,7 @@ export default class Catalogue extends _TypeBase {
   constructor(main) {
     super(main);
 
-    this._actionName = 'default';
+    this._defaultActionName = 'default';
   }
 
   get type() {
@@ -25,7 +24,7 @@ export default class Catalogue extends _TypeBase {
   }
 
   $initStorage(moldPath) {
-    this._main.$$stateManager.initState(moldPath, this._actionName, []);
+    this._main.$$stateManager.initState(moldPath, this._defaultActionName, []);
   }
 
   $init(moldPath, schema) {
@@ -52,17 +51,8 @@ export default class Catalogue extends _TypeBase {
     return this.actions.remove.request();
   }
 
-  _createAction(actionName, cb) {
-    const ActionClass = cb(_Action);
-
-    const instance =  new ActionClass(this._main.$$stateManager, this, this._moldPath, actionName);
-    instance.init();
-
-    return instance;
-  }
-
   _generateLoadAction() {
-    return this._createAction(undefined, (Action) => {
+    return this.$createAction(this._defaultActionName, (Action) => {
       return class extends Action {
         init() {
           this.setDriverParams({
@@ -75,7 +65,7 @@ export default class Catalogue extends _TypeBase {
 
   _generateCreateAction() {
     // TODO: !!!!!
-    return this._createAction('create', (Action) => {
+    return this.$createAction('create', (Action) => {
       return class extends Action {
         init() {
           this.setDriverParams({
@@ -88,7 +78,7 @@ export default class Catalogue extends _TypeBase {
 
   _generateRemoveAction() {
     // TODO: !!!!!
-    return this._createAction('remove', (Action) => {
+    return this.$createAction('remove', (Action) => {
       return class extends Action {
         init() {
           this.setDriverParams({
@@ -217,7 +207,7 @@ export default class Catalogue extends _TypeBase {
 
   _initActions() {
     _.each(this.schema.actions, (item, name) => {
-      this.actions[name] = this._createAction(name, item);
+      this.actions[name] = this.$createAction(name, item);
       // if (_.isFunction(item)) {
       //   // custom method or overwrote method
       //   this.action[name] = (...params) => item.bind(this)(...params, this);

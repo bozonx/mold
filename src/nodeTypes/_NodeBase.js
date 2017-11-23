@@ -1,4 +1,6 @@
 import { splitPath, joinPath } from '../helpers';
+import _Action from './_Action';
+
 
 export default class _TypeBase {
   constructor(main) {
@@ -42,15 +44,28 @@ export default class _TypeBase {
     //this._mold = this._mold || this._main.$$stateManager.getState(this._moldPath);
   }
 
+
+  $createAction(actionName, cb) {
+    const ActionClass = cb(_Action);
+
+    const instance =  new ActionClass(this._main.$$stateManager, this, this._moldPath, actionName, this._fullSchema);
+    instance.init();
+
+    return instance;
+  }
+
+
   /**
    * Listen changes of instance and its primitives.
    * @param {function} handler
    */
   onChange(handler) {
+    // TODO: use action
     this._main.$$state.addListener(this._storagePath, handler);
   }
 
   onAnyChange(handler) {
+    // TODO: use action
     this._main.$$state.addListener(this._storagePath, handler, true);
   }
 
@@ -59,10 +74,12 @@ export default class _TypeBase {
    * @param {function} handler
    */
   onChangeDeep(handler) {
+    // TODO: use action
     this._main.$$state.addDeepListener(this._storagePath, handler);
   }
 
   onAnyChangeDeep(handler) {
+    // TODO: use action
     this._main.$$state.addDeepListener(this._storagePath, handler, true);
   }
 
@@ -71,6 +88,7 @@ export default class _TypeBase {
    * @param {function} handler - handler to remove
    */
   off(handler) {
+    // TODO: use action
     this._main.$$state.removeListener(this._storagePath, handler);
   }
 
@@ -78,6 +96,7 @@ export default class _TypeBase {
    * It removes all the events listeners.
    */
   destroy() {
+    // TODO: use action
     this._main.$$state.destroyListeners(this._storagePath);
   }
 
@@ -86,6 +105,7 @@ export default class _TypeBase {
    * Removes event listeners for children deeply too.
    */
   destroyDeep() {
+    // TODO: use action
     this._main.$$state.destroyListeners(this._storagePath, true);
   }
 
@@ -94,6 +114,7 @@ export default class _TypeBase {
    * @param {object|undefined} eventData - additional data to event
    */
   clear(eventData=undefined) {
+    // TODO: use action
     this._main.$$state.clear(this._storagePath, eventData);
   }
 

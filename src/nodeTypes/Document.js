@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import { correctUpdatePayload, omitUnsaveable } from '../helpers';
-import _Action from './_Action';
 import State from './State';
 
 
@@ -14,6 +13,8 @@ export default class Document extends State {
 
   constructor(main) {
     super(main);
+
+    this._defaultActionName = 'default';
   }
 
   get type() {
@@ -55,17 +56,8 @@ export default class Document extends State {
     return this.actions.remove.request();
   }
 
-  _createAction(actionName, cb) {
-    const ActionClass = cb(_Action);
-
-    const instance =  new ActionClass(this._main.$$stateManager, this, this._moldPath, actionName);
-    instance.init();
-
-    return instance;
-  }
-
   _generateLoadAction() {
-    return this._createAction(undefined, function (Action) {
+    return this.$createAction(this._defaultActionName, function (Action) {
       return class extends Action {
         init() {
           this._stateManager.initState(this._moldPath, {}, this._actionName);
@@ -78,7 +70,7 @@ export default class Document extends State {
   }
 
   _generatePutAction() {
-    return this._createAction('put', (Action) => {
+    return this.$createAction('put', (Action) => {
       return class extends Action {
         init() {
           this._stateManager.initState(this._moldPath, {}, this._actionName);
@@ -98,7 +90,7 @@ export default class Document extends State {
   }
 
   _generatePatchAction() {
-    return this._createAction('patch', (Action) => {
+    return this.$createAction('patch', (Action) => {
       return class extends Action {
         init() {
           this._stateManager.initState(this._moldPath, {}, this._actionName);
@@ -120,7 +112,7 @@ export default class Document extends State {
 
   _generateRemoveAction() {
     // TODO: test it, доделать
-    return this._createAction('delete', (Action) => {
+    return this.$createAction('delete', (Action) => {
       return class extends Action {
         init() {
           this._stateManager.initState(this._moldPath, {}, this._actionName);
@@ -135,7 +127,7 @@ export default class Document extends State {
 
   _initCustomActions() {
     _.each(this.schema.actions, (item, name) => {
-      this.actions[name] = this._createAction(name, item);
+      this.actions[name] = this.$createAction(name, item);
 
       // if (_.isFunction(item)) {
       //   // custom method or overwrote method
