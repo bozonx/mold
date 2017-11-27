@@ -2,8 +2,6 @@ Storage = require('../../src/Storage').default
 Events = require('../../src/Events').default
 
 # TODO: test event data
-# TODO: test actions
-# TODO: test combined
 
 describe.only 'Unit. Storage.', ->
   beforeEach ->
@@ -58,11 +56,12 @@ describe.only 'Unit. Storage.', ->
       @storage.updateTopLevel(@moldPath, @defaultAction, newData1)
       @storage.updateTopLevel(@moldPath, @defaultAction, newData2)
 
-      expect(@storage.getState(@moldPath, @defaultAction)).to.be.deep.equal {
+      result = {
         id: 2
         param1: 'value11'
         param2: 'value2'
       }
+      expect(@storage.getState(@moldPath, @defaultAction)).to.be.deep.equal(result)
       expect(changeHandler).to.be.calledTwice
       expect(anyHandler).to.be.calledTwice
 
@@ -84,25 +83,27 @@ describe.only 'Unit. Storage.', ->
       expect(silentHandler).to.be.calledOnce
       expect(anyHandler).to.be.calledOnce
 
-#    it 'combine with bottom level', ->
-#      bottomData = {
-#        id: 1
-#        param1: 'value1'
-#        param2: 'value2'
-#      }
-#      topData = {
-#        param2: 'value22'
-#        param3: 'value3'
-#      }
-#
-#      @storage.$init({})
-#      @storage.initState(@moldPath, @defaultAction, {})
-#      @storage.setBottomLevel(@moldPath, @defaultAction, bottomData)
-#      @storage.updateTopLevel(@moldPath, @defaultAction, topData)
-#
-#      expect(@storage.getState(@moldPath, @defaultAction)).to.be.deep.equal {
-#        id: 1
-#        param1: 'value1'
-#        param2: 'value22'
-#        param3: 'value3'
-#      }
+    it 'combine with bottom level', ->
+      bottomData = {
+        id: 1
+        param1: 'value1'
+        param2: 'value2'
+      }
+      topData = {
+        param2: 'value22'
+        param3: 'value3'
+      }
+
+      @storage.$init({})
+      @storage.initState(@moldPath, @defaultAction, {})
+      @storage.setBottomLevel(@moldPath, @defaultAction, bottomData)
+      @storage.updateTopLevel(@moldPath, @defaultAction, topData)
+
+      expect(@storage.getSolid(@moldPath, @defaultAction)).to.be.deep.equal(bottomData)
+      expect(@storage.getState(@moldPath, @defaultAction)).to.be.deep.equal(topData)
+      expect(@storage.getCombined(@moldPath, @defaultAction)).to.be.deep.equal {
+        id: 1
+        param1: 'value1'
+        param2: 'value22'
+        param3: 'value3'
+      }
