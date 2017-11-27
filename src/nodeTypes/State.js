@@ -52,7 +52,7 @@ export default class Container extends _TypeBase {
   }
 
   _generateDefaultAction() {
-    return this.$createAction(undefined, function (Action) {
+    return this.$createAction(this._defaultAction, function (Action) {
       return class extends Action {
         init() {
           //this._stateManager.initState(this._moldPath, {}, this._actionName);

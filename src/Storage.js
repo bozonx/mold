@@ -5,9 +5,8 @@ import { mutate, updateIndexes } from './mutate';
 
 
 export default class Storage {
-  constructor(events, log) {
+  constructor(events) {
     this._events = events;
-    this._log = log;
     this._storage = null;
   }
 
@@ -44,30 +43,46 @@ export default class Storage {
   }
 
   getNode(moldPath) {
-    // TODO: test it
     if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
 
     return this._storage.items[moldPath];
+  }
+
+  getCombined(moldPath, action) {
+    // TODO: test it
+    this._checkParams(moldPath, action);
+
+    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
+      return undefined;
+    }
+
+    return this._storage.items[moldPath][action].combined;
   }
 
   /**
    * Get merged levels
    * @param {string} moldPath
    * @param {string} action
+   * @return {object|undefined}
    */
   getState(moldPath, action) {
     // TODO: test it
     this._checkParams(moldPath, action);
 
-    return this._storage.items[moldPath][action].state;
+    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
+      return undefined;
+    }
 
-    // TODO: просто вернуть стейт
-    //return this._getCombined(moldPath, action);
+    return this._storage.items[moldPath][action].state;
   }
 
   getSolid(moldPath, action) {
     // TODO: test it
     this._checkParams(moldPath, action);
+
+    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
+      return undefined;
+    }
 
     return this._storage.items[moldPath][action].solid;
   }
@@ -75,6 +90,10 @@ export default class Storage {
   getMeta(moldPath, action, metaPath) {
     // TODO: test it
     this._checkParams(moldPath, action);
+
+    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
+      return undefined;
+    }
 
     return _.get(this._storage.items[moldPath][action].meta, metaPath);
   }
@@ -89,6 +108,7 @@ export default class Storage {
     this._checkParams(moldPath, action);
 
     this._update(moldPath, action, 'state', partialData);
+    this._generateCombined(moldPath, action);
 
     this._events.emit(moldPath, 'change', {
       data: partialData,
@@ -106,6 +126,7 @@ export default class Storage {
     this._checkParams(moldPath, action);
 
     this._update(moldPath, action, 'state', partialData);
+    this._generateCombined(moldPath, action);
 
     this._events.emit(moldPath, 'silent', {
       data: partialData,
@@ -138,8 +159,8 @@ export default class Storage {
 
     this.initActionIfNeed(moldPath, action);
 
-    // TODO: ??? делать мутацию
     this._storage.items[moldPath][action].solid = newData;
+    this._generateCombined(moldPath, action);
 
     this._events.emit(moldPath, 'bottom', {
       data: newData,
@@ -177,38 +198,21 @@ export default class Storage {
     //this._storage.topLevel[moldPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
   }
 
-  /**
-   * Get combined top and bottom levels.
-   * @param {string} moldPath
-   * @param {string} action
-   * @private
-   */
-  _getCombined(moldPath, action) {
-    // if item hasn't initialized yet - return undefined
-    if (!this._storage.items[moldPath]) return;
-
-    let top;
-    let bottom;
-
-    if (action) {
-      top = this._storage.items[moldPath].actions[action].state;
-      bottom = this._storage.items[moldPath].actions[action].solid;
-    }
-    else {
-      top = this._storage.items[moldPath].state;
-      bottom = this._storage.items[moldPath].solid;
-    }
-
-    // return undefined if there isn't any data
-    if (_.isUndefined(top) && _.isUndefined(bottom)) return;
-
-    // TODO: смержить с учетом массивов
-    return _.defaultsDeep(_.cloneDeep(top), bottom );
-  }
-
   _checkParams(moldPath, action) {
     if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
     if (!action) throw new Error(`ERROR: action is empty`);
+  }
+
+  _generateCombined(moldPath, action) {
+    const top = this._storage.items[moldPath][action].state;
+    const bottom = this._storage.items[moldPath][action].solid;
+
+    // do nothing if there isn't any data
+    if (_.isUndefined(top) && _.isUndefined(bottom)) return;
+
+    // TODO: use mutation
+    const combined = _.defaultsDeep(_.cloneDeep(top), bottom );
+    this._storage.items[moldPath][action].combined = combined;
   }
 
 }

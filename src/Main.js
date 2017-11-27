@@ -21,7 +21,7 @@ export default class Main {
     this.$$driverManager = new DriverManager(this);
     this.$$schemaManager = new SchemaManager(this);
     this.$$stateManager = new StateManager();
-    this._storage = new Storage(this.$$events, this.$$log);
+    this._storage = new Storage(this.$$events);
 
     // register base types
     this.$$nodeManager.register('state', StateType);
