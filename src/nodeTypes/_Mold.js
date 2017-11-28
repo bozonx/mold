@@ -10,6 +10,8 @@ export default class _Mold {
     this._actionName = actionName;
     this._schema = schema;
     this._state = undefined;
+
+    // TODO: set moldTransform to storage
   }
 
   get state() {

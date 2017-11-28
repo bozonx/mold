@@ -23,12 +23,7 @@ export default class Catalogue extends _TypeBase {
     return this.actions.load.pending;
   }
 
-  $initStorage(moldPath) {
-    this._main.$$stateManager.initState(moldPath, this._defaultActionName, []);
-  }
-
   $init(moldPath, schema) {
-    this.$initStorage(moldPath);
     super.$init(moldPath, schema);
 
     this.actions = {
@@ -37,8 +32,7 @@ export default class Catalogue extends _TypeBase {
       remove: this._generateRemoveAction(),
     };
 
-    //this.actionDefaults = {};
-    this._initActions();
+    this._initCustomActions();
   }
 
   load() {
@@ -55,6 +49,7 @@ export default class Catalogue extends _TypeBase {
     return this.$createAction(this._defaultActionName, (Action) => {
       return class extends Action {
         init() {
+          // TODO: init state as []
           this.setDriverParams({
             method: 'filter',
           });
@@ -68,6 +63,8 @@ export default class Catalogue extends _TypeBase {
     return this.$createAction('create', (Action) => {
       return class extends Action {
         init() {
+          // TODO: init state as []
+          // TODO: set action mold transform
           this.setDriverParams({
             method: 'create',
           });
@@ -81,6 +78,7 @@ export default class Catalogue extends _TypeBase {
     return this.$createAction('remove', (Action) => {
       return class extends Action {
         init() {
+          // TODO: init state as []
           this.setDriverParams({
             method: 'remove',
           });
@@ -205,7 +203,7 @@ export default class Catalogue extends _TypeBase {
   }
 
 
-  _initActions() {
+  _initCustomActions() {
     _.each(this.schema.actions, (item, name) => {
       this.actions[name] = this.$createAction(name, item);
       // if (_.isFunction(item)) {

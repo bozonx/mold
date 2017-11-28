@@ -8,6 +8,7 @@ export default class Storage {
   constructor(events) {
     this._events = events;
     this._storage = null;
+    this._transformers = null;
   }
 
   /**
@@ -18,7 +19,8 @@ export default class Storage {
    */
   $init(newStorage) {
     this._storage = newStorage;
-    this._storage.items = {}
+    this._storage.items = {};
+    this._transformers = {};
   }
 
   $getWholeStorageState() {
@@ -142,9 +144,12 @@ export default class Storage {
 
   updateMeta(moldPath, action, partialData) {
     this._checkParams(moldPath, action);
+    this.initActionIfNeed(moldPath, action);
+
+    const currentData = this._storage.items[moldPath][action].meta;
+    this._storage.items[moldPath][action].meta = _.defaultsDeep(_.cloneDeep(partialData), currentData);
 
     // TODO: test it
-    this._update(moldPath, action, 'meta', partialData);
     // TODO: поднимать ли событие any???
   }
 
@@ -175,8 +180,6 @@ export default class Storage {
   }
 
   _update(moldPath, action, subPath, partialData) {
-    if (!moldPath) throw new Error(`ERROR: path is empty`);
-
     this.initActionIfNeed(moldPath, action);
 
     const currentData = this._storage.items[moldPath][action][subPath];
@@ -191,11 +194,8 @@ export default class Storage {
     // merge
 
     // TODO: не поднимать события если не было изменений
-    // TODO: впринципе не обязательно делать mutate - можно просто заменить, но правильно обработать массивы
+    // TODO: использовать transform
     const wereChanges = mutate(currentData, '').update(partialData);
-
-    // TODO: ???? делать мутацию
-    //this._storage.topLevel[moldPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
   }
 
   _checkParams(moldPath, action) {
@@ -204,14 +204,26 @@ export default class Storage {
   }
 
   _generateCombined(moldPath, action) {
+    let transformer = this._defaultTransformer.bind(this);
+    if (this._transformers[moldPath] && this._transformers[moldPath][action]) {
+      transformer = this._transformers[moldPath][action];
+    }
+
     const top = this._storage.items[moldPath][action].state;
     const bottom = this._storage.items[moldPath][action].solid;
 
+    transformer(moldPath, action, top, bottom);
+
+    // TODO: ???? проверить были ли изменения и поднять событие
+  }
+
+  _defaultTransformer(moldPath, action, top, bottom) {
     // do nothing if there isn't any data
     if (_.isUndefined(top) && _.isUndefined(bottom)) return;
 
     // TODO: use mutation
     const combined = _.defaultsDeep(_.cloneDeep(top), bottom );
+    // TODO: не устанавливать - просто мутация
     this._storage.items[moldPath][action].combined = combined;
   }
 
