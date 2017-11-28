@@ -108,7 +108,11 @@ export default class Storage {
   updateTopLevel(moldPath, action, partialData) {
     this._checkParams(moldPath, action);
 
-    this._update(moldPath, action, 'state', partialData);
+    const wereChanges = this._update(moldPath, action, 'state', partialData);
+
+    // do nothing if there weren't any changes
+    if (!wereChanges) return;
+
     this._generateCombined(moldPath, action);
 
     this._events.emit(moldPath, 'change', {
@@ -126,7 +130,11 @@ export default class Storage {
   updateTopLevelSilent(moldPath, action, partialData) {
     this._checkParams(moldPath, action);
 
-    this._update(moldPath, action, 'state', partialData);
+    const wereChanges = this._update(moldPath, action, 'state', partialData);
+
+    // do nothing if there weren't any changes
+    if (!wereChanges) return;
+
     this._generateCombined(moldPath, action);
 
     this._events.emit(moldPath, 'silent', {
@@ -187,6 +195,7 @@ export default class Storage {
     this.initActionIfNeed(moldPath, action);
 
     const currentData = this._storage.items[moldPath][action][subPath];
+    const oldDataCopy = _.clone(this._storage.items[moldPath][action][subPath]);
 
     // // if there isn't any current data - just set it
     // if (_.isUndefined(currentData)) {
@@ -195,11 +204,13 @@ export default class Storage {
     //   return;
     // }
 
+    // TODO: test arrays
     // TODO: если есть массивы, то они полностью берутся из новых данных
     // TODO: наверное можно использоват mutate, но контейнеры обновлять с алгоритмом defaults
     this._storage.items[moldPath][action][subPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
 
-    // TODO: проверить были ли изменения и вернуть boolean
+    // if were changes - return true, else false
+    return !_.isEqual(oldDataCopy, this._storage.items[moldPath][action][subPath]);
   }
 
   _checkParams(moldPath, action) {
@@ -211,6 +222,7 @@ export default class Storage {
     const top = this._storage.items[moldPath][action].state;
     const bottom = this._storage.items[moldPath][action].solid;
 
+    // TODO: test arrays
     // TODO: наверное можно использоват mutate, но контейнеры обновлять с алгоритмом defaults
     const newData = _.defaultsDeep(_.cloneDeep(top), bottom);
 
