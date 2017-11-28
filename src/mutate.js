@@ -33,7 +33,6 @@ class Mutate {
     else if (_.isArray(newState)) {
       const compactedArray = _.compact(newState);
       if (newState.length === 0) {
-        // TODO: возможно не нужно
         return this._cleanArray(root);
       }
       else if ( _.isPlainObject(_.head(compactedArray))
@@ -74,6 +73,8 @@ class Mutate {
 
   _cleanArray(root) {
     const originalArray = this._get(root);
+
+    console.log(11111, root, originalArray)
 
     if (_.isEmpty(originalArray)) return;
 
@@ -160,7 +161,7 @@ class Mutate {
       return this.storage;
     }
     else {
-      _.get(this.storage, root);
+      return _.get(this.storage, root);
     }
   }
 
