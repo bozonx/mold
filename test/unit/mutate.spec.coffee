@@ -1,111 +1,55 @@
 mutate = require('../../src/mutate').mutate
 
 describe 'Unit. mutate.', ->
-  describe 'containers and primitives updates', ->
+  describe.only 'containers and primitives updates', ->
     it 'all types of primitives', ->
       storage =
-        container:
-          stringValue: 'old value'
-          numberValue: 1
-          boolValue: false
-          arrayValue: ['val1']
+        stringValue: 'old value'
+        numberValue: 1
+        boolValue: false
+        arrayValue: ['val1']
       newData =
         stringValue: 'new value'
         numberValue: 5
         boolValue: true
         arrayValue: ['val1', 'val2']
         newValue: 'new'
-      mutate(storage, 'container').update(newData)
+      mutate(storage).combine(newData)
 
-      assert.deepEqual(storage, { container: newData })
+      assert.deepEqual(storage, newData)
 
-    it 'unchanged values - nothing to change', ->
+    it 'unchanged, changed, odd and new values - change partly', ->
       storage =
-        container:
-          unchangedValue: 'old value'
-      newData =
         unchangedValue: 'old value'
-      haveChanges = mutate(storage, 'container').update(newData)
-
-      assert.deepEqual(storage, { container: newData })
-      assert.isFalse(haveChanges)
-
-    it 'unchanged values - change partly', ->
-      storage =
-        container:
-          unchangedValue: 'old value'
-          changedValue: 'old value'
+        changedValue: 'old value'
+        oddValue: 'odd value'
       newData =
         unchangedValue: 'old value'
         changedValue: 'new value'
-      haveChanges = mutate(storage, 'container').update(newData)
+        newValue: 'new value'
+      mutate(storage).combine(newData)
 
-      assert.deepEqual(storage, { container: newData })
-      assert.isTrue(haveChanges)
-
-    it 'untouched value', ->
-      storage =
-        container:
-          untouchedValue: 'untouched value'
-          changedValue: 'old value'
-      newData =
-        changedValue: 'new value'
-      haveChanges = mutate(storage, 'container').update(newData)
-
-      assert.deepEqual storage, {
-        container:
-          untouchedValue: 'untouched value'
-          changedValue: 'new value'
-      }
-      assert.isTrue(haveChanges)
-
-    it 'server returns _id additionally', ->
-      storage =
-        container:
-          changedValue: 'old value'
-      newData =
-        changedValue: 'new value'
-        _id: 'container'
-      mutate(storage, 'container').update(newData)
-
-      assert.deepEqual storage, {
-        container:
-          changedValue: 'new value'
-          _id: 'container'
-      }
+      assert.deepEqual(storage, newData)
 
     it 'nested container', ->
       storage =
-        container:
-          stringValue: 'old value'
-          nested:
-            nestedString: 'old nested value'
+        stringValue: 'old value'
+        nested:
+          nestedString: 'old nested value'
       newData =
         stringValue: 'new value'
         nested:
           nestedString: 'new nested value'
-      mutate(storage, 'container').update(newData)
-
-      assert.deepEqual(storage, { container: newData })
-
-    it 'update from root', ->
-      storage =
-        container:
-          stringValue: 'old value'
-      newData =
-        container:
-          stringValue: 'new value'
-      mutate(storage, '').update(newData)
+      mutate(storage).combine(newData)
 
       assert.deepEqual(storage, newData)
-
 
   describe 'primitive and clean array updates', ->
     it 'primitive array', ->
       storage =
         arrayParam: ['oldValue']
       newData = [undefined, 'newValue1', 'newValue2']
-      haveChanges = mutate(storage).update({ arrayParam: newData })
+      haveChanges = mutate(storage).combine({ arrayParam: newData })
 
       assert.deepEqual(storage, { arrayParam: newData })
       assert.isTrue(haveChanges)
@@ -114,7 +58,7 @@ describe 'Unit. mutate.', ->
       storage =
         arrayParam: ['oldValue1', 'oldValue2', 'oldValue3']
       newData = [undefined, 'newValue2']
-      haveChanges = mutate(storage).update({ arrayParam: newData })
+      haveChanges = mutate(storage).combine({ arrayParam: newData })
 
       assert.deepEqual(storage, { arrayParam: newData })
       assert.isTrue(haveChanges)
@@ -123,7 +67,7 @@ describe 'Unit. mutate.', ->
       storage =
         arrayParam: ['value1']
       newData = ['value1']
-      haveChanges = mutate(storage).update({ arrayParam: newData })
+      haveChanges = mutate(storage).combine({ arrayParam: newData })
 
       assert.deepEqual(storage, { arrayParam: newData })
       assert.isFalse(haveChanges)
@@ -131,7 +75,7 @@ describe 'Unit. mutate.', ->
     it '_cleanArray', ->
       storage =
         arrayParam: ['oldValue']
-      haveChanges = mutate(storage).update({ arrayParam: [] })
+      haveChanges = mutate(storage).combine({ arrayParam: [] })
 
       assert.deepEqual(storage, { arrayParam: [] })
       assert.isTrue(haveChanges)
@@ -155,7 +99,7 @@ describe 'Unit. mutate.', ->
           name: 'new item'
         }
       ]
-      haveChanges = mutate(storage, 'collection').update(newData)
+      haveChanges = mutate(storage, 'collection').combine(newData)
 
       assert.deepEqual(storage, { collection: [
         {
@@ -183,7 +127,7 @@ describe 'Unit. mutate.', ->
         }
         undefined,
       ]
-      haveChanges = mutate(storage, 'collection').update(newData)
+      haveChanges = mutate(storage, 'collection').combine(newData)
 
       assert.deepEqual(storage, { collection: [
         {
@@ -204,7 +148,7 @@ describe 'Unit. mutate.', ->
             name: 'new item'
           }
         ]
-      haveChanges = mutate(storage, 'collection').update([])
+      haveChanges = mutate(storage, 'collection').combine([])
 
       assert.deepEqual(storage, { collection: [] })
       assert.isTrue(haveChanges)
@@ -238,7 +182,7 @@ describe 'Unit. mutate.', ->
           name: 'new item'
         }
       ]
-      haveChanges = mutate(storage, 'collection').update(newData)
+      haveChanges = mutate(storage, 'collection').combine(newData)
 
       assert.deepEqual(storage, { collection: [
         undefined,
@@ -281,7 +225,7 @@ describe 'Unit. mutate.', ->
           name: 'new item'
         }
       ]
-      haveChanges = mutate(storage, 'collection').update(newData)
+      haveChanges = mutate(storage, 'collection').combine(newData)
 
       assert.deepEqual(storage, { collection: [
         {
@@ -305,7 +249,7 @@ describe 'Unit. mutate.', ->
         id: 5
         name: 'new item'
       }
-      haveChanges = mutate(storage, 'collection[0]').update(newData)
+      haveChanges = mutate(storage, 'collection[0]').combine(newData)
 
       assert.deepEqual(storage, { collection: [
         {
@@ -332,7 +276,7 @@ describe 'Unit. mutate.', ->
           name: 'old item'
         }
       ]
-      haveChanges = mutate(storage, 'collection').update(newData)
+      haveChanges = mutate(storage, 'collection').combine(newData)
 
       assert.deepEqual(storage, { collection: storage.collection })
       assert.isFalse(haveChanges)

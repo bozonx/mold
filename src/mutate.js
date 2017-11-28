@@ -7,12 +7,12 @@ import { concatPath } from './helpers';
  * @param {object|Array} storage - This will be mutated
  * @param {string} rootLodash - It's root path in mold format like 'path.to.0.item'
  */
-export function mutate(storage, rootLodash) {
+export function mutate(storage, rootLodash = '') {
   return new Mutate(storage, rootLodash);
 }
 
 class Mutate {
-  constructor(storage, rootLodash = '') {
+  constructor(storage, rootLodash) {
     this.storage = storage;
     this.root = rootLodash;
   }
@@ -53,7 +53,8 @@ class Mutate {
 
   _updateContainer(root, newContainerState) {
     // remove odd params
-    const currentContainer = _.get(this.storage, root);
+    const currentContainer = this._get(root);;
+
     _.each(currentContainer, (item, name) => {
       if (_.isUndefined(newContainerState[name])) {
         delete currentContainer[name];
@@ -72,7 +73,7 @@ class Mutate {
   }
 
   _cleanArray(root) {
-    const originalArray = _.get(this.storage, root);
+    const originalArray = this._get(root);
 
     if (_.isEmpty(originalArray)) return;
 
@@ -86,7 +87,7 @@ class Mutate {
    * @private
    */
   _updatePrimitiveArray(root, newPrimitiveArrayState) {
-    let originalArray = _.get(this.storage, root);
+    let originalArray = this._get(root);
 
     if (_.isEqual(originalArray, newPrimitiveArrayState)) return;
 
@@ -116,7 +117,7 @@ class Mutate {
    */
   _updateCollection(root, newCollectionState) {
     let isChanged = false;
-    let originalCollection = _.get(this.storage, root);
+    let originalCollection = this._get(root);
 
     // TODO: переделать - порядок элементов бедем из новых данных
     //       - ищем по primaryKey старые элементы, и берем из старых элементов данные, на которые накладываем новые
@@ -152,6 +153,15 @@ class Mutate {
   _removeOddFromRight(originalArray, newArray) {
     if (!originalArray.length || !newArray.length || newArray.length > originalArray.length) return;
     originalArray.splice(newArray.length, originalArray.length - newArray.length);
+  }
+
+  _get(root) {
+    if (!root) {
+      return this.storage;
+    }
+    else {
+      _.get(this.storage, root);
+    }
   }
 
 }
