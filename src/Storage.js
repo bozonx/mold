@@ -49,7 +49,6 @@ export default class Storage {
   }
 
   getCombined(moldPath, action) {
-    // TODO: test it
     this._checkParams(moldPath, action);
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
@@ -66,7 +65,6 @@ export default class Storage {
    * @return {object|undefined}
    */
   getState(moldPath, action) {
-    // TODO: test it
     this._checkParams(moldPath, action);
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
@@ -77,7 +75,6 @@ export default class Storage {
   }
 
   getSolid(moldPath, action) {
-    // TODO: test it
     this._checkParams(moldPath, action);
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
@@ -87,7 +84,7 @@ export default class Storage {
     return this._storage.items[moldPath][action].solid;
   }
 
-  getMeta(moldPath, action, metaPath) {
+  getMeta(moldPath, action, metaPath=undefined) {
     // TODO: test it
     this._checkParams(moldPath, action);
 
@@ -95,7 +92,12 @@ export default class Storage {
       return undefined;
     }
 
-    return _.get(this._storage.items[moldPath][action].meta, metaPath);
+    if (metaPath) {
+      return _.get(this._storage.items[moldPath][action].meta, metaPath);
+    }
+    else {
+      return this._storage.items[moldPath][action].meta;
+    }
   }
 
   /**
@@ -148,7 +150,6 @@ export default class Storage {
     const currentData = this._storage.items[moldPath][action].meta;
     this._storage.items[moldPath][action].meta = _.defaultsDeep(_.cloneDeep(partialData), currentData);
 
-    // TODO: test it
     // TODO: поднимать ли событие any???
   }
 

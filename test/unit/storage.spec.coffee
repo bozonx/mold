@@ -107,3 +107,14 @@ describe.only 'Unit. Storage.', ->
         param2: 'value22'
         param3: 'value3'
       }
+
+    it 'meta', ->
+      metaData = {
+        param1: 'value1'
+      }
+
+      @storage.$init({})
+      @storage.updateMeta(@moldPath, @defaultAction, metaData)
+
+      expect(@storage.getMeta(@moldPath, @defaultAction)).to.be.deep.equal(metaData)
+      expect(@storage.getMeta(@moldPath, @defaultAction, 'param1')).to.be.deep.equal('value1')
