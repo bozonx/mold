@@ -202,11 +202,6 @@ export default class Storage {
   }
 
   _generateCombined(moldPath, action) {
-    let transformer = this._defaultTransformer.bind(this);
-    if (this._transformers[moldPath] && this._transformers[moldPath][action]) {
-      transformer = this._transformers[moldPath][action];
-    }
-
     const top = this._storage.items[moldPath][action].state;
     const bottom = this._storage.items[moldPath][action].solid;
 
@@ -217,15 +212,8 @@ export default class Storage {
       this._storage.items[moldPath][action].combined = newData;
     }
     else {
-      transformer(moldPath, action, this._storage.items[moldPath][action].combined, newData);
+      if (_.isUndefined(newData)) return;
+      mutate(this._storage.items[moldPath][action].combined).combine(newData);
     }
   }
-
-  _defaultTransformer(moldPath, action, currentData, newData) {
-    // do nothing if there isn't any data
-    if (_.isUndefined(newData) && _.isUndefined(currentData)) return;
-
-    mutate(currentData, '').update(newData);
-  }
-
 }

@@ -2,9 +2,37 @@ import _ from 'lodash';
 
 import { concatPath } from './helpers';
 
+export function updateIndexes(collectionInStorage, pageIndex = NaN) {
+  if (_.isArray(_.last(collectionInStorage))) {
+    // for paged collections
+    _.each(collectionInStorage, (page, pageIndex) => {
+      _.each(page, (value, index) => {
+        if (_.isPlainObject(value)) {
+          value.$index = index;
+          value.$pageIndex = pageIndex;
+        }
+      });
+    });
+  }
+  else {
+    // for simple collections
+    _.each(collectionInStorage, (value, index) => {
+      if (_.isPlainObject(value)) {
+        value.$index = index;
+        if (_.isNaN(pageIndex)) {
+          delete value.$pageIndex;
+        }
+        else {
+          value.$pageIndex = pageIndex;
+        }
+      }
+    });
+  }
+}
+
 /**
  * Mutate storage.
- * @param {object|Array} storage - This will be mutated
+ * @param {object|Array} storage - This will be mutate
  * @param {string} rootLodash - It's root path in mold format like 'path.to.0.item'
  */
 export function mutate(storage, rootLodash) {
@@ -13,16 +41,18 @@ export function mutate(storage, rootLodash) {
 
 class Mutate {
   constructor(storage, rootLodash = '') {
-    this.storage = storage;
     this.root = rootLodash;
+    this.storage = storage;
   }
 
   /**
    * Update container/collection/primitive with new state.
-   * For correctly update collection set unique $$key param.
+   * WARNING: If you add item to beginning of existent collection
+   *     it means - update all items and add last item
    * @param {*} newState
+   * @returns {boolean} true if there were any changes.
    */
-  combine(newState) {
+  update(newState) {
     return this._crossroads(this.root, newState);
   }
 
@@ -31,16 +61,14 @@ class Mutate {
       return this._updateContainer(root, newState);
     }
     else if (_.isArray(newState)) {
-      const compactedArray = _.compact(newState);
       if (newState.length === 0) {
-        // TODO: возможно не нужно
         return this._cleanArray(root);
       }
-      else if ( _.isPlainObject(_.head(compactedArray))
-        &&  _.isNumber(_.head(compactedArray).$$key)) {
+      // TODO: оптимизировать проверку - compact возможно много жрет ресурсов
+      else if (newState.length && _.isPlainObject(_.head(_.compact(newState)))) {
         return this._updateCollection(root, newState);
       }
-      else {
+      else if (newState.length) {
         // It's primitive array or empty collection
         return this._updatePrimitiveArray(root, newState);
       }
@@ -52,48 +80,43 @@ class Mutate {
   }
 
   _updateContainer(root, newContainerState) {
-    // remove odd params
-    const currentContainer = _.get(this.storage, root);
-    _.each(currentContainer, (item, name) => {
-      if (_.isUndefined(newContainerState[name])) {
-        delete currentContainer[name];
-      }
-    });
-
-    // update
-    _.each(newContainerState, (item, name) => {
-      const path = concatPath(root, name);
-      this._crossroads(path, item);
-    });
+    // в старом контейнере может быть несохраняемый стейт. Не нужно его удалять
+    return _.reduce(newContainerState, (sum, value, name) => {
+      const haveChanges = this._crossroads(concatPath(root, name), value);
+      return (!sum) ? haveChanges : sum;
+    }, false);
   }
 
   _updatePrimitive(root, newPrimitiveState) {
+    const oldValue = _.get(this.storage, root);
+    // set to storage
     _.set(this.storage, root, newPrimitiveState);
+    return oldValue !== newPrimitiveState;
   }
 
   _cleanArray(root) {
     const originalArray = _.get(this.storage, root);
 
-    if (_.isEmpty(originalArray)) return;
+    if (_.isEmpty(originalArray)) return false;
 
     originalArray.splice(0);
+
+    return true;
   }
 
   /**
    * It carefully replace old array with new array.
    * @param root
    * @param newPrimitiveArrayState
+   * @returns {boolean}
    * @private
    */
   _updatePrimitiveArray(root, newPrimitiveArrayState) {
     let originalArray = _.get(this.storage, root);
-
-    if (_.isEqual(originalArray, newPrimitiveArrayState)) return;
-
+    if (_.isEqual(originalArray, newPrimitiveArrayState)) return false;
     if (_.isUndefined(originalArray)) {
-      _.set(this.storage, root, newPrimitiveArrayState);
-
-      return;
+      originalArray = [];
+      _.set(this.storage, root, originalArray);
     }
 
     _.each(newPrimitiveArrayState, (value, index) => {
