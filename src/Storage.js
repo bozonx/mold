@@ -192,11 +192,10 @@ export default class Storage {
     //   return;
     // }
 
+    // TODO: если есть массивы, то они полностью берутся из новых данных, либо смержить с трансформером
     this._storage.items[moldPath][action][subPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
 
     // TODO: проверить были ли изменения и поднять событие
-
-    //const wereChanges = mutate(currentData, '').update(partialData);
   }
 
   _checkParams(moldPath, action) {
@@ -213,17 +212,21 @@ export default class Storage {
     const top = this._storage.items[moldPath][action].state;
     const bottom = this._storage.items[moldPath][action].solid;
 
-    transformer(moldPath, action, top, bottom);
+    const newData = _.defaultsDeep(_.cloneDeep(top), bottom);
+
+    if (_.isUndefined(this._storage.items[moldPath][action].combined)) {
+      this._storage.items[moldPath][action].combined = newData;
+    }
+    else {
+      transformer(moldPath, action, this._storage.items[moldPath][action].combined, newData);
+    }
   }
 
-  _defaultTransformer(moldPath, action, top, bottom) {
+  _defaultTransformer(moldPath, action, currentData, newData) {
     // do nothing if there isn't any data
-    if (_.isUndefined(top) && _.isUndefined(bottom)) return;
+    if (_.isUndefined(newData) && _.isUndefined(currentData)) return;
 
-    // TODO: use mutation
-    const combined = _.defaultsDeep(_.cloneDeep(top), bottom );
-    // TODO: не устанавливать - просто мутация
-    this._storage.items[moldPath][action].combined = combined;
+    mutate(currentData, '').update(newData);
   }
 
 }
