@@ -146,6 +146,7 @@ export default class Storage {
     this._checkParams(moldPath, action);
     this.initActionIfNeed(moldPath, action);
 
+    // TODO: может опять использовать this._update ?
     const currentData = this._storage.items[moldPath][action].meta;
     this._storage.items[moldPath][action].meta = _.defaultsDeep(_.cloneDeep(partialData), currentData);
 
@@ -184,18 +185,18 @@ export default class Storage {
 
     const currentData = this._storage.items[moldPath][action][subPath];
 
-    // if there isn't any current data - just set it
-    if (_.isUndefined(currentData)) {
-      this._storage.items[moldPath][action][subPath] = _.cloneDeep(partialData);
+    // // if there isn't any current data - just set it
+    // if (_.isUndefined(currentData)) {
+    //   this._storage.items[moldPath][action][subPath] = _.cloneDeep(partialData);
+    //
+    //   return;
+    // }
 
-      return;
-    }
+    this._storage.items[moldPath][action][subPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
 
-    // merge
+    // TODO: проверить были ли изменения и поднять событие
 
-    // TODO: не поднимать события если не было изменений
-    // TODO: использовать transform
-    const wereChanges = mutate(currentData, '').update(partialData);
+    //const wereChanges = mutate(currentData, '').update(partialData);
   }
 
   _checkParams(moldPath, action) {
@@ -213,8 +214,6 @@ export default class Storage {
     const bottom = this._storage.items[moldPath][action].solid;
 
     transformer(moldPath, action, top, bottom);
-
-    // TODO: ???? проверить были ли изменения и поднять событие
   }
 
   _defaultTransformer(moldPath, action, top, bottom) {
