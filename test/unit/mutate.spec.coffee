@@ -75,20 +75,18 @@ describe.only 'Unit. mutate.', ->
         collection: []
       newData = [
         {
-          id: 5
+          $$key: 5
           name: 'new item'
         }
       ]
-      haveChanges = mutate(storage, 'collection').combine(newData)
+      mutate(storage, 'collection').combine(newData)
 
       assert.deepEqual(storage, { collection: [
         {
-          $index: 0
-          id: 5
+          $$key: 5
           name: 'new item'
         }
       ] })
-      assert.isTrue(haveChanges)
 
     it 'reduce collection size', ->
       storage =
@@ -107,7 +105,7 @@ describe.only 'Unit. mutate.', ->
         }
         undefined,
       ]
-      haveChanges = mutate(storage, 'collection').combine(newData)
+      mutate(storage, 'collection').combine(newData)
 
       assert.deepEqual(storage, { collection: [
         {
@@ -117,7 +115,6 @@ describe.only 'Unit. mutate.', ->
         }
         undefined,
       ] })
-      assert.isTrue(haveChanges)
 
     it 'clean a collection', ->
       storage =
@@ -131,7 +128,6 @@ describe.only 'Unit. mutate.', ->
       haveChanges = mutate(storage, 'collection').combine([])
 
       assert.deepEqual(storage, { collection: [] })
-      assert.isTrue(haveChanges)
 
     it 'replace - new data is greater', ->
       storage =
@@ -182,7 +178,6 @@ describe.only 'Unit. mutate.', ->
           name: 'new item'
         }
       ] })
-      assert.isTrue(haveChanges)
 
     it 'replace - new data is less', ->
       storage =
@@ -214,7 +209,6 @@ describe.only 'Unit. mutate.', ->
           name: 'new item'
         }
       ] })
-      assert.isTrue(haveChanges)
 
     it 'collection item change on updating item himself via container "collection[0]"', ->
       storage =
@@ -238,7 +232,6 @@ describe.only 'Unit. mutate.', ->
           name: 'new item'
         }
       ] })
-      assert.isTrue(haveChanges)
 
     it 'unchanged', ->
       storage =
@@ -259,4 +252,3 @@ describe.only 'Unit. mutate.', ->
       haveChanges = mutate(storage, 'collection').combine(newData)
 
       assert.deepEqual(storage, { collection: storage.collection })
-      assert.isFalse(haveChanges)

@@ -74,8 +74,6 @@ class Mutate {
   _cleanArray(root) {
     const originalArray = this._get(root);
 
-    console.log(11111, root, originalArray)
-
     if (_.isEmpty(originalArray)) return;
 
     originalArray.splice(0);
@@ -93,7 +91,8 @@ class Mutate {
     if (_.isEqual(originalArray, newPrimitiveArrayState)) return;
 
     if (_.isUndefined(originalArray)) {
-      _.set(this.storage, root, newPrimitiveArrayState);
+      const newArray = _.cloneDeep(newPrimitiveArrayState);
+      _.set(this.storage, root, newArray);
 
       return;
     }
@@ -113,42 +112,50 @@ class Mutate {
    * It hopes newCollectionState isn't empty.
    * @param root
    * @param newCollectionState
-   * @returns {boolean}
    * @private
    */
   _updateCollection(root, newCollectionState) {
-    let isChanged = false;
-    let originalCollection = this._get(root);
-
-    // TODO: переделать - порядок элементов бедем из новых данных
-    //       - ищем по primaryKey старые элементы, и берем из старых элементов данные, на которые накладываем новые
-    //       !!!! или может вообще всегда заменять массивы, чтобы не было путаницы
+    const originalCollection = this._get(root);
 
     if (_.isUndefined(originalCollection)) {
-      originalCollection = _.cloneDeep(newCollectionState);
-      _.set(this.storage, root, originalCollection);
-      isChanged = true;
-    }
-    else {
-      // update each item
-      _.each(newCollectionState, (value, index) => {
-        if (_.isPlainObject(value)) {
-          // update item
-          const isItemChanged = this._updateContainer(concatPath(root, index), value);
-          if (!isChanged) isChanged = isItemChanged;
-        }
-        else {
-          // replace item to undefined
-          const isItemChanged = originalCollection[index] !== value;
-          if (!isChanged) isChanged = isItemChanged;
-          originalCollection.splice(index, 1, value);
-        }
-      });
-      if (isChanged) this._removeOddFromRight(originalCollection, newCollectionState);
+      const newCollection = _.cloneDeep(newCollectionState);
+      _.set(this.storage, root, newCollection);
+
+      return;
     }
 
-    if (isChanged) updateIndexes(originalCollection);
-    return isChanged;
+    const items = [];
+
+    _.each(newCollectionState, (item) => {
+      if (!_.isPlainObject(item)) return;
+      if (!_.isNumber(item.$$key)) {
+        // TODO: использовать app.log
+        console.warn(`WARNING: item doesn't have a $$key param! ${JSON.stringify(item)}`);
+
+        return;
+      }
+
+      const found = _.find(originalCollection, {$$key: item.$$key});
+
+      if (found) {
+        // existent item - update it
+        // TODO: mutate
+        const mutated = item;
+        items.push(item);
+      }
+      else {
+        // new items
+        items.push(item);
+      }
+    });
+
+    // set to old collection
+    _.each(items, (item, index) => {
+      originalCollection.splice(index, 1, item);
+      //originalCollection[index] = item;
+    });
+
+    this._removeOddFromRight(originalCollection, newCollectionState);
   }
 
   _removeOddFromRight(originalArray, newArray) {
