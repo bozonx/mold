@@ -109,6 +109,8 @@ describe.only 'Unit. Storage.', ->
       }
 
     it 'meta', ->
+      anyHandler = sinon.spy()
+      @events.on(@moldPath, 'any', anyHandler)
       metaData = {
         param1: 'value1'
       }
@@ -118,3 +120,4 @@ describe.only 'Unit. Storage.', ->
 
       expect(@storage.getMeta(@moldPath, @defaultAction)).to.be.deep.equal(metaData)
       expect(@storage.getMeta(@moldPath, @defaultAction, 'param1')).to.be.deep.equal('value1')
+      expect(anyHandler).to.be.calledOnce

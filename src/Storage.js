@@ -85,7 +85,6 @@ export default class Storage {
   }
 
   getMeta(moldPath, action, metaPath=undefined) {
-    // TODO: test it
     this._checkParams(moldPath, action);
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
@@ -150,7 +149,12 @@ export default class Storage {
     const currentData = this._storage.items[moldPath][action].meta;
     this._storage.items[moldPath][action].meta = _.defaultsDeep(_.cloneDeep(partialData), currentData);
 
-    // TODO: поднимать ли событие any???
+    this._events.emit(moldPath, 'any', {
+      data: partialData,
+      by: 'program',
+      type: 'meta',
+      action,
+    });
   }
 
   /**
