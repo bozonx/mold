@@ -141,7 +141,7 @@ class Mutate {
         // existent item - update it
         // TODO: mutate
         const mutated = item;
-        items.push(item);
+        items.push(mutated);
       }
       else {
         // new items
@@ -152,7 +152,6 @@ class Mutate {
     // set to old collection
     _.each(items, (item, index) => {
       originalCollection.splice(index, 1, item);
-      //originalCollection[index] = item;
     });
 
     this._removeOddFromRight(originalCollection, newCollectionState);

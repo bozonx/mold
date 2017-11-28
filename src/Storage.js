@@ -190,10 +190,11 @@ export default class Storage {
     //   return;
     // }
 
-    // TODO: если есть массивы, то они полностью берутся из новых данных, либо смержить с трансформером
+    // TODO: если есть массивы, то они полностью берутся из новых данных
+    // TODO: наверное можно использоват mutate, но контейнеры обновлять с алгоритмом defaults
     this._storage.items[moldPath][action][subPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
 
-    // TODO: проверить были ли изменения и поднять событие
+    // TODO: проверить были ли изменения и вернуть boolean
   }
 
   _checkParams(moldPath, action) {
@@ -205,7 +206,7 @@ export default class Storage {
     const top = this._storage.items[moldPath][action].state;
     const bottom = this._storage.items[moldPath][action].solid;
 
-    // TODO: может тоже надо получить с трансформером
+    // TODO: наверное можно использоват mutate, но контейнеры обновлять с алгоритмом defaults
     const newData = _.defaultsDeep(_.cloneDeep(top), bottom);
 
     if (_.isUndefined(this._storage.items[moldPath][action].combined)) {

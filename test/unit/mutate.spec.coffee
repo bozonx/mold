@@ -93,162 +93,63 @@ describe.only 'Unit. mutate.', ->
         collection: [
           undefined
           {
-            $index: 0
-            id: 0
+            $$key: 0
             name: 'old item'
           }
         ]
       newData = [
         {
-          id: 1
+          $$key: 1
           name: 'new item'
         }
-        undefined,
       ]
       mutate(storage, 'collection').combine(newData)
 
       assert.deepEqual(storage, { collection: [
         {
-          $index: 0
-          id: 1
+          $$key: 1
           name: 'new item'
         }
-        undefined,
       ] })
+
+    it 'update and unchanged', ->
+      storage =
+        collection: [
+          {
+            $$key: 0
+            name: 'unchanged'
+          }
+          {
+            $$key: 1
+            name: 'old'
+          }
+        ]
+      newData =
+        collection:  [
+          {
+            $$key: 0
+            name: 'unchanged'
+          }
+          {
+            $$key: 1
+            name: 'updated'
+          }
+        ]
+      mutate(storage).combine(newData)
+
+      assert.deepEqual(storage, newData)
 
     it 'clean a collection', ->
       storage =
         collection: [
           {
-            $index: 0
-            id: 5
+            $$key: 5
             name: 'new item'
           }
         ]
-      haveChanges = mutate(storage, 'collection').combine([])
+      mutate(storage, 'collection').combine([])
 
       assert.deepEqual(storage, { collection: [] })
 
-    it 'replace - new data is greater', ->
-      storage =
-        collection: [
-          {
-            $index: 0,
-            id: 5
-            name: 'this will be replaced'
-          }
-          {
-            $index: 1,
-            id: 6
-            name: 'this will be replaced'
-          }
-        ]
-      newData = [
-        undefined,
-        {
-          id: 6
-          name: 'new item'
-        }
-        {
-          id: 7
-          name: 'new item'
-        }
-        {
-          id: 8
-          name: 'new item'
-        }
-      ]
-      haveChanges = mutate(storage, 'collection').combine(newData)
 
-      assert.deepEqual(storage, { collection: [
-        undefined,
-        {
-          $index: 1,
-          id: 6
-          name: 'new item'
-        }
-        {
-          $index: 2,
-          id: 7
-          name: 'new item'
-        }
-        {
-          $index: 3,
-          id: 8
-          name: 'new item'
-        }
-      ] })
-
-    it 'replace - new data is less', ->
-      storage =
-        collection: [
-          {
-            $index: 0,
-            id: 5
-            name: 'this will be replaced'
-          }
-          undefined,
-          {
-            $index: 1,
-            id: 6
-            name: 'this will be stay untouched'
-          }
-        ]
-      newData = [
-        {
-          id: 6
-          name: 'new item'
-        }
-      ]
-      haveChanges = mutate(storage, 'collection').combine(newData)
-
-      assert.deepEqual(storage, { collection: [
-        {
-          $index: 0,
-          id: 6
-          name: 'new item'
-        }
-      ] })
-
-    it 'collection item change on updating item himself via container "collection[0]"', ->
-      storage =
-        collection: [
-          {
-            $index: 0
-            id: 5
-            name: 'old item'
-          }
-        ]
-      newData = {
-        id: 5
-        name: 'new item'
-      }
-      haveChanges = mutate(storage, 'collection[0]').combine(newData)
-
-      assert.deepEqual(storage, { collection: [
-        {
-          $index: 0
-          id: 5
-          name: 'new item'
-        }
-      ] })
-
-    it 'unchanged', ->
-      storage =
-        collection: [
-          {
-            $index: 0
-            id: 5
-            name: 'old item'
-          }
-        ]
-      newData = [
-        {
-          $index: 0
-          id: 5
-          name: 'old item'
-        }
-      ]
-      haveChanges = mutate(storage, 'collection').combine(newData)
-
-      assert.deepEqual(storage, { collection: storage.collection })
+  # TODO: check reordered on server
