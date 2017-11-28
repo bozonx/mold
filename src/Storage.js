@@ -8,7 +8,6 @@ export default class Storage {
   constructor(events) {
     this._events = events;
     this._storage = null;
-    this._transformers = null;
   }
 
   /**
@@ -20,7 +19,6 @@ export default class Storage {
   $init(newStorage) {
     this._storage = newStorage;
     this._storage.items = {};
-    this._transformers = {};
   }
 
   $getWholeStorageState() {
@@ -212,6 +210,7 @@ export default class Storage {
     const top = this._storage.items[moldPath][action].state;
     const bottom = this._storage.items[moldPath][action].solid;
 
+    // TODO: может тоже надо получить с трансформером
     const newData = _.defaultsDeep(_.cloneDeep(top), bottom);
 
     if (_.isUndefined(this._storage.items[moldPath][action].combined)) {

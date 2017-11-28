@@ -54,6 +54,7 @@ export default class Catalogue extends _TypeBase {
             method: 'filter',
           });
         }
+        // TODO: после загрузки данных проставить значение $$key в solid
       };
     });
   }
@@ -64,11 +65,11 @@ export default class Catalogue extends _TypeBase {
       return class extends Action {
         init() {
           // TODO: init state as []
-          // TODO: set action mold transform
           this.setDriverParams({
             method: 'create',
           });
         }
+        // TODO: после загрузки данных проставить значение $$key в solid
       };
     });
   }
@@ -83,6 +84,7 @@ export default class Catalogue extends _TypeBase {
             method: 'remove',
           });
         }
+        // TODO: после загрузки данных проставить значение $$key в solid
       };
     });
   }
