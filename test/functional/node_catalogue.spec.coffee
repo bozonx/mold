@@ -31,10 +31,16 @@ describe.only 'Functional. Catalogue node.', ->
 
     assert.isTrue(@catalogue.loading)
 
+    result = [
+      { $id: 1, $$key: 1, name: 'value1' }
+      { $id: 2, $$key: 2, name: 'value2' }
+    ]
+
     promise
       .then (response) =>
-        assert.deepEqual(response.body, @testValues)
-        assert.deepEqual(@catalogue.mold, @testValues)
+        assert.deepEqual(response.body, result)
+        assert.deepEqual(@catalogue.actions.default.mold, result)
+        assert.deepEqual(@catalogue.mold, result)
         assert.isFalse(@catalogue.loading)
 
   it 'load page', ->
