@@ -28,27 +28,34 @@ export default class _Mold {
   }
 
   update(newState) {
+    const isValid = this._validate(newState);
+
+    if (isValid !== true) {
+      console.error(isValid);
+
+      return;
+    }
+
     //this._checkForUpdateReadOnly(newState);
-    // TODO: валидировать согласно схеме
     this._storage.updateTopLevel(this._moldPath, this._actionName, newState);
   }
 
   updateSilent(newState) {
+    const isValid = this._validate(newState);
+
+    if (isValid !== true) {
+      console.error(isValid);
+
+      return;
+    }
+
     //this._checkForUpdateReadOnly(newState);
-    // TODO: валидировать согласно схеме
     this._storage.updateTopLevel(this._moldPath, this._actionName, newState);
   }
 
   _initSchema() {
-    // TODO: берем корневой элемент и инициализируем его и берем у него mold
-    //this._state;
-
     const initialState = this._getInitialState();
     this._storage.initState(this._moldPath, this._actionName, initialState);
-
-    eachSchema(this._schema, (schemaPath, schema) => {
-
-    });
   }
 
   _getInitialState() {
@@ -56,12 +63,22 @@ export default class _Mold {
 
     if (_.includes(['assoc', 'collection'], rootTypeName)) {
       // TODO: use log
-      throw new Error(`ERROR: bad root type "${rootTypeName}" for ${this._moldPath} ${this._actionName}`);
+      throw new Error(`ERROR: bad root type "${rootTypeName}" for "${this._moldPath}" action "${this._actionName}"`);
     }
 
     const rootType = this._typeManager.types[rootTypeName];
 
     return rootType.getInitial();
+  }
+
+  _validate(newState) {
+    // TODO: валидировать согласно схеме
+    // TODO: do it. return string on error
+    return true;
+
+    eachSchema(this._schema, (schemaPath, schema) => {
+
+    });
   }
 
   // _checkForUpdateReadOnly(newState) {
