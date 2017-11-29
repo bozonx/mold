@@ -1,13 +1,13 @@
 import _ from 'lodash';
 
 
-export default class StringType {
+export default class BooleanType {
   constructor() {
 
   }
 
   validate(value) {
-    return _.isString(value);
+    return _.isBoolean(value);
   }
 
 }

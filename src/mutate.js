@@ -35,6 +35,7 @@ class Mutate {
       if (newState.length === 0) {
         return this._cleanArray(root);
       }
+      // TODO: review
       else if ( _.isPlainObject(_.head(compactedArray))
         &&  _.isNumber(_.head(compactedArray).$$key)) {
         return this._updateCollection(root, newState);

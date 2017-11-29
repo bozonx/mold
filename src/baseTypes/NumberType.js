@@ -1,13 +1,13 @@
 import _ from 'lodash';
 
 
-export default class StringType {
+export default class NumberType {
   constructor() {
 
   }
 
   validate(value) {
-    return _.isString(value);
+    return _.isNumber(value);
   }
 
 }

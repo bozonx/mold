@@ -26,17 +26,16 @@ export default class _Mold {
     // });
   }
 
-  update(newState, eventData=undefined) {
-    // TODO: обращаться напрямую в storage
+  update(newState) {
     //this._checkForUpdateReadOnly(newState);
-    this._storage.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
-    // TODO: сделать мутацию this._state - спрашивая каждый тип
+    // TODO: валидировать согласно схеме
+    this._storage.updateTopLevel(this._moldPath, this._actionName, newState);
   }
 
-  updateSilent(newState, eventData=undefined) {
+  updateSilent(newState) {
     //this._checkForUpdateReadOnly(newState);
-    this._storage.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
-    // TODO: сделать мутацию this._state - спрашивая каждый тип
+    // TODO: валидировать согласно схеме
+    this._storage.updateTopLevel(this._moldPath, this._actionName, newState);
   }
 
   _initSchema() {
