@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
 import { concatPath, findPrimary } from '../helpers';
-import _TypeBase from './_NodeBase';
+import _NodeBase from './_NodeBase';
 
 
-export default class Catalogue extends _TypeBase {
+export default class Catalogue extends _NodeBase {
   static validateSchema(schema, schemaPath) {
     // TODO: !!!!
   }

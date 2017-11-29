@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
 import { concatPath, convertFromLodashToSchema } from '../helpers';
-import _TypeBase from './_NodeBase';
+import _NodeBase from './_NodeBase';
 
 
-export default class Container extends _TypeBase {
+export default class State extends _NodeBase {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema))
       return `Schema definition of container on "${schemaPath}" must has a "schema" param!`;
