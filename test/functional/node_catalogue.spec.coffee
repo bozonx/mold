@@ -48,8 +48,10 @@ describe.only 'Functional. Catalogue node.', ->
         assert.isFalse(@catalogue.loading)
 
   it 'load page', ->
+    # TODO: !!!!
 
-  it 'create and remove', ->
+  it 'create', ->
+    # TODO: !!!!
 
 
 #  it "without document", ->

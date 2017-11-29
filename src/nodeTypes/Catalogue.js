@@ -58,6 +58,7 @@ export default class Catalogue extends State {
       return class extends Action {
         init() {
           super.init();
+
           this.setDriverParams({
             method: 'filter',
           });
@@ -94,7 +95,10 @@ export default class Catalogue extends State {
     return this.$createAction('create', (Action) => {
       return class extends Action {
         init() {
+          this._schema = schema.item;
+
           super.init();
+
           this.setDriverParams({
             method: 'create',
           });
