@@ -9,11 +9,10 @@ export default class _Mold {
     this._moldPath = moldPath;
     this._actionName = actionName;
     this._schema = fullSchema;
-    this._state = undefined;
   }
 
   get state() {
-    return this._state;
+    return this._main.$$storage.getCombined(this._moldPath, this._actionName);
   }
 
   init() {

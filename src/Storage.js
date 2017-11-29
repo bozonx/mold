@@ -30,6 +30,7 @@ export default class Storage {
     this.initActionIfNeed(moldPath, action);
 
     this._storage.items[moldPath][action].state = initialState;
+    this._generateCombined(moldPath, action);
   }
 
   initActionIfNeed(moldPath, action) {

@@ -14,13 +14,13 @@ describe.only 'Functional. State node.', ->
               type: 'array'
               itemsType: 'number'
             }
-            collection: {
-              type: 'collection'
-              item: {
-                id: { type: 'number', key: true }
-                itemStringParam: {type: 'string'}
-              }
-            }
+#            collection: {
+#              type: 'collection'
+#              item: {
+#                id: { type: 'number', key: true }
+#                itemStringParam: {type: 'string'}
+#              }
+#            }
             nested: {
               type: 'assoc'
               items: {
