@@ -35,6 +35,7 @@ export default class Main {
     // initialize
     this.$$schemaManager.init();
     this.$$schemaManager.setSchema('', schema);
+    this.$$storage.$init({});
   }
 
   /**

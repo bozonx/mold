@@ -10,8 +10,6 @@ export default class _Mold {
     this._actionName = actionName;
     this._schema = fullSchema;
     this._state = undefined;
-
-    // TODO: set moldTransform to storage
   }
 
   get state() {
@@ -60,7 +58,7 @@ export default class _Mold {
   _getInitialState() {
     const rootTypeName = this._schema.type;
 
-    if (_.includes(['assoc', 'collection'], rootTypeName)) {
+    if (!_.includes(['assoc', 'collection'], rootTypeName)) {
       this._main.$$log.fatal(`ERROR: bad root type "${rootTypeName}" for "${this._moldPath}" action "${this._actionName}"`);
     }
 
