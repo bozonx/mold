@@ -4,8 +4,9 @@ import { eachSchema } from '../helpers';
 
 
 export default class _Mold {
-  constructor(storage, moldPath, actionName, schema) {
+  constructor(storage, typeManager, moldPath, actionName, schema) {
     this._storage = storage;
+    this._typeManager = typeManager;
     this._moldPath = moldPath;
     this._actionName = actionName;
     this._schema = schema;

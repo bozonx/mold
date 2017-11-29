@@ -2,9 +2,10 @@ import _Mold from './_Mold';
 
 
 export default class Action {
-  constructor(storage, request, nodeInstance, moldPath, actionName, fullSchema) {
-    this._storage = storage;
-    this._request = request;
+  constructor(main, nodeInstance, moldPath, actionName, fullSchema) {
+    this._storage = main.$$storage;
+    this._request = main.$$request;
+    this._typeManager = main.$$typeManager;
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
