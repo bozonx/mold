@@ -20,7 +20,6 @@ export default class _Mold {
 
   init() {
     this._initSchema();
-
     // this.__readOnlyProps = [];
     // _.each(this.schema.schema, (item, name) => {
     //   if (item.readOnly) this.__readOnlyProps.push(name);
@@ -42,6 +41,8 @@ export default class _Mold {
   _initSchema() {
     // TODO: берем корневой элемент и инициализируем его и берем у него mold
     //this._state;
+
+    //this._stateManager.initState(this._moldPath, this._actionName, actionStateRootContainer);
 
     eachSchema(this._schema, (schemaPath, schema) => {
 

@@ -22,8 +22,7 @@ export default class State extends _NodeBase {
   }
 
   $init(moldPath, schema) {
-    //this._main.$$stateManager.initState(moldPath, this._defaultAction, {});
-    this._fullSchema = {
+    this.$fullSchema = {
       type: 'assoc',
       schema,
     };
@@ -55,7 +54,7 @@ export default class State extends _NodeBase {
           //this._stateManager.initState(this._moldPath, {}, this._actionName);
           //this._mold.init();
 
-          super.init({});
+          super.init();
         }
 
         request() {
