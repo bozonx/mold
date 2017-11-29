@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
 import { concatPath, findPrimary } from '../helpers';
-import _NodeBase from './_NodeBase';
+import State from './State';
 
 
-export default class Catalogue extends _NodeBase {
+export default class Catalogue extends State {
   static validateSchema(schema, schemaPath) {
     // TODO: !!!!
   }
@@ -12,7 +12,7 @@ export default class Catalogue extends _NodeBase {
   constructor(main) {
     super(main);
 
-    this._defaultActionName = 'default';
+    this._defaultAction = 'default';
   }
 
   get type() {
@@ -20,14 +20,14 @@ export default class Catalogue extends _NodeBase {
   }
 
   get loading() {
-    return this.actions.load.pending;
+    return this.actions.default.pending;
   }
 
   $init(moldPath, schema) {
     super.$init(moldPath, schema);
 
     this.actions = {
-      load: this._generateLoadAction(),
+      ...this.actions,
       create: this._generateCreateAction(),
       remove: this._generateRemoveAction(),
     };
@@ -36,7 +36,7 @@ export default class Catalogue extends _NodeBase {
   }
 
   load() {
-    return this.actions.load.request();
+    return this.actions.default.request();
   }
   create(payload) {
     return this.actions.create.request(payload);
@@ -45,8 +45,8 @@ export default class Catalogue extends _NodeBase {
     return this.actions.remove.request();
   }
 
-  _generateLoadAction() {
-    return this.$createAction(this._defaultActionName, (Action) => {
+  _generateDefaultAction() {
+    return this.$createAction(this._defaultAction, (Action) => {
       return class extends Action {
         init() {
           // TODO: init state as []
@@ -69,7 +69,6 @@ export default class Catalogue extends _NodeBase {
             method: 'create',
           });
         }
-        // TODO: после загрузки данных проставить значение $$key в solid
       };
     });
   }

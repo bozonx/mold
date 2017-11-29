@@ -1,5 +1,9 @@
 mold = require('../../src/index').default
 
+# TODO: test delete
+# TODO: test custom action
+# TODO: test - check request to driver
+
 describe.only 'Functional. Document node.', ->
   beforeEach () ->
     testSchema = () ->
@@ -116,8 +120,7 @@ describe.only 'Functional. Document node.', ->
 
 
 
-# TODO: test delete
-# TODO: test custom action
+
 
 #  it "clear()", ->
 #    this.document.update({
