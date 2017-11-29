@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import Storage from './Storage';
+import TypeManager from './TypeManager';
 import SchemaManager from './SchemaManager';
 import NodeManager from './NodeManager';
 import DriverManager from './DriverManager';
@@ -20,6 +21,7 @@ export default class Main {
     this.$$request = new Request(this);
     this.$$nodeManager = new NodeManager(this);
     this.$$driverManager = new DriverManager(this);
+    this.$$typeManager = new TypeManager(this);
     this.$$schemaManager = new SchemaManager(this);
     this.$$storage = new Storage(this.$$events);
 
