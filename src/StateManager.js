@@ -8,7 +8,7 @@ import { findTheClosestParentPath, concatPath } from './helpers';
 import Request from './Request';
 
 
-export default class State {
+export default class StateManager {
   init(main, storage) {
     this._main = main;
     this._storage = storage;

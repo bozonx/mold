@@ -2,9 +2,9 @@ import _ from 'lodash';
 
 import Storage from './Storage';
 import SchemaManager from './SchemaManager';
-import StateManager from './StateManager';
 import NodeManager from './NodeManager';
 import DriverManager from './DriverManager';
+import Request from './Request';
 import Config from './Config';
 
 import StateType from './nodeTypes/State';
@@ -17,10 +17,10 @@ export default class Main {
     this.$$config = configInstance.get();
     this.$$events = this.$$config.eventEmitter;
     this.$$log = this.$$config.logger;
+    this.$$request = new Request(this);
     this.$$nodeManager = new NodeManager(this);
     this.$$driverManager = new DriverManager(this);
     this.$$schemaManager = new SchemaManager(this);
-    this.$$stateManager = new StateManager();
     this.$$storage = new Storage(this.$$events);
 
     // register base types
@@ -33,7 +33,6 @@ export default class Main {
     // initialize
     this.$$schemaManager.init();
     this.$$schemaManager.setSchema('', schema);
-    this.$$stateManager.init(this, this.$$storage);
   }
 
   /**

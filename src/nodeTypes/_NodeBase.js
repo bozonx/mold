@@ -36,6 +36,7 @@ export default class _TypeBase {
 
     const instance =  new ActionClass(
       this._main.$$storage,
+      this._main.$$request,
       this,
       this._moldPath,
       actionName,

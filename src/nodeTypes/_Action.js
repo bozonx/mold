@@ -2,8 +2,9 @@ import _Mold from './_Mold';
 
 
 export default class Action {
-  constructor(storage, nodeInstance, moldPath, actionName, fullSchema) {
+  constructor(storage, request, nodeInstance, moldPath, actionName, fullSchema) {
     this._storage = storage;
+    this._request = request;
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
@@ -84,7 +85,7 @@ export default class Action {
     // TODO: ??? getUrlParams
     // TODO: ??? this.schema
     // TODO: use real request directly
-    return this._stateManager.$$request.sendRequest(request, {}, {});
+    return this._request.sendRequest(request, {}, {});
   }
 
 }

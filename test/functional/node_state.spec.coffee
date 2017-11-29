@@ -71,11 +71,11 @@ describe.only 'Functional. State node.', ->
     })
 
   it "update silent", ->
-    @mold.$$stateManager.updateTopLevelSilent = sinon.spy()
+    @mold.$$storage.updateTopLevelSilent = sinon.spy()
 
     @state.updateSilent({ param: 'value' })
 
-    sinon.assert.calledOnce(@mold.$$stateManager.updateTopLevelSilent)
+    sinon.assert.calledOnce(@mold.$$storage.updateTopLevelSilent)
 
 
   # TODO: валидация при update не верных параметров

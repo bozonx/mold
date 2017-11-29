@@ -29,13 +29,13 @@ export default class _Mold {
   update(newState, eventData=undefined) {
     // TODO: обращаться напрямую в storage
     //this._checkForUpdateReadOnly(newState);
-    this._stateManager.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
+    this._storage.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
     // TODO: сделать мутацию this._state - спрашивая каждый тип
   }
 
   updateSilent(newState, eventData=undefined) {
     //this._checkForUpdateReadOnly(newState);
-    this._stateManager.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
+    this._storage.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
     // TODO: сделать мутацию this._state - спрашивая каждый тип
   }
 
@@ -47,7 +47,7 @@ export default class _Mold {
     const actionStateRootContainer = {};
 
 
-    this._stateManager.initState(this._moldPath, this._actionName, actionStateRootContainer);
+    this._storage.initState(this._moldPath, this._actionName, actionStateRootContainer);
 
     eachSchema(this._schema, (schemaPath, schema) => {
 
