@@ -60,7 +60,8 @@ export default class Document extends State {
     return this.$createAction(this._defaultActionName, function (Action) {
       return class extends Action {
         init() {
-          this._stateManager.initState(this._moldPath, {}, this._actionName);
+          //this._stateManager.initState(this._moldPath, {}, this._actionName);
+          super.init();
           this.setDriverParams({
             method: 'get',
           });
@@ -73,7 +74,8 @@ export default class Document extends State {
     return this.$createAction('put', (Action) => {
       return class extends Action {
         init() {
-          this._stateManager.initState(this._moldPath, {}, this._actionName);
+          //this._stateManager.initState(this._moldPath, {}, this._actionName);
+          super.init();
           this.setDriverParams({
             method: 'put',
           });
@@ -93,7 +95,8 @@ export default class Document extends State {
     return this.$createAction('patch', (Action) => {
       return class extends Action {
         init() {
-          this._stateManager.initState(this._moldPath, {}, this._actionName);
+          //this._stateManager.initState(this._moldPath, {}, this._actionName);
+          super.init();
           this.setDriverParams({
             method: 'patch',
           });
@@ -115,7 +118,8 @@ export default class Document extends State {
     return this.$createAction('delete', (Action) => {
       return class extends Action {
         init() {
-          this._stateManager.initState(this._moldPath, {}, this._actionName);
+          //this._stateManager.initState(this._moldPath, {}, this._actionName);
+          super.init();
           this.setDriverParams({
             method: 'delete',
           });

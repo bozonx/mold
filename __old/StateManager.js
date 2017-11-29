@@ -4,8 +4,8 @@
 // It's runtime state manager
 import _ from 'lodash';
 
-import { findTheClosestParentPath, concatPath } from './helpers';
-import Request from './Request';
+import { findTheClosestParentPath, concatPath } from '../src/helpers';
+import Request from '../src/Request';
 
 
 export default class StateManager {

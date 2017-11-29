@@ -84,7 +84,6 @@ export default class Action {
 
     // TODO: ??? getUrlParams
     // TODO: ??? this.schema
-    // TODO: use real request directly
     return this._request.sendRequest(request, {}, {});
   }
 
