@@ -6,6 +6,10 @@ export default class BooleanType {
 
   }
 
+  getInitial() {
+    return undefined;
+  }
+
   validate(value) {
     return _.isBoolean(value);
   }

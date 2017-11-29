@@ -6,6 +6,10 @@ export default class NumberType {
 
   }
 
+  getInitial() {
+    return undefined;
+  }
+
   validate(value) {
     return _.isNumber(value);
   }

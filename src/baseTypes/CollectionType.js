@@ -8,6 +8,10 @@ export default class CollectionType {
 
   }
 
+  getInitial() {
+    return [];
+  }
+
   validate(value) {
     return isCollection(value);
   }

@@ -6,6 +6,10 @@ export default class StringType {
 
   }
 
+  getInitial() {
+    return undefined;
+  }
+
   validate(value) {
     return _.isString(value);
   }

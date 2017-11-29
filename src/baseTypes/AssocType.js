@@ -6,6 +6,10 @@ export default class CollectionType {
 
   }
 
+  getInitial() {
+    return {};
+  }
+
   validate(value) {
     return _.isPlainObject(value);
   }

@@ -8,6 +8,10 @@ export default class ArrayType {
 
   }
 
+  getInitial() {
+    return [];
+  }
+
   validate(value) {
     return isSimpleArray(value);
   }
