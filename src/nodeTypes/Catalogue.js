@@ -64,6 +64,7 @@ export default class Catalogue extends State {
           this.primaryName = getPrimaryName(this._schema);
         }
 
+        // add $$key param to solid after data has loaded
         responseTransformCb(resp) {
           return {
             ...resp,
@@ -77,7 +78,6 @@ export default class Catalogue extends State {
         }
 
         request(payload) {
-          // TODO: после загрузки данных проставить значение $$key в solid
           // TODO: после загрузки данных сделать полную копию данных в state
 
           return super.request(payload);

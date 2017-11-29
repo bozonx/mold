@@ -45,14 +45,13 @@ export default class Action {
     const driverRequestParams = this.getDriverParams();
 
     return this._doRequest(driverRequestParams, payload)
-      .then((resp) => {
-        let result = resp.body;
+      .then((rawResp) => {
+        let resp = rawResp;
         if (this.responseTransformCb) {
-          const transformedResp = this.responseTransformCb(resp);
-          result = transformedResp.body;
+          resp = this.responseTransformCb(resp);
         }
 
-        console.log(1111, resp.body, result)
+        const result = resp.body;
 
         this._updateMeta({ pending: false });
         this._main.$$storage.setBottomLevel(this._moldPath, this._actionName, result);
