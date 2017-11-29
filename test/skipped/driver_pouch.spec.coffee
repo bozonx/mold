@@ -27,7 +27,7 @@ testSchema = (pouch) ->
             name: {type: 'string'}
             created: {type: 'number'}
 
-describe 'Functional. PouchDb driver.', ->
+describe.skip 'Functional. PouchDb driver.', ->
   beforeEach ->
     this.init = (dbName) =>
       memdown.clearGlobalStore();
@@ -74,7 +74,7 @@ describe 'Functional. PouchDb driver.', ->
     pathToDoc = 'root.document'
     payload =
       stringParam: 'newValue'
-    document = this.mold.child(pathToDoc)
+    document = this.mold.get(pathToDoc)
     document.update(payload)
 
     promise = document.put()
@@ -88,5 +88,5 @@ describe 'Functional. PouchDb driver.', ->
     pathToDoc = 'root.documentsCollection["fg988dfg45asd7s6fg8fg"]'
     payload =
       name: 'newValue'
-    document = this.mold.child(pathToDoc)
+    document = this.mold.get(pathToDoc)
     document.update(payload)

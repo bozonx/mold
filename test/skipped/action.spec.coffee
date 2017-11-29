@@ -1,6 +1,6 @@
 mold = require('../../src/index').default
 
-describe 'Functional. Action.', ->
+describe.skip 'Functional. Action.', ->
   describe 'Action.', ->
     beforeEach () ->
       this.handlerCreate = sinon.spy();

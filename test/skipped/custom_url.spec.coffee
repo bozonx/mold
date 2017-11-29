@@ -8,7 +8,7 @@ testSchema = () ->
       id: {type: 'number'}
       name: {type: 'string'}
 
-describe 'Functional. Url.', ->
+describe.skip 'Functional. Url.', ->
   beforeEach () ->
     this.mold = mold( {silent: true}, testSchema() )
     _.set(this.mold.$$driverManager.$defaultMemoryDb, 'collection[0]', {

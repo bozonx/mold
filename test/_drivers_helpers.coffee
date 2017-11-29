@@ -33,7 +33,7 @@ module.exports =
       arrayParam: ['value1']
     request = generateRequest(pathToDoc, 'get', {})
 
-    document = mold.child(pathToDoc)
+    document = mold.get(pathToDoc)
     document.update(payload)
     expect(document.put()).to.eventually.notify =>
       promise = cleanPromise( document.load() )
@@ -42,7 +42,7 @@ module.exports =
 
   document_get_error: (mold, pathToDoc) ->
     err = ['driverError', 'request']
-    document = mold.child(pathToDoc)
+    document = mold.get(pathToDoc)
     document.load()
       .then () =>
         throw new Error('it was fulfilled')
@@ -57,7 +57,7 @@ module.exports =
       numberParam: 5
       arrayParam: ['value1']
     request = generateRequest(pathToDoc, 'put', {payload: payload})
-    document = mold.child(pathToDoc)
+    document = mold.get(pathToDoc)
 
     promise = cleanPromise( document.put(payload) )
     expect(promise).to.eventually.deep.equal({body: payload, request: request})
@@ -72,7 +72,7 @@ module.exports =
       stringParam: 'newValue'
       arrayParam: ['value3']
     resultData = _.defaults(_.clone(updatedData), firstData)
-    document = mold.child(pathToDoc)
+    document = mold.get(pathToDoc)
     request = generateRequest(pathToDoc, 'patch', {payload: updatedData})
 
     expect(document.put(firstData)).to.eventually.notify =>
@@ -81,7 +81,7 @@ module.exports =
       .notify(done)
 
   documentsCollection_create: (mold, pathToDocColl) ->
-    collection = mold.child(pathToDocColl)
+    collection = mold.get(pathToDocColl)
     payload =
       name: 'value'
     request = generateRequest(pathToDocColl, 'create', {payload: payload})
@@ -90,7 +90,7 @@ module.exports =
     expect(promise).to.eventually.deep.equal({body: {name: 'value'}, request: request})
 
   documentsCollection_remove: (mold, pathToDocColl, done) ->
-    collection = mold.child(pathToDocColl)
+    collection = mold.get(pathToDocColl)
 
     item1 = {name: 'value1'}
     item2 = {name: 'value2'}
@@ -110,7 +110,7 @@ module.exports =
 
 #  documentsCollection_filter: (mold, pathToDocColl, done) ->
 #    # не особо нужно - уже проверяется в documentsCollection_filter_paged
-#    collection = mold.child(pathToDocColl)
+#    collection = mold.get(pathToDocColl)
 #    request = generateRequest(pathToDocColl, 'filter', {
 #      nodeType: 'collection', primaryKeyName: 'id'
 #      meta: {pageNum: 0}
@@ -132,7 +132,7 @@ module.exports =
 #        .notify(done)
 
   documentsCollection_filter_paged: (mold, pathToDocColl, done) ->
-    collection = mold.child(pathToDocColl)
+    collection = mold.get(pathToDocColl)
     collection.perPage = 2
     request = generateRequest(pathToDocColl, 'filter', {
       meta: {

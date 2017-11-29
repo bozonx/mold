@@ -1,6 +1,6 @@
 mold = require('../../src/index').default
 
-describe 'Integration.', ->
+describe.skip 'Integration.', ->
   describe 'documentsCollection => nested document.', ->
     beforeEach () ->
       testSchema = () ->

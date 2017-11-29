@@ -23,7 +23,7 @@ testSchema = (memory) ->
             name: {type: 'string'}
             created: {type: 'number'}
 
-describe 'Functional. Memory driver.', ->
+describe.skip 'Functional. Memory driver.', ->
   beforeEach ->
     memory = new Memory({});
     this.testSchema = testSchema(memory)

@@ -3,7 +3,7 @@ mold = require('../../src/index').default
 # TODO: check collection, paged collection
 
 
-describe 'Functional. Events.', ->
+describe.skip 'Functional. Events.', ->
   beforeEach () ->
     testSchema = () ->
       container:
