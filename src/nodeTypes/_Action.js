@@ -3,16 +3,14 @@ import _Mold from './_Mold';
 
 export default class Action {
   constructor(main, nodeInstance, moldPath, actionName, fullSchema) {
-    this._storage = main.$$storage;
-    this._request = main.$$request;
-    this._typeManager = main.$$typeManager;
+    this._main = main;
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
     this._schema = fullSchema;
     this.responseTransformCb = null;
 
-    this._mold = new _Mold(this._storage, this._moldPath, this._actionName, this._schema);
+    this._mold = new _Mold(main.$$storage, main.$$typeManager, this._moldPath, this._actionName, this._schema);
   }
 
   get pending() {
@@ -55,7 +53,7 @@ export default class Action {
         }
 
         this._updateMeta({ pending: false });
-        this._storage.setBottomLevel(this._moldPath, this._actionName, result);
+        this._main.$$storage.setBottomLevel(this._moldPath, this._actionName, result);
 
         return resp;
       })
@@ -67,11 +65,11 @@ export default class Action {
   }
 
   _getMeta(param) {
-    return this._storage.getMeta(this._moldPath, this._actionName, param);
+    return this._main.$$storage.getMeta(this._moldPath, this._actionName, param);
   }
 
   _updateMeta(partialData) {
-    this._storage.updateMeta(this._moldPath, this._actionName, partialData);
+    this._main.$$storage.updateMeta(this._moldPath, this._actionName, partialData);
   }
 
   _doRequest(driverRequestParams, payload) {
@@ -85,7 +83,7 @@ export default class Action {
 
     // TODO: ??? getUrlParams
     // TODO: ??? this.schema
-    return this._request.sendRequest(request, {}, {});
+    return this._main.$$request.sendRequest(request, {}, {});
   }
 
 }
