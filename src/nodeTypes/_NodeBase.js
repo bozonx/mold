@@ -35,7 +35,7 @@ export default class _TypeBase {
     const ActionClass = cb(_Action);
 
     const instance =  new ActionClass(
-      this._main.$$stateManager,
+      this._main.$$storage,
       this,
       this._moldPath,
       actionName,

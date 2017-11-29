@@ -4,8 +4,8 @@ import { eachSchema } from '../helpers';
 
 
 export default class _Mold {
-  constructor(stateManager, moldPath, actionName, schema) {
-    this._stateManager = stateManager;
+  constructor(storage, moldPath, actionName, schema) {
+    this._storage = storage;
     this._moldPath = moldPath;
     this._actionName = actionName;
     this._schema = schema;
@@ -27,6 +27,7 @@ export default class _Mold {
   }
 
   update(newState, eventData=undefined) {
+    // TODO: обращаться напрямую в storage
     //this._checkForUpdateReadOnly(newState);
     this._stateManager.updateTopLevel(this._moldPath, this._actionName, newState, eventData);
     // TODO: сделать мутацию this._state - спрашивая каждый тип
@@ -42,7 +43,11 @@ export default class _Mold {
     // TODO: берем корневой элемент и инициализируем его и берем у него mold
     //this._state;
 
-    //this._stateManager.initState(this._moldPath, this._actionName, actionStateRootContainer);
+    // TODO: переделать
+    const actionStateRootContainer = {};
+
+
+    this._stateManager.initState(this._moldPath, this._actionName, actionStateRootContainer);
 
     eachSchema(this._schema, (schemaPath, schema) => {
 

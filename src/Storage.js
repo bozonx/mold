@@ -123,6 +123,7 @@ export default class Storage {
     this._events.emit(moldPath, 'any', {
       data: partialData,
       by: 'user',
+      type: 'state',
       action,
     });
   }
@@ -145,6 +146,7 @@ export default class Storage {
     this._events.emit(moldPath, 'any', {
       data: partialData,
       by: 'program',
+      type: 'silent',
       action,
     });
   }
@@ -187,6 +189,7 @@ export default class Storage {
     this._events.emit(moldPath, 'any', {
       data: newData,
       by: 'program',
+      type: 'solid',
       action,
     });
   }

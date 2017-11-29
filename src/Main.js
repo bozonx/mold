@@ -21,7 +21,7 @@ export default class Main {
     this.$$driverManager = new DriverManager(this);
     this.$$schemaManager = new SchemaManager(this);
     this.$$stateManager = new StateManager();
-    this._storage = new Storage(this.$$events);
+    this.$$storage = new Storage(this.$$events);
 
     // register base types
     this.$$nodeManager.register('state', StateType);
@@ -33,7 +33,7 @@ export default class Main {
     // initialize
     this.$$schemaManager.init();
     this.$$schemaManager.setSchema('', schema);
-    this.$$stateManager.init(this, this._storage);
+    this.$$stateManager.init(this, this.$$storage);
   }
 
   /**
@@ -42,7 +42,7 @@ export default class Main {
    * @returns {object}
    */
   $getWholeStorageState() {
-    return this._storage.$getWholeStorageState();
+    return this.$$storage.$getWholeStorageState();
   }
 
   /**
@@ -50,7 +50,7 @@ export default class Main {
    * @param {object} newStorage
    */
   $setWholeStorageState(newStorage) {
-    return this._storage.$init(newStorage);
+    return this.$$storage.$init(newStorage);
   }
 
   /**
@@ -58,7 +58,7 @@ export default class Main {
    * @returns {*}
    */
   exportStorage() {
-    return _.cloneDeep(this._storage.$getWholeStorageState());
+    return _.cloneDeep(this.$$storage.$getWholeStorageState());
   }
 
   /**

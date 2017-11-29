@@ -1,3 +1,6 @@
+// TODO: remove
+
+
 // It's runtime state manager
 import _ from 'lodash';
 
@@ -32,10 +35,6 @@ export default class State {
 
   initState(moldPath, action, initialValue) {
     this._storage.initState(moldPath, action, initialValue);
-  }
-
-  initStorageIfNeed(moldPath) {
-    this._storage.initNodeIfNeed(moldPath)
   }
 
   updateTopLevel(moldPath, action, partialData) {

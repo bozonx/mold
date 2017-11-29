@@ -1,15 +1,16 @@
 import _Mold from './_Mold';
 
+
 export default class Action {
-  constructor(stateManager, nodeInstance, moldPath, actionName, fullSchema) {
-    this._stateManager = stateManager;
+  constructor(storage, nodeInstance, moldPath, actionName, fullSchema) {
+    this._storage = storage;
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
     this._schema = fullSchema;
     this.responseTransformCb = null;
 
-    this._mold = new _Mold(this._stateManager, this._moldPath, this._actionName, this._schema);
+    this._mold = new _Mold(this._storage, this._moldPath, this._actionName, this._schema);
   }
 
   get pending() {
@@ -33,11 +34,11 @@ export default class Action {
   }
 
   update(partialData) {
-    return this._stateManager.updateTopLevel(this._moldPath, this._actionName, partialData);
+    return this._mold.update(partialData);
   }
 
   updateSilent(partialData) {
-    return this._stateManager.updateTopLevelSilent(this._moldPath, this._actionName, partialData);
+    return this._mold.updateSilent(partialData);
   }
 
   request(payload) {
@@ -52,7 +53,7 @@ export default class Action {
         }
 
         this._updateMeta({ pending: false });
-        this._stateManager.setBottomLevel(this._moldPath, this._actionName, result);
+        this._storage.setBottomLevel(this._moldPath, this._actionName, result);
 
         return resp;
       })
@@ -64,25 +65,25 @@ export default class Action {
   }
 
   _getMeta(param) {
-    return this._stateManager.getMeta(this._moldPath, this._actionName, param);
+    return this._storage.getMeta(this._moldPath, this._actionName, param);
   }
 
   _updateMeta(partialData) {
-    this._stateManager.updateMeta(this._moldPath, this._actionName, partialData);
+    this._storage.updateMeta(this._moldPath, this._actionName, partialData);
   }
 
   _doRequest(driverRequestParams, payload) {
     const request = {
       ...driverRequestParams,
-      //method: driverRequestParams.method,
       moldPath: this._moldPath,
-      // TODO: WTF???
+      // TODO: убрать несохраняемые данные
       //payload: omitUnsaveable(this._mold, this.schema),
       payload: payload,
     };
 
     // TODO: ??? getUrlParams
     // TODO: ??? this.schema
+    // TODO: use real request directly
     return this._stateManager.$$request.sendRequest(request, {}, {});
   }
 

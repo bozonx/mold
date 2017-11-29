@@ -51,9 +51,6 @@ export default class State extends _NodeBase {
     return this.$createAction(this._defaultAction, function (Action) {
       return class extends Action {
         init() {
-          //this._stateManager.initState(this._moldPath, {}, this._actionName);
-          //this._mold.init();
-
           super.init();
         }
 
