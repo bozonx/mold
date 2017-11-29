@@ -4,12 +4,12 @@ import { eachSchema } from '../helpers';
 
 
 export default class _Mold {
-  constructor(storage, typeManager, moldPath, actionName, schema) {
+  constructor(storage, typeManager, moldPath, actionName, fullSchema) {
     this._storage = storage;
     this._typeManager = typeManager;
     this._moldPath = moldPath;
     this._actionName = actionName;
-    this._schema = schema;
+    this._schema = fullSchema;
     this._state = undefined;
 
     // TODO: set moldTransform to storage
