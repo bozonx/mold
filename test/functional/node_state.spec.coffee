@@ -4,7 +4,7 @@ mold = require('../../src/index').default
 # TODO: clear
 # TODO: events
 
-describe.only 'Functional. State node.', ->
+describe 'Functional. State node.', ->
   beforeEach () ->
     testSchema = () ->
       container:

@@ -4,7 +4,7 @@ mold = require('../../src/index').default
 # TODO: test custom action
 # TODO: test - check request to driver
 
-describe.only 'Functional. Document node.', ->
+describe 'Functional. Document node.', ->
   beforeEach () ->
     testSchema = () ->
       document: {

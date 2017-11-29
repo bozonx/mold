@@ -1,6 +1,6 @@
 mutate = require('../../src/mutate').mutate
 
-describe.only 'Unit. mutate.', ->
+describe 'Unit. mutate.', ->
   describe 'containers and primitives updates', ->
     it 'all types of primitives', ->
       storage =

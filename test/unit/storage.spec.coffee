@@ -1,9 +1,8 @@
 Storage = require('../../src/Storage').default
 Events = require('../../src/Events').default
 
-# TODO: test event data
 
-describe.only 'Unit. Storage.', ->
+describe 'Unit. Storage.', ->
   beforeEach ->
     @defaultAction = 'default'
     @events = new Events()
