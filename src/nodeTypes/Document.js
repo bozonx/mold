@@ -43,7 +43,7 @@ export default class Document extends State {
   }
 
   load() {
-    return this.actions.load.request();
+    return this.actions.default.request();
   }
   put(payload) {
     return this.actions.put.request(payload);
@@ -69,6 +69,8 @@ export default class Document extends State {
   }
 
   _generatePutAction() {
+    const document = this;
+
     return this.$createAction('put', (Action) => {
       return class extends Action {
         init() {
@@ -78,17 +80,19 @@ export default class Document extends State {
           });
         }
 
-        request(...params) {
+        request(payload) {
           // if we set new data - update default action
-          if (params.payload) this.update(params.payload);
+          if (payload) document.update(payload);
 
-          return super.request(...params);
+          return super.request(payload);
         }
       };
     });
   }
 
   _generatePatchAction() {
+    const document = this;
+
     return this.$createAction('patch', (Action) => {
       return class extends Action {
         init() {
@@ -98,11 +102,11 @@ export default class Document extends State {
           });
         }
 
-        request(...params) {
+        request(payload) {
           // if we set new data - update default action
-          if (params.payload) this.update(params.payload);
+          if (payload) document.update(payload);
 
-          return super.request(...params);
+          return super.request(payload);
         }
       };
     });

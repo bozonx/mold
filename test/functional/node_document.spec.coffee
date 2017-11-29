@@ -1,6 +1,6 @@
 mold = require('../../src/index').default
 
-describe 'Functional. Document node.', ->
+describe.only 'Functional. Document node.', ->
   beforeEach () ->
     testSchema = () ->
       document: {
@@ -71,6 +71,7 @@ describe 'Functional. Document node.', ->
         assert.isFalse(@document.saving)
         assert.deepEqual(response.body, newData)
         assert.deepEqual(@document.actions.put.mold, newData)
+        assert.deepEqual(@document.mold, newData)
 
   it 'patch()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
@@ -94,6 +95,7 @@ describe 'Functional. Document node.', ->
         assert.isFalse(@document.saving)
         assert.deepEqual(response.body, resultData)
         assert.deepEqual(@document.actions.patch.mold, resultData)
+        assert.deepEqual(@document.mold, newData)
 
   it 'custom action', ->
     @testSchema.document.actions = {

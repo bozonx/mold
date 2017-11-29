@@ -179,6 +179,7 @@ export function joinPath(pathArray) {
 }
 
 export function isSimpleArray(value) {
+  // TODO: test it
   if (!_.isArray(value)) return false;
 
   const compacted = _.compact(value);
@@ -193,6 +194,7 @@ export function isSimpleArray(value) {
 }
 
 export function isCollection(value) {
+  // TODO: test it
   if (!_.isArray(value)) return false;
 
   const compacted = _.compact(value);
