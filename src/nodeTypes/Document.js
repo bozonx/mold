@@ -14,7 +14,7 @@ export default class Document extends State {
   constructor(main) {
     super(main);
 
-    this._defaultActionName = 'default';
+    this._defaultAction = 'default';
   }
 
   get type() {
@@ -22,7 +22,7 @@ export default class Document extends State {
   }
 
   get loading() {
-    return this.actions.load.pending;
+    return this.actions[this._defaultAction].pending;
   }
 
   get saving() {
@@ -33,13 +33,12 @@ export default class Document extends State {
     super.$init(moldPath, schema);
 
     this.actions = {
-      load: this._generateLoadAction(),
+      ...this.actions,
       put: this._generatePutAction(),
       patch: this._generatePatchAction(),
       remove: this._generateRemoveAction(),
     };
 
-    // this.actionDefaults = {};
     this._initCustomActions();
   }
 
@@ -56,11 +55,10 @@ export default class Document extends State {
     return this.actions.remove.request();
   }
 
-  _generateLoadAction() {
-    return this.$createAction(this._defaultActionName, function (Action) {
+  _generateDefaultAction() {
+    return this.$createAction(this._defaultAction, function (Action) {
       return class extends Action {
         init() {
-          //this._stateManager.initState(this._moldPath, {}, this._actionName);
           super.init();
           this.setDriverParams({
             method: 'get',
@@ -74,7 +72,6 @@ export default class Document extends State {
     return this.$createAction('put', (Action) => {
       return class extends Action {
         init() {
-          //this._stateManager.initState(this._moldPath, {}, this._actionName);
           super.init();
           this.setDriverParams({
             method: 'put',
@@ -95,7 +92,6 @@ export default class Document extends State {
     return this.$createAction('patch', (Action) => {
       return class extends Action {
         init() {
-          //this._stateManager.initState(this._moldPath, {}, this._actionName);
           super.init();
           this.setDriverParams({
             method: 'patch',
@@ -118,7 +114,6 @@ export default class Document extends State {
     return this.$createAction('delete', (Action) => {
       return class extends Action {
         init() {
-          //this._stateManager.initState(this._moldPath, {}, this._actionName);
           super.init();
           this.setDriverParams({
             method: 'delete',

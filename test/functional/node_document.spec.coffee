@@ -19,13 +19,6 @@ describe 'Functional. Document node.', ->
               nestedStringParam: {type: 'string'}
             }
           }
-#          collection: {
-#            type: 'collection'
-#            item: {
-#              id: { type: 'number', key: true }
-#              itemStringParam: {type: 'string'}
-#            }
-#          }
         }
       }
 
