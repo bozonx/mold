@@ -4,9 +4,8 @@ import { eachSchema } from '../helpers';
 
 
 export default class _Mold {
-  constructor(storage, typeManager, moldPath, actionName, fullSchema) {
-    this._storage = storage;
-    this._typeManager = typeManager;
+  constructor(main, moldPath, actionName, fullSchema) {
+    this._main = main;
     this._moldPath = moldPath;
     this._actionName = actionName;
     this._schema = fullSchema;
@@ -37,7 +36,7 @@ export default class _Mold {
     }
 
     //this._checkForUpdateReadOnly(newState);
-    this._storage.updateTopLevel(this._moldPath, this._actionName, newState);
+    this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, newState);
   }
 
   updateSilent(newState) {
@@ -50,12 +49,12 @@ export default class _Mold {
     }
 
     //this._checkForUpdateReadOnly(newState);
-    this._storage.updateTopLevel(this._moldPath, this._actionName, newState);
+    this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, newState);
   }
 
   _initSchema() {
     const initialState = this._getInitialState();
-    this._storage.initState(this._moldPath, this._actionName, initialState);
+    this._main.$$storage.initState(this._moldPath, this._actionName, initialState);
   }
 
   _getInitialState() {
@@ -66,7 +65,7 @@ export default class _Mold {
       throw new Error(`ERROR: bad root type "${rootTypeName}" for "${this._moldPath}" action "${this._actionName}"`);
     }
 
-    const rootType = this._typeManager.types[rootTypeName];
+    const rootType = this._main.$$typeManager.types[rootTypeName];
 
     return rootType.getInitial();
   }
