@@ -48,8 +48,11 @@ export default class Action {
       .then((resp) => {
         let result = resp.body;
         if (this.responseTransformCb) {
-          result = this.responseTransformCb(resp);
+          const transformedResp = this.responseTransformCb(resp);
+          result = transformedResp.body;
         }
+
+        console.log(1111, resp.body, result)
 
         this._updateMeta({ pending: false });
         this._main.$$storage.setBottomLevel(this._moldPath, this._actionName, result);

@@ -62,7 +62,6 @@ export default class Catalogue extends State {
             method: 'filter',
           });
           this.primaryName = getPrimaryName(this._schema);
-          console.log(11111111, this.primaryName)
         }
 
         responseTransformCb(resp) {
@@ -72,7 +71,7 @@ export default class Catalogue extends State {
               return {
                 ...item,
                 $$key: item[this.primaryName],
-              }
+              };
             }),
           }
         }
