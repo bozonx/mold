@@ -37,14 +37,13 @@ export default class State extends _NodeBase {
   /**
    * Update container data
    * @param {string} newState
-   * @param {object|undefined} eventData - additional data to event
    */
-  update(newState, eventData) {
-    this.actions.default.update(newState, eventData);
+  update(newState) {
+    this.actions.default.update(newState);
   }
 
-  updateSilent(newState, eventData=undefined) {
-    this.actions.default.updateSilent(newState, eventData);
+  updateSilent(newState) {
+    this.actions.default.updateSilent(newState);
   }
 
   _generateDefaultAction() {

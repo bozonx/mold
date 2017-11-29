@@ -46,7 +46,7 @@ export default class _Mold {
     }
 
     //this._checkForUpdateReadOnly(newState);
-    this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, newState);
+    this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, newState);
   }
 
   _initSchema() {

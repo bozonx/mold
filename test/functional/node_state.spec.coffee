@@ -1,5 +1,9 @@
 mold = require('../../src/index').default
 
+# TODO: валидация при update
+# TODO: clear
+# TODO: events
+
 describe.only 'Functional. State node.', ->
   beforeEach () ->
     testSchema = () ->
@@ -39,16 +43,15 @@ describe.only 'Functional. State node.', ->
   it "init", ->
     assert.deepEqual(@state.mold, {})
 
-  # TODO: check schema - все внутренние sub types
-
-  it "update", ->
+  it "set all types of data", ->
     partialData = {
       boolParam: true
       stringParam: 'value'
       numberParam: 5
       arrayParam: [1,2]
-      # TODO: !!! collection
-      # TODO: !!! nested
+      nested: {
+        item1: 'value1'
+      }
     }
     @state.update(partialData)
 
@@ -76,9 +79,6 @@ describe.only 'Functional. State node.', ->
     @state.updateSilent({ param: 'value' })
 
     sinon.assert.calledOnce(@mold.$$storage.updateTopLevelSilent)
-
-
-  # TODO: валидация при update не верных параметров
 
 #  it "clear()", ->
 #    this.container.update({
