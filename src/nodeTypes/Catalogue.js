@@ -6,7 +6,9 @@ import State from './State';
 
 export default class Catalogue extends State {
   static validateSchema(schema, schemaPath) {
-    // TODO: !!!!
+    if (!_.isPlainObject(schema.item)) {
+      return `Schema definition of catalogue on "${schemaPath}" must has an "item" param!`;
+    }
   }
 
   constructor(main) {
@@ -24,12 +26,19 @@ export default class Catalogue extends State {
   }
 
   $init(moldPath, schema) {
+    // TODO: WTF !!!????
+    this.$fullSchema = {
+      type: 'collection',
+      item: schema.item,
+    };
+
     super.$init(moldPath, schema);
+
+
 
     this.actions = {
       ...this.actions,
       create: this._generateCreateAction(),
-      remove: this._generateRemoveAction(),
     };
 
     this._initCustomActions();
@@ -41,49 +50,38 @@ export default class Catalogue extends State {
   create(payload) {
     return this.actions.create.request(payload);
   }
-  remove() {
-    return this.actions.remove.request();
-  }
 
   _generateDefaultAction() {
+    const document = this;
+
     return this.$createAction(this._defaultAction, (Action) => {
       return class extends Action {
         init() {
-          // TODO: init state as []
+          super.init();
           this.setDriverParams({
             method: 'filter',
           });
         }
-        // TODO: после загрузки данных проставить значение $$key в solid
+
+        request(payload) {
+          // TODO: после загрузки данных проставить значение $$key в solid
+          // TODO: после загрузки данных сделать полную копию данных в state
+
+          return super.request(payload);
+        }
       };
     });
   }
 
   _generateCreateAction() {
-    // TODO: !!!!!
     return this.$createAction('create', (Action) => {
       return class extends Action {
         init() {
-          // TODO: init state as []
+          super.init();
           this.setDriverParams({
             method: 'create',
           });
         }
-      };
-    });
-  }
-
-  _generateRemoveAction() {
-    // TODO: !!!!!
-    return this.$createAction('remove', (Action) => {
-      return class extends Action {
-        init() {
-          // TODO: init state as []
-          this.setDriverParams({
-            method: 'remove',
-          });
-        }
-        // TODO: после загрузки данных проставить значение $$key в solid
       };
     });
   }

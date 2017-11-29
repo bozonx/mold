@@ -21,9 +21,10 @@ describe.only 'Functional. Catalogue node.', ->
     @catalogue = @mold.get(@moldPath)
     @catalogue.$init(@moldPath, @testSchema.catalogue)
 
-  it 'load', ->
+  it 'load()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'catalogue', @testValues)
 
+    assert.deepEqual(@catalogue.mold, [])
     assert.isFalse(@catalogue.loading)
 
     promise = @catalogue.load()
@@ -33,7 +34,7 @@ describe.only 'Functional. Catalogue node.', ->
     promise
       .then (response) =>
         assert.deepEqual(response.body, @testValues)
-        #assert.deepEqual(@catalogue.mold, @testValues)
+        assert.deepEqual(@catalogue.mold, @testValues)
         assert.isFalse(@catalogue.loading)
 
   it 'load page', ->

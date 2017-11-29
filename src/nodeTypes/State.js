@@ -22,10 +22,13 @@ export default class State extends _NodeBase {
   }
 
   $init(moldPath, schema) {
-    this.$fullSchema = {
+    // TODO: WTF !!!????
+    this.$fullSchema = this.$fullSchema || {
       type: 'assoc',
-      schema,
+      schema: schema.schema,
     };
+
+    //this.$fullSchema = schema;
 
     super.$init(moldPath, schema);
 
