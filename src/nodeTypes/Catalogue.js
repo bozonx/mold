@@ -52,8 +52,6 @@ export default class Catalogue extends State {
   }
 
   _generateDefaultAction() {
-    const document = this;
-
     return this.$createAction(this._defaultAction, (Action) => {
       return class extends Action {
         init() {
@@ -92,17 +90,32 @@ export default class Catalogue extends State {
   }
 
   _generateCreateAction() {
+    const catalogue = this;
+
     return this.$createAction('create', (Action) => {
       return class extends Action {
         init() {
-          this._schema = schema.item;
+          this._schema = catalogue.schema.item;
 
           super.init();
 
           this.setDriverParams({
             method: 'create',
           });
+          this.primaryName = getPrimaryName(catalogue.schema);
         }
+
+        // add $$key param to solid after data has loaded
+        responseTransformCb(resp) {
+          return {
+            ...resp,
+            body: {
+              ...resp.body,
+              $$key: resp.body[this.primaryName],
+            },
+          }
+        }
+
       };
     });
   }

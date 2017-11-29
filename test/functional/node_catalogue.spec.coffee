@@ -51,7 +51,33 @@ describe.only 'Functional. Catalogue node.', ->
     # TODO: !!!!
 
   it 'create', ->
-    # TODO: !!!!
+    itemToCreate = {
+      #$id: 0
+      name: 'new item'
+    }
+
+    assert.isFalse(@catalogue.actions.create.pending)
+
+    promise = @catalogue.create(itemToCreate)
+
+    assert.isTrue(@catalogue.actions.create.pending)
+
+    result = {
+      $id: 0
+      $$key: 0
+      name: 'new item'
+    }
+
+    promise
+      .then (response) =>
+        assert.deepEqual(response.body, result)
+#        assert.deepEqual(@catalogue.actions.create.$storage.getState(
+#          @catalogue.actions.create._moldPath,
+#          @catalogue.actions.create._actionName
+#        ), result)
+        assert.deepEqual(@catalogue.actions.create.mold, result)
+        assert.isFalse(@catalogue.actions.create.pending)
+
 
 
 #  it "without document", ->
