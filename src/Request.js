@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { findPrimary, convertFromLodashToUrl } from './helpers';
+import { convertFromLodashToUrl } from './helpers';
 
 
 export default class Request {

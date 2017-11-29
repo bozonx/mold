@@ -8,7 +8,6 @@ export default class Action {
     this._moldPath = moldPath;
     this._actionName = actionName;
     this._schema = fullSchema;
-    this.responseTransformCb = null;
 
     this._mold = new _Mold(main, this._moldPath, this._actionName, this._schema);
   }

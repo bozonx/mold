@@ -43,15 +43,15 @@ export function correctUpdatePayload(currentData, newData) {
   return newerState;
 }
 
-export function findPrimary(schema) {
+export function getPrimaryName(schema) {
   let primary;
   let schemaToFind;
 
   if (schema.schema) {
     schemaToFind = schema.schema;
   }
-  else if (schema.item && schema.item.schema) {
-    schemaToFind = schema.item.schema;
+  else if (schema.item) {
+    schemaToFind = schema.item;
   }
   else {
     return;
@@ -63,6 +63,7 @@ export function findPrimary(schema) {
       return true;
     }
   });
+
   return primary;
 }
 

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { concatPath, findPrimary } from '../helpers';
+import { concatPath, getPrimaryName } from '../helpers';
 import State from './State';
 
 
@@ -61,6 +61,20 @@ export default class Catalogue extends State {
           this.setDriverParams({
             method: 'filter',
           });
+          this.primaryName = getPrimaryName(this._schema);
+          console.log(11111111, this.primaryName)
+        }
+
+        responseTransformCb(resp) {
+          return {
+            ...resp,
+            body: _.map(resp.body, (item) => {
+              return {
+                ...item,
+                $$key: item[this.primaryName],
+              }
+            }),
+          }
         }
 
         request(payload) {
