@@ -182,11 +182,28 @@ export function isSimpleArray(value) {
   if (!_.isArray(value)) return false;
 
   const compacted = _.compact(value);
+
+  if (compacted.length === 0) return true;
+
   const head = _.head(compacted);
 
   if (!_.isPlainObject(head)) return true;
 
   return _.isUndefined(head.$$key);
+}
+
+export function isCollection(value) {
+  if (!_.isArray(value)) return false;
+
+  const compacted = _.compact(value);
+
+  if (compacted.length === 0) return false;
+
+  const head = _.head(compacted);
+
+  if (!_.isPlainObject(head)) return false;
+
+  return _.isNumber(head.$$key) || _.isString(head.$$key);
 }
 
 

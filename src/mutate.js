@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { concatPath } from './helpers';
+import { concatPath, isCollection } from './helpers';
 
 /**
  * Mutate storage.
@@ -31,13 +31,10 @@ class Mutate {
       return this._updateContainer(root, newState);
     }
     else if (_.isArray(newState)) {
-      const compactedArray = _.compact(newState);
       if (newState.length === 0) {
         return this._cleanArray(root);
       }
-      // TODO: review
-      else if ( _.isPlainObject(_.head(compactedArray))
-        &&  _.isNumber(_.head(compactedArray).$$key)) {
+      else if (isCollection(newState)) {
         return this._updateCollection(root, newState);
       }
       else {
