@@ -26,7 +26,7 @@ export default class Catalogue extends State {
   }
 
   $init(moldPath, schema) {
-    // TODO: WTF !!!????
+    // convert to simple schema type
     this.$fullSchema = {
       type: 'collection',
       item: schema.item,
@@ -95,7 +95,10 @@ export default class Catalogue extends State {
     return this.$createAction('create', (Action) => {
       return class extends Action {
         init() {
-          this._schema = catalogue.schema.item;
+          this._schema = {
+            type: 'assoc',
+            schema: catalogue.schema.item,
+          };
 
           super.init();
 

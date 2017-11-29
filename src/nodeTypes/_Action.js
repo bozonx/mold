@@ -9,8 +9,6 @@ export default class Action {
     this._moldPath = moldPath;
     this._actionName = actionName;
     this._schema = fullSchema;
-
-    this._mold = new _Mold(main, this._moldPath, this._actionName, this._schema);
   }
 
   get pending() {
@@ -22,6 +20,7 @@ export default class Action {
   }
 
   init() {
+    this._mold = new _Mold(this._main, this._moldPath, this._actionName, this._schema);
     this._mold.init();
   }
 

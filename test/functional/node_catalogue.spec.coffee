@@ -71,10 +71,6 @@ describe.only 'Functional. Catalogue node.', ->
     promise
       .then (response) =>
         assert.deepEqual(response.body, result)
-#        assert.deepEqual(@catalogue.actions.create.$storage.getState(
-#          @catalogue.actions.create._moldPath,
-#          @catalogue.actions.create._actionName
-#        ), result)
         assert.deepEqual(@catalogue.actions.create.mold, result)
         assert.isFalse(@catalogue.actions.create.pending)
 
