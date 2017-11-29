@@ -43,7 +43,7 @@ export default class _Mold {
     const isValid = this._validate(newState);
 
     if (isValid !== true) {
-      console.error(isValid);
+      this._main.$$log.error(isValid);
 
       return;
     }
@@ -61,8 +61,7 @@ export default class _Mold {
     const rootTypeName = this._schema.type;
 
     if (_.includes(['assoc', 'collection'], rootTypeName)) {
-      // TODO: use log
-      throw new Error(`ERROR: bad root type "${rootTypeName}" for "${this._moldPath}" action "${this._actionName}"`);
+      this._main.$$log.fatal(`ERROR: bad root type "${rootTypeName}" for "${this._moldPath}" action "${this._actionName}"`);
     }
 
     const rootType = this._main.$$typeManager.types[rootTypeName];

@@ -9,6 +9,10 @@ export default class Log {
     if (!this._isSilent) console.log(...arguments);
   }
 
+  warn() {
+    if (!this._isSilent) console.warn(...arguments);
+  }
+
   error() {
     if (!this._isSilent) console.error(...arguments);
   }
