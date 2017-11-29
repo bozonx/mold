@@ -39,6 +39,10 @@ describe.only 'Functional. Catalogue node.', ->
     promise
       .then (response) =>
         assert.deepEqual(response.body, result)
+        assert.deepEqual(@catalogue.actions.default.$storage.getState(
+          @catalogue.actions.default._moldPath,
+          @catalogue.actions.default._actionName
+        ), result)
         assert.deepEqual(@catalogue.actions.default.mold, result)
         assert.deepEqual(@catalogue.mold, result)
         assert.isFalse(@catalogue.loading)

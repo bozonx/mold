@@ -78,9 +78,13 @@ export default class Catalogue extends State {
         }
 
         request(payload) {
-          // TODO: после загрузки данных сделать полную копию данных в state
+          return super.request(payload)
+            .then((resp) => {
+              // set copy of server data to state
+              this.update(this.$storage.getSolid(this._moldPath, this._actionName));
 
-          return super.request(payload);
+              return resp;
+            });
         }
       };
     });

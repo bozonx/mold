@@ -4,6 +4,7 @@ import _Mold from './_Mold';
 export default class Action {
   constructor(main, nodeInstance, moldPath, actionName, fullSchema) {
     this._main = main;
+    this.$storage = main.$$storage;
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
