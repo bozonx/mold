@@ -43,15 +43,25 @@ export default class _Mold {
     // TODO: берем корневой элемент и инициализируем его и берем у него mold
     //this._state;
 
-    // TODO: переделать
-    const actionStateRootContainer = {};
-
-
-    this._storage.initState(this._moldPath, this._actionName, actionStateRootContainer);
+    const initialState = this._getInitialState();
+    this._storage.initState(this._moldPath, this._actionName, initialState);
 
     eachSchema(this._schema, (schemaPath, schema) => {
 
     });
+  }
+
+  _getInitialState() {
+    const rootTypeName = this._schema.type;
+
+    if (_.includes(['assoc', 'collection'], rootTypeName)) {
+      // TODO: use log
+      throw new Error(`ERROR: bad root type "${rootTypeName}" for ${this._moldPath} ${this._actionName}`);
+    }
+
+    const rootType = this._typeManager.types[rootTypeName];
+
+    return rootType.getInitial();
   }
 
   // _checkForUpdateReadOnly(newState) {
