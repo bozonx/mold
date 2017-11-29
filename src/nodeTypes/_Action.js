@@ -20,7 +20,8 @@ export default class Action {
     return this._stateManager.getState(this._moldPath, this._actionName);
   }
 
-  init() {
+  init(actionStateRootContainer) {
+    this._stateManager.initState(this._moldPath, this._actionName, actionStateRootContainer);
   }
 
   getDriverParams() {

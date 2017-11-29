@@ -27,7 +27,7 @@ export default class _TypeBase {
   }
 
   $init(moldPath, schema) {
-    this._moldPath = this._moldPath || moldPath;
+    this._moldPath = moldPath;
     this._schema = schema;
   }
 

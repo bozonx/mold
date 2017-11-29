@@ -6,8 +6,9 @@ import _NodeBase from './_NodeBase';
 
 export default class State extends _NodeBase {
   static validateSchema(schema, schemaPath) {
-    if (!_.isPlainObject(schema.schema))
+    if (!_.isPlainObject(schema.schema)) {
       return `Schema definition of container on "${schemaPath}" must has a "schema" param!`;
+    }
   }
 
   constructor(main) {
@@ -20,17 +21,13 @@ export default class State extends _NodeBase {
     return 'state';
   }
 
-  $initStorage(moldPath) {
-    this._main.$$stateManager.initState(moldPath, this._defaultAction, {});
-  }
-
   $init(moldPath, schema) {
-    this.$initStorage(moldPath);
+    //this._main.$$stateManager.initState(moldPath, this._defaultAction, {});
     this._fullSchema = {
       type: 'assoc',
       schema,
     };
-    // TODO: !!!! review
+
     super.$init(moldPath, schema);
 
     this.actions = {
@@ -57,6 +54,8 @@ export default class State extends _NodeBase {
         init() {
           //this._stateManager.initState(this._moldPath, {}, this._actionName);
           //this._mold.init();
+
+          super.init({});
         }
 
         request() {
