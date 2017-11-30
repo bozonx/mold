@@ -1,8 +1,8 @@
 import { splitPath, joinPath } from '../helpers';
-import _Action from './_Action';
+import ActionBase from '../ActionBase';
 
 
-export default class _TypeBase {
+export default class _NodeBase {
   constructor(main) {
     this._main = main;
   }
@@ -32,7 +32,7 @@ export default class _TypeBase {
   }
 
   $createAction(actionName, cb) {
-    const ActionClass = cb(_Action);
+    const ActionClass = cb(ActionBase);
 
     const instance =  new ActionClass(
       this._main,

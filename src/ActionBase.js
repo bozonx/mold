@@ -1,4 +1,4 @@
-import Mold from '../Mold';
+import Mold from './Mold';
 
 
 export default class Action {
