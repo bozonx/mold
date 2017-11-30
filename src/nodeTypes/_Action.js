@@ -1,4 +1,4 @@
-import _Mold from './_Mold';
+import Mold from '../Mold';
 
 
 export default class Action {
@@ -20,7 +20,7 @@ export default class Action {
   }
 
   init() {
-    this._mold = new _Mold(this._main, this._moldPath, this._actionName, this._schema);
+    this._mold = new Mold(this._main, this._moldPath, this._actionName, this._schema);
     this._mold.init();
   }
 
