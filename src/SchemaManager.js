@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { eachSchema, convertFromLodashToSchema, convertFromSchemaToLodash } from './helpers';
+import { eachSchema, convertFromSchemaToLodash } from './helpers';
 
 
 /**
@@ -34,35 +34,34 @@ export default class SchemaManager {
    * @returns {object|undefined} schema part on path or undefined if schema hasn't found
    */
   getSchema(schemaPath) {
-    if (schemaPath === '') return this.getFullSchema();
-
-    // TODO: проверить как будет работать с новыми контейнерами
+    if (!schemaPath && !_.isString(schemaPath)) {
+      this._main.$$log.fatal(`ERROR: bad "schemaPath" param: ${JSON.stringify(schemaPath)}`);
+    }
 
     return _.get(this._schema, schemaPath);
   }
 
   /**
    * Set schema to certain mount point
-   * @param {string} moldMountPath - if it '' it means set to root
+   * @param {string} schemaPath - if it '' it means set to root
    * @param {object} schema
    */
-  setSchema(moldMountPath, schema) {
-
-    // TODO: проверить как будет работать с новыми контейнерами
-
-    if (!moldMountPath) {
+  setSchema(schemaPath, schema) {
+    if (!schemaPath) {
       this._schema = schema;
     }
     else {
-      const schemaPath = convertFromLodashToSchema(moldMountPath);
       _.set(this._schema, schemaPath, schema);
     }
 
-    // TODO: вернуть
-    //this._checkSchema();
+    // TODO: сделать конвертирование полученной схемы в полную схему
+
+    this._checkWholeSchema();
   }
 
-  _checkSchema() {
+  _checkWholeSchema() {
+    // TODO: вернуть
+    return;
 
     // TODO: проверить как будет работать с новыми контейнерами
 

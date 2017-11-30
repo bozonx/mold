@@ -12,6 +12,9 @@ import StateType from './nodeTypes/State';
 import Document from './nodeTypes/Document';
 import Catalogue from './nodeTypes/Catalogue';
 
+import { convertFromLodashToSchema } from './helpers';
+
+
 export default class Main {
   constructor(config, schema) {
     const configInstance = new Config(config);
@@ -113,8 +116,13 @@ export default class Main {
     this.$$nodeManager.register(typeName, typeClass);
   }
 
-  setSchema(mountPath, schema) {
-    this.$$schemaManager.setSchema(mountPath, schema);
+  setSchema(moldMountPath, schema) {
+    if (!_.isString(moldMountPath)) {
+      this.$$log.fatal(`ERROR: bad "moldMountPath" param: ${JSON.stringify(moldMountPath)}`);
+    }
+
+    const schemaPath = convertFromLodashToSchema(moldMountPath);
+    this.$$schemaManager.setSchema(schemaPath, schema);
   }
 
 }
