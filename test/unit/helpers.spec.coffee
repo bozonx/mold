@@ -62,19 +62,19 @@ describe 'Unit. helpers.', ->
       assert.deepEqual(helpers.concatPath('dir1.dir2', '["f-4"]'), 'dir1.dir2["f-4"]')
 
 
-  describe 'convertFromLodashToSchema.', ->
-    it 'nested collections', ->
-      assert.deepEqual(
-        helpers.convertFromLodashToSchema('dir1.dir2[1].file[2].name'),
-        'dir1.schema.dir2.item.schema.file.item.schema.name')
-    it 'paged collection', ->
-      assert.deepEqual(
-        helpers.convertFromLodashToSchema('dir1[1][2].name'),
-        'dir1.item.item.schema.name')
-    it 'string id', ->
-      assert.deepEqual(
-        helpers.convertFromLodashToSchema('dir1["fg45-fg"]'),
-        'dir1.item')
+#  describe 'convertFromLodashToSchema.', ->
+#    it 'nested collections', ->
+#      assert.deepEqual(
+#        helpers.convertFromLodashToSchema('dir1.dir2[1].file[2].name'),
+#        'dir1.schema.dir2.item.schema.file.item.schema.name')
+#    it 'paged collection', ->
+#      assert.deepEqual(
+#        helpers.convertFromLodashToSchema('dir1[1][2].name'),
+#        'dir1.item.item.schema.name')
+#    it 'string id', ->
+#      assert.deepEqual(
+#        helpers.convertFromLodashToSchema('dir1["fg45-fg"]'),
+#        'dir1.item')
 
   describe 'convertFromLodashToUrl.', ->
     it 'numeric id', ->

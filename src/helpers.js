@@ -77,6 +77,7 @@ export function omitUnsaveable(payload, documentSchema) {
 
 
 export function convertFromLodashToSchema(path) {
+  // TODO: remake test
   let newPath = path;
   // replace collection params [1] ["dfg-ddfg-c453"]
   newPath = newPath.replace(/\[[^\s.\[\]]+]/g, '!item!');

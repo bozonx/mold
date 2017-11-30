@@ -70,6 +70,7 @@ export default class SchemaManager {
       // init driver if it has set
       if (schema.driver) {
         // TODO: почему именно так???
+        // TODO: не должно быть convertFromSchemaToLodash
         schema.driver.init(convertFromSchemaToLodash(schemaPath), this._main);
         // this._drivers[schemaPath] = schema.driver;
         this._main.$$driverManager.registerDriver(schemaPath, schema.driver);
