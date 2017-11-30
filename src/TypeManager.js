@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import ArrayType from './baseTypes/ArrayType';
-import AssocType from './baseTypes/AssocType';
-import BooleanType from './baseTypes/BooleanType';
-import CollectionType from './baseTypes/CollectionType';
-import NumberType from './baseTypes/NumberType';
-import StringType from './baseTypes/StringType';
+import ArrayType from './primitives/ArrayType';
+import AssocType from './primitives/AssocType';
+import BooleanType from './primitives/BooleanType';
+import CollectionType from './primitives/CollectionType';
+import NumberType from './primitives/NumberType';
+import StringType from './primitives/StringType';
 
 
 export default class TypeManager {
