@@ -8,9 +8,9 @@ import DriverManager from './DriverManager';
 import Request from './Request';
 import Config from './Config';
 
-import StateType from './nodeTypes/State';
-import Document from './nodeTypes/Document';
-import Catalogue from './nodeTypes/Catalogue';
+import StateType from './nodes/State';
+import Document from './nodes/Document';
+import Catalogue from './nodes/Catalogue';
 
 import { convertFromLodashToSchema } from './helpers';
 
