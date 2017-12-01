@@ -1,7 +1,7 @@
 SchemaManager = require('../../src/SchemaManager').default
 
 
-describe 'Unit. SchemaManager.', ->
+describe.only 'Unit. SchemaManager.', ->
   beforeEach () ->
     @main = {
       $$log: { fatal: sinon.spy() }
@@ -28,4 +28,37 @@ describe 'Unit. SchemaManager.', ->
     @testSchema = testSchema()
     @schemaManager = new SchemaManager(@main);
 
-  it "setSchema", ->
+  it "setSchema - check short containers", ->
+    testSchema = {
+      container: {
+        childContainer: {
+          state: {
+            type: 'state'
+          }
+        }
+      }
+    }
+
+    assert.doesNotThrow(() => @schemaManager.setSchema('', testSchema))
+
+    assert.deepEqual(@schemaManager.getFullSchema(), {
+      container: {
+        type: 'container'
+        schema: {
+          childContainer: {
+            type: 'container'
+            schema: {
+              state: {
+                type: 'state'
+              }
+            }
+          }
+        }
+      }
+    })
+
+
+
+  # TODO: check bad schema - assert.throws()
+  # TODO: test set schema to not root
+
