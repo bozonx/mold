@@ -2,8 +2,9 @@ import _ from 'lodash';
 
 
 class Convert {
-  constructor(shortSchema) {
+  constructor(shortSchema, log) {
     this.shortSchema = shortSchema;
+    this._log = log;
     this._fullSchema = {};
   }
 
@@ -33,7 +34,7 @@ class Convert {
       }
     }
     else {
-      this._main.$$log.fatal(`ERROR: bad schema node on path "${fullPath}"`);
+      this._log.fatal(`ERROR: bad schema node on path "${fullPath}"`);
     }
   }
 
@@ -44,13 +45,11 @@ class Convert {
 
     // go deeper
     if (node.schema) {
-      this._eachNodeSchema(fullPath, node);
+      this._eachNodeSchema(fullPath, node, 'schema');
     }
-    // TODO: item - это assoc - простой объект
-    // else if (node.item) {
-    //   const deepFullPath = _.trim(`${fullPath}.item`, '.');
-    //   recursive(deepFullPath, node.item);
-    // }
+    else if (node.item) {
+      this._eachNodeSchema(fullPath, node, 'item');
+    }
   }
 
   _parseShortContainer(fullPath, schema) {
@@ -61,16 +60,16 @@ class Convert {
     };
 
     this._insert(fullPath, fullContainer);
-    this._eachNodeSchema(fullPath, fullContainer);
+    this._eachNodeSchema(fullPath, fullContainer, 'schema');
   }
 
-  _eachNodeSchema(fullPath, node) {
-    if (!_.isPlainObject(node.schema)) {
-      this._main.$$log.fatal(`ERROR: bad schema node on path "${fullPath}.schema"`);
+  _eachNodeSchema(fullPath, node, schemaParamName) {
+    if (!_.isPlainObject(node[schemaParamName])) {
+      this._log.fatal(`ERROR: bad schema node on path "${fullPath}.${schemaParamName}"`);
     }
 
-    _.each(node.schema, (item, name) => {
-      const deepFullPath = _.trim(`${fullPath}.schema.${name}`, '.');
+    _.each(node[schemaParamName], (item, name) => {
+      const deepFullPath = _.trim(`${fullPath}.${schemaParamName}.${name}`, '.');
       this._processingNode(deepFullPath, item);
     });
   }
@@ -87,8 +86,8 @@ class Convert {
 
 }
 
-export default function(shortSchema) {
-  const convert = new Convert(shortSchema);
+export default function(shortSchema, log) {
+  const convert = new Convert(shortSchema, log);
 
   return convert.convert();
 }

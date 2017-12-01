@@ -48,7 +48,7 @@ export default class SchemaManager {
    * @param {object} schema
    */
   setSchema(schemaPath, schema) {
-    const fullSchema = convertShortSchemaToFull(schema);
+    const fullSchema = convertShortSchemaToFull(schema, this._main.$$log);
 
     if (!schemaPath) {
       this._schema = fullSchema;
