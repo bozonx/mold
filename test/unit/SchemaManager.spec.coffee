@@ -1,7 +1,7 @@
 SchemaManager = require('../../src/SchemaManager').default
 
 
-describe.only 'Unit. SchemaManager.', ->
+describe 'Unit. SchemaManager.', ->
   beforeEach () ->
     @main = {
       $$log: { fatal: sinon.spy() }
@@ -57,8 +57,6 @@ describe.only 'Unit. SchemaManager.', ->
       }
     })
 
-
-
   # TODO: check bad schema - assert.throws()
   # TODO: test set schema to not root
-
+  # TODO: getting driver from schema
