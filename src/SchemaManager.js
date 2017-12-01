@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import convertShortSchemaToFull from './helpers/convertShortSchemaToFull';
 import { eachSchema, convertFromSchemaToLodash } from './helpers';
 
 
@@ -47,14 +48,17 @@ export default class SchemaManager {
    * @param {object} schema
    */
   setSchema(schemaPath, schema) {
+    const fullSchema = convertShortSchemaToFull(schema);
+
     if (!schemaPath) {
-      this._schema = schema;
+      this._schema = fullSchema;
     }
     else {
-      _.set(this._schema, schemaPath, schema);
+      _.set(this._schema, schemaPath, fullSchema);
     }
 
-    // TODO: сделать конвертирование полученной схемы в полную схему
+    // TODO: сделать сбор драйверов
+    // TODO: убрать код который работал с короткими контейнерами
 
     this._checkWholeSchema();
   }
