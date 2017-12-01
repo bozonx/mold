@@ -32,8 +32,11 @@ describe 'Unit. SchemaManager.', ->
     testSchema = {
       container: {
         childContainer: {
-          state: {
-            type: 'state'
+          catalogue: {
+            type: 'catalogue'
+            item: {
+              stringParam: {type: 'string'}
+            }
           }
         }
       }
@@ -48,8 +51,11 @@ describe 'Unit. SchemaManager.', ->
           childContainer: {
             type: 'container'
             schema: {
-              state: {
-                type: 'state'
+              catalogue: {
+                type: 'catalogue'
+                item: {
+                  stringParam: {type: 'string'}
+                }
               }
             }
           }
