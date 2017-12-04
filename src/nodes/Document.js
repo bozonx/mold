@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { correctUpdatePayload, omitUnsaveable } from '../helpers';
+import { correctUpdatePayload, omitUnsaveable } from '../helpers/helpers';
 import State from './State';
 
 

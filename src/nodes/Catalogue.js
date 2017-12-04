@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { concatPath, getPrimaryName } from '../helpers';
+import { concatPath, getPrimaryName } from '../helpers/helpers';
 import State from './State';
 
 

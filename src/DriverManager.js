@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import Memory from './drivers/Memory';
-import { getTheBestMatchPath } from './helpers';
+import { getTheBestMatchPath } from './helpers/helpers';
 
 
 export default class DriverManager {

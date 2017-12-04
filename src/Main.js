@@ -14,7 +14,7 @@ import StateType from './nodes/State';
 import Document from './nodes/Document';
 import Catalogue from './nodes/Catalogue';
 
-import { convertFromLodashToSchema } from './helpers';
+import { convertFromLodashToSchema } from './helpers/helpers';
 
 
 export default class Main {

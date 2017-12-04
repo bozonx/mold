@@ -1,5 +1,5 @@
 _ = require('lodash')
-helpers = require('../src/helpers')
+helpers = require('../src/helpers/helpers')
 
 generateRequest = (pathToDoc, method, toExtend) ->
   _.defaultsDeep(toExtend, {

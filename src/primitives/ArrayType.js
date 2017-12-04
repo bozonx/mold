@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { isSimpleArray } from '../helpers';
+import { isSimpleArray } from '../helpers/helpers';
 
 
 export default class ArrayType {

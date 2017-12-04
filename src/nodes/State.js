@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { concatPath, convertFromLodashToSchema } from '../helpers';
+import { concatPath, convertFromLodashToSchema } from '../helpers/helpers';
 import _NodeBase from './_NodeBase';
 
 

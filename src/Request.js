@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { convertFromLodashToUrl } from './helpers';
+import { convertFromLodashToUrl } from './helpers/helpers';
 
 
 export default class Request {

@@ -1,4 +1,4 @@
-import { splitPath, joinPath } from '../helpers';
+import { splitPath, joinPath } from '../helpers/helpers';
 import ActionBase from '../ActionBase';
 
 

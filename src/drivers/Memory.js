@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { correctUpdatePayload, convertFromUrlToLodash } from '../helpers';
+import { correctUpdatePayload, convertFromUrlToLodash } from '../helpers/helpers';
 
 class LocalMemory {
   constructor(driverConfig, instanceConfig, db) {

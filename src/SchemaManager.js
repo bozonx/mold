@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import convertShortSchemaToFull from './helpers/convertShortSchemaToFull';
-import { eachSchema, convertFromSchemaToLodash } from './helpers';
+import { eachSchema, convertFromSchemaToLodash } from './helpers/helpers';
 
 
 /**

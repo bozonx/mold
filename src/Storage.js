@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { concatPath } from './helpers';
+import { concatPath } from './helpers/helpers';
 import { mutate, updateIndexes } from './helpers/mutate';
 
 

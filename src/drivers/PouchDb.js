@@ -3,7 +3,7 @@ import _ from 'lodash';
 import Cuid from './node-cuid.js';
 const cuid = Cuid().cuid;
 
-import { correctUpdatePayload } from '../helpers';
+import { correctUpdatePayload } from '../helpers/helpers';
 
 
 // from 0 to 19

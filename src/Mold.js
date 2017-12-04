@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { eachSchema } from './helpers';
+import { eachSchema } from './helpers/helpers';
 
 
 export default class _Mold {

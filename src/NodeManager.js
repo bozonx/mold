@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { splitPath, convertFromLodashToSchema } from './helpers';
+import { splitPath, convertFromLodashToSchema } from './helpers/helpers';
 
 
 export default class NodeManager {
