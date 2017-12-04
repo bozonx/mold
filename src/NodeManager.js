@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-import { convertFromLodashToSchema } from './helpers/helpers';
-
 
 export default class NodeManager {
   constructor(main) {
@@ -23,10 +21,11 @@ export default class NodeManager {
    * @returns {object|undefined} - instance of type
    */
   getInstance(moldPath) {
-    if (!_.isString(moldPath)) this._main.$$log.fatal(`You must pass a path argument.`);
+    if (!moldPath || !_.isString(moldPath)) {
+      this._main.$$log.fatal(`ERROR: bad "moldPath" param: ${JSON.stringify(moldPath)}`);
+    }
 
-    const schemaPath = convertFromLodashToSchema(moldPath);
-    const schema = this._main.$$schemaManager.getSchema(schemaPath);
+    const schema = this._main.$$schemaManager.getSchema(moldPath);
 
     if (_.isUndefined(schema)) {
       this._main.$$log.fatal(`Schema on path "${moldPath}" doesn't exists`);

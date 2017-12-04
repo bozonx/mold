@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import convertShortSchemaToFull from './helpers/convertShortSchemaToFull';
-import { eachSchema, convertFromSchemaToLodash } from './helpers/helpers';
+import { eachSchema, convertFromLodashToSchema, convertFromSchemaToLodash } from './helpers/helpers';
 
 
 /**
@@ -31,13 +31,15 @@ export default class SchemaManager {
 
   /**
    * get schema part by path
-   * @param {string} schemaPath - absolute mold or schema path
+   * @param {string} moldPath - absolute mold path
    * @returns {object|undefined} schema part on path or undefined if schema hasn't found
    */
-  getSchema(schemaPath) {
-    if (!schemaPath && !_.isString(schemaPath)) {
-      this._main.$$log.fatal(`ERROR: bad "schemaPath" param: ${JSON.stringify(schemaPath)}`);
+  getSchema(moldPath) {
+    if (!moldPath || !_.isString(moldPath)) {
+      this._main.$$log.fatal(`ERROR: bad "moldPath" param: ${JSON.stringify(moldPath)}`);
     }
+
+    const schemaPath = convertFromLodashToSchema(moldPath);
 
     return _.get(this._schema, schemaPath);
   }
@@ -48,6 +50,8 @@ export default class SchemaManager {
    * @param {object} schema
    */
   setSchema(schemaPath, schema) {
+    // TODO: передавать moldPath
+
     const fullSchema = convertShortSchemaToFull(schema, this._main.$$log);
 
     if (!schemaPath) {
