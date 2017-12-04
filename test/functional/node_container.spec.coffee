@@ -15,7 +15,7 @@ describe 'Functional. Container node.', ->
     # TODO: !!!!
 
   it "Try to get container - it throws an error", ->
-    expect(() => @mold.get('container.containerInner')).to.throw('You can\'t get instance of simple container on path "container.containerInner"')
+    expect(() => @mold.get('container.containerInner')).to.throw('You can\'t get instance of simple container node on path "container.containerInner"')
 
   it "Get state type via containers", ->
     state = @mold.get('container.containerInner.state')
