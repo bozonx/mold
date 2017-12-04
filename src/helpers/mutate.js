@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { concatPath, isCollection } from './helpers';
+import { concatPath, isCollection } from '../helpers';
 
 /**
  * Mutate storage.
