@@ -60,8 +60,8 @@ export default class SchemaManager {
       _.set(this._schema, schemaPath, fullSchema);
     }
 
-    // TODO: сделать сбор драйверов
-
+    // collect driver from whole schema, but don't reinit they if they were inited.
+    this._main.$$driverManager.collectDrivers(this._schema);
     this._checkWholeSchema();
   }
 

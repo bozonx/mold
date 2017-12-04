@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import Memory from './drivers/Memory';
-import { getTheBestMatchPath } from './helpers/helpers';
+import { eachSchema, getTheBestMatchPath } from './helpers/helpers';
 
 
 export default class DriverManager {
@@ -17,6 +17,22 @@ export default class DriverManager {
       db: this.$defaultMemoryDb,
     });
     this._defaultDriver = memoryDriver.instance({});
+  }
+
+  collectDrivers(fullSchema) {
+    eachSchema(fullSchema, (schemaPath, schema) => {
+      // find only driver or container node
+      if (schema.type !== 'driver' || schema.type !== 'container') return;
+      if (!schema.driver) return;
+
+      // init driver if it has set
+
+      // TODO: почему именно так???
+      // TODO: не должно быть convertFromSchemaToLodash
+      schema.driver.init(convertFromSchemaToLodash(schemaPath), this._main);
+      // this._drivers[schemaPath] = schema.driver;
+      this._main.$$driverManager.registerDriver(schemaPath, schema.driver);
+    });
   }
 
   getDefaultDriver() {

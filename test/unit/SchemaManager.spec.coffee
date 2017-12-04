@@ -1,10 +1,12 @@
 SchemaManager = require('../../src/SchemaManager').default
+DriverManager = require('../../src/DriverManager').default
 
 
 describe 'Unit. SchemaManager.', ->
   beforeEach () ->
     @main = {
       $$log: { fatal: sinon.spy() }
+      $$driverManager: new DriverManager(@main)
     }
 
     testSchema = () ->
