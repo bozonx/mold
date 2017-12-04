@@ -32,45 +32,14 @@ export default class NodeManager {
       this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
     }
 
-    // TODO: запретить брать инстансы контейнеров
-    // if (_.isUndefined(schema.type)) {
-    //   // it means a container
-    //   this._main.$$log.fatal(`You can't get instance of simple container on path "${schemaPath}"`);
-    // }
+    // disallow to get container and driver instance
+    if (schema.type === 'container' || schema.type === 'driver') {
+      // it means a container
+      this._main.$$log.fatal(`You can't get instance of simple container or driver nodes on path "${schemaPath}"`);
+    }
 
     return this._newInstance(moldPath, schema);
-
-    // // use instance of first level of path
-    // const pathParts = splitPath(path);
-    // // get path parts after start from index of 1
-    // const childPathParts = pathParts.slice(1);
-    // // get root instance
-    // const rootInstance = this.$getInstanceByFullPath({
-    //   // TODO: use moldPath, schemaPath, storagePath
-    //   mold: pathParts[0],
-    //   schema: convertFromLodashToSchema(pathParts[0]),
-    //   storage: pathParts[0],
-    // });
-    //
-    // // if there is only first level of path - return its instance.
-    // if (childPathParts.length === 0) return rootInstance;
-    //
-    // // TODO: throw an Error if instant hasn't found
-    // return this._findInstance(childPathParts, rootInstance);
   }
-
-  // /**
-  //  * It just returns an instance
-  //  * @param {{mold: string, schema: string, storage: string}} paths
-  //  */
-  // $getInstanceByFullPath(paths) {
-  //   // It rise an error if path doesn't consist with schema
-  //   const schema = this._main.$$schemaManager.getSchema(paths.schema);
-  //   const instance = this._newInstance(schema.type);
-  //   instance.$init(paths, schema);
-  //
-  //   return instance;
-  // }
 
   validateType(typeName, schema, schemaPath) {
     if (!this._registeredTypes[typeName]) return;

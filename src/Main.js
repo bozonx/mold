@@ -8,6 +8,8 @@ import DriverManager from './DriverManager';
 import Request from './Request';
 import Config from './Config';
 
+import Container from './nodes/Container';
+import Driver from './nodes/Driver';
 import StateType from './nodes/State';
 import Document from './nodes/Document';
 import Catalogue from './nodes/Catalogue';
@@ -29,6 +31,8 @@ export default class Main {
     this.$$storage = new Storage(this.$$events);
 
     // register base types
+    this.$$nodeManager.register('container', Container);
+    this.$$nodeManager.register('driver', Driver);
     this.$$nodeManager.register('state', StateType);
     this.$$nodeManager.register('document', Document);
     this.$$nodeManager.register('catalogue', Catalogue);
