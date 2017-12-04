@@ -14,8 +14,6 @@ import StateType from './nodes/State';
 import Document from './nodes/Document';
 import Catalogue from './nodes/Catalogue';
 
-import { convertFromLodashToSchema } from './helpers/helpers';
-
 
 export default class Main {
   constructor(config, schema) {
@@ -125,8 +123,7 @@ export default class Main {
       this.$$log.fatal(`ERROR: bad "moldMountPath" param: ${JSON.stringify(moldMountPath)}`);
     }
 
-    const schemaPath = convertFromLodashToSchema(moldMountPath);
-    this.$$schemaManager.setSchema(schemaPath, schema);
+    this.$$schemaManager.setSchema(moldMountPath, schema);
   }
 
 }

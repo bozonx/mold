@@ -46,12 +46,11 @@ export default class SchemaManager {
 
   /**
    * Set schema to certain mount point
-   * @param {string} schemaPath - if it '' it means set to root
+   * @param {string} moldPath - absolute mold path. if it '' it means set to root
    * @param {object} schema
    */
-  setSchema(schemaPath, schema) {
-    // TODO: передавать moldPath
-
+  setSchema(moldPath, schema) {
+    const schemaPath = convertFromLodashToSchema(moldPath);
     const fullSchema = convertShortSchemaToFull(schema, this._main.$$log);
 
     if (!schemaPath) {
@@ -62,7 +61,6 @@ export default class SchemaManager {
     }
 
     // TODO: сделать сбор драйверов
-    // TODO: убрать код который работал с короткими контейнерами
 
     this._checkWholeSchema();
   }
