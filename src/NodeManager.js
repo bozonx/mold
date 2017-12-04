@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { splitPath, convertFromLodashToSchema } from './helpers/helpers';
+import { convertFromLodashToSchema } from './helpers/helpers';
 
 
 export default class NodeManager {
@@ -29,13 +29,7 @@ export default class NodeManager {
     const schema = this._main.$$schemaManager.getSchema(schemaPath);
 
     if (_.isUndefined(schema)) {
-      this._main.$$log.fatal(`Schema on path "${schemaPath}" doesn't exists`);
-    }
-
-    // disallow to get container and driver instance
-    if (schema.type === 'container' || schema.type === 'driver') {
-      // it means a container
-      this._main.$$log.fatal(`You can't get instance of simple container or driver nodes on path "${schemaPath}"`);
+      this._main.$$log.fatal(`Schema on path "${moldPath}" doesn't exists`);
     }
 
     return this._newInstance(moldPath, schema);
@@ -44,37 +38,15 @@ export default class NodeManager {
   validateType(typeName, schema, schemaPath) {
     if (!this._registeredTypes[typeName]) return;
 
-    if (this._registeredTypes[typeName].validateSchema) {
-      const result = this._registeredTypes[typeName].validateSchema(schema, schemaPath);
-      if (_.isString(result)) {
-        this._main.$$log.fatal(result);
-      }
+    if (!this._registeredTypes[typeName].validateSchema) {
+      this._main.$$log.fatal(`Can't find "validateSchema" class prop on "${schemaPath}"`);
+    }
+
+    const result = this._registeredTypes[typeName].validateSchema(schema, schemaPath);
+    if (_.isString(result)) {
+      this._main.$$log.fatal(result);
     }
   }
-
-
-  // _findInstance(pathParts, rootInstance) {
-  //   // TODO: вывалить ошибку при попытке получить тип по несуществующему пути
-  //
-  //   let currentInstance = rootInstance;
-  //   let result = undefined;
-  //   _.each(pathParts, (currentPathPiece, index) => {
-  //     if (index === pathParts.length - 1) {
-  //       // the last part of path
-  //       result = currentInstance.$getChildInstance(currentPathPiece);
-  //     }
-  //     else {
-  //       // not last
-  //       // all the parents have to implement of $getChildInstance method.
-  //       if (!currentInstance.$getChildInstance)
-  //         this._main.$$log.fatal(`There is no method "$getChildInstance" of ${currentInstance.root}`);
-  //
-  //       currentInstance = currentInstance.$getChildInstance(currentPathPiece);
-  //     }
-  //   });
-  //
-  //   return result;
-  // }
 
   _newInstance(moldPath, schema) {
     const instance = new this._registeredTypes[schema.type](this._main);
