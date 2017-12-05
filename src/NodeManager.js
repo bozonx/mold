@@ -34,7 +34,7 @@ export default class NodeManager {
     return this._newInstance(moldPath, schema);
   }
 
-  validateType(typeName, schema, schemaPath) {
+  validateSchema(typeName, schema, schemaPath) {
     if (!this._registeredTypes[typeName]) return;
 
     if (!this._registeredTypes[typeName].validateSchema) {

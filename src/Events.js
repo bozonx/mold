@@ -22,11 +22,12 @@ export default class Events {
     this.eventEmitter.on(this._getEventName(path, eventName), handler);
   }
 
-  onDeep(path, eventName, handler) {
-    // TODO: !!!
-  }
+  // onDeep(path, eventName, handler) {
+  //   // TODO: !!!
+  // }
 
   off(event, handler) {
+    // TODO: лучше всего просто передать handler и найти где он используется и удалить везде
     this.eventEmitter.off(event, handler);
   }
 
@@ -36,10 +37,6 @@ export default class Events {
 
   _getEventName(path, eventName) {
     return `${path}|${eventName}`;
-  }
-
-  _parseEventName(fullEventName) {
-    // TODO: продумать
   }
 
 }

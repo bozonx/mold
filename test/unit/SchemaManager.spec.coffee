@@ -71,4 +71,3 @@ describe 'Unit. SchemaManager.', ->
 
   # TODO: check bad schema - assert.throws()
   # TODO: test set schema to not root
-  # TODO: getting driver from schema

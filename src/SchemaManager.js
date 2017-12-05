@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import convertShortSchemaToFull from './helpers/convertShortSchemaToFull';
-import { eachSchema, convertFromLodashToSchema, convertFromSchemaToLodash } from './helpers/helpers';
+import { eachSchema, convertFromLodashToSchema } from './helpers/helpers';
 
 
 /**
@@ -67,19 +67,16 @@ export default class SchemaManager {
 
   _checkWholeSchema() {
     eachSchema(this._schema, (schemaPath, schema) => {
-      // schema validation
+      // check node
       if ( this._main.$$nodeManager.isRegistered(schema.type) ) {
-        this._main.$$nodeManager.validateType(schema.type, schema, schemaPath);
-      }
-      else if (schema.schema || schema.item) {
-        this._main.$$log.fatal(`Unregistered schema node type ${JSON.stringify(schema)} !`);
+        this._main.$$nodeManager.validateSchema(schema.type, schema, schemaPath);
       }
       // check primitive
       else if (this._main.$$typeManager.isRegistered(schema.type)) {
         this._main.$$typeManager.validateSchema(schema);
       }
       else {
-        this._main.$$log.fatal(`Unknown schema node type ${JSON.stringify(schema)} !`);
+        this._main.$$log.fatal(`Unknown schema node or primitive ${JSON.stringify(schema)} !`);
       }
     });
   }

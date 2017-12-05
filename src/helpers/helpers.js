@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+
 /**
  * It call cb recursively from root of schema.
  * @param fullSchema
@@ -14,7 +15,9 @@ export function eachSchema(fullSchema, cb) {
     if (isGoDeeper === false) return;
 
     if (curSchema.item) {
-      letItRecursive(`${curPath}.item`, curSchema['item']);
+      _.each(curSchema['item'], function (subSchema, nodeName) {
+        letItRecursive(`${curPath}.item.${nodeName}`, subSchema);
+      });
     }
     else if (curSchema.schema) {
       _.each(curSchema['schema'], function (subSchema, nodeName) {

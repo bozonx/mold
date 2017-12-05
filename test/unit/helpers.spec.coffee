@@ -7,10 +7,8 @@ describe 'Unit. helpers.', ->
         collection:
           type: 'collection'
           item:
-            type: 'container'
-            schema:
-              param:
-                type: 'string'
+            param:
+              type: 'string'
 
       results = []
       helpers.eachSchema schema, (path, value) =>
@@ -21,11 +19,9 @@ describe 'Unit. helpers.', ->
 
       assert.equal(results[0].path,            'collection')
       assert.deepEqual(results[0].value, schema.collection)
-      assert.equal(results[1].path,            'collection.item')
-      assert.deepEqual(results[1].value, schema.collection.item)
-      assert.equal(results[2].path,            'collection.item.schema.param')
-      assert.deepEqual(results[2].value, schema.collection.item.schema.param)
-      assert.equal(results.length, 3)
+
+      assert.equal(results[1].path,            'collection.item.param')
+      assert.deepEqual(results[1].value, schema.collection.item.param)
 
   describe 'getTheBestMatchPath.', ->
     it 'bad path', ->
