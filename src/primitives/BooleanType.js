@@ -14,4 +14,9 @@ export default class BooleanType {
     return _.isBoolean(value);
   }
 
+  validateSchema(schema) {
+    // TODO: do it
+    return true;
+  }
+
 }

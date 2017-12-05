@@ -60,33 +60,26 @@ export default class SchemaManager {
       _.set(this._schema, schemaPath, fullSchema);
     }
 
+    this._checkWholeSchema();
     // collect driver from whole schema, but don't reinit they if they were inited.
     this._main.$$driverManager.collectDrivers(this._schema);
-    this._checkWholeSchema();
   }
 
   _checkWholeSchema() {
-    // TODO: вернуть
-    return;
-
-    // TODO: проверить как будет работать с новыми контейнерами
-
     eachSchema(this._schema, (schemaPath, schema) => {
-      // init driver if it has set
-      if (schema.driver) {
-        // TODO: почему именно так???
-        // TODO: не должно быть convertFromSchemaToLodash
-        schema.driver.init(convertFromSchemaToLodash(schemaPath), this._main);
-        // this._drivers[schemaPath] = schema.driver;
-        this._main.$$driverManager.registerDriver(schemaPath, schema.driver);
-      }
-
       // schema validation
       if ( this._main.$$nodeManager.isRegistered(schema.type) ) {
         this._main.$$nodeManager.validateType(schema.type, schema, schemaPath);
       }
-      else if (!_.includes(['boolean', 'string', 'number', 'array'], schema.type)) {
-        this._main.$$log.fatal(`Unknown schema node ${JSON.stringify(schema)} !`);
+      else if (schema.schema || schema.item) {
+        this._main.$$log.fatal(`Unregistered schema node type ${JSON.stringify(schema)} !`);
+      }
+      // check primitive
+      else if (this._main.$$typeManager.isRegistered(schema.type)) {
+        this._main.$$typeManager.validateSchema(schema);
+      }
+      else {
+        this._main.$$log.fatal(`Unknown schema node type ${JSON.stringify(schema)} !`);
       }
     });
   }

@@ -14,4 +14,9 @@ export default class NumberType {
     return _.isNumber(value);
   }
 
+  validateSchema(schema) {
+    // TODO: do it
+    return true;
+  }
+
 }

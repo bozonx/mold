@@ -14,4 +14,9 @@ export default class StringType {
     return _.isString(value);
   }
 
+  validateSchema(schema) {
+    // TODO: do it
+    return true;
+  }
+
 }

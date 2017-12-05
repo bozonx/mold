@@ -16,4 +16,9 @@ export default class ArrayType {
     return isSimpleArray(value);
   }
 
+  validateSchema(schema) {
+    // TODO: do it
+    return true;
+  }
+
 }

@@ -14,4 +14,9 @@ export default class CollectionType {
     return _.isPlainObject(value);
   }
 
+  validateSchema(schema) {
+    // TODO: do it
+    return true;
+  }
+
 }

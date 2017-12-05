@@ -21,4 +21,12 @@ export default class TypeManager {
     }
   }
 
+  isRegistered(typeName) {
+    return !!this.types[typeName];
+  }
+
+  validateSchema(schema) {
+    return this.types[schema.type].validateSchema(schema);
+  }
+
 }

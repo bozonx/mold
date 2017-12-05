@@ -7,6 +7,7 @@ describe 'Functional. Container node.', ->
         containerInner:
           state:
             type: 'state'
+            schema: {}
 
     @testSchema = testSchema()
     @mold = mold( {silent: true}, @testSchema )

@@ -1,5 +1,7 @@
 SchemaManager = require('../../src/SchemaManager').default
 DriverManager = require('../../src/DriverManager').default
+NodeManager = require('../../src/NodeManager').default
+TypeManager = require('../../src/TypeManager').default
 
 
 describe 'Unit. SchemaManager.', ->
@@ -7,6 +9,8 @@ describe 'Unit. SchemaManager.', ->
     @main = {
       $$log: { fatal: sinon.spy() }
       $$driverManager: new DriverManager(@main)
+      $$nodeManager: new NodeManager(@main)
+      $$typeManager: new TypeManager(@main)
     }
 
     testSchema = () ->
