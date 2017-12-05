@@ -28,6 +28,7 @@ export default class DriverManager {
       // init driver if it has set
 
       // TODO: почему именно так???
+      console.log(11111111111, moldPath, schemaPath)
       schema.driver.init(moldPath, this._main);
       this.registerDriver(schemaPath, schema.driver);
     });

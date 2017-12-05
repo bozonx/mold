@@ -17,11 +17,9 @@ testSchema = (memory) ->
       documentsCollection:
         type: 'documentsCollection'
         item:
-          type: 'document'
-          schema:
-            id: {type: 'number', primary: true}
-            name: {type: 'string'}
-            created: {type: 'number'}
+          id: {type: 'number', primary: true}
+          name: {type: 'string'}
+          created: {type: 'number'}
 
 describe.skip 'Functional. Memory driver.', ->
   beforeEach ->

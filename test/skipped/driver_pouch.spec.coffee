@@ -21,11 +21,9 @@ testSchema = (pouch) ->
       documentsCollection:
         type: 'documentsCollection'
         item:
-          type: 'document'
-          schema:
-            id: {type: 'number', primary: true}
-            name: {type: 'string'}
-            created: {type: 'number'}
+          id: {type: 'number', primary: true}
+          name: {type: 'string'}
+          created: {type: 'number'}
 
 describe.skip 'Functional. PouchDb driver.', ->
   beforeEach ->
