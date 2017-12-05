@@ -11,9 +11,9 @@ describe 'Unit. helpers.', ->
               type: 'string'
 
       results = []
-      helpers.eachSchema schema, (path, value) =>
+      helpers.eachSchema schema, (moldPath, schemaPath, value) =>
         results.push {
-          path: path,
+          path: schemaPath,
           value: value,
         }
 

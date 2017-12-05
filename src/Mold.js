@@ -71,7 +71,7 @@ export default class _Mold {
     // TODO: do it. return string on error
     return true;
 
-    eachSchema(this._schema, (schemaPath, schema) => {
+    eachSchema(this._schema, (moldPath, schemaPath, schema) => {
 
     });
   }

@@ -7,21 +7,25 @@ import _ from 'lodash';
  * @param cb
  */
 export function eachSchema(fullSchema, cb) {
-  function letItRecursive(curPath, curSchema) {
+  function letItRecursive(curMoldPath, curSchemaPath, curSchema) {
     // Do nothing if its isn't a plain object
     if (!_.isPlainObject(curSchema)) return;
 
-    const isGoDeeper = cb(curPath, curSchema);
+    const isGoDeeper = cb(curMoldPath, curSchemaPath, curSchema);
     if (isGoDeeper === false) return;
 
     if (curSchema.item) {
       _.each(curSchema['item'], function (subSchema, nodeName) {
-        letItRecursive(`${curPath}.item.${nodeName}`, subSchema);
+        const childMoldPath = `${curMoldPath}.${nodeName}`;
+        const childSchemaPath = `${curSchemaPath}.item.${nodeName}`;
+        letItRecursive(childMoldPath, childSchemaPath, subSchema);
       });
     }
     else if (curSchema.schema) {
       _.each(curSchema['schema'], function (subSchema, nodeName) {
-        letItRecursive(`${curPath}.schema.${nodeName}`, subSchema);
+        const childMoldPath = `${curMoldPath}.${nodeName}`;
+        const childSchemaPath = `${curSchemaPath}.schema.${nodeName}`;
+        letItRecursive(childMoldPath, childSchemaPath, subSchema);
       });
     }
     // else is one of primitive
@@ -29,7 +33,7 @@ export function eachSchema(fullSchema, cb) {
 
   // expand the first level
   _.each(fullSchema, function (curSchema, nodeName) {
-    letItRecursive(nodeName, curSchema);
+    letItRecursive(nodeName, nodeName, curSchema);
   });
 }
 

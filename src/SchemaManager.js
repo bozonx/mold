@@ -66,7 +66,7 @@ export default class SchemaManager {
   }
 
   _checkWholeSchema() {
-    eachSchema(this._schema, (schemaPath, schema) => {
+    eachSchema(this._schema, (moldPath, schemaPath, schema) => {
       // check node
       if ( this._main.$$nodeManager.isRegistered(schema.type) ) {
         this._main.$$nodeManager.validateSchema(schema.type, schema, schemaPath);
