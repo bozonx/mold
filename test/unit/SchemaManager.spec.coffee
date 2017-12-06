@@ -7,7 +7,7 @@ TypeManager = require('../../src/TypeManager').default
 describe 'Unit. SchemaManager.', ->
   beforeEach () ->
     @main = {
-      $$log: { fatal: sinon.spy() }
+      $$log: { fatal: (err) => throw new Error(err) }
       $$driverManager: new DriverManager(@main)
       $$nodeManager: new NodeManager(@main)
       $$typeManager: new TypeManager(@main)
@@ -106,5 +106,14 @@ describe 'Unit. SchemaManager.', ->
     assert.deepEqual(@schemaManager.getFullSchema(), result)
     assert.deepEqual(@schemaManager.getSchema('container.container.newSchema'), newNode)
 
+  it "bad schema - node isn't registered", ->
+    testSchema = {
+      param: {
+        type: 'another'
+      }
+    }
 
-  # TODO: check bad schema - assert.throws()
+    assert.throws(() => @schemaManager.setSchema(testSchema))
+
+  # TODO: check bad schema - not valid node
+  # TODO: check bad schema - not valid primitive

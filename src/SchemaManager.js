@@ -66,7 +66,6 @@ export default class SchemaManager {
 
   /**
    * Set schema to certain mount point
-   * @param {string} moldPath - absolute mold path. if it '' it means set to root
    * @param {object} schema
    */
   setSchema(schema) {
