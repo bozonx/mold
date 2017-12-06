@@ -55,6 +55,7 @@ export default class DriverManager {
    * @return {Object|undefined}
    */
   getDriver(pathInSchema) {
+    // TODO: use mold path
     const driverRoot = this.getClosestDriverPath(pathInSchema);
     const driver = this.getDriverStrict(driverRoot);
 
@@ -71,6 +72,7 @@ export default class DriverManager {
    * @returns {object|undefined} If driver doesn't exists, returns undefined
    */
   getDriverStrict(driverPath) {
+    // TODO: use mold path
     if (driverPath) return this._drivers[driverPath];
 
     // if not driverPath it means default memory driver
@@ -83,6 +85,7 @@ export default class DriverManager {
    * @return {string|undefined} real driver path
    */
   getClosestDriverPath(moldPath) {
+    // TODO: check - use mold path
     if (!_.isString(moldPath))
       this._main.$$log.fatal(`You must pass the moldPath argument!`);
 
