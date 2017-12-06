@@ -24,6 +24,9 @@ describe 'Unit. SchemaManager.', ->
     @mold = mold( {silent: true}, this.testSchema )
 
   it "setSchema - check short containers", ->
+    @mold.$$nodeManager.validateSchema = sinon.spy()
+    @mold.$$typeManager.validateSchema = sinon.spy()
+
     testSchema = {
       container: {
         childContainer: {
@@ -57,6 +60,9 @@ describe 'Unit. SchemaManager.', ->
         }
       }
     })
+
+    sinon.assert.calledThrice(@mold.$$nodeManager.validateSchema)
+    sinon.assert.calledOnce(@mold.$$typeManager.validateSchema)
 
   it "set schema to not root", ->
     newNode = {
@@ -107,6 +113,3 @@ describe 'Unit. SchemaManager.', ->
       () => @mold.$$schemaManager.setSchema(testSchema),
       "Unknown schema node or primitive {\"type\":\"another\"} !"
     )
-
-  # TODO: check bad schema - not valid node
-  # TODO: check bad schema - not valid primitive
