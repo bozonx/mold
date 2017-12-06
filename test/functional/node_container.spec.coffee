@@ -12,6 +12,18 @@ describe 'Functional. Container node.', ->
     @testSchema = testSchema()
     @mold = mold( {silent: true}, @testSchema )
 
+  it "validate schema - node without schema param", ->
+    testSchema = {
+      container: {
+        type: 'container'
+      }
+    }
+
+    assert.throws(
+      () => mold( {silent: true}, testSchema ),
+      'Schema definition of container on "container" must has a "schema" param!'
+    )
+
   it "container has to have only other containers, state, document or Catalogue as a child", ->
     # TODO: !!!!
 
