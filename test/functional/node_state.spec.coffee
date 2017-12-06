@@ -36,6 +36,18 @@ describe 'Functional. State node.', ->
   it "init", ->
     assert.deepEqual(@state.mold, {})
 
+  it "validate schema - node without schema param", ->
+    testSchema = {
+      container: {
+        type: 'container'
+      }
+    }
+
+    assert.throws(
+      () => mold( {silent: true}, testSchema ),
+      'Schema definition of container on "container" must has a "schema" param!'
+    )
+
   it "set all types of data", ->
     partialData = {
       boolParam: true

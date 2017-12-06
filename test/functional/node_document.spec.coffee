@@ -41,6 +41,18 @@ describe 'Functional. Document node.', ->
     @document = @mold.get(@moldPath)
     @document.$init(@moldPath, @testSchema.document)
 
+  it "validate schema - node without schema param", ->
+    testSchema = {
+      container: {
+        type: 'container'
+      }
+    }
+
+    assert.throws(
+      () => mold( {silent: true}, testSchema ),
+      'Schema definition of container on "container" must has a "schema" param!'
+    )
+
   it 'load()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
 

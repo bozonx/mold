@@ -21,6 +21,18 @@ describe 'Functional. Catalogue node.', ->
     @catalogue = @mold.get(@moldPath)
     @catalogue.$init(@moldPath, @testSchema.catalogue)
 
+  it "validate schema - node without schema param", ->
+    testSchema = {
+      container: {
+        type: 'container'
+      }
+    }
+
+    assert.throws(
+      () => mold( {silent: true}, testSchema ),
+      'Schema definition of container on "container" must has a "schema" param!'
+    )
+
   it 'load()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'catalogue', @testValues)
 
