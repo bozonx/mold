@@ -43,6 +43,10 @@ describe 'Unit. DriverManager.', ->
 
       sinon.assert.calledOnce(@driver.init)
 
+    it "getDriver", ->
+      @driverManager.collectDrivers(@testSchema)
+      assert.equal(@driverManager.getDriver('driverRoot.container'), @driver)
+
   describe 'two level driver', ->
     beforeEach () ->
       @main = {

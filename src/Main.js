@@ -70,21 +70,21 @@ export default class Main {
 
   /**
    * Get instance of type by schema path.
-   * @param {string} pathInSchema - absolute path in schema
+   * @param {string} moldPath - absolute mold path in schema
    */
-  get(pathInSchema) {
-    return this.$$nodeManager.getInstance(pathInSchema);
+  get(moldPath) {
+    return this.$$nodeManager.getInstance(moldPath);
   }
 
   /**
-   * Get driver by path in schema.
+   * Get driver by moldPath in schema.
    * You cat pass path deeper than certain driver path.
    * If no one driver has found it returns a default driver (memory)
-   * @param {string} pathInSchema
+   * @param {string} moldPath
    * @return {Object|undefined}
    */
-  getDriver(pathInSchema) {
-    return this.$$driverManager.getDriver(pathInSchema);
+  getDriver(moldPath) {
+    return this.$$driverManager.getDriver(moldPath);
   }
 
   /**
