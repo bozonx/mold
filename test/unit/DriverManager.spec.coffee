@@ -5,7 +5,9 @@ describe 'Unit. DriverManager.', ->
   describe 'driver on the root.', ->
     beforeEach () ->
       @main = {
-        $$log: { fatal: sinon.spy() }
+        $$log: {
+          fatal: (err) -> throw new Error(err)
+        }
       }
 
       @driver = {
@@ -44,7 +46,9 @@ describe 'Unit. DriverManager.', ->
   describe 'two level driver', ->
     beforeEach () ->
       @main = {
-        $$log: { fatal: sinon.spy() }
+        $$log: {
+          fatal: (err) -> throw new Error(err)
+        }
       }
 
       @driver = {
@@ -72,3 +76,7 @@ describe 'Unit. DriverManager.', ->
       @driverManager = new DriverManager(@main);
 
     it "it's disallowed to have 2 drivers in one branch", ->
+      assert.throws(
+        () => @driverManager.collectDrivers(@testSchema),
+        "ERROR: you can't specify more than one driver to one branch of schema!"
+      )
