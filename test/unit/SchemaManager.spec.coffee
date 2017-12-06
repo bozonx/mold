@@ -47,7 +47,7 @@ describe 'Unit. SchemaManager.', ->
       }
     }
 
-    assert.doesNotThrow(() => @schemaManager.setSchema('', testSchema))
+    assert.doesNotThrow(() => @schemaManager.setSchema(testSchema))
 
     assert.deepEqual(@schemaManager.getFullSchema(), {
       container: {
@@ -100,8 +100,8 @@ describe 'Unit. SchemaManager.', ->
       }
     }
 
-    @schemaManager.setSchema('', @testSchema)
-    assert.doesNotThrow(() => @schemaManager.setSchema('container.container.newSchema', newNode))
+    @schemaManager.setSchema(@testSchema)
+    assert.doesNotThrow(() => @schemaManager.setNode('container.container.newSchema', newNode))
 
     assert.deepEqual(@schemaManager.getFullSchema(), result)
     assert.deepEqual(@schemaManager.getSchema('container.container.newSchema'), newNode)

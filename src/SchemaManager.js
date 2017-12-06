@@ -45,20 +45,32 @@ export default class SchemaManager {
   }
 
   /**
+   * Set schema node to certain mount point
+   * @param {string} moldPath - absolute mold path.
+   * @param {object} schema
+   */
+  setNode(moldPath, schema) {
+    if (!moldPath || !_.isString(moldPath)) {
+      this._main.$$log.fatal(`ERROR: bad "moldPath" param: ${JSON.stringify(moldPath)}`);
+    }
+
+    const schemaPath = convertFromLodashToSchema(moldPath);
+    const fullSchema = convertShortSchemaToFull(schema, this._main.$$log);
+
+    _.set(this._schema, schemaPath, fullSchema);
+
+    this._checkWholeSchema();
+    // collect driver from whole schema, but don't reinit they if they were inited.
+    this._main.$$driverManager.collectDrivers(this._schema);
+  }
+
+  /**
    * Set schema to certain mount point
    * @param {string} moldPath - absolute mold path. if it '' it means set to root
    * @param {object} schema
    */
-  setSchema(moldPath, schema) {
-    const schemaPath = convertFromLodashToSchema(moldPath);
-    const fullSchema = convertShortSchemaToFull(schema, this._main.$$log);
-
-    if (!schemaPath) {
-      this._schema = fullSchema;
-    }
-    else {
-      _.set(this._schema, schemaPath, fullSchema);
-    }
+  setSchema(schema) {
+    this._schema = convertShortSchemaToFull(schema, this._main.$$log);
 
     this._checkWholeSchema();
     // collect driver from whole schema, but don't reinit they if they were inited.

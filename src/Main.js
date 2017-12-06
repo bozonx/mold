@@ -39,7 +39,7 @@ export default class Main {
 
     // initialize
     this.$$schemaManager.init();
-    this.$$schemaManager.setSchema('', schema);
+    this.$$schemaManager.setSchema(schema);
     this.$$storage.$init({});
   }
 
@@ -118,12 +118,8 @@ export default class Main {
     this.$$nodeManager.register(typeName, typeClass);
   }
 
-  setSchema(moldMountPath, schema) {
-    if (!_.isString(moldMountPath)) {
-      this.$$log.fatal(`ERROR: bad "moldMountPath" param: ${JSON.stringify(moldMountPath)}`);
-    }
-
-    this.$$schemaManager.setSchema(moldMountPath, schema);
+  setNode(moldPath, schema) {
+    this.$$schemaManager.setNode(moldPath, schema);
   }
 
 }
