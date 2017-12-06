@@ -1,5 +1,7 @@
 import Mold from './Mold';
 
+// TODO: test unsaveble
+// TODO: test event after pending is completed
 
 export default class Action {
   constructor(main, nodeInstance, moldPath, actionName, fullSchema) {

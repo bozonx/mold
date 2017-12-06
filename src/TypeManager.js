@@ -8,8 +8,6 @@ import NumberType from './primitives/NumberType';
 import StringType from './primitives/StringType';
 
 
-// TODO: test check bad schema - not valid primitive
-
 export default class TypeManager {
   constructor(main) {
     this._main = main;
