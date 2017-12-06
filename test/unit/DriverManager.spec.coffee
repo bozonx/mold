@@ -7,11 +7,15 @@ describe 'Unit. DriverManager.', ->
       $$log: { fatal: sinon.spy() }
     }
 
-    testSchema = () ->
+    @driver = {
+      init: sinon.spy()
+    }
+
+    testSchema = () =>
       {
         driverRoot: {
           type: 'driver'
-          driver: 'memory'
+          driver: @driver
           schema: {
 #            container: {
 #              state: {
@@ -32,5 +36,5 @@ describe 'Unit. DriverManager.', ->
     @driverManager.collectDrivers(@testSchema)
 
     assert.deepEqual(@driverManager._drivers, {
-      'driverRoot': {}
+      'driverRoot': @driver
     })

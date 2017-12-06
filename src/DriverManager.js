@@ -22,14 +22,15 @@ export default class DriverManager {
   collectDrivers(fullSchema) {
     eachSchema(fullSchema, (moldPath, schemaPath, schema) => {
       // find only driver or container node
-      if (schema.type !== 'driver' || schema.type !== 'container') return;
+      if (schema.type !== 'driver' && schema.type !== 'container') return;
+
       if (!schema.driver) return;
 
       // init driver if it has set
 
       // TODO: почему именно так???
       // TODO: проверить что moldPath правильный
-      console.log(11111111111, moldPath, schemaPath)
+
       // TODO: не инициализировать драйвер если он уже есть
 
       schema.driver.init(moldPath, this._main);
