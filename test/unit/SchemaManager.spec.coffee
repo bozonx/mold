@@ -68,5 +68,43 @@ describe 'Unit. SchemaManager.', ->
       }
     })
 
+  it "set schema to not root", ->
+    newNode = {
+      type: 'state'
+      schema: {
+      }
+    }
+
+    result = {
+      "container": {
+        "schema": {
+          "container": {
+            "schema": {
+              "newSchema": {
+                "schema": {}
+                "type": "state"
+              }
+              "state": {
+                "schema": {
+                  "stringParam": {
+                    "type": "string"
+                  }
+                }
+                "type": "state"
+              }
+            }
+            "type": "container"
+          }
+        }
+        "type": "container"
+      }
+    }
+
+    @schemaManager.setSchema('', @testSchema)
+    assert.doesNotThrow(() => @schemaManager.setSchema('container.container.newSchema', newNode))
+
+    assert.deepEqual(@schemaManager.getFullSchema(), result)
+    assert.deepEqual(@schemaManager.getSchema('container.container.newSchema'), newNode)
+
+
   # TODO: check bad schema - assert.throws()
-  # TODO: test set schema to not root
