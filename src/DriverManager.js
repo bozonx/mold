@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import Memory from './drivers/Memory';
-import { eachSchema, getTheBestMatchPath, convertFromSchemaToLodash } from './helpers/helpers';
+import { eachSchema, getTheBestMatchPath } from './helpers/helpers';
 
 
 export default class DriverManager {
@@ -28,7 +28,10 @@ export default class DriverManager {
       // init driver if it has set
 
       // TODO: почему именно так???
+      // TODO: проверить что moldPath правильный
       console.log(11111111111, moldPath, schemaPath)
+      // TODO: не инициализировать драйвер если он уже есть
+
       schema.driver.init(moldPath, this._main);
       this.registerDriver(schemaPath, schema.driver);
     });
@@ -36,6 +39,10 @@ export default class DriverManager {
 
   getDefaultDriver() {
     return this._defaultDriver;
+  }
+
+  isRegistered() {
+    //this._drivers[schemaPath] = driver;
   }
 
   registerDriver(schemaPath, driver) {

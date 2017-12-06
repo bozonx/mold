@@ -15,9 +15,8 @@ describe 'Unit. SchemaManager.', ->
 
     testSchema = () ->
       {
-        driverRoot: {
-          type: 'driver'
-          driver: 'testDriver'
+        container: {
+          type: 'container'
           schema: {
             container: {
               state: {
