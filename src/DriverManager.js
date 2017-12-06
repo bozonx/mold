@@ -27,14 +27,12 @@ export default class DriverManager {
       if (!schema.driver) return;
 
       // init driver if it has set
-
-      // TODO: почему именно так???
       // TODO: проверить что moldPath правильный
 
-      // TODO: не инициализировать драйвер если он уже есть
+      if (this.isRegistered(moldPath)) return;
 
       schema.driver.init(moldPath, this._main);
-      this.registerDriver(schemaPath, schema.driver);
+      this.registerDriver(moldPath, schema.driver);
     });
   }
 
@@ -42,12 +40,12 @@ export default class DriverManager {
     return this._defaultDriver;
   }
 
-  isRegistered() {
-    //this._drivers[schemaPath] = driver;
+  isRegistered(moldPath) {
+    return !!this._drivers[moldPath];
   }
 
-  registerDriver(schemaPath, driver) {
-    this._drivers[schemaPath] = driver;
+  registerDriver(moldPath, driver) {
+    this._drivers[moldPath] = driver;
   }
 
   /**

@@ -35,6 +35,15 @@ describe 'Unit. DriverManager.', ->
   it "collect drivers", ->
     @driverManager.collectDrivers(@testSchema)
 
+    sinon.assert.calledOnce(@driver.init)
+    sinon.assert.calledWith(@driver.init, 'driverRoot', @main)
+
     assert.deepEqual(@driverManager._drivers, {
       'driverRoot': @driver
     })
+
+  it "don't register driver twice", ->
+    @driverManager.collectDrivers(@testSchema)
+    @driverManager.collectDrivers(@testSchema)
+
+    sinon.assert.calledOnce(@driver.init)
