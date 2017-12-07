@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import convertShortSchemaToFull from './helpers/convertShortSchemaToFull';
 import { eachSchema, convertFromLodashToSchema } from './helpers/helpers';
+import validateDataCorrespondingSchema from './helpers/validateDataCorrespondingSchema';
 
 
 /**
@@ -41,7 +42,7 @@ export default class SchemaManager {
 
     const schemaPath = convertFromLodashToSchema(moldPath);
 
-    return _.get(this._schema, schemaPath);
+    return this._justGetSchema(schemaPath);
   }
 
   /**
@@ -90,6 +91,24 @@ export default class SchemaManager {
         this._main.$$log.fatal(`Unknown schema node or primitive ${JSON.stringify(schema)} !`);
       }
     });
+  }
+
+  _justGetSchema(schemaPath) {
+    return _.get(this._schema, schemaPath);
+  }
+
+  _validateData(moldPath, data) {
+    return true;
+
+
+    // TODO: валидировать согласно схеме
+    // TODO: do it. return string on error
+    // TODO: могут быть лишние элементы, могут бытьне полные данные
+
+    const schemaPath = convertFromLodashToSchema(moldPath);
+    const schema = this._justGetSchema(schemaPath);
+
+    return validateDataCorrespondingSchema(moldPath, schemaPath, data, schema);
   }
 
 }

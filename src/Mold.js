@@ -24,7 +24,7 @@ export default class _Mold {
   }
 
   update(newState) {
-    const isValid = this._validate(newState);
+    const isValid = this._main.$$schemaManager._validateData(this._moldPath, newState);
 
     if (isValid !== true) {
       console.error(isValid);
@@ -37,7 +37,7 @@ export default class _Mold {
   }
 
   updateSilent(newState) {
-    const isValid = this._validate(newState);
+    const isValid = this._main.$$schemaManager._validateData(this._moldPath, newState);
 
     if (isValid !== true) {
       this._main.$$log.error(isValid);
@@ -81,16 +81,6 @@ export default class _Mold {
     });
 
     return result;
-  }
-
-  _validate(newState) {
-    // TODO: валидировать согласно схеме
-    // TODO: do it. return string on error
-    return true;
-
-    eachSchema(this._schema, (moldPath, schemaPath, schema) => {
-
-    });
   }
 
   // _checkForUpdateReadOnly(newState) {
