@@ -50,11 +50,11 @@ export default class _Mold {
   }
 
   _initSchema() {
-    const initialState = this._getInitialState();
+    const initialState = this._getRootInitialState();
     this._main.$$storage.initState(this._moldPath, this._actionName, initialState);
   }
 
-  _getInitialState() {
+  _getRootInitialState() {
     const rootTypeName = this._schema.type;
 
     if (!_.includes(['assoc', 'collection'], rootTypeName)) {

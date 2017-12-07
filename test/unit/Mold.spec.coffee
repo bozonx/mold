@@ -14,8 +14,8 @@ describe 'Functional. Mold.', ->
     @testSchema = testSchema()
     @moldPath = 'state'
     @mold = mold( {silent: true}, @testSchema )
-    #@moldInstance = new Mold(@mold, @moldPath, 'default', )
-    @moldInstance = @mold.get(@moldPath).actions.default
+    @state = @mold.get(@moldPath)
+    @moldInstance = @state.actions.default._mold
 
   it "init", ->
     assert.deepEqual(@moldInstance.state, {
