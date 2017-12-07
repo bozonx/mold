@@ -50,7 +50,13 @@ export default class _Mold {
   }
 
   _initSchema() {
-    const initialState = this._getRootInitialState();
+    let initialState = this._getRootInitialState();
+
+    // init primitives
+    if (_.isPlainObject(initialState)) {
+      initialState = this._initPrimitives();
+    }
+
     this._main.$$storage.initState(this._moldPath, this._actionName, initialState);
   }
 
@@ -64,6 +70,17 @@ export default class _Mold {
     const rootType = this._main.$$typeManager.types[rootTypeName];
 
     return rootType.getInitial();
+  }
+
+  _initPrimitives() {
+    const result = {};
+    const schema = this._schema.schema || this._schema.item;
+
+    _.each(schema, (item, name) => {
+      result[name] = this._main.$$typeManager.getInitial(item.type);
+    });
+
+    return result;
   }
 
   _validate(newState) {
