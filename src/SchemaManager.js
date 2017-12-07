@@ -77,6 +77,13 @@ export default class SchemaManager {
     this._main.$$driverManager.collectDrivers(this._schema);
   }
 
+  _validateData(moldPath, data) {
+    const schemaPath = convertFromLodashToSchema(moldPath);
+    const schema = this._justGetSchema(schemaPath);
+
+    return validateDataCorrespondingSchema(moldPath, schemaPath, schema, data);
+  }
+
   _checkWholeSchema() {
     eachSchema(this._schema, (moldPath, schemaPath, schema) => {
       // check node
@@ -95,20 +102,6 @@ export default class SchemaManager {
 
   _justGetSchema(schemaPath) {
     return _.get(this._schema, schemaPath);
-  }
-
-  _validateData(moldPath, data) {
-    return true;
-
-
-    // TODO: валидировать согласно схеме
-    // TODO: do it. return string on error
-    // TODO: могут быть лишние элементы, могут бытьне полные данные
-
-    const schemaPath = convertFromLodashToSchema(moldPath);
-    const schema = this._justGetSchema(schemaPath);
-
-    return validateDataCorrespondingSchema(moldPath, schemaPath, data, schema);
   }
 
 }
