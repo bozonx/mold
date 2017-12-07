@@ -54,7 +54,7 @@ export default class _Mold {
 
     // init primitives
     if (_.isPlainObject(initialState)) {
-      initialState = this._initPrimitives();
+      initialState = this._getPrimitivesInitialStates();
     }
 
     this._main.$$storage.initState(this._moldPath, this._actionName, initialState);
@@ -72,7 +72,7 @@ export default class _Mold {
     return rootType.getInitial();
   }
 
-  _initPrimitives() {
+  _getPrimitivesInitialStates() {
     const result = {};
     const schema = this._schema.schema || this._schema.item;
 

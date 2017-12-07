@@ -34,7 +34,13 @@ describe 'Functional. State node.', ->
     @state.$init(@moldPath, @testSchema.container.state)
 
   it "init", ->
-    assert.deepEqual(@state.mold, {})
+    assert.deepEqual(@state.mold, {
+      stringParam: undefined
+      numberParam: undefined
+      boolParam: undefined
+      arrayParam: []
+      nested: {}
+    })
 
   it "validate schema - node without schema param", ->
     testSchema = {
@@ -64,18 +70,20 @@ describe 'Functional. State node.', ->
 
   it "update partly", ->
     @state.update({
-      stringParam: 'newerValue',
-      numberParam: 5,
+      stringParam: 'newerValue'
+      numberParam: 5
     })
     @state.update({
-      boolParam: true,
-      numberParam: 6,
+      boolParam: true
+      numberParam: 6
     })
 
     assert.deepEqual(@state.mold, {
-      stringParam: 'newerValue',
-      numberParam: 6,
-      boolParam: true,
+      stringParam: 'newerValue'
+      numberParam: 6
+      boolParam: true
+      arrayParam: []
+      nested: {}
     })
 
   it "update silent", ->
