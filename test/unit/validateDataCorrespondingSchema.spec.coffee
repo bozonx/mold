@@ -23,7 +23,7 @@ describe 'Unit. validateDataCorrespondingSchema.', ->
       }
     }
 
-  it.only 'incorrect data type', ->
+  it 'incorrect data type', ->
     data = null
     assert.deepEqual(
       validateDataCorrespondingSchema(@moldPath, @schema, data),
@@ -71,8 +71,17 @@ describe 'Unit. validateDataCorrespondingSchema.', ->
     assert.isTrue( validateDataCorrespondingSchema(@moldPath, @schema, data) )
 
 
-  describe 'string.', ->
-    it 'invalid string', ->
+  describe.only 'string.', ->
+    it '{} or []', ->
+      data = {
+        stringParam: {}
+      }
+      assert.deepEqual(
+        validateDataCorrespondingSchema(@moldPath, @schema, data),
+        {
+          error: ""
+        }
+      )
       # TODO: ???? number или boolean нужно ли превращать в строку
       # TODO: check [] and {}
 
