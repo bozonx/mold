@@ -25,7 +25,7 @@ export default class _Mold {
 
   update(newState) {
     // TODO: если newState = undefined - ничего не делать
-    const isValid = this._main.$$schemaManager._validateData(this._moldPath, newState);
+    const isValid = this._main.$$schemaManager.validateData(this._moldPath, newState);
 
     if (isValid !== true) {
       console.error(isValid);

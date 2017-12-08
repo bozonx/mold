@@ -1,6 +1,10 @@
 import _ from 'lodash';
 
 
+/**
+ * Validate data for corresponding to schema.
+ * It doesn't validate additional or redundant items in schema.
+ */
 class Validate {
   constructor(moldPath, schema, data, castPrimitive, validatePrimitive) {
     this._moldPath = moldPath;
@@ -19,10 +23,13 @@ class Validate {
 
     let result = true;
 
-    _.each(this._data, (item, name) => {
-      const returns = this._crossroads(name, name, item);
-      if (returns) {
-        result = returns;
+    _.find(this._data, (item, name) => {
+      const validated = this._crossroads(name, name, item);
+      // look for only for error, valid values are skipped
+      if (_.isPlainObject(validated)) {
+        result = validated;
+
+        return true;
       }
     });
 
@@ -42,25 +49,27 @@ class Validate {
       // TODO: !!!
     }
     else {
-      return this._checkPrimitive(localMoldPath, localSchemaPath, localSchema, value);
+      return this._checkPrimitive(localMoldPath, localSchema, value);
     }
   }
 
-  _checkPrimitive(localMoldPath, localSchemaPath, localSchema, value) {
-    const castedValue = this._castPrimitive(localSchema, value);
+  _checkPrimitive(localMoldPath, localSchema, value) {
+    const correctValue = this._castPrimitive(localSchema, value);
+    const isValid = this._validatePrimitive(localSchema, correctValue);
 
-    const isValid = this._validatePrimitive(localSchema, castedValue);
+    if (!isValid) {
+      return {
+        error: `Invalid value "${JSON.stringify(value)}" on "${this._moldPath}.${localMoldPath}"`,
+        correctValue,
+      }
+    }
   }
 
 }
 
 
-
-export default function(moldPath, schema, data) {
-  const validate = new Validate(moldPath, schema, data);
+export default function(moldPath, schema, data, castPrimitive, validatePrimitive) {
+  const validate = new Validate(moldPath, schema, data, castPrimitive, validatePrimitive);
 
   return validate.validate();
-
-  // TODO: do it. return string on error
-  // TODO: могут быть лишние элементы, могут бытьне полные данные
 };

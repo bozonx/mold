@@ -77,10 +77,12 @@ export default class SchemaManager {
     this._main.$$driverManager.collectDrivers(this._schema);
   }
 
-  _validateData(moldPath, data) {
+  validateData(moldPath, data) {
     // TODO: use getSchema
-    const schemaPath = convertFromLodashToSchema(moldPath);
-    const schema = this._justGetSchema(schemaPath);
+    // const schemaPath = convertFromLodashToSchema(moldPath);
+    // const schema = this._justGetSchema(schemaPath);
+
+    const schema = this.getSchema(moldPath);
 
     return validateDataCorrespondingSchema(
       moldPath,
