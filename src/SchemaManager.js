@@ -78,10 +78,17 @@ export default class SchemaManager {
   }
 
   _validateData(moldPath, data) {
+    // TODO: use getSchema
     const schemaPath = convertFromLodashToSchema(moldPath);
     const schema = this._justGetSchema(schemaPath);
 
-    return validateDataCorrespondingSchema(moldPath, schemaPath, schema, data);
+    return validateDataCorrespondingSchema(
+      moldPath,
+      schema,
+      data,
+      this._main.$$typeManager.castValue,
+      this._main.$$typeManager.validateValue
+    );
   }
 
   _checkWholeSchema() {

@@ -21,4 +21,9 @@ export default class ArrayType {
     return true;
   }
 
+  cast(rawValue) {
+    // don't cast
+    return rawValue;
+  }
+
 }

@@ -29,6 +29,14 @@ export default class TypeManager {
     return this.types[schema.type].validateSchema(schema);
   }
 
+  validateValue(schema, value) {
+    return this.types[schema.type].validate(value);
+  }
+
+  castValue(schema, rawValue) {
+    return this.types[schema.type].cast(rawValue);
+  }
+
   getInitial(typeName) {
     return this.types[typeName].getInitial();
   }

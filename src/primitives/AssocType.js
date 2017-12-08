@@ -19,4 +19,9 @@ export default class CollectionType {
     return true;
   }
 
+  cast(rawValue) {
+    // don't cast
+    return rawValue;
+  }
+
 }

@@ -24,6 +24,27 @@ describe 'Unit. validateDataCorrespondingSchema.', ->
       }
     }
 
+  it.only 'incorrect data type', ->
+    data = null
+    assert.deepEqual( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), {
+      error: 'Incorrect data value "null"'
+    } )
+
+    data = 'string'
+    assert.deepEqual( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), {
+      error: 'Incorrect data value ""string""'
+    } )
+
+    data = 5
+    assert.deepEqual( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), {
+      error: 'Incorrect data value "5"'
+    } )
+
+    data = true
+    assert.deepEqual( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), {
+      error: 'Incorrect data value "true"'
+    } )
+
   it 'valid', ->
     data = {
       stringParam: 'string'
@@ -46,45 +67,56 @@ describe 'Unit. validateDataCorrespondingSchema.', ->
     }
     assert.isTrue( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data) )
 
-  ###### STRING
-  it 'invalid string', ->
-    # TODO: ???? number или boolean нужно ли превращать в строку
-    # TODO: check [] and {}
+
+  describe 'string.', ->
+    it 'invalid string', ->
+      # TODO: ???? number или boolean нужно ли превращать в строку
+      # TODO: check [] and {}
 
 
   ###### NUMBER
-  it 'valid number as string', ->
-    data = {
-      numberParam: 'string'
-    }
-    msg = ""
-    assert.equal( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), msg )
+  describe 'number.', ->
+    it 'valid number as string', ->
+      data = {
+        numberParam: 'string'
+      }
+      msg = ""
+      assert.equal( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), msg )
 
-  it 'invalid number', ->
-    data = {
-      numberParam: 'string'
-    }
-    msg = ""
-    assert.equal( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), msg )
+    it 'invalid number', ->
+      data = {
+        numberParam: 'string'
+      }
+      msg = ""
+      assert.equal( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), msg )
 
-    data = {
-      numberParam: true
-    }
-    msg = ""
-    assert.equal( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), msg )
+      data = {
+        numberParam: true
+      }
+      msg = ""
+      assert.equal( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), msg )
 
-    data = {
-      numberParam: []
-    }
-    msg = ""
-    assert.equal( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), msg )
+      data = {
+        numberParam: []
+      }
+      msg = ""
+      assert.equal( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), msg )
 
-    data = {
-      numberParam: {}
-    }
-    msg = ""
-    assert.equal( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), msg )
+      data = {
+        numberParam: {}
+      }
+      msg = ""
+      assert.equal( validateDataCorrespondingSchema(@moldPath, @schemaPath, @schema, data), msg )
 
-  ###### BOOLEAN
 
-###
+  describe 'boolean.', ->
+    # TODO: ???
+
+  describe 'array.', ->
+    # TODO: ???
+
+  describe 'assoc.', ->
+    # TODO: ???
+
+  describe 'nested.', ->
+    # TODO: ???
