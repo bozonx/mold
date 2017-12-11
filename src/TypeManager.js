@@ -45,7 +45,7 @@ export default class TypeManager {
   castData(moldPath, data) {
     const schema = this._main.$$schemaManager.getSchema(moldPath);
 
-    return castData(moldPath, schema, data);
+    return castData(moldPath, schema, data, this.castValue.bind(this));
   }
 
 }

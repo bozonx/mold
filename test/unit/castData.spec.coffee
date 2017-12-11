@@ -4,23 +4,26 @@ describe.only 'Unit. castData.', ->
   beforeEach () ->
     @moldPath = 'container.state'
     @schema = {
-      container: {
-        type: 'container'
+      state: {
+        type: 'state'
         schema: {
-          state: {
-            type: 'state'
-            schema: {
-              stringParam: { type: 'string' }
-              numberParam: { type: 'number' }
-              booleanParam: { type: 'boolean' }
-# TODO: array, assoc, nested
-            }
-          }
+          stringParam: { type: 'string' }
+          numberParam: { type: 'number' }
+          booleanParam: { type: 'boolean' }
+          # TODO: array, assoc, nested
         }
       }
     }
 
   it 'cast string number to number', ->
+    data = {
+      numberParam: '5'
+    }
+    cast = new castData(@moldPath, @schema, data, )
+    assert.deepEqual(cast, {
+      numberParam: 5
+    })
+
   it 'cast string "false" or "true" to boolean', ->
   it 'cast params in array', ->
   it 'cast params in assoc', ->
