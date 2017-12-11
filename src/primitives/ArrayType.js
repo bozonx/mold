@@ -12,13 +12,27 @@ export default class ArrayType {
     return [];
   }
 
-  validate(schema, value) {
-    // TODO: do it
-    return isSimpleArray(value);
+  validate(schema, data) {
+    if (!isSimpleArray(data)) return false;
+
+    const primitiveSchema = { type: schema.itemsType };
+    let isValid = true;
+
+    _.find(data, (rawValue) => {
+      const result = this._typeManager.validateValue(primitiveSchema, rawValue);
+
+      if (!result) {
+        isValid = false;
+        return true;
+      }
+    });
+
+    return isValid;
   }
 
   validateSchema(schema) {
     // TODO: do it
+    // TODO: itemsType
     return true;
   }
 

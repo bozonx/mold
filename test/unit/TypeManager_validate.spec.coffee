@@ -30,6 +30,33 @@ describe.only 'Unit. TypeManager.validate.', ->
     @moldPath = 'container.state'
     @typeManager = new TypeManager(@main);
 
+  it 'nested', ->
+    data = {
+      nested: {
+        nestedNumberParam: 5
+      }
+    }
+    assert.isTrue(@typeManager.validateData(@testSchema, data))
+
+    data = {
+      nested: {
+        nestedNumberParam: 'aa'
+      }
+    }
+    assert.isFalse(@typeManager.validateData(@testSchema, data))
+
+  it 'array', ->
+    data = {
+      arrayParam: [5, 8]
+    }
+    assert.isTrue(@typeManager.validateData(@testSchema, data))
+
+    data = {
+      arrayParam: ['d5', 5]
+    }
+    assert.isFalse(@typeManager.validateData(@testSchema, data))
+
+
   describe 'number', ->
     it "valid: 5, null, undefined, NaN", ->
       # number

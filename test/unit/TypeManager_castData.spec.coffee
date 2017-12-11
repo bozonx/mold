@@ -30,6 +30,26 @@ describe 'Unit. TypeManager.castData.', ->
     @moldPath = 'container.state'
     @typeManager = new TypeManager(@main);
 
+  it 'nested', ->
+    data = {
+      nested: {
+        nestedNumberParam: '5'
+      }
+    }
+    assert.deepEqual @typeManager.castData(@testSchema, data), {
+      nested: {
+        nestedNumberParam: 5
+      }
+    }
+
+  it 'array', ->
+    data = {
+      arrayParam: ['5', '6a', '123']
+    }
+    assert.deepEqual @typeManager.castData(@testSchema, data), {
+      arrayParam: [5, '6a', 123]
+    }
+
   describe 'number', ->
     it "Don't cast", ->
       # number
@@ -161,23 +181,3 @@ describe 'Unit. TypeManager.castData.', ->
       assert.deepEqual @typeManager.castData(@testSchema, data), {
         boolParam: true
       }
-
-  it 'nested', ->
-    data = {
-      nested: {
-        nestedNumberParam: '5'
-      }
-    }
-    assert.deepEqual @typeManager.castData(@testSchema, data), {
-      nested: {
-        nestedNumberParam: 5
-      }
-    }
-
-  it 'array', ->
-    data = {
-      arrayParam: ['5', '6a', '123']
-    }
-    assert.deepEqual @typeManager.castData(@testSchema, data), {
-      arrayParam: [5, '6a', 123]
-    }
