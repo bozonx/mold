@@ -131,6 +131,16 @@ describe 'Unit. TypeManager.castData.', ->
       assert.deepEqual @typeManager.castData(@testSchema, data), {
         boolParam: false
       }
+      # {}
+      data = { boolParam: {} }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: true
+      }
+      # []
+      data = { boolParam: [] }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: true
+      }
       # an empty string
       data = { boolParam: '' }
       assert.deepEqual @typeManager.castData(@testSchema, data), {

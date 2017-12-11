@@ -31,9 +31,9 @@ describe.only 'Unit. TypeManager.validate.', ->
     @typeManager = new TypeManager(@main);
 
   describe 'number', ->
-    it "Don't cast", ->
-      # number
-      data = { numberParam: 5 }
-      assert.deepEqual @typeManager.castData(@testSchema, data), {
-        numberParam: 5
-      }
+#    it "Don't cast", ->
+#      # number
+#      data = { numberParam: 5 }
+#      assert.deepEqual @typeManager.castData(@testSchema, data), {
+#        numberParam: 5
+#      }
