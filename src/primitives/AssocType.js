@@ -26,12 +26,12 @@ export default class AssocType {
 
   cast(schema, data) {
     // do nothing if there isn't schema for assoc
-    if (schema.schema) return;
+    if (!schema.items) return;
 
     const castedData = {};
 
     _.each(data, (rawValue, name) => {
-      const primitiveSchema = schema.schema[name];
+      const primitiveSchema = schema.items[name];
       // do nothing if there isn't schema definition for this param
       if (!primitiveSchema) return;
 

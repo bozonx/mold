@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import castData from './helpers/castData';
 import ArrayType from './primitives/ArrayType';
 import AssocType from './primitives/AssocType';
 import BooleanType from './primitives/BooleanType';
@@ -46,20 +45,15 @@ export default class TypeManager {
     return this._types[typeName].getInitial();
   }
 
-  castData(moldPath, data) {
-    // TODO: первый уровень обязан быть {}
+  castData(schema, data) {
+    if (schema.type !== 'assoc') {
+      this._main.$$log.fatal(`Incorrect schema, it has to be assoc: ${JSON.stringify(data)}`);
+    }
+    if (!_.isPlainObject(data)) {
+      this._main.$$log.fatal(`Incorrect data, it has to be plain object: ${JSON.stringify(data)}`);
+    }
 
-    const schema = this._main.$$schemaManager.getSchema(moldPath);
-
-    //return castData(moldPath, schema, data, this.castValue.bind(this));
-
-    const castedData = {};
-
-    _.each(data, (rawValue, name) => {
-      castedData[name] = this._types[schema.type].cast(rawValue);
-    });
-
-    return castedData;
+    return this.castValue(schema, data);
   }
 
 }

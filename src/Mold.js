@@ -24,7 +24,7 @@ export default class _Mold {
   }
 
   update(newState) {
-    const correctValues = this._main.$$typeManager.castData(this._moldPath, newState);
+    const correctValues = this._main.$$typeManager.castData(this._schema, newState);
     const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
 
     if (isValid !== true) {
@@ -37,7 +37,7 @@ export default class _Mold {
   }
 
   updateSilent(newState) {
-    const correctValues = this._main.$$typeManager.castData(this._moldPath, newState);
+    const correctValues = this._main.$$typeManager.castData(this._schema, newState);
     const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
 
     if (isValid !== true) {
