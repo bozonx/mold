@@ -34,7 +34,7 @@ export default class TypeManager {
   }
 
   validateValue(schema, value) {
-    return this._types[schema.type].validate(value);
+    return this._types[schema.type].validate(schema, value);
   }
 
   validateData(schema, data) {

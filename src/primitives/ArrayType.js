@@ -12,7 +12,8 @@ export default class ArrayType {
     return [];
   }
 
-  validate(value) {
+  validate(schema, value) {
+    // TODO: do it
     return isSimpleArray(value);
   }
 

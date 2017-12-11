@@ -12,7 +12,7 @@ export default class CollectionType {
     return [];
   }
 
-  validate(value) {
+  validate(schema, value) {
     return isCollection(value);
   }
 

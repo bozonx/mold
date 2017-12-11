@@ -10,7 +10,7 @@ export default class BooleanType {
     return undefined;
   }
 
-  validate(value) {
+  validate(schema, value) {
     return _.isBoolean(value);
   }
 
