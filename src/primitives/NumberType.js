@@ -19,7 +19,7 @@ export default class NumberType {
     return true;
   }
 
-  cast(rawValue) {
+  cast(schema, rawValue) {
     // there is not reason to cast
     if (_.isNumber(rawValue)) return rawValue;
     // don't cast undefined or null

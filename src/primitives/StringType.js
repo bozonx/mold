@@ -20,7 +20,7 @@ export default class StringType {
   }
 
   cast(rawValue) {
-    // there is not reason to cast
+    // there isn't reason to cast
     if (_.isString(rawValue)) return rawValue;
     // don't cast undefined or null
     if (_.isUndefined(rawValue) || _.isNull(rawValue)) return rawValue;

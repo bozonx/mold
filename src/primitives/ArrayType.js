@@ -21,7 +21,7 @@ export default class ArrayType {
     return true;
   }
 
-  cast(rawValue) {
+  cast(schema, rawValue) {
     // don't cast
     return rawValue;
   }

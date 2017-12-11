@@ -21,7 +21,7 @@ export default class CollectionType {
     return true;
   }
 
-  cast(rawValue) {
+  cast(schema, rawValue) {
     // don't cast
     return rawValue;
   }

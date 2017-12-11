@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
 
-export default class CollectionType {
-  constructor() {
-
+export default class AssocType {
+  constructor(typeManager) {
+    this._typeManager = typeManager;
   }
 
   getInitial() {
@@ -19,9 +19,26 @@ export default class CollectionType {
     return true;
   }
 
-  cast(rawValue) {
-    // don't cast
-    return rawValue;
+  // cast(rawValue) {
+  //   // don't cast
+  //   return rawValue;
+  // }
+
+  cast(schema, data) {
+    // do nothing if there isn't schema for assoc
+    if (schema.schema) return;
+
+    const castedData = {};
+
+    _.each(data, (rawValue, name) => {
+      const primitiveSchema = schema.schema[name];
+      // do nothing if there isn't schema definition for this param
+      if (!primitiveSchema) return;
+
+      castedData[name] = this._typeManager.castValue(primitiveSchema, rawValue);
+    });
+
+    return castedData;
   }
 
 }

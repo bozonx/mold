@@ -12,40 +12,54 @@ import StringType from './primitives/StringType';
 export default class TypeManager {
   constructor(main) {
     this._main = main;
-    this.types = {
-      array: new ArrayType(),
-      assoc: new AssocType(),
-      boolean: new BooleanType(),
-      collection: new CollectionType(),
-      number: new NumberType(),
-      string: new StringType(),
+    this._types = {
+      array: new ArrayType(this),
+      assoc: new AssocType(this),
+      boolean: new BooleanType(this),
+      collection: new CollectionType(this),
+      number: new NumberType(this),
+      string: new StringType(this),
     }
   }
 
+  getType(typeName) {
+    return this._types[typeName];
+  }
+
   isRegistered(typeName) {
-    return !!this.types[typeName];
+    return !!this._types[typeName];
   }
 
   validateSchema(schema) {
-    return this.types[schema.type].validateSchema(schema);
+    return this._types[schema.type].validateSchema(schema);
   }
 
   validateValue(schema, value) {
-    return this.types[schema.type].validate(value);
+    return this._types[schema.type].validate(value);
   }
 
   castValue(schema, rawValue) {
-    return this.types[schema.type].cast(rawValue);
+    return this._types[schema.type].cast(schema, rawValue);
   }
 
   getInitial(typeName) {
-    return this.types[typeName].getInitial();
+    return this._types[typeName].getInitial();
   }
 
   castData(moldPath, data) {
+    // TODO: первый уровень обязан быть {}
+
     const schema = this._main.$$schemaManager.getSchema(moldPath);
 
-    return castData(moldPath, schema, data, this.castValue.bind(this));
+    //return castData(moldPath, schema, data, this.castValue.bind(this));
+
+    const castedData = {};
+
+    _.each(data, (rawValue, name) => {
+      castedData[name] = this._types[schema.type].cast(rawValue);
+    });
+
+    return castedData;
   }
 
 }
