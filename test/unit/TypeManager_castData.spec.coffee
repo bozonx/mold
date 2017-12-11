@@ -3,7 +3,7 @@ TypeManager = require('../../src/TypeManager').default
 
 # TODO: check collections
 
-describe.only 'Functional. castData.', ->
+describe 'Unit. TypeManager.castData.', ->
   beforeEach () ->
     @main = {
     }
