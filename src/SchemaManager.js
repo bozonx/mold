@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 import convertShortSchemaToFull from './helpers/convertShortSchemaToFull';
 import { eachSchema, convertFromLodashToSchema } from './helpers/helpers';
-import validateDataCorrespondingSchema from './helpers/validateDataCorrespondingSchema';
 
 
 /**
@@ -75,22 +74,6 @@ export default class SchemaManager {
     this._checkWholeSchema();
     // collect driver from whole schema, but don't reinit they if they were inited.
     this._main.$$driverManager.collectDrivers(this._schema);
-  }
-
-  validateData(moldPath, data) {
-    // TODO: use getSchema
-    // const schemaPath = convertFromLodashToSchema(moldPath);
-    // const schema = this._justGetSchema(schemaPath);
-
-    const schema = this.getSchema(moldPath);
-
-    return validateDataCorrespondingSchema(
-      moldPath,
-      schema,
-      data,
-      this._main.$$typeManager.castValue,
-      this._main.$$typeManager.validateValue
-    );
   }
 
   _checkWholeSchema() {
