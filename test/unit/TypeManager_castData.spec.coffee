@@ -1,6 +1,8 @@
 TypeManager = require('../../src/TypeManager').default
 
 
+# TODO: check arrays and collections
+
 describe.only 'Functional. castData.', ->
   beforeEach () ->
     @main = {
@@ -95,8 +97,57 @@ describe.only 'Functional. castData.', ->
         stringParam: '5'
       }
 
-
-  it 'cast string "false" or "true" to boolean', ->
-  it 'cast params in array', ->
-  it 'cast params in assoc', ->
-  it "don't cast undefined, null, NaN", ->
+  describe 'Boolean', ->
+    it "Don't cast", ->
+      # boolean
+      data = { boolParam: true }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: true
+      }
+      # undefined
+      data = { boolParam: undefined }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: undefined
+      }
+      # null
+      data = { boolParam: null }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: null
+      }
+    it "Cast 'true' and 'false' to bool", ->
+      # "true"
+      data = { boolParam: 'true' }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: true
+      }
+      # "false"
+      data = { boolParam: 'false' }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: false
+      }
+    it "Cast other types to bool", ->
+      # NaN
+      data = { boolParam: NaN }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: false
+      }
+      # an empty string
+      data = { boolParam: '' }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: false
+      }
+      # string
+      data = { boolParam: 'str' }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: true
+      }
+      # 0
+      data = { boolParam: 0 }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: false
+      }
+      # number
+      data = { boolParam: 5 }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        boolParam: true
+      }

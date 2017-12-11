@@ -23,9 +23,7 @@ export default class BooleanType {
     // there is not reason to cast
     if (_.isBoolean(rawValue)) return rawValue;
     // don't cast undefined or null
-    if (_.isUndefined(rawValue) || _.isNull(rawValue)) return rawValue;
-    // don't cast other types of number or string
-    if (!_.isNumber(rawValue) && !_.isString(rawValue)) return rawValue;
+    if (_.isNil(rawValue)) return rawValue;
 
     if (rawValue === 'true') return true;
     if (rawValue === 'false') return false;
