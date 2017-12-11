@@ -50,3 +50,45 @@ describe.only 'Unit. TypeManager.validate.', ->
       assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: '5a' }))
       # true
       assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: true }))
+
+  describe 'string', ->
+    # don't check number because it has to be casted
+    it "valid: 'str', null, undefined", ->
+      # string
+      assert.isTrue(@typeManager.validateData(@testSchema, { stringParam: 'str' }))
+      # null
+      assert.isTrue(@typeManager.validateData(@testSchema, { stringParam: null }))
+      # undefined
+      assert.isTrue(@typeManager.validateData(@testSchema, { stringParam: undefined }))
+
+    it "invalid: NaN, true, {}, []", ->
+      # NaN
+      assert.isFalse(@typeManager.validateData(@testSchema, { stringParam: NaN }))
+      # true
+      assert.isFalse(@typeManager.validateData(@testSchema, { stringParam: true }))
+      # {}
+      assert.isFalse(@typeManager.validateData(@testSchema, { stringParam: {} }))
+      # []
+      assert.isFalse(@typeManager.validateData(@testSchema, { stringParam: [] }))
+
+  describe 'boolean', ->
+    # don't check number because it has to be casted
+    it "valid: true, false, null, undefined", ->
+      # true
+      assert.isTrue(@typeManager.validateData(@testSchema, { boolParam: true }))
+      # false
+      assert.isTrue(@typeManager.validateData(@testSchema, { boolParam: false }))
+      # null
+      assert.isTrue(@typeManager.validateData(@testSchema, { boolParam: null }))
+      # undefined
+      assert.isTrue(@typeManager.validateData(@testSchema, { boolParam: undefined }))
+
+    it "invalid: NaN, string, {}, []", ->
+      # NaN
+      assert.isFalse(@typeManager.validateData(@testSchema, { boolParam: NaN }))
+      # string
+      assert.isFalse(@typeManager.validateData(@testSchema, { boolParam: 'string' }))
+      # {}
+      assert.isFalse(@typeManager.validateData(@testSchema, { boolParam: {} }))
+      # []
+      assert.isFalse(@typeManager.validateData(@testSchema, { boolParam: [] }))

@@ -11,6 +11,9 @@ export default class BooleanType {
   }
 
   validate(schema, value) {
+    // undefined and null are allowed
+    if (_.isNil(value)) return true;
+
     return _.isBoolean(value);
   }
 

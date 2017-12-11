@@ -11,6 +11,9 @@ export default class StringType {
   }
 
   validate(schema, value) {
+    // undefined and null are allowed
+    if (_.isNil(value)) return true;
+
     return _.isString(value);
   }
 
