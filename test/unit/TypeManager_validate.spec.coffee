@@ -3,7 +3,7 @@ TypeManager = require('../../src/TypeManager').default
 
 # TODO: check collections
 
-describe.only 'Unit. TypeManager.validate.', ->
+describe 'Unit. TypeManager.validate.', ->
   beforeEach () ->
     @main = {
     }
