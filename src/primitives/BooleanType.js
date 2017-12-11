@@ -2,8 +2,8 @@ import _ from 'lodash';
 
 
 export default class BooleanType {
-  constructor() {
-
+  constructor(typeManager) {
+    this._typeManager = typeManager;
   }
 
   getInitial() {

@@ -2,8 +2,8 @@ import _ from 'lodash';
 
 
 export default class NumberType {
-  constructor() {
-
+  constructor(typeManager) {
+    this._typeManager = typeManager;
   }
 
   getInitial() {

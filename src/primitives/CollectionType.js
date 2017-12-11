@@ -4,8 +4,8 @@ import { isCollection } from '../helpers/helpers';
 
 
 export default class CollectionType {
-  constructor() {
-
+  constructor(typeManager) {
+    this._typeManager = typeManager;
   }
 
   getInitial() {

@@ -4,8 +4,8 @@ import { isSimpleArray } from '../helpers/helpers';
 
 
 export default class ArrayType {
-  constructor() {
-
+  constructor(typeManager) {
+    this._typeManager = typeManager;
   }
 
   getInitial() {
