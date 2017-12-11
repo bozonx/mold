@@ -27,11 +27,11 @@ export default class NumberType {
     // don't cast NaN
     if (_.isNaN(rawValue)) return rawValue;
 
-    // cast as a number
+    // cast string as a number
     const toNumber = _.toNumber(rawValue);
 
-    // TODO: как потом валидировать?????
-    if (_.isNaN(toNumber)) return undefined;
+    // don't cast invalid value
+    if (_.isNaN(toNumber)) return rawValue;
 
     return toNumber;
   }
