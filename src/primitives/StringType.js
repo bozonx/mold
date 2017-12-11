@@ -19,11 +19,11 @@ export default class StringType {
     return true;
   }
 
-  cast(rawValue) {
+  cast(schema, rawValue) {
     // there isn't reason to cast
     if (_.isString(rawValue)) return rawValue;
     // don't cast undefined or null
-    if (_.isUndefined(rawValue) || _.isNull(rawValue)) return rawValue;
+    if (_.isNil(rawValue)) return rawValue;
 
     // boolean or NaN casts to undefined
     if (_.isBoolean(rawValue) || _.isNaN(rawValue)) return undefined;

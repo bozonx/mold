@@ -61,6 +61,41 @@ describe.only 'Functional. castData.', ->
         numberParam: 5
       }
 
+  describe 'string', ->
+    it "Don't cast", ->
+      # string
+      data = { stringParam: 'string' }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        stringParam: 'string'
+      }
+      # undefined
+      data = { stringParam: undefined }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        stringParam: undefined
+      }
+      # null
+      data = { stringParam: null }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        stringParam: null
+      }
+    it "Boolean or NaN cast to undefined", ->
+      # boolean
+      data = { stringParam: true }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        stringParam: undefined
+      }
+      # NaN
+      data = { stringParam: NaN }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        stringParam: undefined
+      }
+    it "Number cast to string", ->
+      data = { stringParam: 5 }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        stringParam: '5'
+      }
+
+
   it 'cast string "false" or "true" to boolean', ->
   it 'cast params in array', ->
   it 'cast params in assoc', ->

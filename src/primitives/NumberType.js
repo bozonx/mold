@@ -23,7 +23,7 @@ export default class NumberType {
     // there is not reason to cast
     if (_.isNumber(rawValue)) return rawValue;
     // don't cast undefined or null
-    if (_.isUndefined(rawValue) || _.isNull(rawValue)) return rawValue;
+    if (_.isNil(rawValue)) return rawValue;
     // don't cast NaN
     if (_.isNaN(rawValue)) return rawValue;
 
