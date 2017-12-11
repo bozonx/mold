@@ -25,26 +25,26 @@ export default class _Mold {
 
   update(newState) {
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
-    const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
-
-    if (isValid !== true) {
-      this._main.$$log.error(isValid);
-
-      return;
-    }
+    // const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
+    //
+    // if (isValid !== true) {
+    //   this._main.$$log.error(isValid);
+    //
+    //   return;
+    // }
 
     this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
   }
 
   updateSilent(newState) {
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
-    const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
-
-    if (isValid !== true) {
-      this._main.$$log.error(isValid);
-
-      return;
-    }
+    // const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
+    //
+    // if (isValid !== true) {
+    //   this._main.$$log.error(isValid);
+    //
+    //   return;
+    // }
 
     this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }

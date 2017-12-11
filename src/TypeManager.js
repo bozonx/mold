@@ -37,6 +37,17 @@ export default class TypeManager {
     return this._types[schema.type].validate(value);
   }
 
+  validateData(schema, data) {
+    if (schema.type !== 'assoc') {
+      this._main.$$log.fatal(`Incorrect schema, it has to be assoc: ${JSON.stringify(data)}`);
+    }
+    if (!_.isPlainObject(data)) {
+      this._main.$$log.fatal(`Incorrect data, it has to be plain object: ${JSON.stringify(data)}`);
+    }
+
+    return this.validateValue(schema, data);
+  }
+
   castValue(schema, rawValue) {
     return this._types[schema.type].cast(schema, rawValue);
   }

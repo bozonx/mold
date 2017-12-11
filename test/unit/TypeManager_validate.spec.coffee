@@ -31,9 +31,22 @@ describe.only 'Unit. TypeManager.validate.', ->
     @typeManager = new TypeManager(@main);
 
   describe 'number', ->
-#    it "Don't cast", ->
-#      # number
-#      data = { numberParam: 5 }
-#      assert.deepEqual @typeManager.castData(@testSchema, data), {
-#        numberParam: 5
-#      }
+    it "valid: 5, null, undefined, NaN", ->
+      # number
+      assert.isTrue(@typeManager.validateData(@testSchema, { numberParam: 5 }))
+      # null
+      assert.isTrue(@typeManager.validateData(@testSchema, { numberParam: null }))
+      # undefined
+      assert.isTrue(@typeManager.validateData(@testSchema, { numberParam: undefined }))
+      # NaN
+      assert.isTrue(@typeManager.validateData(@testSchema, { numberParam: NaN }))
+
+    it "invalid: {}, [], '5a', true", ->
+      # {}
+      assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: {} }))
+      # []
+      #assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: [] }))
+      # '5a'
+      #assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: '5a' }))
+      # true
+      #assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: true }))
