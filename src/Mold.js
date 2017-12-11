@@ -24,21 +24,8 @@ export default class _Mold {
   }
 
   update(newState) {
-    // TODO: если newState = undefined - ничего не делать
-    const isValid = this._main.$$schemaManager.validateData(this._moldPath, newState);
-
-    if (isValid !== true) {
-      console.error(isValid);
-
-      return;
-    }
-
-    //this._checkForUpdateReadOnly(newState);
-    this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, newState);
-  }
-
-  updateSilent(newState) {
-    const isValid = this._main.$$schemaManager._validateData(this._moldPath, newState);
+    const correctValues = this._main.$$typeManager.castData(this._moldPath, newState);
+    const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
 
     if (isValid !== true) {
       this._main.$$log.error(isValid);
@@ -46,8 +33,20 @@ export default class _Mold {
       return;
     }
 
-    //this._checkForUpdateReadOnly(newState);
-    this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, newState);
+    this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
+  }
+
+  updateSilent(newState) {
+    const correctValues = this._main.$$typeManager.castData(this._moldPath, newState);
+    const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
+
+    if (isValid !== true) {
+      this._main.$$log.error(isValid);
+
+      return;
+    }
+
+    this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
 
   _initSchema() {

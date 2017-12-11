@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import castData from './helpers/castData';
 import ArrayType from './primitives/ArrayType';
 import AssocType from './primitives/AssocType';
 import BooleanType from './primitives/BooleanType';
@@ -39,6 +40,12 @@ export default class TypeManager {
 
   getInitial(typeName) {
     return this.types[typeName].getInitial();
+  }
+
+  castData(moldPath, data) {
+    const schema = this._main.$$schemaManager.getSchema(moldPath);
+
+    return castData(moldPath, schema, data);
   }
 
 }

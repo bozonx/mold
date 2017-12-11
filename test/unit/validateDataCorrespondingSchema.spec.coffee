@@ -71,7 +71,7 @@ describe 'Unit. validateDataCorrespondingSchema.', ->
     assert.isTrue( validateDataCorrespondingSchema(@moldPath, @schema, data) )
 
 
-  describe.only 'string.', ->
+  describe 'string.', ->
     it '{} or []', ->
       data = {
         stringParam: {}
