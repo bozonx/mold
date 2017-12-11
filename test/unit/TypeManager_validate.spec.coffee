@@ -45,8 +45,8 @@ describe.only 'Unit. TypeManager.validate.', ->
       # {}
       assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: {} }))
       # []
-      #assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: [] }))
+      assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: [] }))
       # '5a'
-      #assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: '5a' }))
+      assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: '5a' }))
       # true
-      #assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: true }))
+      assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: true }))

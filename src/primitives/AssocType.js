@@ -11,14 +11,14 @@ export default class AssocType {
   }
 
   validate(schema, data) {
-    if (_.isPlainObject(data)) return false;
+    if (!_.isPlainObject(data)) return false;
 
     let isValid = true;
 
     _.find(data, (rawValue, name) => {
       const primitiveSchema = schema.items[name];
       // do nothing if there isn't schema definition for this param
-      if (!primitiveSchema || primitiveSchema.type) return;
+      if (!primitiveSchema || !primitiveSchema.type) return;
 
       const result = this._typeManager.validateValue(primitiveSchema, rawValue);
 
@@ -45,7 +45,7 @@ export default class AssocType {
     _.each(data, (rawValue, name) => {
       const primitiveSchema = schema.items[name];
       // do nothing if there isn't schema definition for this param
-      if (!primitiveSchema || primitiveSchema.type) return;
+      if (!primitiveSchema || !primitiveSchema.type) return;
 
       castedData[name] = this._typeManager.castValue(primitiveSchema, rawValue);
     });

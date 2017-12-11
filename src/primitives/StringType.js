@@ -10,7 +10,7 @@ export default class StringType {
     return undefined;
   }
 
-  validate(value, schema) {
+  validate(schema, value) {
     return _.isString(value);
   }
 

@@ -48,8 +48,8 @@ export default class TypeManager {
     return this.validateValue(schema, data);
   }
 
-  castValue(schema, rawValue) {
-    return this._types[schema.type].cast(schema, rawValue);
+  castValue(schema, value) {
+    return this._types[schema.type].cast(schema, value);
   }
 
   getInitial(typeName) {

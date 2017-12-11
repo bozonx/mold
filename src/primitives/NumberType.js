@@ -10,7 +10,10 @@ export default class NumberType {
     return undefined;
   }
 
-  validate(value, schema) {
+  validate(schema, value) {
+    // undefined and null are allowed
+    if (_.isNil(value)) return true;
+
     return _.isNumber(value);
   }
 
