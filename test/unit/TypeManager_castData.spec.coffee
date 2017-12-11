@@ -1,7 +1,7 @@
 TypeManager = require('../../src/TypeManager').default
 
 
-# TODO: check arrays and collections
+# TODO: check collections
 
 describe.only 'Functional. castData.', ->
   beforeEach () ->
@@ -21,7 +21,7 @@ describe.only 'Functional. castData.', ->
         nested: {
           type: 'assoc'
           items: {
-            nestedStringParam: {type: 'string'}
+            nestedNumberParam: {type: 'number'}
           }
         }
       }
@@ -151,3 +151,23 @@ describe.only 'Functional. castData.', ->
       assert.deepEqual @typeManager.castData(@testSchema, data), {
         boolParam: true
       }
+
+  it 'nested', ->
+    data = {
+      nested: {
+        nestedNumberParam: '5'
+      }
+    }
+    assert.deepEqual @typeManager.castData(@testSchema, data), {
+      nested: {
+        nestedNumberParam: 5
+      }
+    }
+
+  it 'array', ->
+    data = {
+      arrayParam: ['5', '6a', '123']
+    }
+    assert.deepEqual @typeManager.castData(@testSchema, data), {
+      arrayParam: [5, '6a', 123]
+    }

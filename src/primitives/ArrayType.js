@@ -22,8 +22,14 @@ export default class ArrayType {
   }
 
   cast(schema, rawValue) {
-    // don't cast
-    return rawValue;
+    const castedData = [];
+    const primitiveSchema = { type: schema.itemsType };
+
+    _.each(rawValue, (item, index) => {
+      castedData[index] = this._typeManager.castValue(primitiveSchema, item);
+    });
+
+    return castedData;
   }
 
 }

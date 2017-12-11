@@ -19,11 +19,6 @@ export default class AssocType {
     return true;
   }
 
-  // cast(rawValue) {
-  //   // don't cast
-  //   return rawValue;
-  // }
-
   cast(schema, data) {
     // do nothing if there isn't schema for assoc
     if (!schema.items) return;
