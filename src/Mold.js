@@ -21,31 +21,23 @@ export default class _Mold {
     // });
   }
 
+  /**
+   * Update top level state.
+   * It casts values before update.
+   * @param {object, array} newState - it's plain object or collection
+   */
   update(newState) {
-    // TODO: cast data принимает только assoc - как быть с colection???
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
-    // const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
-    //
-    // if (isValid !== true) {
-    //   this._main.$$log.error(isValid);
-    //
-    //   return;
-    // }
-
     this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
   }
 
+  /**
+   * Update top level state silently
+   * It casts values before update.
+   * @param {object, array} newState - it's plain object or collection
+   */
   updateSilent(newState) {
-    // TODO: cast data принимает только assoc - как быть с colection???
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
-    // const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
-    //
-    // if (isValid !== true) {
-    //   this._main.$$log.error(isValid);
-    //
-    //   return;
-    // }
-
     this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
 

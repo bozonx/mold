@@ -38,12 +38,7 @@ export default class TypeManager {
   }
 
   validateData(schema, data) {
-    if (schema.type !== 'assoc') {
-      this._main.$$log.fatal(`Incorrect schema, it has to be assoc: ${JSON.stringify(data)}`);
-    }
-    if (!_.isPlainObject(data)) {
-      this._main.$$log.fatal(`Incorrect data, it has to be plain object: ${JSON.stringify(data)}`);
-    }
+    this._validateParams(schema, data);
 
     return this.validateValue(schema, data);
   }
@@ -57,14 +52,25 @@ export default class TypeManager {
   }
 
   castData(schema, data) {
-    if (schema.type !== 'assoc') {
-      this._main.$$log.fatal(`Incorrect schema, it has to be assoc: ${JSON.stringify(data)}`);
-    }
-    if (!_.isPlainObject(data)) {
-      this._main.$$log.fatal(`Incorrect data, it has to be plain object: ${JSON.stringify(data)}`);
-    }
+    this._validateParams(schema, data);
 
     return this.castValue(schema, data);
+  }
+
+  _validateParams(schema, data) {
+    if (schema.type === 'assoc') {
+      if (!_.isPlainObject(data)) {
+        this._main.$$log.fatal(`Incorrect data, it has to be a plain object: ${JSON.stringify(data)}`);
+      }
+    }
+    if (schema.type === 'collection') {
+      if (!_.isArray(data)) {
+        this._main.$$log.fatal(`Incorrect data, it has to be an array: ${JSON.stringify(data)}`);
+      }
+    }
+    else {
+      this._main.$$log.fatal(`Incorrect schema, it has to be an assoc or collection: ${JSON.stringify(data)}`);
+    }
   }
 
 }
