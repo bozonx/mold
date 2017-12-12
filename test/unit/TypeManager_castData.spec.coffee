@@ -1,9 +1,7 @@
 TypeManager = require('../../src/TypeManager').default
 
 
-# TODO: check collections
-
-describe 'Unit. TypeManager.castData.', ->
+describe.only 'Unit. TypeManager.castData.', ->
   beforeEach () ->
     @main = {
     }
@@ -22,6 +20,12 @@ describe 'Unit. TypeManager.castData.', ->
           type: 'assoc'
           items: {
             nestedNumberParam: {type: 'number'}
+          }
+        }
+        collection: {
+          type: 'collection'
+          item: {
+            numberParam: {type: 'number'}
           }
         }
       }
@@ -48,6 +52,18 @@ describe 'Unit. TypeManager.castData.', ->
     }
     assert.deepEqual @typeManager.castData(@testSchema, data), {
       arrayParam: [5, '6a', 123]
+    }
+
+  it 'collection', ->
+    data = {
+      collection: [
+        { numberParam: '5' }
+      ]
+    }
+    assert.deepEqual @typeManager.castData(@testSchema, data), {
+      collection: [
+        { numberParam: 5 }
+      ]
     }
 
   describe 'number', ->

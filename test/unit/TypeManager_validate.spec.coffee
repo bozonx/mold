@@ -1,9 +1,7 @@
 TypeManager = require('../../src/TypeManager').default
 
 
-# TODO: check collections
-
-describe 'Unit. TypeManager.validate.', ->
+describe.only 'Unit. TypeManager.validate.', ->
   beforeEach () ->
     @main = {
     }
@@ -22,6 +20,12 @@ describe 'Unit. TypeManager.validate.', ->
           type: 'assoc'
           items: {
             nestedNumberParam: {type: 'number'}
+          }
+        }
+        collection: {
+          type: 'collection'
+          item: {
+            numberParam: {type: 'number'}
           }
         }
       }
@@ -56,6 +60,20 @@ describe 'Unit. TypeManager.validate.', ->
     }
     assert.isFalse(@typeManager.validateData(@testSchema, data))
 
+  it 'collection', ->
+#    data = {
+#      collection: [
+#        { numberParam: 5 }
+#      ]
+#    }
+#    assert.isTrue(@typeManager.validateData(@testSchema, data))
+
+    data = {
+      collection: [
+        { numberParam: '5f' }
+      ]
+    }
+    assert.isFalse(@typeManager.validateData(@testSchema, data))
 
   describe 'number', ->
     it "valid: 5, null, undefined, NaN", ->
