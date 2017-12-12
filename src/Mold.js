@@ -69,7 +69,14 @@ export default class _Mold {
     const schema = this._schema.items || this._schema.item;
 
     _.each(schema, (item, name) => {
-      result[name] = this._main.$$typeManager.getInitial(item.type);
+      if (!_.isUndefined(item.initial)) {
+        // set initial value
+        result[name] = item.initial;
+      }
+      else {
+        // set default type's initial value
+        result[name] = this._main.$$typeManager.getInitial(item.type);
+      }
     });
 
     return result;
