@@ -28,6 +28,13 @@ export function eachSchema(fullSchema, cb) {
         letItRecursive(childMoldPath, childSchemaPath, subSchema);
       });
     }
+    else if (curSchema.items) {
+      _.each(curSchema['items'], function (subSchema, nodeName) {
+        const childMoldPath = `${curMoldPath}.${nodeName}`;
+        const childSchemaPath = `${curSchemaPath}.items.${nodeName}`;
+        letItRecursive(childMoldPath, childSchemaPath, subSchema);
+      });
+    }
     // else is one of primitive
   }
 

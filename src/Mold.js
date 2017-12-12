@@ -1,11 +1,14 @@
 import _ from 'lodash';
 
+import { eachSchema } from './helpers/helpers';
+
 
 export default class _Mold {
   constructor(main, moldPath, actionName, fullSchema) {
     this._main = main;
     this._moldPath = moldPath;
     this._actionName = actionName;
+    // TODO: move to init
     this._schema = fullSchema;
   }
 
@@ -15,10 +18,7 @@ export default class _Mold {
 
   init() {
     this._initSchema();
-    // this.__readOnlyProps = [];
-    // _.each(this.schema.schema, (item, name) => {
-    //   if (item.readOnly) this.__readOnlyProps.push(name);
-    // });
+    //this.__readOnlyProps = this._collectRoProps();
   }
 
   /**
@@ -28,6 +28,7 @@ export default class _Mold {
    */
   update(newState) {
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
+    this._checkForUpdateReadOnly(newState);
     this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
   }
 
@@ -38,6 +39,7 @@ export default class _Mold {
    */
   updateSilent(newState) {
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
+    this._checkForUpdateReadOnly(newState);
     this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
 
@@ -82,13 +84,36 @@ export default class _Mold {
     return result;
   }
 
-  // _checkForUpdateReadOnly(newState) {
-  //   const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);
+  // _collectRoProps() {
+  //   const roPropsPaths = [];
   //
-  //   if (!_.isEmpty(forbiddenRoProps)) {
-  //     this._main.$$log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
-  //   }
+  //   // collect from assoc
+  //   eachSchema(this._schema.items, (curMoldPath, curSchemaPath, curSchema) => {
+  //     if (curSchema.ro) {
+  //       roPropsPaths.push(curMoldPath);
+  //     }
+  //   });
+  //
+  //   // TODO: add support for collection
+  //
+  //   return roPropsPaths;
   // }
 
+  _checkForUpdateReadOnly(newState) {
+    // TODO: проходимся по всем элементнам newState и сверяем со схемой, если assoc или collecton идем глубже
+
+    return;
+
+    // // TODO: do it recursively - support collections, assoc and arrays
+    // //const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);
+    //
+    // const forbiddenRoProps = [];
+    //
+    // // TODO: add support for collection
+    //
+    // if (!_.isEmpty(forbiddenRoProps)) {
+    //   this._main.$$log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
+    // }
+  }
 
 }
