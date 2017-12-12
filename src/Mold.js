@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-import { eachSchema } from './helpers/helpers';
-
 
 export default class _Mold {
   constructor(main, moldPath, actionName, fullSchema) {
@@ -24,6 +22,7 @@ export default class _Mold {
   }
 
   update(newState) {
+    // TODO: cast data принимает только assoc - как быть с colection???
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
     // const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
     //
@@ -37,6 +36,7 @@ export default class _Mold {
   }
 
   updateSilent(newState) {
+    // TODO: cast data принимает только assoc - как быть с colection???
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
     // const isValid = this._main.$$schemaManager.validateData(this._moldPath, correctValues);
     //

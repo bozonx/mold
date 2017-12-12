@@ -14,6 +14,7 @@ export default class CollectionType {
 
   validate(schema, value) {
     return isCollection(value);
+    // TODO: do it
   }
 
   validateSchema(schema) {
