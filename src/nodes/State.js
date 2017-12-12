@@ -24,7 +24,7 @@ export default class State extends _NodeBase {
     // convert to simple schema type
     this.$fullSchema = this.$fullSchema || {
       type: 'assoc',
-      schema: schema.schema,
+      items: schema.schema,
     };
 
     //this.$fullSchema = schema;

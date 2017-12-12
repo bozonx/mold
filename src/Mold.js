@@ -67,14 +67,14 @@ export default class _Mold {
       this._main.$$log.fatal(`ERROR: bad root type "${rootTypeName}" for "${this._moldPath}" action "${this._actionName}"`);
     }
 
-    const rootType = this._main.$$typeManager.types[rootTypeName];
+    const rootType = this._main.$$typeManager.getType(rootTypeName);
 
     return rootType.getInitial();
   }
 
   _getPrimitivesInitialStates() {
     const result = {};
-    const schema = this._schema.schema || this._schema.item;
+    const schema = this._schema.items || this._schema.item;
 
     _.each(schema, (item, name) => {
       result[name] = this._main.$$typeManager.getInitial(item.type);

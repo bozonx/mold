@@ -1,5 +1,8 @@
 mold = require('../../src/index').default
 
+# TODO: test initial values which is specified in schema 'initial'
+# TODO: test don't update read only props
+
 describe.only 'Functional. Mold.', ->
   describe 'assoc.', ->
     beforeEach () ->
@@ -7,8 +10,7 @@ describe.only 'Functional. Mold.', ->
         state: {
           type: 'state'
           schema: {
-            stringParam: { type: 'string' }
-            collection: { type: 'collection' }
+            numberParam: { type: 'number' }
           }
         }
 
@@ -20,13 +22,22 @@ describe.only 'Functional. Mold.', ->
 
     it "init", ->
       assert.deepEqual(@moldInstance.state, {
-        stringParam: undefined
-        collection: []
+        numberParam: undefined
+      })
+
+    it "update - it has to cast before update", ->
+      @moldInstance.update({ numberParam: '5' });
+      assert.deepEqual(@moldInstance.state, {
+        numberParam: 5
+      })
+
+    it "updateSilent - it has to cast before update", ->
+      @moldInstance.updateSilent({ numberParam: '5' });
+      assert.deepEqual(@moldInstance.state, {
+        numberParam: 5
       })
 
 # TODO: test initial state for collection
-# TODO: test initial values which is specified in schema 'initial'
-# TODO: test don't update read only props
 
 
 #  describe 'collection.', ->
@@ -35,7 +46,7 @@ describe.only 'Functional. Mold.', ->
 #        collection: {
 #          type: 'collection'
 #          item: {
-#            stringParam: { type: 'string' }
+#            numberParam: { type: 'number' }
 #          }
 #        }
 #
