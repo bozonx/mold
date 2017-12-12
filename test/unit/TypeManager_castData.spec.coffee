@@ -1,7 +1,7 @@
 TypeManager = require('../../src/TypeManager').default
 
 
-describe.only 'Unit. TypeManager.castData.', ->
+describe 'Unit. TypeManager.castData.', ->
   beforeEach () ->
     @main = {
     }

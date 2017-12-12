@@ -1,7 +1,7 @@
 TypeManager = require('../../src/TypeManager').default
 
 
-describe.only 'Unit. TypeManager.validate.', ->
+describe 'Unit. TypeManager.validate.', ->
   beforeEach () ->
     @main = {
     }
@@ -61,12 +61,12 @@ describe.only 'Unit. TypeManager.validate.', ->
     assert.isFalse(@typeManager.validateData(@testSchema, data))
 
   it 'collection', ->
-#    data = {
-#      collection: [
-#        { numberParam: 5 }
-#      ]
-#    }
-#    assert.isTrue(@typeManager.validateData(@testSchema, data))
+    data = {
+      collection: [
+        { numberParam: 5 }
+      ]
+    }
+    assert.isTrue(@typeManager.validateData(@testSchema, data))
 
     data = {
       collection: [

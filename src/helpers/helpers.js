@@ -202,6 +202,7 @@ export function isSimpleArray(value) {
 }
 
 export function isCollection(value) {
+  // TODO: дублирует isSimpleCollection
   // TODO: test it
   if (!_.isArray(value)) return false;
 
@@ -213,9 +214,23 @@ export function isCollection(value) {
 
   if (!_.isPlainObject(head)) return false;
 
+
+  // TODO: зачем эта проверка???
   return _.isNumber(head.$$key) || _.isString(head.$$key);
 }
 
+export function isSimpleCollection(value) {
+  // TODO: test it
+  if (!_.isArray(value)) return false;
+
+  const compacted = _.compact(value);
+
+  if (compacted.length === 0) return false;
+
+  const head = _.head(compacted);
+
+  return _.isPlainObject(head);
+}
 
 
 // export function getFirstChildPath(path) {

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { isCollection } from '../helpers/helpers';
+import { isSimpleCollection } from '../helpers/helpers';
 
 
 export default class CollectionType {
@@ -13,7 +13,7 @@ export default class CollectionType {
   }
 
   validate(schema, data) {
-    if (!isCollection(data)) return false;
+    if (!isSimpleCollection(data)) return false;
 
     const itemSchema = {
       type: 'assoc',

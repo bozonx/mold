@@ -35,8 +35,6 @@ describe.only 'Functional. Mold.', ->
         numberParam: 5
       })
 
-# TODO: test initial state for collection
-
   describe 'collection.', ->
     beforeEach () ->
       @fullSchema = {
