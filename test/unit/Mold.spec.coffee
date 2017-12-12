@@ -39,7 +39,7 @@ describe.only 'Functional. Mold.', ->
 
   describe 'collection.', ->
     beforeEach () ->
-      @testSchema = {
+      @fullSchema = {
         type: 'collection'
         item: {
           numberParam: { type: 'number' }
@@ -52,3 +52,15 @@ describe.only 'Functional. Mold.', ->
 
     it "init", ->
       assert.deepEqual(@moldInstance.state, [])
+
+    it "update - it has to cast before update", ->
+      @moldInstance.update([ { numberParam: '5' } ]);
+      assert.deepEqual(@moldInstance.state, [
+        { numberParam: 5 }
+      ])
+
+    it "updateSilent - it has to cast before update", ->
+      @moldInstance.updateSilent([ { numberParam: '5' } ]);
+      assert.deepEqual(@moldInstance.state, [
+        { numberParam: 5 }
+      ])
