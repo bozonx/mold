@@ -63,7 +63,7 @@ export default class TypeManager {
         this._main.$$log.fatal(`Incorrect data, it has to be a plain object: ${JSON.stringify(data)}`);
       }
     }
-    if (schema.type === 'collection') {
+    else if (schema.type === 'collection') {
       if (!_.isArray(data)) {
         this._main.$$log.fatal(`Incorrect data, it has to be an array: ${JSON.stringify(data)}`);
       }
