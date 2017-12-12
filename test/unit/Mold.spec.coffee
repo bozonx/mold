@@ -1,4 +1,5 @@
 mold = require('../../src/index').default
+Mold = require('../../src/Mold').default
 
 # TODO: test initial values which is specified in schema 'initial'
 # TODO: test don't update read only props
@@ -6,19 +7,16 @@ mold = require('../../src/index').default
 describe.only 'Functional. Mold.', ->
   describe 'assoc.', ->
     beforeEach () ->
-      testSchema = () ->
-        state: {
-          type: 'state'
-          schema: {
-            numberParam: { type: 'number' }
-          }
+      @fullSchema = {
+        type: 'assoc'
+        items: {
+          numberParam: { type: 'number' }
         }
-
-      @testSchema = testSchema()
+      }
       @moldPath = 'state'
-      @mold = mold( {silent: true}, @testSchema )
-      @state = @mold.get(@moldPath)
-      @moldInstance = @state.actions.default._mold
+      @main = mold( {silent: true}, {} )
+      @moldInstance = new Mold(@main, @moldPath, 'default', @fullSchema);
+      @moldInstance.init()
 
     it "init", ->
       assert.deepEqual(@moldInstance.state, {
@@ -39,24 +37,18 @@ describe.only 'Functional. Mold.', ->
 
 # TODO: test initial state for collection
 
+  describe 'collection.', ->
+    beforeEach () ->
+      @testSchema = {
+        type: 'collection'
+        item: {
+          numberParam: { type: 'number' }
+        }
+      }
+      @moldPath = 'collection'
+      @main = mold( {silent: true}, {} )
+      @moldInstance = new Mold(@main, @moldPath, 'default', @fullSchema);
+      @moldInstance.init()
 
-#  describe 'collection.', ->
-#    beforeEach () ->
-#      testSchema = () ->
-#        collection: {
-#          type: 'collection'
-#          item: {
-#            numberParam: { type: 'number' }
-#          }
-#        }
-#
-#      @testSchema = testSchema()
-#      @moldPath = 'collection'
-#      @mold = mold( {silent: true}, @testSchema )
-#      @state = @mold.get(@moldPath)
-#      @moldInstance = @state.actions.default._mold
-#
-#    it "init", ->
-#      assert.deepEqual(@moldInstance.state, [])
-
-
+    it "init", ->
+      assert.deepEqual(@moldInstance.state, [])
