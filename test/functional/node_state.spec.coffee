@@ -1,7 +1,6 @@
 mold = require('../../src/index').default
 
 # TODO: clear
-# TODO: events
 # TODO: destroy
 
 describe.only 'Functional. State node.', ->
@@ -90,11 +89,17 @@ describe.only 'Functional. State node.', ->
     sinon.assert.calledTwice(handlerChange)
     sinon.assert.calledTwice(handlerAnyChange)
 
+  it "clear", ->
+    @state.update({
+      numberParam: 5
+      nested: {
+        nestedStringParam: 'value1'
+      }
+    })
 
-#  it "clear()", ->
-#    this.container.update({
-#      stringParam: 'newValue',
-#      numberParam: 5,
-#    })
-#    this.container.clear();
-#    assert.deepEqual(this.container.mold, {})
+    @state.clear();
+
+    assert.deepEqual(@state.mold, {
+      numberParam: undefined
+      nested: {}
+    })

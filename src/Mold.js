@@ -21,6 +21,12 @@ export default class _Mold {
     //this.__readOnlyProps = this._collectRoProps();
   }
 
+  clear() {
+    // TODO: test
+    const initialValues = this._getPrimitivesInitialStates();
+    this.update(initialValues);
+  }
+
   /**
    * Update top level state.
    * It casts values before update.

@@ -46,6 +46,14 @@ export default class State extends _NodeBase {
     this.actions.default.updateSilent(newState);
   }
 
+  clear() {
+    this.actions.default.clear();
+  }
+
+  destroy() {
+    // TODO: !!!!
+  }
+
   _generateDefaultAction() {
     return this.$createAction(this._defaultAction, function (Action) {
       return class extends Action {

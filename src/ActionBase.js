@@ -54,6 +54,10 @@ export default class Action {
     this._mold.off(...params);
   }
 
+  clear() {
+    return this._mold.clear();
+  }
+
   destroy() {
     // TODO: !!!!
   }
