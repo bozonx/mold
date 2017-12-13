@@ -116,16 +116,14 @@ export default class Storage {
 
     this._generateCombined(moldPath, action);
 
-    this._events.emit(moldPath, 'change', {
+    this._emitActionEvent(moldPath, action, 'change', {
       data: partialData,
       by: 'user',
-      action,
     });
-    this._events.emit(moldPath, 'any', {
+    this._emitActionEvent(moldPath, action, 'any', {
       data: partialData,
       by: 'user',
       type: 'state',
-      action,
     });
   }
 
@@ -139,16 +137,14 @@ export default class Storage {
 
     this._generateCombined(moldPath, action);
 
-    this._events.emit(moldPath, 'silent', {
+    this._emitActionEvent(moldPath, action, 'silent', {
       data: partialData,
       by: 'program',
-      action,
     });
-    this._events.emit(moldPath, 'any', {
+    this._emitActionEvent(moldPath, action, 'any', {
       data: partialData,
       by: 'program',
       type: 'silent',
-      action,
     });
   }
 
@@ -160,11 +156,10 @@ export default class Storage {
     const currentData = this._storage.items[moldPath][action].meta;
     this._storage.items[moldPath][action].meta = _.defaultsDeep(_.cloneDeep(partialData), currentData);
 
-    this._events.emit(moldPath, 'any', {
+    this._emitActionEvent(moldPath, action, 'any', {
       data: partialData,
       by: 'program',
       type: 'meta',
-      action,
     });
   }
 
@@ -182,16 +177,13 @@ export default class Storage {
     this._storage.items[moldPath][action].solid = newData;
     this._generateCombined(moldPath, action);
 
-    this._events.emit(moldPath, 'bottom', {
+    this._emitActionEvent(moldPath, action, 'bottom', {
       data: newData,
       by: 'program',
-      action,
     });
-    this._events.emit(moldPath, 'any', {
+    this._emitActionEvent(moldPath, action, 'any', {
       data: newData,
       by: 'program',
-      type: 'solid',
-      action,
     });
   }
 
@@ -210,6 +202,17 @@ export default class Storage {
   destroy(moldPath, action) {
     delete this._storage.items[moldPath][action];
     this._events.destroy(this._getFullPath(moldPath, action));
+  }
+
+  _emitActionEvent(moldPath, action, eventName, eventData) {
+    const data = {
+      ...eventData,
+      action,
+    };
+    // emit event only for certain event
+    this._events.emit(this._getFullPath(moldPath, action), eventName, data);
+    // emit event for mold path
+    this._events.emit(moldPath, eventName, data);
   }
 
   _getFullPath(moldPath, action) {
