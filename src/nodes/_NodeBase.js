@@ -69,8 +69,8 @@ export default class _NodeBase {
    * Unbind event listener.
    * @param {function} handler - handler to remove
    */
-  off(handler) {
-    return this.actions.default.off(handler);
+  off(eventName, handler) {
+    return this.actions.default.off(eventName, handler);
   }
 
   /**

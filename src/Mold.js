@@ -43,6 +43,18 @@ export default class _Mold {
     this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
 
+  onChange(...params) {
+    this._main.$$storage.onChange(this._moldPath, ...params);
+  }
+
+  onAnyChange(...params) {
+    this._main.$$storage.onAnyChange(this._moldPath, ...params);
+  }
+
+  off(...params) {
+    this._main.$$storage.off(this._moldPath, ...params);
+  }
+
   _initSchema() {
     let initialState = this._getRootInitialState();
 

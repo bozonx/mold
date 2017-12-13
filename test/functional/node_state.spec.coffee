@@ -2,6 +2,7 @@ mold = require('../../src/index').default
 
 # TODO: clear
 # TODO: events
+# TODO: destroy
 
 describe.only 'Functional. State node.', ->
   beforeEach () ->
@@ -80,11 +81,14 @@ describe.only 'Functional. State node.', ->
     @state.onChange(handlerChange)
     @state.onAnyChange(handlerAnyChange)
 
-    @state.update({ numberParam: 5 })
+    @state.update({ numberParam: 1 })
+    @state.update({ numberParam: 2 })
+    @state.off('change', handlerChange)
+    @state.off('any', handlerAnyChange)
+    @state.update({ numberParam: 3 })
 
-    sinon.assert.calledOnce(handlerChange)
-    sinon.assert.calledOnce(handlerAnyChange)
-
+    sinon.assert.calledTwice(handlerChange)
+    sinon.assert.calledTwice(handlerAnyChange)
 
 
 #  it "clear()", ->

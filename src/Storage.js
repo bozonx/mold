@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { concatPath } from './helpers/helpers';
-import { mutate, updateIndexes } from './helpers/mutate';
+import { mutate } from './helpers/mutate';
 
 
 export default class Storage {
@@ -193,6 +193,18 @@ export default class Storage {
       type: 'solid',
       action,
     });
+  }
+
+  onChange(path, handler) {
+    this._events.onChange(path, handler);
+  }
+
+  onAnyChange(path, handler) {
+    this._events.onAnyChange(path, handler);
+  }
+
+  off(path, event, handler) {
+    this._events.off(path, event, handler);
   }
 
   _update(moldPath, action, subPath, partialData) {

@@ -22,17 +22,8 @@ export default class Events {
     this.eventEmitter.on(this._getEventName(path, eventName), handler);
   }
 
-  // onDeep(path, eventName, handler) {
-  //   // TODO: !!!
-  // }
-
-  off(event, handler) {
-    // TODO: лучше всего просто передать handler и найти где он используется и удалить везде
-    this.eventEmitter.off(event, handler);
-  }
-
-  offAll(path, deep=false) {
-    // TODO: продумать
+  off(path, eventName, handler) {
+    this.eventEmitter.off(this._getEventName(path, eventName), handler);
   }
 
   _getEventName(path, eventName) {

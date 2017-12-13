@@ -42,6 +42,22 @@ export default class Action {
     return this._mold.updateSilent(partialData);
   }
 
+  onChange(...params) {
+    this._mold.onChange(...params);
+  }
+
+  onAnyChange(...params) {
+    this._mold.onAnyChange(...params);
+  }
+
+  off(...params) {
+    this._mold.off(...params);
+  }
+
+  destroy() {
+    // TODO: !!!!
+  }
+
   request(payload) {
     this._updateMeta({ pending: true });
     const driverRequestParams = this.getDriverParams();
