@@ -9,6 +9,30 @@ describe 'Unit. Storage.', ->
     @storage = new Storage(@events)
     @moldPath = 'path.to[256]'
 
+  it 'destroy', ->
+    handlerChange = sinon.spy()
+    handlerAnyChange = sinon.spy()
+    @storage.$init({})
+    @storage.initState(@moldPath, @defaultAction, {})
+    @storage.onChange(@moldPath, @defaultAction, handlerChange)
+    @storage.onAnyChange(@moldPath, @defaultAction, handlerAnyChange)
+
+    @storage.updateTopLevel(@moldPath, @defaultAction, { data: 1 })
+
+    assert.deepEqual(@storage._storage.items[@moldPath][@defaultAction], {
+      state: { data: 1 }
+      combined: { data: 1 }
+    })
+
+    @storage.destroy(@moldPath, @defaultAction)
+
+    assert.isUndefined(@storage._storage.items[@moldPath][@defaultAction])
+
+    @storage.updateTopLevel(@moldPath, @defaultAction, { data: 2 })
+
+    sinon.assert.calledOnce(handlerChange)
+    sinon.assert.calledOnce(handlerAnyChange)
+
   describe 'bottom level (solid)', ->
     it 'set new data twice', ->
       bottomHandler = sinon.spy()

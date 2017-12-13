@@ -200,7 +200,10 @@ export default class Storage {
   }
 
   destroy(moldPath, action) {
-    delete this._storage.items[moldPath][action];
+    if (this._storage.items[moldPath] && this._storage.items[moldPath][action]) {
+      delete this._storage.items[moldPath][action];
+    }
+
     this._events.destroy(this._getFullPath(moldPath, action));
   }
 
