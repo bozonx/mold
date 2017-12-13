@@ -1,9 +1,8 @@
 mold = require('../../src/index').default
 
-# TODO: clear
 # TODO: destroy
 
-describe.only 'Functional. State node.', ->
+describe 'Functional. State node.', ->
   beforeEach () ->
     testSchema = () ->
       container:
@@ -89,17 +88,17 @@ describe.only 'Functional. State node.', ->
     sinon.assert.calledTwice(handlerChange)
     sinon.assert.calledTwice(handlerAnyChange)
 
-  it "clear", ->
-    @state.update({
-      numberParam: 5
-      nested: {
-        nestedStringParam: 'value1'
-      }
-    })
-
-    @state.clear();
-
-    assert.deepEqual(@state.mold, {
-      numberParam: undefined
-      nested: {}
-    })
+#  it "clear", ->
+#    @state.update({
+#      numberParam: 5
+#      nested: {
+#        nestedStringParam: 'value1'
+#      }
+#    })
+#
+#    @state.clear();
+#
+#    assert.deepEqual(@state.mold, {
+#      numberParam: undefined
+#      nested: {}
+#    })

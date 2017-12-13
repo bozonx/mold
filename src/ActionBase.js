@@ -55,11 +55,11 @@ export default class Action {
   }
 
   clear() {
-    return this._mold.clear();
+    this._mold.clear();
   }
 
   destroy() {
-    // TODO: !!!!
+    return this._mold.destroy();
   }
 
   request(payload) {

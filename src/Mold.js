@@ -21,11 +21,10 @@ export default class _Mold {
     //this.__readOnlyProps = this._collectRoProps();
   }
 
-  clear() {
-    // TODO: test
-    const initialValues = this._getPrimitivesInitialStates();
-    this.update(initialValues);
-  }
+  // clear() {
+  //   const initialValues = this._getPrimitivesInitialStates();
+  //   this.update(initialValues);
+  // }
 
   /**
    * Update top level state.
@@ -50,15 +49,19 @@ export default class _Mold {
   }
 
   onChange(...params) {
-    this._main.$$storage.onChange(this._moldPath, ...params);
+    this._main.$$storage.onChange(this._moldPath, this._actionName, ...params);
   }
 
   onAnyChange(...params) {
-    this._main.$$storage.onAnyChange(this._moldPath, ...params);
+    this._main.$$storage.onAnyChange(this._moldPath, this._actionName, ...params);
   }
 
   off(...params) {
-    this._main.$$storage.off(this._moldPath, ...params);
+    this._main.$$storage.off(this._moldPath, this._actionName, ...params);
+  }
+
+  destroy() {
+    this._main.$$storage.destroy(this._moldPath, this._actionName);
   }
 
   _initSchema() {

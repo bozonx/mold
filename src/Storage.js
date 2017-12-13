@@ -195,16 +195,25 @@ export default class Storage {
     });
   }
 
-  onChange(path, handler) {
-    this._events.onChange(path, handler);
+  onChange(moldPath, action, handler) {
+    this._events.onChange(this._getFullPath(moldPath, action), handler);
   }
 
-  onAnyChange(path, handler) {
-    this._events.onAnyChange(path, handler);
+  onAnyChange(moldPath, action, handler) {
+    this._events.onAnyChange(this._getFullPath(moldPath, action), handler);
   }
 
-  off(path, event, handler) {
-    this._events.off(path, event, handler);
+  off(moldPath, action, event, handler) {
+    this._events.off(this._getFullPath(moldPath, action), event, handler);
+  }
+
+  destroy(moldPath, action) {
+    delete this._storage.items[moldPath][action];
+    this._events.destroy(this._getFullPath(moldPath, action));
+  }
+
+  _getFullPath(moldPath, action) {
+    return `${moldPath}-${action}`;
   }
 
   _update(moldPath, action, subPath, partialData) {
