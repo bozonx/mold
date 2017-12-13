@@ -1,23 +1,16 @@
 mold = require('../../src/index').default
 
-# TODO: валидация при update
 # TODO: clear
 # TODO: events
 
-describe 'Functional. State node.', ->
+describe.only 'Functional. State node.', ->
   beforeEach () ->
     testSchema = () ->
       container:
         state: {
           type: 'state'
           schema: {
-            boolParam: {type: 'boolean'}
-            stringParam: {type: 'string'}
             numberParam: {type: 'number'}
-            arrayParam: {
-              type: 'array'
-              itemsType: 'number'
-            }
             nested: {
               type: 'assoc'
               items: {
@@ -35,10 +28,7 @@ describe 'Functional. State node.', ->
 
   it "init", ->
     assert.deepEqual(@state.mold, {
-      stringParam: undefined
       numberParam: undefined
-      boolParam: undefined
-      arrayParam: []
       nested: {}
     })
 
@@ -54,44 +44,48 @@ describe 'Functional. State node.', ->
       'Schema definition of container on "container" must has a "schema" param!'
     )
 
-  it "set all types of data", ->
-    partialData = {
-      boolParam: true
-      stringParam: 'value'
-      numberParam: 5
-      arrayParam: [1,2]
-      nested: {
-        item1: 'value1'
-      }
-    }
-    @state.update(partialData)
-
-    assert.deepEqual(@state.mold, partialData)
-
-  it "update partly", ->
+  it "update", ->
     @state.update({
-      stringParam: 'newerValue'
-      numberParam: 5
+      numberParam: '5'
+      nested: {
+        nestedStringParam: 'value1'
+      }
     })
     @state.update({
-      boolParam: true
-      numberParam: 6
+      nested: {
+        nestedStringParam: 'value2'
+      }
     })
 
     assert.deepEqual(@state.mold, {
-      stringParam: 'newerValue'
-      numberParam: 6
-      boolParam: true
-      arrayParam: []
-      nested: {}
+      numberParam: 5
+      nested: {
+        nestedStringParam: 'value2'
+      }
     })
 
   it "update silent", ->
-    @mold.$$storage.updateTopLevelSilent = sinon.spy()
+    @state.actions.default.updateSilent = sinon.spy()
 
-    @state.updateSilent({ param: 'value' })
+    data = { numberParam: 5 }
+    @state.updateSilent({ numberParam: 5 })
 
-    sinon.assert.calledOnce(@mold.$$storage.updateTopLevelSilent)
+    sinon.assert.calledOnce(@state.actions.default.updateSilent)
+    sinon.assert.calledWith(@state.actions.default.updateSilent, data)
+
+  it "events", ->
+    handlerChange = sinon.spy()
+    handlerAnyChange = sinon.spy()
+
+    @state.onChange(handlerChange)
+    @state.onAnyChange(handlerAnyChange)
+
+    @state.update({ numberParam: 5 })
+
+    sinon.assert.calledOnce(handlerChange)
+    sinon.assert.calledOnce(handlerAnyChange)
+
+
 
 #  it "clear()", ->
 #    this.container.update({

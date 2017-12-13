@@ -6,7 +6,7 @@ import _NodeBase from './_NodeBase';
 export default class State extends _NodeBase {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema)) {
-      return `Schema definition of container on "${schemaPath}" must has a "schema" param!`;
+      return `Schema definition of "state" node on "${schemaPath}" must has a "schema" param!`;
     }
   }
 
@@ -26,8 +26,6 @@ export default class State extends _NodeBase {
       type: 'assoc',
       items: schema.schema,
     };
-
-    //this.$fullSchema = schema;
 
     super.$init(moldPath, schema);
 
