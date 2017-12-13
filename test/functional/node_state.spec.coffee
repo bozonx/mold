@@ -73,11 +73,17 @@ describe 'Functional. State node.', ->
     sinon.assert.calledWith(@state.actions.default.updateSilent, data)
 
   it "events", ->
+    # TODO: наверное это нужно делать не здесь
     handlerChange = sinon.spy()
     handlerAnyChange = sinon.spy()
 
     @state.onChange(handlerChange)
     @state.onAnyChange(handlerAnyChange)
+
+    assert.deepEqual(@state._main.$$events._handlers["#{@moldPath}-default"], {
+      change: [ handlerChange]
+      any: [ handlerAnyChange  ]
+    })
 
     @state.update({ numberParam: 1 })
     @state.update({ numberParam: 2 })
@@ -87,6 +93,10 @@ describe 'Functional. State node.', ->
 
     sinon.assert.calledTwice(handlerChange)
     sinon.assert.calledTwice(handlerAnyChange)
+    assert.deepEqual(@state._main.$$events._handlers["#{@moldPath}-default"], {
+      change: []
+      any: []
+    })
 
 #  it "clear", ->
 #    @state.update({

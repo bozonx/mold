@@ -39,19 +39,13 @@ export default class State extends _NodeBase {
    * @param {string} newState
    */
   update(newState) {
+    // TODO: move to _NodeBase
     this.actions.default.update(newState);
   }
 
   updateSilent(newState) {
+    // TODO: move to _NodeBase
     this.actions.default.updateSilent(newState);
-  }
-
-  clear() {
-    this.actions.default.clear();
-  }
-
-  destroy() {
-    // TODO: !!!!
   }
 
   _generateDefaultAction() {
