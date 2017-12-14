@@ -7,8 +7,13 @@ import _NodeBase from './_NodeBase';
 export default class Document extends _NodeBase {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema)) {
-      return `Schema definition of document on "${schemaPath}" must has a "schema" param!`;
+      return `The definition of "document" node on "${schemaPath}" must has a "schema"!`;
     }
+    else if (schema.schema.type) {
+      return `Schema definition of "document" node on "${schemaPath}" must not to have a "type" param! It has to be just plain object.`;
+    }
+
+    // TODO: test custom actions in schema
   }
 
   get type() {

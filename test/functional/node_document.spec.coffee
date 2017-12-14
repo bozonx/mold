@@ -1,4 +1,5 @@
 mold = require('../../src/index').default
+Document = require('../../src/nodes/Document').default
 
 # TODO: test delete
 # TODO: test custom action
@@ -41,16 +42,31 @@ describe 'Functional. Document node.', ->
     @document = @mold.get(@moldPath)
     @document.$init(@moldPath, @testSchema.document)
 
-  it "validate schema - node without schema param", ->
+  it "validate schema - node without schema", ->
     testSchema = {
-      container: {
-        type: 'container'
+      document: {
+        type: 'document'
       }
     }
 
-    assert.throws(
-      () => mold( {silent: true}, testSchema ),
-      'Schema definition of container on "container" must has a "schema" param!'
+    assert.equal(
+      Document.validateSchema(testSchema.document, 'document'),
+      'The definition of "document" node on "document" must has a "schema"!'
+    )
+
+  it "validate schema - schema with 'type' param", ->
+    testSchema = {
+      document: {
+        type: 'document'
+        schema: {
+          type: 'string'
+        }
+      }
+    }
+
+    assert.equal(
+      Document.validateSchema(testSchema.document, 'document'),
+      'Schema definition of "document" node on "document" must not to have a "type" param! It has to be just plain object.'
     )
 
   it 'load()', ->

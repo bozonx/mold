@@ -1,7 +1,6 @@
 mold = require('../../src/index').default
 State = require('../../src/nodes/State').default
 
-# TODO: destroy
 
 describe 'Functional. State node.', ->
   beforeEach () ->
