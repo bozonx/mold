@@ -13,7 +13,7 @@ export default class State extends _NodeBase {
   constructor(main) {
     super(main);
 
-    this._defaultAction = 'default';
+    this.$defaultAction = 'default';
   }
 
   get type() {
@@ -49,7 +49,7 @@ export default class State extends _NodeBase {
   }
 
   _generateDefaultAction() {
-    return this.$createAction(this._defaultAction, function (Action) {
+    return this.$createAction(this.$defaultAction, function (Action) {
       return class extends Action {
         init() {
           super.init();

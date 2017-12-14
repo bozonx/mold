@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
 import { correctUpdatePayload, omitUnsaveable } from '../helpers/helpers';
-import State from './State';
+import _NodeBase from './_NodeBase';
 
 
-export default class Document extends State {
+export default class Document extends _NodeBase {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema)) {
       return `Schema definition of document on "${schemaPath}" must has a "schema" param!`;
@@ -14,7 +14,7 @@ export default class Document extends State {
   constructor(main) {
     super(main);
 
-    this._defaultAction = 'default';
+    this.$defaultAction = 'default';
   }
 
   get type() {
@@ -22,7 +22,7 @@ export default class Document extends State {
   }
 
   get loading() {
-    return this.actions[this._defaultAction].pending;
+    return this.actions[this.$defaultAction].pending;
   }
 
   get saving() {
@@ -56,7 +56,7 @@ export default class Document extends State {
   }
 
   _generateDefaultAction() {
-    return this.$createAction(this._defaultAction, function (Action) {
+    return this.$createAction(this.$defaultAction, function (Action) {
       return class extends Action {
         init() {
           super.init();
