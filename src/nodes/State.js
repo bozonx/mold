@@ -10,12 +10,6 @@ export default class State extends _NodeBase {
     }
   }
 
-  constructor(main) {
-    super(main);
-
-    this.$defaultAction = 'default';
-  }
-
   get type() {
     return 'state';
   }
@@ -28,27 +22,9 @@ export default class State extends _NodeBase {
     };
 
     super.$init(moldPath, schema);
-
-    this.actions = {
-      'default': this._generateDefaultAction(),
-    };
   }
 
-  /**
-   * Update container data
-   * @param {string} newState
-   */
-  update(newState) {
-    // TODO: move to _NodeBase
-    this.actions.default.update(newState);
-  }
-
-  updateSilent(newState) {
-    // TODO: move to _NodeBase
-    this.actions.default.updateSilent(newState);
-  }
-
-  _generateDefaultAction() {
+  $generateDefaultAction() {
     return this.$createAction(this.$defaultAction, function (Action) {
       return class extends Action {
         init() {

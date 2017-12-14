@@ -11,12 +11,6 @@ export default class Document extends _NodeBase {
     }
   }
 
-  constructor(main) {
-    super(main);
-
-    this.$defaultAction = 'default';
-  }
-
   get type() {
     return 'document';
   }
@@ -30,6 +24,12 @@ export default class Document extends _NodeBase {
   }
 
   $init(moldPath, schema) {
+    // convert to simple schema type
+    this.$fullSchema = this.$fullSchema || {
+      type: 'assoc',
+      items: schema.schema,
+    };
+
     super.$init(moldPath, schema);
 
     this.actions = {
@@ -55,7 +55,7 @@ export default class Document extends _NodeBase {
     return this.actions.remove.request();
   }
 
-  _generateDefaultAction() {
+  $generateDefaultAction() {
     return this.$createAction(this.$defaultAction, function (Action) {
       return class extends Action {
         init() {

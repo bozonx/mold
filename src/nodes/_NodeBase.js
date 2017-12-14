@@ -5,6 +5,7 @@ import ActionBase from '../ActionBase';
 export default class _NodeBase {
   constructor(main) {
     this._main = main;
+    this.$defaultAction = 'default';
   }
 
   /**
@@ -29,6 +30,9 @@ export default class _NodeBase {
   $init(moldPath, schema) {
     this._moldPath = moldPath;
     this._schema = schema;
+    this.actions = {
+      'default': this.$generateDefaultAction(),
+    };
   }
 
   $createAction(actionName, cb) {
@@ -43,6 +47,20 @@ export default class _NodeBase {
     instance.init();
 
     return instance;
+  }
+
+  /**
+   * Update container data
+   * @param {string} newState
+   */
+  update(newState) {
+    // TODO: move to _NodeBase
+    this.actions.default.update(newState);
+  }
+
+  updateSilent(newState) {
+    // TODO: move to _NodeBase
+    this.actions.default.updateSilent(newState);
   }
 
   /**
