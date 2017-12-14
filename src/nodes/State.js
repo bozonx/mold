@@ -6,7 +6,10 @@ import _NodeBase from './_NodeBase';
 export default class State extends _NodeBase {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema)) {
-      return `Schema definition of "state" node on "${schemaPath}" must has a "schema" param!`;
+      return `The definition of "state" node on "${schemaPath}" must has a "schema"!`;
+    }
+    else if (schema.schema.type) {
+      return `Schema definition of "state" node on "${schemaPath}" must not to have a "type" param! It has to be just plain object.`;
     }
   }
 

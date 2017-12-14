@@ -1,4 +1,5 @@
 mold = require('../../src/index').default
+State = require('../../src/nodes/State').default
 
 # TODO: destroy
 
@@ -31,16 +32,31 @@ describe 'Functional. State node.', ->
       nested: {}
     })
 
-  it "validate schema - node without schema param", ->
+  it "validate schema - node without schema", ->
     testSchema = {
-      container: {
-        type: 'container'
+      state: {
+        type: 'state'
       }
     }
 
-    assert.throws(
-      () => mold( {silent: true}, testSchema ),
-      'Schema definition of container on "container" must has a "schema" param!'
+    assert.equal(
+      State.validateSchema(testSchema.state, 'state'),
+      'The definition of "state" node on "state" must has a "schema"!'
+    )
+
+  it "validate schema - schema with 'type' param", ->
+    testSchema = {
+      state: {
+        type: 'state'
+        schema: {
+          type: 'string'
+        }
+      }
+    }
+
+    assert.equal(
+      State.validateSchema(testSchema.state, 'state'),
+      'Schema definition of "state" node on "state" must not to have a "type" param! It has to be just plain object.'
     )
 
   it "update", ->
