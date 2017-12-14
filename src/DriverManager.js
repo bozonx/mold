@@ -32,7 +32,7 @@ export default class DriverManager {
       const upperDriverMoldPath = this.getClosestDriverPath(moldPath);
 
       if (upperDriverMoldPath && upperDriverMoldPath !== moldPath) {
-        this._main.$$log.fatal(`ERROR: you can't specify more than one driver to one branch of schema!`);
+        this._main.$$log.fatal(`You can't specify more than one driver to one branch of schema!`);
       }
 
       schema.driver.init(moldPath, this._main);

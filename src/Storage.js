@@ -44,7 +44,7 @@ export default class Storage {
   }
 
   getNode(moldPath) {
-    if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
+    if (!moldPath) throw new Error(`MoldPath is empty`);
 
     return this._storage.items[moldPath];
   }
@@ -245,8 +245,8 @@ export default class Storage {
   }
 
   _checkParams(moldPath, action) {
-    if (!moldPath) throw new Error(`ERROR: moldPath is empty`);
-    if (!action) throw new Error(`ERROR: action is empty`);
+    if (!moldPath) throw new Error(`MoldPath is empty`);
+    if (!action) throw new Error(`Action is empty`);
   }
 
   _generateCombined(moldPath, action) {

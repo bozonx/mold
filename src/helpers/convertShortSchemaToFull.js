@@ -34,7 +34,7 @@ class Convert {
       }
     }
     else {
-      this._log.fatal(`ERROR: bad schema node on path "${fullPath}"`);
+      this._log.fatal(`Bad schema node on path "${fullPath}"`);
     }
   }
 
@@ -65,7 +65,7 @@ class Convert {
 
   _eachNodeSchema(fullPath, node, schemaParamName) {
     if (!_.isPlainObject(node[schemaParamName])) {
-      this._log.fatal(`ERROR: bad schema node on path "${fullPath}.${schemaParamName}"`);
+      this._log.fatal(`Bad schema node on path "${fullPath}.${schemaParamName}"`);
     }
 
     _.each(node[schemaParamName], (item, name) => {

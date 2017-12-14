@@ -82,5 +82,5 @@ describe 'Unit. DriverManager.', ->
     it "it's disallowed to have 2 drivers in one branch", ->
       assert.throws(
         () => @driverManager.collectDrivers(@testSchema),
-        "ERROR: you can't specify more than one driver to one branch of schema!"
+        "You can't specify more than one driver to one branch of schema!"
       )

@@ -32,7 +32,7 @@ export default class State extends _NodeBase {
         }
 
         request() {
-          throw new Error(`ERROR: State can't do requests`);
+          throw new Error(`State can't do requests`);
         }
       };
     });

@@ -25,9 +25,9 @@ describe 'Unit. Storage.', ->
     })
 
     @storage.destroy(@moldPath, @defaultAction)
-
+    # the action's storage has to be clear
     assert.isUndefined(@storage._storage.items[@moldPath][@defaultAction])
-
+    # after that assigned events have to be not rose
     @storage.updateTopLevel(@moldPath, @defaultAction, { data: 2 })
 
     sinon.assert.calledOnce(handlerChange)
