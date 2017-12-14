@@ -87,8 +87,14 @@ export default class Document extends _NodeBase {
 
         request(payload) {
           // if we set new data - update default action
-          if (payload) document.update(payload);
+          if (payload) {
+            // TODO: очистить верхний стейт
+            // TODO: заменить нижний стейт
+            document.update(payload);
+          }
 
+          // TODO: очистить верхний стейт
+          // TODO: заменить нижний стейт
           return super.request(payload);
         }
       };
@@ -109,8 +115,12 @@ export default class Document extends _NodeBase {
 
         request(payload) {
           // if we set new data - update default action
+          // TODO: обновить верхний стейт
+          // TODO: заменить нижний стейт
           if (payload) document.update(payload);
 
+          // TODO: очистить верхний стейт
+          // TODO: заменить нижний стейт
           return super.request(payload);
         }
       };

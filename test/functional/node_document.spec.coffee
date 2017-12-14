@@ -14,16 +14,6 @@ describe 'Functional. Document node.', ->
           boolParam: {type: 'boolean'}
           stringParam: {type: 'string'}
           numberParam: {type: 'number'}
-          arrayParam: {
-            type: 'array'
-            itemsType: 'number'
-          }
-          nested: {
-            type: 'assoc'
-            items: {
-              nestedStringParam: {type: 'string'}
-            }
-          }
         }
       }
 
@@ -31,9 +21,6 @@ describe 'Functional. Document node.', ->
       boolParam: true,
       stringParam: 'newValue',
       numberParam: 5,
-      arrayParam: ['value1'],
-      nested:
-        nestedStringParam: 'nestedValue'
     }
 
     @testSchema = testSchema()
@@ -92,12 +79,6 @@ describe 'Functional. Document node.', ->
     newData = {
       boolParam: false,
       stringParam: 'overlay',
-      numberParam: 7,
-    }
-    resultMold = {
-      newData...
-      arrayParam: []
-      nested: {}
     }
     promise = @document.put(newData)
 
@@ -107,8 +88,8 @@ describe 'Functional. Document node.', ->
       .then (response) =>
         assert.isFalse(@document.saving)
         assert.deepEqual(response.body, newData)
-        assert.deepEqual(@document.actions.put.mold, resultMold)
-        assert.deepEqual(@document.mold, resultMold)
+        assert.deepEqual(@document.actions.put.mold, newData)
+        assert.deepEqual(@document.mold, newData)
 
   it 'patch()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
@@ -122,10 +103,6 @@ describe 'Functional. Document node.', ->
       boolParam: true
       stringParam: 'overlay'
       numberParam: 5
-      arrayParam: ['value1']
-      nested: {
-        nestedStringParam: "nestedValue"
-      }
     }
 
     promise = @document.patch(newData)
@@ -137,8 +114,7 @@ describe 'Functional. Document node.', ->
         assert.isFalse(@document.saving)
         assert.deepEqual(response.body, resultData)
         assert.deepEqual(@document.actions.patch.mold, resultData)
-        # TODO: WTF??? что должно быть в результате?
-        #assert.deepEqual(@document.mold, resultData)
+        assert.deepEqual(@document.mold, resultData)
 
   it 'custom action', ->
     @testSchema.document.actions = {
@@ -157,18 +133,6 @@ describe 'Functional. Document node.', ->
     #promise = this.document.actions.custom.request()
     # TODO: make request with custom driver params and check driver request
 
-
-
-
-
-#  it "clear()", ->
-#    this.document.update({
-#      stringParam: 'newValue',
-#      numberParam: 5,
-#    })
-#    this.document.clear();
-#    assert.deepEqual(this.document.mold, {})
-#
 #  it "remove", (done) ->
 #    testSchema = () ->
 #      documentsCollection:
