@@ -12,8 +12,6 @@ export default class Document extends _NodeBase {
     else if (schema.schema.type) {
       return `Schema definition of "document" node on "${schemaPath}" must not to have a "type" param! It has to be just plain object.`;
     }
-
-    // TODO: test custom actions in schema
   }
 
   get type() {
@@ -88,10 +86,10 @@ export default class Document extends _NodeBase {
         request(payload) {
           // if we set new data - update default action
           if (payload) {
-            // set to default action
-            document.actions.default.setSilent(payload);
             // set to put action
             this.setSilent(payload);
+            // set to default action
+            document.actions.default.setSilent(payload);
           }
 
           return super.request(payload)
@@ -121,17 +119,16 @@ export default class Document extends _NodeBase {
         request(payload) {
           // if we set new data - update default action
           if (payload) {
-            // update default action
-            document.actions.default.update(payload);
             // update path action
-            this.update(payload);
+            this.updateSilent(payload);
+            // update default action
+            document.actions.default.updateSilent(payload);
           }
 
           return super.request(payload)
             .then((resp) => {
               document.actions.default.clearTopLevel();
-              // TODO: set to bottom of default
-              //document.actions.default.setSilent(resp.body);
+              document.actions.default.setBottomLevel(resp.body);
 
               return resp;
             });

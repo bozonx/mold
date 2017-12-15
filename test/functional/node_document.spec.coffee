@@ -3,7 +3,6 @@ Document = require('../../src/nodes/Document').default
 
 # TODO: test delete
 # TODO: test custom action
-# TODO: test - check request to driver
 
 describe 'Functional. Document node.', ->
   beforeEach () ->
@@ -92,9 +91,7 @@ describe 'Functional. Document node.', ->
         assert.deepEqual(response.body, newData)
 
         assert.deepEqual(@document.actions.put.mold, newData)
-        console.log(@document._main.$$storage.getState(@document._moldPath, 'put'))
         assert.deepEqual(@document._main.$$storage.getState(@document._moldPath, 'put'), {})
-
         assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'put'), newData)
 
         assert.deepEqual(@document.mold, newData)
@@ -109,6 +106,11 @@ describe 'Functional. Document node.', ->
     newData = {
       stringParam: 'overlay'
     }
+    updatedData = {
+      boolParam: undefined
+      stringParam: 'overlay'
+      numberParam: undefined
+    }
     resultData = {
       boolParam: true
       stringParam: 'overlay'
@@ -117,16 +119,22 @@ describe 'Functional. Document node.', ->
 
     promise = @document.patch(newData)
 
-    #assert.deepEqual(@document.actions.patch.mold, resultData)
-    #assert.deepEqual(@document.mold, resultData)
+    assert.deepEqual(@document.actions.patch.mold, updatedData)
+    assert.deepEqual(@document.mold, updatedData)
     assert.isTrue(@document.saving)
 
     promise
       .then (response) =>
         assert.isFalse(@document.saving)
         assert.deepEqual(response.body, resultData)
+
         assert.deepEqual(@document.actions.patch.mold, resultData)
-        #assert.deepEqual(@document.mold, resultData)
+        assert.deepEqual(@document._main.$$storage.getState(@document._moldPath, 'patch'), {})
+        assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'patch'), resultData)
+
+        assert.deepEqual(@document.mold, resultData)
+        assert.deepEqual(@document._main.$$storage.getState(@document._moldPath, 'default'), {})
+        assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'default'), resultData)
 
   it 'custom action', ->
     @testSchema.document.actions = {
