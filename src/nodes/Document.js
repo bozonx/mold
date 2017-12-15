@@ -94,9 +94,12 @@ export default class Document extends _NodeBase {
             this.set(payload);
           }
 
-          // TODO: очистить верхний стейт
-          // TODO: заменить нижний стейт
-          return super.request(payload);
+          return super.request(payload)
+            .then((resp) => {
+              // TODO: update and clear default
+
+              return resp;
+            });
         }
       };
     });
@@ -116,13 +119,19 @@ export default class Document extends _NodeBase {
 
         request(payload) {
           // if we set new data - update default action
-          // TODO: обновить верхний стейт
-          // TODO: заменить нижний стейт
-          if (payload) document.update(payload);
+          if (payload) {
+            // update default action
+            document.update(payload);
+            // update path action
+            this.update(payload);
+          }
 
-          // TODO: очистить верхний стейт
-          // TODO: заменить нижний стейт
-          return super.request(payload);
+          return super.request(payload)
+            .then((resp) => {
+              // TODO: update and clear default
+
+              return resp;
+            });
         }
       };
     });

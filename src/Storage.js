@@ -111,6 +111,7 @@ export default class Storage {
 
     this.initActionIfNeed(moldPath, action);
     // set data
+    // TODO: поидее с мутацией надо
     this._storage.items[moldPath][action].state = fullData;
     this._generateCombined(moldPath, action);
 
@@ -186,6 +187,22 @@ export default class Storage {
       by: 'program',
       type: 'meta',
     });
+  }
+
+  clearTopLevel(moldPath, action) {
+    if (!this._storage.items[moldPath]
+      || !this._storage.items[moldPath][action]
+      || !this._storage.items[moldPath][action].solid) {
+      return;
+    }
+
+    // TODO: поидее с мутацией надо ???
+    if (_.isPlainObject(this._storage.items[moldPath][action].solid)) {
+      this._storage.items[moldPath][action].solid = {};
+    }
+    else {
+      this._storage.items[moldPath][action].solid = [];
+    }
   }
 
   /**

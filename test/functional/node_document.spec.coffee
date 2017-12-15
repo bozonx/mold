@@ -71,7 +71,7 @@ describe 'Functional. Document node.', ->
         assert.deepEqual(@document.mold, @testValues)
         assert.isFalse(@document.loading)
 
-  it 'put()', ->
+  it.only 'put()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
 
     assert.isFalse(@document.saving)
@@ -82,14 +82,24 @@ describe 'Functional. Document node.', ->
     }
     promise = @document.put(newData)
 
+    assert.deepEqual(@document.actions.put.mold, newData)
+    assert.deepEqual(@document.mold, newData)
     assert.isTrue(@document.saving)
 
     promise
       .then (response) =>
         assert.isFalse(@document.saving)
         assert.deepEqual(response.body, newData)
+
         assert.deepEqual(@document.actions.put.mold, newData)
+        console.log(2222)
+        assert.deepEqual(@document._main.$$storage.getState(@document._moldPath, 'put'), {})
+
+        assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'put'), newData)
+
         assert.deepEqual(@document.mold, newData)
+        #assert.deepEqual(@document._main.$$storage.getState(@document._moldPath, 'default'), {})
+        #assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'default'), newData)
 
   it 'patch()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
@@ -107,6 +117,8 @@ describe 'Functional. Document node.', ->
 
     promise = @document.patch(newData)
 
+    #assert.deepEqual(@document.actions.patch.mold, resultData)
+    #assert.deepEqual(@document.mold, resultData)
     assert.isTrue(@document.saving)
 
     promise
@@ -114,7 +126,7 @@ describe 'Functional. Document node.', ->
         assert.isFalse(@document.saving)
         assert.deepEqual(response.body, resultData)
         assert.deepEqual(@document.actions.patch.mold, resultData)
-        assert.deepEqual(@document.mold, resultData)
+        #assert.deepEqual(@document.mold, resultData)
 
   it 'custom action', ->
     @testSchema.document.actions = {
