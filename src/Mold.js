@@ -26,6 +26,13 @@ export default class _Mold {
   //   this.update(initialValues);
   // }
 
+  set(newState) {
+    // TODO: test
+    const correctValues = this._main.$$typeManager.castData(this._schema, newState);
+    this._checkForUpdateReadOnly(newState);
+    this._main.$$storage.setTopLevel(this._moldPath, this._actionName, correctValues);
+  }
+
   /**
    * Update top level state.
    * It casts values before update.

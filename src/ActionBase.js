@@ -34,6 +34,10 @@ export default class Action {
     this._updateMeta({ driverParams });
   }
 
+  set(data) {
+    return this._mold.set(data);
+  }
+
   update(partialData) {
     return this._mold.update(partialData);
   }

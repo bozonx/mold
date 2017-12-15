@@ -88,9 +88,10 @@ export default class Document extends _NodeBase {
         request(payload) {
           // if we set new data - update default action
           if (payload) {
-            // TODO: очистить верхний стейт
-            // TODO: заменить нижний стейт
-            document.update(payload);
+            // set to default action
+            document.set(payload);
+            // set to put action
+            this.set(payload);
           }
 
           // TODO: очистить верхний стейт
