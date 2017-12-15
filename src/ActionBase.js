@@ -81,7 +81,6 @@ export default class Action {
 
         this._updateMeta({ pending: false });
         this._main.$$storage.setBottomLevel(this._moldPath, this._actionName, result);
-        console.log(11111)
         this._main.$$storage.clearTopLevel(this._moldPath, this._actionName);
 
         return resp;

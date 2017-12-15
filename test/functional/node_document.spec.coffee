@@ -92,7 +92,7 @@ describe 'Functional. Document node.', ->
         assert.deepEqual(response.body, newData)
 
         assert.deepEqual(@document.actions.put.mold, newData)
-        console.log(2222)
+        console.log(@document._main.$$storage.getState(@document._moldPath, 'put'))
         assert.deepEqual(@document._main.$$storage.getState(@document._moldPath, 'put'), {})
 
         assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'put'), newData)

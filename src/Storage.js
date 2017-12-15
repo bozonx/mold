@@ -192,16 +192,16 @@ export default class Storage {
   clearTopLevel(moldPath, action) {
     if (!this._storage.items[moldPath]
       || !this._storage.items[moldPath][action]
-      || !this._storage.items[moldPath][action].solid) {
+      || !this._storage.items[moldPath][action].state) {
       return;
     }
 
     // TODO: поидее с мутацией надо ???
-    if (_.isPlainObject(this._storage.items[moldPath][action].solid)) {
-      this._storage.items[moldPath][action].solid = {};
+    if (_.isPlainObject(this._storage.items[moldPath][action].state)) {
+      this._storage.items[moldPath][action].state = {};
     }
     else {
-      this._storage.items[moldPath][action].solid = [];
+      this._storage.items[moldPath][action].state = [];
     }
   }
 
