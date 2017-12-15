@@ -89,14 +89,15 @@ export default class Document extends _NodeBase {
           // if we set new data - update default action
           if (payload) {
             // set to default action
-            document.set(payload);
+            document.actions.default.set(payload);
             // set to put action
             this.set(payload);
           }
 
           return super.request(payload)
             .then((resp) => {
-              // TODO: update and clear default
+              document.actions.default.clearTopLevel();
+              document.actions.default.set(resp.body);
 
               return resp;
             });
@@ -121,7 +122,7 @@ export default class Document extends _NodeBase {
           // if we set new data - update default action
           if (payload) {
             // update default action
-            document.update(payload);
+            document.actions.default.update(payload);
             // update path action
             this.update(payload);
           }
@@ -129,6 +130,8 @@ export default class Document extends _NodeBase {
           return super.request(payload)
             .then((resp) => {
               // TODO: update and clear default
+              document.actions.default.clearTopLevel();
+              document.actions.default.set(resp.body);
 
               return resp;
             });

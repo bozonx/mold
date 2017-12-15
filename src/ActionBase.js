@@ -46,6 +46,10 @@ export default class Action {
     return this._mold.updateSilent(partialData);
   }
 
+  clearTopLevel() {
+    this._main.$$storage.clearTopLevel(this._moldPath, this._actionName);
+  }
+
   onChange(...params) {
     this._mold.onChange(...params);
   }
@@ -81,7 +85,7 @@ export default class Action {
 
         this._updateMeta({ pending: false });
         this._main.$$storage.setBottomLevel(this._moldPath, this._actionName, result);
-        this._main.$$storage.clearTopLevel(this._moldPath, this._actionName);
+        this.clearTopLevel();
 
         return resp;
       })

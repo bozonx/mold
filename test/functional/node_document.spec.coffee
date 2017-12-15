@@ -98,8 +98,8 @@ describe 'Functional. Document node.', ->
         assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'put'), newData)
 
         assert.deepEqual(@document.mold, newData)
-        #assert.deepEqual(@document._main.$$storage.getState(@document._moldPath, 'default'), {})
-        #assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'default'), newData)
+        assert.deepEqual(@document._main.$$storage.getState(@document._moldPath, 'default'), {})
+        assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'default'), newData)
 
   it 'patch()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)

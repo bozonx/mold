@@ -101,6 +101,7 @@ export default class Storage {
   }
 
   setTopLevel(moldPath, action, fullData) {
+    // TODO: silent
     // TODO: test
     this._checkParams(moldPath, action);
 

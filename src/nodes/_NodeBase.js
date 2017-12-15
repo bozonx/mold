@@ -50,10 +50,6 @@ export default class _NodeBase {
     return instance;
   }
 
-  set(newState) {
-    this.actions.default.set(newState);
-  }
-
   /**
    * Update container data
    * @param {string} newState
