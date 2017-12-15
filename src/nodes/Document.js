@@ -97,7 +97,7 @@ export default class Document extends _NodeBase {
           return super.request(payload)
             .then((resp) => {
               document.actions.default.clearTopLevel();
-              document.actions.default.setSilent(resp.body);
+              document.actions.default.setBottomLevel(resp.body);
 
               return resp;
             });
@@ -129,9 +129,9 @@ export default class Document extends _NodeBase {
 
           return super.request(payload)
             .then((resp) => {
-              // TODO: update and clear default
               document.actions.default.clearTopLevel();
-              document.actions.default.setSilent(resp.body);
+              // TODO: set to bottom of default
+              //document.actions.default.setSilent(resp.body);
 
               return resp;
             });

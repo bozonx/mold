@@ -50,6 +50,10 @@ export default class Action {
     this._main.$$storage.clearTopLevel(this._moldPath, this._actionName);
   }
 
+  setBottomLevel(newData) {
+    this._main.$$storage.setBottomLevel(this._moldPath, this._actionName, newData);
+  }
+
   onChange(...params) {
     this._mold.onChange(...params);
   }
@@ -84,7 +88,7 @@ export default class Action {
         const result = resp.body;
 
         this._updateMeta({ pending: false });
-        this._main.$$storage.setBottomLevel(this._moldPath, this._actionName, result);
+        this.setBottomLevel(result);
         this.clearTopLevel();
 
         return resp;

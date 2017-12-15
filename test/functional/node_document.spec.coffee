@@ -71,7 +71,7 @@ describe 'Functional. Document node.', ->
         assert.deepEqual(@document.mold, @testValues)
         assert.isFalse(@document.loading)
 
-  it.only 'put()', ->
+  it 'put()', ->
     _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
 
     assert.isFalse(@document.saving)

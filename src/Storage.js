@@ -117,8 +117,8 @@ export default class Storage {
 
     this._emitActionEvent(moldPath, action, 'any', {
       data: fullData,
-      by: 'user',
-      type: 'state',
+      by: 'program',
+      type: 'silent',
     });
   }
 
@@ -186,6 +186,7 @@ export default class Storage {
   }
 
   clearTopLevel(moldPath, action) {
+    // TODO: test
     if (!this._storage.items[moldPath]
       || !this._storage.items[moldPath][action]
       || !this._storage.items[moldPath][action].state) {
@@ -193,12 +194,18 @@ export default class Storage {
     }
 
     // TODO: поидее с мутацией надо ???
+    let newData = [];
     if (_.isPlainObject(this._storage.items[moldPath][action].state)) {
-      this._storage.items[moldPath][action].state = {};
+      newData = {};
     }
-    else {
-      this._storage.items[moldPath][action].state = [];
-    }
+
+    this._storage.items[moldPath][action].state = newData;
+
+    this._emitActionEvent(moldPath, action, 'any', {
+      data: newData,
+      by: 'program',
+      type: 'silent',
+    });
   }
 
   /**
