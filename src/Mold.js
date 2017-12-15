@@ -26,11 +26,11 @@ export default class _Mold {
   //   this.update(initialValues);
   // }
 
-  set(newState) {
+  setSilent(newState) {
     // TODO: test
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
     this._checkForUpdateReadOnly(newState);
-    this._main.$$storage.setTopLevel(this._moldPath, this._actionName, correctValues);
+    this._main.$$storage.setTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
 
   /**

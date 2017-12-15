@@ -89,15 +89,15 @@ export default class Document extends _NodeBase {
           // if we set new data - update default action
           if (payload) {
             // set to default action
-            document.actions.default.set(payload);
+            document.actions.default.setSilent(payload);
             // set to put action
-            this.set(payload);
+            this.setSilent(payload);
           }
 
           return super.request(payload)
             .then((resp) => {
               document.actions.default.clearTopLevel();
-              document.actions.default.set(resp.body);
+              document.actions.default.setSilent(resp.body);
 
               return resp;
             });
@@ -131,7 +131,7 @@ export default class Document extends _NodeBase {
             .then((resp) => {
               // TODO: update and clear default
               document.actions.default.clearTopLevel();
-              document.actions.default.set(resp.body);
+              document.actions.default.setSilent(resp.body);
 
               return resp;
             });

@@ -100,8 +100,7 @@ export default class Storage {
     }
   }
 
-  setTopLevel(moldPath, action, fullData) {
-    // TODO: silent
+  setTopLevelSilent(moldPath, action, fullData) {
     // TODO: test
     this._checkParams(moldPath, action);
 
@@ -116,10 +115,6 @@ export default class Storage {
     this._storage.items[moldPath][action].state = fullData;
     this._generateCombined(moldPath, action);
 
-    this._emitActionEvent(moldPath, action, 'change', {
-      data: fullData,
-      by: 'user',
-    });
     this._emitActionEvent(moldPath, action, 'any', {
       data: fullData,
       by: 'user',
