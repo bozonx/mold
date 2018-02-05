@@ -10,7 +10,7 @@ describe 'Functional. Container node.', ->
             schema: {}
 
     @testSchema = testSchema()
-    @mold = mold( {silent: true}, @testSchema )
+    @mold = mold( @testSchema, {silent: true} )
 
   it "validate schema - node without schema param", ->
     testSchema = {
@@ -20,7 +20,7 @@ describe 'Functional. Container node.', ->
     }
 
     assert.throws(
-      () => mold( {silent: true}, testSchema ),
+      () => mold( testSchema, {silent: true} ),
       'Schema definition of container on "container" must has a "schema" param!'
     )
 

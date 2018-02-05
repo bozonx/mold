@@ -12,7 +12,7 @@ describe 'Functional. Mold.', ->
       }
     }
     @moldPath = 'state'
-    @main = mold( {silent: true}, {} )
+    @main = mold( {}, {silent: true} )
     @moldInstance = new Mold(@main, @moldPath, 'default', @fullSchema);
     @moldInstance.init()
 
@@ -44,7 +44,7 @@ describe 'Functional. Mold.', ->
         }
       }
       @moldPath = 'state'
-      @main = mold( {silent: true}, {} )
+      @main = mold( {}, {silent: true} )
       @moldInstance = new Mold(@main, @moldPath, 'default', @fullSchema);
       @moldInstance.init()
 
@@ -74,7 +74,7 @@ describe 'Functional. Mold.', ->
         }
       }
       @moldPath = 'collection'
-      @main = mold( {silent: true}, {} )
+      @main = mold( {}, {silent: true} )
       @moldInstance = new Mold(@main, @moldPath, 'default', @fullSchema);
       @moldInstance.init()
 

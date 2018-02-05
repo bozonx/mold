@@ -21,7 +21,7 @@ describe 'Unit. SchemaManager.', ->
       }
 
     @testSchema = testSchema()
-    @mold = mold( {silent: true}, this.testSchema )
+    @mold = mold( this.testSchema, {silent: true} )
 
   it "setSchema - check short containers", ->
     @mold.$$nodeManager.validateSchema = sinon.spy()

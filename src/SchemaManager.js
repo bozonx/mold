@@ -30,7 +30,7 @@ export default class SchemaManager {
   }
 
   /**
-   * get schema part by path
+   * Get schema part by path.
    * @param {string} moldPath - absolute mold path
    * @returns {object|undefined} schema part on path or undefined if schema hasn't found
    */

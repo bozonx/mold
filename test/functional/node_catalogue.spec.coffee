@@ -17,7 +17,7 @@ describe 'Functional. Catalogue node.', ->
     ]
     @testSchema = testSchema()
     @moldPath = 'catalogue'
-    @mold = mold( {silent: true}, @testSchema )
+    @mold = mold( @testSchema, {silent: true} )
     @catalogue = @mold.get(@moldPath)
     @catalogue.$init(@moldPath, @testSchema.catalogue)
 
@@ -29,7 +29,7 @@ describe 'Functional. Catalogue node.', ->
     }
 
     assert.throws(
-      () => mold( {silent: true}, testSchema ),
+      () => mold( testSchema, {silent: true} ),
       'Schema definition of container on "container" must has a "schema" param!'
     )
 

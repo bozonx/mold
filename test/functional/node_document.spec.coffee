@@ -24,7 +24,7 @@ describe 'Functional. Document node.', ->
 
     @testSchema = testSchema()
     @moldPath = 'document'
-    @mold = mold( {silent: true}, @testSchema )
+    @mold = mold( @testSchema, {silent: true} )
     @document = @mold.get(@moldPath)
     @document.$init(@moldPath, @testSchema.document)
 

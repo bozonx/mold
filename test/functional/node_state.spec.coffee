@@ -21,7 +21,7 @@ describe 'Functional. State node.', ->
 
     @testSchema = testSchema()
     @moldPath = 'container.state'
-    @mold = mold( {silent: true}, @testSchema )
+    @mold = mold( @testSchema, {silent: true} )
     @state = @mold.get(@moldPath)
     @state.$init(@moldPath, @testSchema.container.state)
 

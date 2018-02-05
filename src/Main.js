@@ -63,7 +63,7 @@ export default class Main {
 
   /**
    * Export storage
-   * @returns {*}
+   * @returns {object} Whole storage
    */
   exportStorage() {
     return _.cloneDeep(this.$$storage.$getWholeStorageState());
@@ -72,6 +72,7 @@ export default class Main {
   /**
    * Get instance of type by schema path.
    * @param {string} moldPath - absolute mold path in schema
+   * @returns {object} requested node instance
    */
   get(moldPath) {
     return this.$$nodeManager.getInstance(moldPath);
