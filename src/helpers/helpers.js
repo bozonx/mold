@@ -12,26 +12,30 @@ export function eachSchema(fullSchema, cb) {
     if (!_.isPlainObject(curSchema)) return;
 
     const isGoDeeper = cb(curMoldPath, curSchemaPath, curSchema);
+
     if (isGoDeeper === false) return;
 
     if (curSchema.item) {
-      _.each(curSchema['item'], function (subSchema, nodeName) {
+      _.each(curSchema.item, function (subSchema, nodeName) {
         const childMoldPath = `${curMoldPath}.${nodeName}`;
         const childSchemaPath = `${curSchemaPath}.item.${nodeName}`;
+
         letItRecursive(childMoldPath, childSchemaPath, subSchema);
       });
     }
     else if (curSchema.schema) {
-      _.each(curSchema['schema'], function (subSchema, nodeName) {
+      _.each(curSchema.schema, function (subSchema, nodeName) {
         const childMoldPath = `${curMoldPath}.${nodeName}`;
         const childSchemaPath = `${curSchemaPath}.schema.${nodeName}`;
+
         letItRecursive(childMoldPath, childSchemaPath, subSchema);
       });
     }
     else if (curSchema.items) {
-      _.each(curSchema['items'], function (subSchema, nodeName) {
+      _.each(curSchema.items, function (subSchema, nodeName) {
         const childMoldPath = `${curMoldPath}.${nodeName}`;
         const childSchemaPath = `${curSchemaPath}.items.${nodeName}`;
+
         letItRecursive(childMoldPath, childSchemaPath, subSchema);
       });
     }
@@ -48,12 +52,14 @@ export function correctUpdatePayload(currentData, newData) {
   const newerState = _.defaultsDeep(_.cloneDeep(newData), currentData);
   // fix primitive array update. It must update all the items
   // TODO: нужно поддерживать массивы в глубине
+
   _.each(newData, (item, name) => {
     // TODO: compact будет тормозить - оптимизировать.
     if (_.isArray(item) && !_.isPlainObject( _.head(_.compact(item)) )) {
       newerState[name] = item;
     }
   });
+  
   return newerState;
 }
 
@@ -74,6 +80,7 @@ export function getPrimaryName(schema) {
   _.find(schemaToFind, (value, name) => {
     if (_.isPlainObject(value) && value.primary) {
       primary = name;
+      
       return true;
     }
   });
@@ -83,9 +90,11 @@ export function getPrimaryName(schema) {
 
 export function omitUnsaveable(payload, documentSchema) {
   const unsaveableParamsNames = [];
+
   _.each(documentSchema.schema, (item, name) => {
     if (item.saveable === false) unsaveableParamsNames.push(name);
   });
+  
   return _.omit(payload, unsaveableParamsNames);
 }
 
@@ -93,12 +102,13 @@ export function omitUnsaveable(payload, documentSchema) {
 export function convertFromLodashToSchema(path) {
   let newPath = path;
   // replace collection params [1] ["dfg-ddfg-c453"]
+
   newPath = newPath.replace(/\[[^\s.\[\]]+]/g, '!item!');
 
   // replace "." to ".schema."
   newPath = newPath.replace(/\./g, '.schema.');
 
-  newPath =  newPath.replace(/!item!/g, '.item');
+  newPath = newPath.replace(/!item!/g, '.item');
 
   return newPath;
 }
@@ -111,6 +121,7 @@ export function convertFromLodashToUrl(path) {
   // TODO: use url encode
   let preUrl;
   // ["123-df"] [1]
+
   preUrl = path.replace(/\[["']?([^\s.\[\]'"]+)["']?]/g, '.$1');
 
   return preUrl.replace(/\./g, '/');
@@ -119,6 +130,7 @@ export function convertFromLodashToUrl(path) {
 export function convertFromUrlToLodash(url) {
   let converted = '';
   const urlParts = url.split('/');
+
   _.each(urlParts, (part) => {
     // TODO: наверное сначала надо использовать url decode
     if (part.match(/[^a-zA-Z\d_]/)) {
@@ -131,6 +143,7 @@ export function convertFromUrlToLodash(url) {
       converted += `.${part}`;
     }
   });
+  
   return _.trimStart(converted, '.');
 }
 
@@ -138,11 +151,12 @@ export function getTheBestMatchPath(sourcePath, pathsList) {
   let matchList = _.map(pathsList, (path) => {
     if (sourcePath.indexOf(path) === 0) return path;
   });
+
   matchList = _.compact(matchList);
 
   if (matchList.length > 1) {
     // two or more drivers - get the longest
-    return _.reduce(matchList, (result, value) => (value > result) ? value : result);
+    return _.reduce(matchList, (result, value) => value > result ? value : result);
   }
   else if (matchList.length === 1) {
     // one path
@@ -158,11 +172,13 @@ export function getTheBestMatchPath(sourcePath, pathsList) {
  * @returns {string}
  */
 export function concatPath(root, relativePath) {
-  if (_.isNumber(relativePath))
-    return `${root}[${relativePath}]`;
+  if (_.isNumber(relativePath)) {
+    return `${root}[${relativePath}]`; 
+  }
 
-  if (_.startsWith(relativePath, '['))
-    return `${root}${relativePath}`;
+  if (_.startsWith(relativePath, '[')) {
+    return `${root}${relativePath}`; 
+  }
 
   return _.trim(`${root}.${relativePath}`, '.');
 }
@@ -177,19 +193,22 @@ export function findTheClosestParentPath(path, assoc) {
   }));
 
   return _.reduce(parents, (sum, n) => {
-    return (n.length > sum.length) ? n : sum;
+    return n.length > sum.length ? n : sum;
   });
 }
 
 export function splitPath(moldPath) {
   // ff[1][3] = > ff.[1].[2] => ['ff', '[1]', [2]]
   const pathParts = moldPath.replace(/\[/g, '.[');
+
+  
   return _.compact(pathParts.split('.'));
 }
 
 export function joinPath(pathArray) {
   const joined = pathArray.join('.');
   // ['ff', '[1]', [2]] => ff.[1].[2] => ff[1][3]
+
   return joined.replace(/\.\[/g, '[');
 }
 

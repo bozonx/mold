@@ -3,7 +3,7 @@ import EventEmitter from 'eventemitter3';
 
 export default class Events {
   constructor() {
-    this.eventEmitter =  new EventEmitter();
+    this.eventEmitter = new EventEmitter();
     this._handlers = {};
   }
 
@@ -11,11 +11,11 @@ export default class Events {
     this.eventEmitter.emit(this._getEventName(path, eventName), eventData);
   }
 
-  onChange(path,  handler) {
+  onChange(path, handler) {
     this.on(path, 'change', handler);
   }
 
-  onAnyChange(path,  handler) {
+  onAnyChange(path, handler) {
     this.on(path, 'any', handler);
   }
 
@@ -49,6 +49,7 @@ export default class Events {
   destroy(path) {
     _.each(this._handlers[path], (handlers, eventName) => {
       const fullPath = this._getEventName(path, eventName);
+
       _.each(this._handlers[path][eventName], (handler, index) => {
         this._handlers[path][eventName].splice(index, 1);
         this.eventEmitter.off(fullPath, handler);

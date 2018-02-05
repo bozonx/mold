@@ -70,6 +70,7 @@ class Convert {
 
     _.each(node[schemaParamName], (item, name) => {
       const deepFullPath = _.trim(`${fullPath}.${schemaParamName}.${name}`, '.');
+
       this._processingNode(deepFullPath, item);
     });
   }

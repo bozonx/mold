@@ -44,7 +44,7 @@ export default class SchemaManager {
   }
 
   /**
-   * Set schema node to certain mount point
+   * Set schema node to certain mount point.
    * @param {string} moldPath - absolute mold path.
    * @param {object} schema - your schema
    */
@@ -64,8 +64,8 @@ export default class SchemaManager {
   }
 
   /**
-   * Set schema to certain mount point
-   * @param {object} schema
+   * Set schema to root.
+   * @param {object} schema - your schema.
    */
   setSchema(schema) {
     this._schema = convertShortSchemaToFull(schema, this._main.$$log);

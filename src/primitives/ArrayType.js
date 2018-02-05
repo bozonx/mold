@@ -23,6 +23,7 @@ export default class ArrayType {
 
       if (!result) {
         isValid = false;
+        
         return true;
       }
     });

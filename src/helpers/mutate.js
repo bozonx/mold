@@ -50,7 +50,7 @@ class Mutate {
 
   _updateContainer(root, newContainerState) {
     // remove odd params
-    const currentContainer = this._get(root);;
+    const currentContainer = this._get(root);
 
     _.each(currentContainer, (item, name) => {
       if (_.isUndefined(newContainerState[name])) {
@@ -61,6 +61,7 @@ class Mutate {
     // update
     _.each(newContainerState, (item, name) => {
       const path = concatPath(root, name);
+
       this._crossroads(path, item);
     });
   }
@@ -90,6 +91,7 @@ class Mutate {
 
     if (_.isUndefined(originalArray)) {
       const newArray = _.cloneDeep(newPrimitiveArrayState);
+
       _.set(this.storage, root, newArray);
 
       return;
@@ -117,6 +119,7 @@ class Mutate {
 
     if (_.isUndefined(originalCollection)) {
       const newCollection = _.cloneDeep(newCollectionState);
+
       _.set(this.storage, root, newCollection);
 
       return;
@@ -139,6 +142,7 @@ class Mutate {
         // existent item - update it
         // TODO: mutate
         const mutated = item;
+
         items.push(mutated);
       }
       else {
@@ -164,9 +168,9 @@ class Mutate {
     if (!root) {
       return this.storage;
     }
-    else {
-      return _.get(this.storage, root);
-    }
+    
+    return _.get(this.storage, root);
+    
   }
 
 }

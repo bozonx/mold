@@ -45,6 +45,7 @@ export default class _NodeBase {
       actionName,
       this.$fullSchema
     );
+
     instance.init();
 
     return instance;

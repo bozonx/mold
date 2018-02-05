@@ -18,12 +18,14 @@ export default class AssocType {
     _.find(data, (rawValue, name) => {
       const primitiveSchema = schema.items[name];
       // do nothing if there isn't schema definition for this param
+
       if (!primitiveSchema || !primitiveSchema.type) return;
 
       const result = this._typeManager.validateValue(primitiveSchema, rawValue);
 
       if (!result) {
         isValid = false;
+        
         return true;
       }
     });
@@ -45,6 +47,7 @@ export default class AssocType {
     _.each(data, (rawValue, name) => {
       const primitiveSchema = schema.items[name];
       // do nothing if there isn't schema definition for this param
+
       if (!primitiveSchema || !primitiveSchema.type) return;
 
       castedData[name] = this._typeManager.castValue(primitiveSchema, rawValue);

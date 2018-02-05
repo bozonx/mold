@@ -26,7 +26,7 @@ export default class TypeManager {
   }
 
   isRegistered(typeName) {
-    return !!this._types[typeName];
+    return Boolean(this._types[typeName]);
   }
 
   validateSchema(schema) {

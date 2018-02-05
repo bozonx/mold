@@ -29,6 +29,7 @@ export default class _Mold {
   setSilent(newState) {
     // TODO: test
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
+
     this._checkForUpdateReadOnly(newState);
     this._main.$$storage.setTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
@@ -40,6 +41,7 @@ export default class _Mold {
    */
   update(newState) {
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
+
     this._checkForUpdateReadOnly(newState);
     this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
   }
@@ -51,6 +53,7 @@ export default class _Mold {
    */
   updateSilent(newState) {
     const correctValues = this._main.$$typeManager.castData(this._schema, newState);
+
     this._checkForUpdateReadOnly(newState);
     this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
@@ -85,7 +88,7 @@ export default class _Mold {
   _getRootInitialState() {
     const rootTypeName = this._schema.type;
 
-    if (!_.includes(['assoc', 'collection'], rootTypeName)) {
+    if (!_.includes([ 'assoc', 'collection' ], rootTypeName)) {
       this._main.$$log.fatal(`Bad root type "${rootTypeName}" for "${this._moldPath}" action "${this._actionName}"`);
     }
 
