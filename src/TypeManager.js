@@ -8,16 +8,20 @@ import NumberType from './primitives/NumberType';
 import StringType from './primitives/StringType';
 
 
+/**
+ * It manages of primitive types: string, number, boolean, array, assoc, collection.
+ * @class
+ */
 export default class TypeManager {
   constructor(main) {
     this._main = main;
     this._types = {
+      string: new StringType(this),
+      number: new NumberType(this),
+      boolean: new BooleanType(this),
       array: new ArrayType(this),
       assoc: new AssocType(this),
-      boolean: new BooleanType(this),
       collection: new CollectionType(this),
-      number: new NumberType(this),
-      string: new StringType(this),
     }
   }
 

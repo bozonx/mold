@@ -4,6 +4,22 @@ import { concatPath } from './helpers/helpers';
 import { mutate } from './helpers/mutate';
 
 
+/**
+ * Storage keep state, server data and meta data of your actions.
+ * It has structure like this:
+ *     {
+ *       items: {
+ *         'mold.path.to': {
+ *           state: {},    // state of your forms and ui elements.
+ *           bottom: {},   // it is usually data received from server.
+ *           meta: {},     // meta data like page number, etc
+ *         }
+ *       }
+ *     }
+ *
+ * If bottom level uses state level will has to have the same structure as bottom level.
+ * @class
+ */
 export default class Storage {
   constructor(events) {
     this._events = events;
@@ -34,20 +50,10 @@ export default class Storage {
    */
   initState(moldPath, action, initialState) {
     this._checkParams(moldPath, action);
-    this.initActionIfNeed(moldPath, action);
+    this._initActionIfNeed(moldPath, action);
 
     this._storage.items[moldPath][action].state = initialState;
     this._generateCombined(moldPath, action);
-  }
-
-  initActionIfNeed(moldPath, action) {
-    if (!this._storage.items[moldPath]) {
-      this._storage.items[moldPath] = {};
-    }
-
-    if (!this._storage.items[moldPath][action]) {
-      this._storage.items[moldPath][action] = {};
-    }
   }
 
   getNode(moldPath) {
@@ -116,7 +122,7 @@ export default class Storage {
       return;
     }
 
-    this.initActionIfNeed(moldPath, action);
+    this._initActionIfNeed(moldPath, action);
     // set data
     // TODO: поидее с мутацией надо
     this._storage.items[moldPath][action].state = fullData;
@@ -179,7 +185,7 @@ export default class Storage {
 
   updateMeta(moldPath, action, partialData) {
     this._checkParams(moldPath, action);
-    this.initActionIfNeed(moldPath, action);
+    this._initActionIfNeed(moldPath, action);
 
     // TODO: может опять использовать this._update ?
     const currentData = this._storage.items[moldPath][action].meta;
@@ -224,7 +230,7 @@ export default class Storage {
   setBottomLevel(moldPath, action, newData) {
     this._checkParams(moldPath, action);
 
-    this.initActionIfNeed(moldPath, action);
+    this._initActionIfNeed(moldPath, action);
 
     this._storage.items[moldPath][action].solid = newData;
     this._generateCombined(moldPath, action);
@@ -259,6 +265,16 @@ export default class Storage {
     this._events.destroy(this._getFullPath(moldPath, action));
   }
 
+  _initActionIfNeed(moldPath, action) {
+    if (!this._storage.items[moldPath]) {
+      this._storage.items[moldPath] = {};
+    }
+
+    if (!this._storage.items[moldPath][action]) {
+      this._storage.items[moldPath][action] = {};
+    }
+  }
+
   _emitActionEvent(moldPath, action, eventName, eventData) {
     const data = {
       ...eventData,
@@ -275,7 +291,7 @@ export default class Storage {
   }
 
   _update(moldPath, action, subPath, partialData) {
-    this.initActionIfNeed(moldPath, action);
+    this._initActionIfNeed(moldPath, action);
 
     const currentData = this._storage.items[moldPath][action][subPath];
     const oldDataCopy = _.clone(this._storage.items[moldPath][action][subPath]);
