@@ -36,8 +36,7 @@ export default class DriverManager {
         this._main.$$log.fatal(`You can't specify more than one driver to one branch of schema!`);
       }
 
-      schema.driver.init(moldPath, this._main);
-      this.registerDriver(moldPath, schema.driver);
+      this._registerDriver(moldPath, schema.driver);
     });
   }
 
@@ -47,10 +46,6 @@ export default class DriverManager {
 
   isRegistered(moldPath) {
     return Boolean(this._drivers[moldPath]);
-  }
-
-  registerDriver(moldPath, driver) {
-    this._drivers[moldPath] = driver;
   }
 
   /**
@@ -91,6 +86,13 @@ export default class DriverManager {
     if (!_.isString(moldPath)) this._main.$$log.fatal(`You must pass the moldPath argument!`);
 
     return getTheBestMatchPath(moldPath, _.keys(this._drivers));
+  }
+
+  _registerDriver(moldPath, driver) {
+    // initialize a driver
+    driver.init(moldPath, this._main);
+    // save it
+    this._drivers[moldPath] = driver;
   }
 
 }
