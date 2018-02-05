@@ -18,7 +18,6 @@ export default class SchemaManager {
 
   init() {
     this._schema = {};
-    this._main.$$driverManager.initDefaultDriver();
   }
 
   /**
@@ -47,7 +46,7 @@ export default class SchemaManager {
   /**
    * Set schema node to certain mount point
    * @param {string} moldPath - absolute mold path.
-   * @param {object} schema
+   * @param {object} schema - your schema
    */
   setNode(moldPath, schema) {
     if (!moldPath || !_.isString(moldPath)) {

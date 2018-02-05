@@ -39,6 +39,7 @@ export default class Main {
     // TODO: run plugins
 
     // initialize
+    this.$$driverManager.init();
     this.$$schemaManager.init();
     this.$$schemaManager.setSchema(schema);
     this.$$storage.$init({});

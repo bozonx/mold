@@ -12,12 +12,8 @@ export default class DriverManager {
     this._defaultDriver = null;
   }
 
-  initDefaultDriver() {
-    const memoryDriver = new Memory({
-      db: this.$defaultMemoryDb,
-    });
-
-    this._defaultDriver = memoryDriver.instance({});
+  init() {
+    this._initDefaultDriver();
   }
 
   collectDrivers(fullSchema) {
@@ -93,6 +89,14 @@ export default class DriverManager {
     driver.init(moldPath, this._main);
     // save it
     this._drivers[moldPath] = driver;
+  }
+
+  _initDefaultDriver() {
+    const memoryDriver = new Memory({
+      db: this.$defaultMemoryDb,
+    });
+
+    this._defaultDriver = memoryDriver.instance({});
   }
 
 }
