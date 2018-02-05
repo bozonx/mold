@@ -5,7 +5,7 @@ const defaultConfig = {
   eventEmitter: null,
   logger: null,
   itemsPerPage: 10,
-  omitParamsToRequest: ['$index', '$pageIndex', '$addedUnsaved', '$deleting', '$deleted', '$saving'],
+  omitParamsToRequest: [ '$index', '$pageIndex', '$addedUnsaved', '$deleting', '$deleted', '$saving' ],
 };
 
 
@@ -29,10 +29,12 @@ export default class Config {
   _initModules() {
     if (!this._config.eventEmitter) {
       const Events = require('./Events').default;
+
       this._config.eventEmitter = new Events();
     }
     if (!this._config.logger) {
       const Log = require('./Log').default;
+
       this._config.logger = new Log({silent: this._config.silent});
     }
   }

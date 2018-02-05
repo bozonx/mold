@@ -8,7 +8,7 @@ export default class NodeManager {
   }
 
   isRegistered(typeName) {
-    return !!this._registeredTypes[typeName];
+    return Boolean(this._registeredTypes[typeName]);
   }
 
   register(typeName, typeClass) {
@@ -42,6 +42,7 @@ export default class NodeManager {
     }
 
     const result = this._registeredTypes[typeName].validateSchema(schema, schemaPath);
+
     if (_.isString(result)) {
       this._main.$$log.fatal(result);
     }
@@ -49,6 +50,7 @@ export default class NodeManager {
 
   _newInstance(moldPath, schema) {
     const instance = new this._registeredTypes[schema.type](this._main);
+
     instance.$init(moldPath, schema);
 
     return instance;

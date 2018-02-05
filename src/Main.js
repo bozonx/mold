@@ -16,8 +16,9 @@ import Catalogue from './nodes/Catalogue';
 
 
 export default class Main {
-  constructor(config, schema) {
+  constructor(schema, config) {
     const configInstance = new Config(config);
+
     this.$$config = configInstance.get();
     this.$$events = this.$$config.eventEmitter;
     this.$$log = this.$$config.logger;

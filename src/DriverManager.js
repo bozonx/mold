@@ -16,6 +16,7 @@ export default class DriverManager {
     const memoryDriver = new Memory({
       db: this.$defaultMemoryDb,
     });
+
     this._defaultDriver = memoryDriver.instance({});
   }
 
@@ -45,7 +46,7 @@ export default class DriverManager {
   }
 
   isRegistered(moldPath) {
-    return !!this._drivers[moldPath];
+    return Boolean(this._drivers[moldPath]);
   }
 
   registerDriver(moldPath, driver) {
@@ -55,8 +56,8 @@ export default class DriverManager {
   /**
    * Get driver on path or upper on path.
    * It no one driver has found it returns defaultDriver (memory)
-   * @param moldPath
-   * @return {Object|undefined}
+   * @param {string} moldPath - path in your schema.
+   * @returns {object|undefined} driver.
    */
   getDriver(moldPath) {
     const driverRoot = this.getClosestDriverPath(moldPath);
@@ -70,7 +71,7 @@ export default class DriverManager {
 
   /**
    * Get driver by path.
-   * @param {string} moldPath - absolute mold path to driver.
+   * @param {string} moldPath - path in your schema.
    *   If driverPath doesn't specified or '' it means defautl memory driver
    * @returns {object|undefined} If driver doesn't exists, returns undefined
    */
@@ -83,8 +84,8 @@ export default class DriverManager {
 
   /**
    * Return driver path which is driver specified on schema.
-   * @param {string} moldPath
-   * @return {string|undefined} real driver path
+   * @param {string} moldPath - path in your schema.
+   * @returns {string|undefined} real driver path
    */
   getClosestDriverPath(moldPath) {
     if (!_.isString(moldPath)) this._main.$$log.fatal(`You must pass the moldPath argument!`);
