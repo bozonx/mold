@@ -25,6 +25,13 @@ export default class Storage {
     return this._storage;
   }
 
+  /**
+   * Initialize state level on specific mold path.
+   * State level uses for real-time ui data.
+   * @param moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   * @param {object|array} initialState - initial state object or array which will store state.
+   */
   initState(moldPath, action, initialState) {
     this._checkParams(moldPath, action);
     this.initActionIfNeed(moldPath, action);
