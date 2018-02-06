@@ -31,7 +31,7 @@ export default class Storage {
    * Set new storage.
    * This method runs one time from State.js.
    * Don't run it from your application.
-   * @param {object} newStorage
+   * @param {object} newStorage - your storage
    */
   $init(newStorage) {
     this._storage = newStorage;
@@ -60,7 +60,7 @@ export default class Storage {
   /**
    * Get all the actions ofy mold path.
    * @param {string} moldPath - path in your schema.
-   * returns {object|undefined} - all the actions of mold path. Undefined if action hasn't set.
+   * @returns {object|undefined} - all the actions of mold path. Undefined if action hasn't set.
    */
   getNode(moldPath) {
     if (!moldPath) throw new Error(`MoldPath is empty`);
@@ -72,13 +72,13 @@ export default class Storage {
    * Get combined state of state and solid.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @return {object|array|undefined} - combined state of state and solid.
+   * @returns {object|array|undefined} - combined state of state and solid.
    */
   getCombined(moldPath, action) {
     this._checkParams(moldPath, action);
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
-      return undefined;
+      return;
     }
 
     return this._storage.items[moldPath][action].combined;
@@ -88,13 +88,13 @@ export default class Storage {
    * Get state level.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @return {object|array|undefined}
+   * @returns {object|array|undefined} - state object or array. Undefined if action hasn't set.
    */
   getState(moldPath, action) {
     this._checkParams(moldPath, action);
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
-      return undefined;
+      return;
     }
 
     return this._storage.items[moldPath][action].state;
@@ -104,17 +104,24 @@ export default class Storage {
     this._checkParams(moldPath, action);
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
-      return undefined;
+      return;
     }
 
     return this._storage.items[moldPath][action].solid;
   }
 
+  /**
+   * Get meta params of action.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   * @param {string|undefined} metaPath - sub path to meta param. Optional.
+   * @returns {object|undefined} - meta data object. Undefined if action hasn't set.
+   */
   getMeta(moldPath, action, metaPath=undefined) {
     this._checkParams(moldPath, action);
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
-      return undefined;
+      return;
     }
 
     if (metaPath) {
