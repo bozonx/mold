@@ -125,6 +125,12 @@ export default class Storage {
     }
   }
 
+  /**
+   * Replace state data with new data.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   * @param {object|array} fullData - new data.
+   */
   setTopLevelSilent(moldPath, action, fullData) {
     // TODO: test
     this._checkParams(moldPath, action);
@@ -148,20 +154,13 @@ export default class Storage {
   }
 
   /**
-   * Update partly top level data.
-   * @param {string} moldPath
-   * @param {string} action
-   * @param {object} partialData
+   * Partly update top level data.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   * @param {object|array} partialData - new partial data.
    */
   updateTopLevel(moldPath, action, partialData) {
-    this._checkParams(moldPath, action);
-
-    const wereChanges = this._update(moldPath, action, 'state', partialData);
-
-    // do nothing if there weren't any changes
-    if (!wereChanges) return;
-
-    this._generateCombined(moldPath, action);
+    this._updateTopLevel(moldPath, action, partialData);
 
     this._emitActionEvent(moldPath, action, 'change', {
       data: partialData,
@@ -175,14 +174,7 @@ export default class Storage {
   }
 
   updateTopLevelSilent(moldPath, action, partialData) {
-    this._checkParams(moldPath, action);
-
-    const wereChanges = this._update(moldPath, action, 'state', partialData);
-
-    // do nothing if there weren't any changes
-    if (!wereChanges) return;
-
-    this._generateCombined(moldPath, action);
+    this._updateTopLevel(moldPath, action, partialData);
 
     this._emitActionEvent(moldPath, action, 'silent', {
       data: partialData,
@@ -247,7 +239,7 @@ export default class Storage {
     this._storage.items[moldPath][action].solid = newData;
     this._generateCombined(moldPath, action);
 
-    // TODO: наверное не bottom а solid&&&
+    // TODO: наверное не bottom а solid???
     this._emitActionEvent(moldPath, action, 'bottom', {
       data: newData,
       by: 'program',
@@ -286,6 +278,18 @@ export default class Storage {
     if (!this._storage.items[moldPath][action]) {
       this._storage.items[moldPath][action] = {};
     }
+  }
+
+  _updateTopLevel(moldPath, action, partialData) {
+    this._checkParams(moldPath, action);
+
+    const wereChanges = this._update(moldPath, action, 'state', partialData);
+
+    // do nothing if there weren't any changes
+    if (!wereChanges) return;
+
+    this._generateCombined(moldPath, action);
+
   }
 
   _emitActionEvent(moldPath, action, eventName, eventData) {
