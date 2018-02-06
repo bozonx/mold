@@ -10,14 +10,15 @@ import { mutate } from './helpers/mutate';
  *     {
  *       items: {
  *         'mold.path.to': {
- *           state: {},    // state of your forms and ui elements.
- *           bottom: {},   // it is usually data received from server.
- *           meta: {},     // meta data like page number, etc
+ *           state: {} || [],      // state of your forms and ui elements.
+ *           solid: {} || [],     // it is usually data received from server.
+ *           combined: {} || [],   // combined state of state and solid
+ *           meta: {},             // meta data like page number, etc
  *         }
  *       }
  *     }
  *
- * If bottom level uses state level will has to have the same structure as bottom level.
+ * If solid level uses state level will has to have the same structure as solid level.
  * @class
  */
 export default class Storage {
@@ -44,7 +45,7 @@ export default class Storage {
   /**
    * Initialize state level on specific mold path.
    * State level uses for real-time ui data.
-   * @param moldPath - path in your schema.
+   * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
    * @param {object|array} initialState - initial state object or array which will store state.
    */
@@ -56,12 +57,23 @@ export default class Storage {
     this._generateCombined(moldPath, action);
   }
 
+  /**
+   * Get all the actions ofy mold path.
+   * @param {string} moldPath - path in your schema.
+   * returns {object|undefined} - all the actions of mold path. Undefined if action hasn't set.
+   */
   getNode(moldPath) {
     if (!moldPath) throw new Error(`MoldPath is empty`);
 
     return this._storage.items[moldPath];
   }
 
+  /**
+   * Get combined state of state and solid.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   * @return {object|array|undefined} - combined state of state and solid.
+   */
   getCombined(moldPath, action) {
     this._checkParams(moldPath, action);
 
@@ -73,10 +85,10 @@ export default class Storage {
   }
 
   /**
-   * Get merged levels
-   * @param {string} moldPath
-   * @param {string} action
-   * @return {object|undefined}
+   * Get state level.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   * @return {object|array|undefined}
    */
   getState(moldPath, action) {
     this._checkParams(moldPath, action);
@@ -222,7 +234,7 @@ export default class Storage {
   }
 
   /**
-   * Replace data of bottom level and rise silent event.
+   * Replace data of solid level and rise silent event.
    * @param {string} moldPath
    * @param {string} action
    * @param {object} newData
@@ -235,6 +247,7 @@ export default class Storage {
     this._storage.items[moldPath][action].solid = newData;
     this._generateCombined(moldPath, action);
 
+    // TODO: наверное не bottom а solid&&&
     this._emitActionEvent(moldPath, action, 'bottom', {
       data: newData,
       by: 'program',
