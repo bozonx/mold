@@ -111,9 +111,7 @@ class LocalMemory {
         });
       }
       else {
-        reject({
-          driverError: 'Document not found',
-        });
+        reject({ driverError: 'Document not found' });
       }
     });
   }
@@ -157,18 +155,18 @@ class LocalMemory {
       const collection = _.get(this._db, convertFromUrlToLodash(request.url));
 
       if (!collection) {
-        reject({
-          driverError: 'Collection not found',
-        });
+        reject({ driverError: 'Collection not found' });
+        
         return;
       }
 
-      const item = _.find(collection, {$id: request.payload.$id});
+      const item = _.find(collection, { $id: request.payload.$id });
       if (_.isNil(item)) {
         reject({
           driverError: 'Item not found',
           request,
         });
+        
         return;
       }
 
@@ -185,13 +183,12 @@ class LocalMemory {
   startRequest(request) {
     return this[request.method](request);
   }
-
 }
 
 /**
  * Instance of this class creates once a mold instance
  */
-export default function (driverConfig) {
+export default function(driverConfig) {
   this.driverConfig = driverConfig;
   if (_.isPlainObject(driverConfig.db)) {
     this.db = driverConfig.db;

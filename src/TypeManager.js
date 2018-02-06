@@ -22,7 +22,7 @@ export default class TypeManager {
       array: new ArrayType(this),
       assoc: new AssocType(this),
       collection: new CollectionType(this),
-    }
+    };
   }
 
   getType(typeName) {

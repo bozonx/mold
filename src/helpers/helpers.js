@@ -16,7 +16,7 @@ export function eachSchema(fullSchema, cb) {
     if (isGoDeeper === false) return;
 
     if (curSchema.item) {
-      _.each(curSchema.item, function (subSchema, nodeName) {
+      _.each(curSchema.item, (subSchema, nodeName) => {
         const childMoldPath = `${curMoldPath}.${nodeName}`;
         const childSchemaPath = `${curSchemaPath}.item.${nodeName}`;
 
@@ -24,7 +24,7 @@ export function eachSchema(fullSchema, cb) {
       });
     }
     else if (curSchema.schema) {
-      _.each(curSchema.schema, function (subSchema, nodeName) {
+      _.each(curSchema.schema, (subSchema, nodeName) => {
         const childMoldPath = `${curMoldPath}.${nodeName}`;
         const childSchemaPath = `${curSchemaPath}.schema.${nodeName}`;
 
@@ -32,7 +32,7 @@ export function eachSchema(fullSchema, cb) {
       });
     }
     else if (curSchema.items) {
-      _.each(curSchema.items, function (subSchema, nodeName) {
+      _.each(curSchema.items, (subSchema, nodeName) => {
         const childMoldPath = `${curMoldPath}.${nodeName}`;
         const childSchemaPath = `${curSchemaPath}.items.${nodeName}`;
 
@@ -43,7 +43,7 @@ export function eachSchema(fullSchema, cb) {
   }
 
   // expand the first level
-  _.each(fullSchema, function (curSchema, nodeName) {
+  _.each(fullSchema, (curSchema, nodeName) => {
     letItRecursive(nodeName, nodeName, curSchema);
   });
 }
@@ -173,11 +173,11 @@ export function getTheBestMatchPath(sourcePath, pathsList) {
  */
 export function concatPath(root, relativePath) {
   if (_.isNumber(relativePath)) {
-    return `${root}[${relativePath}]`; 
+    return `${root}[${relativePath}]`;
   }
 
   if (_.startsWith(relativePath, '[')) {
-    return `${root}${relativePath}`; 
+    return `${root}${relativePath}`;
   }
 
   return _.trim(`${root}.${relativePath}`, '.');

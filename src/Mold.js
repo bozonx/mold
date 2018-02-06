@@ -18,7 +18,7 @@ export default class _Mold {
 
   init() {
     this._initSchema();
-    //this.__readOnlyProps = this._collectRoProps();
+    // this.__readOnlyProps = this._collectRoProps();
   }
 
   // clear() {
@@ -132,8 +132,7 @@ export default class _Mold {
 
   _checkForUpdateReadOnly(newState) {
     // TODO: проходимся по всем элементнам newState и сверяем со схемой, если assoc или collecton идем глубже
-
-    return;
+    
 
     // // TODO: do it recursively - support collections, assoc and arrays
     // //const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);

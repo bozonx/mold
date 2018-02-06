@@ -30,9 +30,7 @@ export default class _NodeBase {
   $init(moldPath, schema) {
     this._moldPath = moldPath;
     this._schema = schema;
-    this.actions = {
-      'default': this.$generateDefaultAction(),
-    };
+    this.actions = { default: this.$generateDefaultAction() };
   }
 
   $createAction(actionName, cb) {
@@ -97,5 +95,4 @@ export default class _NodeBase {
   destroy() {
     return this.actions.default.destroy();
   }
-
 }

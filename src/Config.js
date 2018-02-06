@@ -35,7 +35,7 @@ export default class Config {
     if (!this._config.logger) {
       const Log = require('./Log').default;
 
-      this._config.logger = new Log({silent: this._config.silent});
+      this._config.logger = new Log({ silent: this._config.silent });
     }
   }
 }

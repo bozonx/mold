@@ -46,7 +46,7 @@ export default class Request {
    * @param {object} rawRequest - method, moldPath, payload, options, metaParams, driverRoot
    * @param {object} schema
    * @param {object|undefined} urlParams
-   * @return {object}
+   * @returns {object}
    * @private
    */
   _generateRequest(rawRequest, schema, urlParams) {
@@ -66,7 +66,7 @@ export default class Request {
       // TODO: remove
       metaParams: undefined,
       url: undefined,
-      //primaryKeyName: schema.item && findPrimary(schema.item),
+      // primaryKeyName: schema.item && findPrimary(schema.item),
     };
     request.url = this._prepareUrl(schema.url, urlParams, request);
 
@@ -75,7 +75,7 @@ export default class Request {
   }
 
   _prepareUrl(urlTemplate, urlTemplateParams, request) {
-    if (urlTemplate) return _.template(urlTemplate)({...urlTemplateParams, request});
+    if (urlTemplate) return _.template(urlTemplate)({ ...urlTemplateParams, request });
 
     // else generate url automatically
     let defaultUrl = _.trimStart(request.moldPath, request.driverRoot);

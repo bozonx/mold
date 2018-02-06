@@ -113,8 +113,8 @@ export default class ActionBase {
       ...driverRequestParams,
       moldPath: this._moldPath,
       // TODO: убрать несохраняемые данные
-      //payload: omitUnsaveable(this._mold, this.schema),
-      payload: payload,
+      // payload: omitUnsaveable(this._mold, this.schema),
+      payload,
     };
 
     // TODO: ??? getUrlParams

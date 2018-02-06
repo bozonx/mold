@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import { concatPath } from './helpers/helpers';
 import { mutate } from './helpers/mutate';
 
 
@@ -117,7 +116,7 @@ export default class Storage {
    * @param {string|undefined} metaPath - sub path to meta param. Optional.
    * @returns {object|undefined} - meta data object. Undefined if action hasn't set.
    */
-  getMeta(moldPath, action, metaPath=undefined) {
+  getMeta(moldPath, action, metaPath = undefined) {
     this._checkParams(moldPath, action);
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {

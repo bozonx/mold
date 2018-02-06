@@ -84,7 +84,7 @@ export default class Main {
    * You cat pass path deeper than certain driver path.
    * If no one driver has found it returns a default driver (memory)
    * @param {string} moldPath
-   * @return {Object|undefined}
+   * @returns {object|undefined}
    */
   getDriver(moldPath) {
     return this.$$driverManager.getDriver(moldPath);

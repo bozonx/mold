@@ -4,7 +4,7 @@ import { concatPath, isCollection } from './helpers';
 
 /**
  * Mutate storage.
- * @param {object|Array} storage - This will be mutated
+ * @param {object|array} storage - This will be mutated
  * @param {string} rootLodash - It's root path in mold format like 'path.to.0.item'
  */
 export function mutate(storage, rootLodash = '') {
@@ -85,7 +85,7 @@ class Mutate {
    * @private
    */
   _updatePrimitiveArray(root, newPrimitiveArrayState) {
-    let originalArray = this._get(root);
+    const originalArray = this._get(root);
 
     if (_.isEqual(originalArray, newPrimitiveArrayState)) return;
 
@@ -136,7 +136,7 @@ class Mutate {
         return;
       }
 
-      const found = _.find(originalCollection, {$$key: item.$$key});
+      const found = _.find(originalCollection, { $$key: item.$$key });
 
       if (found) {
         // existent item - update it
@@ -170,7 +170,6 @@ class Mutate {
     }
     
     return _.get(this.storage, root);
-    
   }
 
 }
