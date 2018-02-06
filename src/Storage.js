@@ -129,7 +129,7 @@ export default class Storage {
    * Replace state data with new data.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @param {object|array} fullData - new data.
+   * @param {object|array} fullData - the new data.
    */
   setTopLevelSilent(moldPath, action, fullData) {
     // TODO: test
@@ -157,7 +157,7 @@ export default class Storage {
    * Partly update top level data.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @param {object|array} partialData - new partial data.
+   * @param {object|array} partialData - the new partial data.
    */
   updateTopLevel(moldPath, action, partialData) {
     this._updateTopLevel(moldPath, action, partialData);
@@ -191,7 +191,7 @@ export default class Storage {
     this._checkParams(moldPath, action);
     this._initActionIfNeed(moldPath, action);
 
-    // TODO: может опять использовать this._update ?
+    // TODO: может использовать this._update ?
     const currentData = this._storage.items[moldPath][action].meta;
     this._storage.items[moldPath][action].meta = _.defaultsDeep(_.cloneDeep(partialData), currentData);
 
@@ -202,6 +202,11 @@ export default class Storage {
     });
   }
 
+  /**
+   * Clear state level silently.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   */
   clearTopLevel(moldPath, action) {
     // TODO: test
     if (!this._storage.items[moldPath]
@@ -226,10 +231,11 @@ export default class Storage {
   }
 
   /**
-   * Replace data of solid level and rise silent event.
-   * @param {string} moldPath
-   * @param {string} action
-   * @param {object} newData
+   * Replace data of solid level and rise an silent event.
+   * This method has to call only after request to server to set received data.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   * @param {object|array} newData - the new data.
    */
   setBottomLevel(moldPath, action, newData) {
     this._checkParams(moldPath, action);
@@ -243,10 +249,12 @@ export default class Storage {
     this._emitActionEvent(moldPath, action, 'bottom', {
       data: newData,
       by: 'program',
+      type: 'silent',
     });
     this._emitActionEvent(moldPath, action, 'any', {
       data: newData,
       by: 'program',
+      type: 'silent',
     });
   }
 
@@ -262,6 +270,11 @@ export default class Storage {
     this._events.off(this._getFullPath(moldPath, action), event, handler);
   }
 
+  /**
+   * Destroy an action. It removes whole data of actions and destroy events of this data.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   */
   destroy(moldPath, action) {
     if (this._storage.items[moldPath] && this._storage.items[moldPath][action]) {
       delete this._storage.items[moldPath][action];
@@ -289,7 +302,6 @@ export default class Storage {
     if (!wereChanges) return;
 
     this._generateCombined(moldPath, action);
-
   }
 
   _emitActionEvent(moldPath, action, eventName, eventData) {
@@ -305,6 +317,11 @@ export default class Storage {
 
   _getFullPath(moldPath, action) {
     return `${moldPath}-${action}`;
+  }
+
+  _checkParams(moldPath, action) {
+    if (!moldPath) throw new Error(`MoldPath is empty`);
+    if (!action) throw new Error(`Action is empty`);
   }
 
   _update(moldPath, action, subPath, partialData) {
@@ -327,11 +344,6 @@ export default class Storage {
 
     // if were changes - return true, else false
     return !_.isEqual(oldDataCopy, this._storage.items[moldPath][action][subPath]);
-  }
-
-  _checkParams(moldPath, action) {
-    if (!moldPath) throw new Error(`MoldPath is empty`);
-    if (!action) throw new Error(`Action is empty`);
   }
 
   _generateCombined(moldPath, action) {
