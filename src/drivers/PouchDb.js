@@ -1,13 +1,14 @@
 import _ from 'lodash';
 // TODO: use real cuid repo or other collision resistance id generator
 import Cuid from './node-cuid.js';
+
 const cuid = Cuid().cuid;
 
 import { correctUpdatePayload } from '../helpers/helpers';
 
 
 // from 0 to 19
-//let uniqCreatedId = Math.floor(Math.random() * 20);
+// let uniqCreatedId = Math.floor(Math.random() * 20);
 
 class LocalPouchDb {
   constructor(driverConfig, instanceConfig, db) {
@@ -38,18 +39,18 @@ class LocalPouchDb {
    */
   get(request) {
     return this._db.get(request.url, request.options || {})
-    .then((resp) => {
-      return {
-        body: resp,
-        driverResponse: resp,
-        request,
-      };
-    }, this._rejectHandler.bind(this, request));
+      .then((resp) => {
+        return {
+          body: resp,
+          driverResponse: resp,
+          request,
+        };
+      }, this._rejectHandler.bind(this, request));
   }
 
   filter(request) {
     const usePaged = _.isNumber(request.meta.perPage) && _.isNumber(request.meta.pageNum);
-    const preparedUrl = _.trimEnd(request.url, '/') + '/';
+    const preparedUrl = `${_.trimEnd(request.url, '/')}/`;
     const preparedUrl222 = _.trimEnd(request.url, '/');
     // simple query without paging
 
@@ -79,7 +80,7 @@ class LocalPouchDb {
     // }
 
     if (request.options) {
-      query = {...query, ...request.options};
+      query = { ...query, ...request.options };
     }
     else {
       // default query
@@ -93,12 +94,11 @@ class LocalPouchDb {
           //   }
           // },
           // body: {$gt: null},
-          $parent: {$eq: preparedUrl222}
+          $parent: { $eq: preparedUrl222 },
         },
-        //sort: ['$parent', {'$id': 'desc'}],
+        // sort: ['$parent', {'$id': 'desc'}],
       };
     }
-
 
 
     if (usePaged) {
@@ -107,7 +107,7 @@ class LocalPouchDb {
         // skip is slowly
         skip: request.meta.pageNum * request.meta.perPage,
         limit: request.meta.perPage,
-      }
+      };
     }
 
     return this._db.find(query)
@@ -122,11 +122,12 @@ class LocalPouchDb {
           response.meta = {
             pageNum: request.meta.pageNum,
             // TODO: как теперь подсчитать????
-            //lastPage: lastItemIndex >= resp.total_rows,
+            // lastPage: lastItemIndex >= resp.total_rows,
             // TODO: не очень правильно
             lastPage: resp.docs.length < request.meta.perPage,
           };
         }
+
         return response;
       }, this._rejectHandler.bind(this, request));
   }
@@ -172,13 +173,14 @@ class LocalPouchDb {
         sendPut(payload, resolve, reject);
       }, (err) => {
         // create new
-        if (err.status != 404)
+        if (err.status != 404) {
           return reject(this._rejectHandler(request, err));
+        }
 
         const urlSplit = _.trim(request.url, '/').split('/');
         const $id = _.last(urlSplit);
         const preLastIndex = (urlSplit.length) ? urlSplit.length - 1 : 0;
-        const $parent = '/' + urlSplit.slice(0, preLastIndex).join('/');
+        const $parent = `/${urlSplit.slice(0, preLastIndex).join('/')}`;
 
         const payload = {
           ...request.payload,
@@ -244,18 +246,18 @@ class LocalPouchDb {
     };
 
     return this._db.put(payload, request.options)
-    .then((resp) => {
-      return {
-        body: {
-          ...request.payload,
-          _id: resp.id,
-          _rev: resp.rev,
-          $id: itemId,
-        },
-        driverResponse: resp,
-        request,
-      };
-    }, this._rejectHandler.bind(this, request));
+      .then((resp) => {
+        return {
+          body: {
+            ...request.payload,
+            _id: resp.id,
+            _rev: resp.rev,
+            $id: itemId,
+          },
+          driverResponse: resp,
+          request,
+        };
+      }, this._rejectHandler.bind(this, request));
   }
 
   remove(request) {
@@ -292,8 +294,9 @@ class LocalPouchDb {
 export default function(driverConfig) {
   this.driverConfig = driverConfig;
 
-  if (!driverConfig.db)
+  if (!driverConfig.db) {
     this._main.$$log.fatal(`The "db" field in config is required!`);
+  }
 
   this.db = driverConfig.db;
 

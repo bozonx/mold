@@ -92,11 +92,8 @@ export default class DriverManager {
   }
 
   _initDefaultDriver() {
-    const memoryDriver = new Memory({
-      db: this.$defaultMemoryDb,
-    });
+    const memoryDriver = new Memory({ db: this.$defaultMemoryDb });
 
     this._defaultDriver = memoryDriver.instance({});
   }
-
 }

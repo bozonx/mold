@@ -59,7 +59,7 @@ export default class Storage {
   /**
    * Get all the actions ofy mold path.
    * @param {string} moldPath - path in your schema.
-   * @returns {object|undefined} - all the actions of mold path. Undefined if action hasn't set.
+   * @return {object|undefined} - all the actions of mold path. Undefined if action hasn't set.
    */
   getNode(moldPath) {
     if (!moldPath) throw new Error(`MoldPath is empty`);
@@ -71,7 +71,7 @@ export default class Storage {
    * Get combined state of state and solid.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @returns {object|array|undefined} - combined state of state and solid.
+   * @return {object|array|undefined} - combined state of state and solid.
    */
   getCombined(moldPath, action) {
     this._checkParams(moldPath, action);
@@ -87,7 +87,7 @@ export default class Storage {
    * Get state level.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @returns {object|array|undefined} - state object or array. Undefined if action hasn't set.
+   * @return {object|array|undefined} - state object or array. Undefined if action hasn't set.
    */
   getState(moldPath, action) {
     this._checkParams(moldPath, action);
@@ -114,7 +114,7 @@ export default class Storage {
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
    * @param {string|undefined} metaPath - sub path to meta param. Optional.
-   * @returns {object|undefined} - meta data object. Undefined if action hasn't set.
+   * @return {object|undefined} - meta data object. Undefined if action hasn't set.
    */
   getMeta(moldPath, action, metaPath = undefined) {
     this._checkParams(moldPath, action);

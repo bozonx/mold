@@ -35,7 +35,6 @@ export default class Catalogue extends State {
     super.$init(moldPath, schema);
 
 
-
     this.actions = {
       ...this.actions,
       create: this._generateCreateAction(),
@@ -57,9 +56,7 @@ export default class Catalogue extends State {
         init() {
           super.init();
 
-          this.setDriverParams({
-            method: 'filter',
-          });
+          this.setDriverParams({ method: 'filter' });
           this.primaryName = getPrimaryName(this._schema);
         }
 
@@ -73,7 +70,7 @@ export default class Catalogue extends State {
                 $$key: item[this.primaryName],
               };
             }),
-          }
+          };
         }
 
         request(payload) {
@@ -102,9 +99,7 @@ export default class Catalogue extends State {
 
           super.init();
 
-          this.setDriverParams({
-            method: 'create',
-          });
+          this.setDriverParams({ method: 'create' });
           this.primaryName = getPrimaryName(catalogue.schema);
         }
 
@@ -116,7 +111,7 @@ export default class Catalogue extends State {
               ...resp.body,
               $$key: resp.body[this.primaryName],
             },
-          }
+          };
         }
 
       };
@@ -130,11 +125,11 @@ export default class Catalogue extends State {
    * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  $load(pageNum, preRequest=undefined) {
+  $load(pageNum, preRequest = undefined) {
     if (!_.isNumber(pageNum)) this._main.$$log.fatal(`The "pageNum" param is required!`);
 
-    let metaParams = _.omitBy({
-      pageNum: pageNum,
+    const metaParams = _.omitBy({
+      pageNum,
       perPage: this._perPage,
     }, _.isUndefined);
 
@@ -157,6 +152,7 @@ export default class Catalogue extends State {
         return resp;
       }, (err) => {
         this._setPageLoadingState(pageNum, false);
+
         return Promise.reject(err);
       });
   }
@@ -168,11 +164,9 @@ export default class Catalogue extends State {
    * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  $create(documentMold, preRequest=undefined) {
+  $create(documentMold, preRequest = undefined) {
     // change with event rising
-    this._updateDoc(documentMold, {
-      $saving: true,
-    });
+    this._updateDoc(documentMold, { $saving: true });
 
     const request = _.defaultsDeep({
       method: 'create',
@@ -194,9 +188,8 @@ export default class Catalogue extends State {
 
         return resp;
       }, (err) => {
-        this._updateDoc(documentMold, {
-          $saving: false,
-        });
+        this._updateDoc(documentMold, { $saving: false });
+
         return Promise.reject(err);
       });
   }
@@ -209,7 +202,7 @@ export default class Catalogue extends State {
    * @param {object} preRequest - raw params to driver's request
    * @returns {Promise}
    */
-  $remove(documentMold, preRequest=undefined) {
+  $remove(documentMold, preRequest = undefined) {
     // change with event rising
     this._updateDoc(documentMold, { $deleting: true });
 
@@ -231,9 +224,11 @@ export default class Catalogue extends State {
           const storagePathToPage = concatPath(this._storagePagesPath, documentMold.$pageIndex);
           this._main.$$state.remove(storagePathToPage, documentMold);
         }
+
         return resp;
       }, (err) => {
         this._updateDoc(documentMold, { $deleting: false });
+
         return Promise.reject(err);
       });
   }

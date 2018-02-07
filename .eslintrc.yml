@@ -6,7 +6,7 @@ rules:
   no-debugger: warn
   #no-warning-comments: warn        # worn comments like TODOes etc
   require-jsdoc: off
-  valid-jsdoc: warn
+  #valid-jsdoc: off
   #no-restricted-properties: error      # it's for deprecated props
   #no-restricted-modules: error       # list of restricted modules such ad os, fs etc.
   #no-restricted-imports              # list of restricted modules such ad os, fs etc.

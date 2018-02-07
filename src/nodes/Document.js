@@ -63,9 +63,7 @@ export default class Document extends _NodeBase {
       return class extends Action {
         init() {
           super.init();
-          this.setDriverParams({
-            method: 'get',
-          });
+          this.setDriverParams({ method: 'get' });
         }
       };
     });
@@ -78,9 +76,7 @@ export default class Document extends _NodeBase {
       return class extends Action {
         init() {
           super.init();
-          this.setDriverParams({
-            method: 'put',
-          });
+          this.setDriverParams({ method: 'put' });
         }
 
         request(payload) {
@@ -111,9 +107,7 @@ export default class Document extends _NodeBase {
       return class extends Action {
         init() {
           super.init();
-          this.setDriverParams({
-            method: 'patch',
-          });
+          this.setDriverParams({ method: 'patch' });
         }
 
         request(payload) {
@@ -144,9 +138,7 @@ export default class Document extends _NodeBase {
       return class extends Action {
         init() {
           super.init();
-          this.setDriverParams({
-            method: 'delete',
-          });
+          this.setDriverParams({ method: 'delete' });
         }
       };
     });
