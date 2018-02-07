@@ -46,14 +46,6 @@ describe 'Unit. TypeManager.castData.', ->
       }
     }
 
-  it 'array', ->
-    data = {
-      arrayParam: ['5', '6a', '123']
-    }
-    assert.deepEqual @typeManager.castData(@testSchema, data), {
-      arrayParam: [5, '6a', 123]
-    }
-
   it 'collection', ->
     data = {
       collection: [
@@ -65,6 +57,18 @@ describe 'Unit. TypeManager.castData.', ->
         { numberParam: 5 }
       ]
     }
+
+  describe 'array', ->
+    it 'correct', ->
+      data = {
+        arrayParam: ['5', '6a', '123']
+      }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        arrayParam: [5, '6a', 123]
+      }
+
+    it 'incorrect - just return its value', ->
+      assert.deepEqual @typeManager.castValue(@testSchema.items.arrayParam, 'incorrect'), 'incorrect'
 
   describe 'number', ->
     it "Don't cast", ->

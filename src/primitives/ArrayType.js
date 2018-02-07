@@ -23,7 +23,7 @@ export default class ArrayType {
 
       if (!result) {
         isValid = false;
-        
+
         return true;
       }
     });
@@ -37,12 +37,23 @@ export default class ArrayType {
     return true;
   }
 
+  /**
+   * Cast items of array.
+   * @param {object} schema - schema of this type
+   * @param {array} rawValue - raw value
+   * @return {array} - correct values
+   */
   cast(schema, rawValue) {
+    // TODO: is it need to support of udefined and null?
+    if (!_.isArray(rawValue)) return rawValue;
+
     const castedData = [];
     const primitiveSchema = { type: schema.itemsType };
 
     _.each(rawValue, (item, index) => {
       castedData[index] = this._typeManager.castValue(primitiveSchema, item);
+      // TODO: а валидация разве не нужна???
+
     });
 
     return castedData;

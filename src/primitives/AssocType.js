@@ -25,7 +25,7 @@ export default class AssocType {
 
       if (!result) {
         isValid = false;
-        
+
         return true;
       }
     });
@@ -38,19 +38,30 @@ export default class AssocType {
     return true;
   }
 
-  cast(schema, data) {
+  /**
+   * Cast items of assoc.
+   * @param {object} schema - schema of this type
+   * @param {object} rawData - raw assoc
+   * @return {{}} - correct values
+   */
+  cast(schema, rawData) {
+    // TODO: is it need to support of udefined and null?
+    if (!_.isPlainObject(rawData)) return rawData;
+
     // do nothing if there isn't schema for assoc
+    // TODO: is it need to return {} of undefined?
     if (!schema.items) return;
 
     const castedData = {};
 
-    _.each(data, (rawValue, name) => {
+    _.each(rawData, (rawValue, name) => {
       const primitiveSchema = schema.items[name];
       // do nothing if there isn't schema definition for this param
-
+      // TODO: наверное оставить значение как есть
       if (!primitiveSchema || !primitiveSchema.type) return;
 
       castedData[name] = this._typeManager.castValue(primitiveSchema, rawValue);
+      // TODO: а валидация разве не нужна???
     });
 
     return castedData;

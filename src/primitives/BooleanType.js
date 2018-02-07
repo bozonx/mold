@@ -22,6 +22,14 @@ export default class BooleanType {
     return true;
   }
 
+  /**
+   * Cast number, string and stringed 'true' and 'false' to boolean.
+   *   * boolean, null and undefined as is.
+   *   * other types won't be casted.
+   * @param {object} schema - schema of this type
+   * @param {*} rawValue - raw value
+   * @return {boolean|undefined|null} - correct value
+   */
   cast(schema, rawValue) {
     // there is not reason to cast
     if (_.isBoolean(rawValue)) return rawValue;

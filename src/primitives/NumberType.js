@@ -28,7 +28,7 @@ export default class NumberType {
    *   * other types won't be casted.
    * @param {object} schema - schema of this type
    * @param {*} rawValue - raw value
-   * @return {number|undefined|null} - correct value
+   * @return {number|NaN|undefined|null} - correct value
    */
   cast(schema, rawValue) {
     // there is not reason to cast

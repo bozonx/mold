@@ -50,6 +50,7 @@ describe 'Unit. TypeManager.validate.', ->
     assert.isFalse(@typeManager.validateData(@testSchema, data))
 
   it 'array', ->
+    # TODO: валидировать если это не массива, а строка например
     data = {
       arrayParam: [5, 8]
     }
@@ -93,6 +94,7 @@ describe 'Unit. TypeManager.validate.', ->
       assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: [] }))
       # '5a'
       assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: '5a' }))
+      # TODO: boolean will cat to 1,0
       # true
       assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: true }))
 
