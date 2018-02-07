@@ -37,7 +37,7 @@
     "coffee-coverage": "^3.0.0",
     "coffeescript": "^2.2.0",
     "eslint": "^4.17.0",
-    "eslint-config-effency": "^0.1.7",
+    "eslint-config-effency": "^0.1.8",
     "eslint-config-google": "^0.9.1",
     "istanbul": "^0.4.3",
     "memdown": "^1.4.1",
