@@ -22,6 +22,14 @@ export default class NumberType {
     return true;
   }
 
+  /**
+   * Cast string and boolean to number. Other types cast like this:
+   *   * number, NaN, null and undefined as is.
+   *   * other types won't be casted.
+   * @param {object} schema - schema of this type
+   * @param {*} rawValue - raw value
+   * @return {number|undefined|null} - correct value
+   */
   cast(schema, rawValue) {
     // there is not reason to cast
     if (_.isNumber(rawValue)) return rawValue;
@@ -30,7 +38,7 @@ export default class NumberType {
     // don't cast NaN
     if (_.isNaN(rawValue)) return rawValue;
 
-    // cast string as a number
+    // cast string and boolean as a number
     const toNumber = _.toNumber(rawValue);
 
     // don't cast invalid value

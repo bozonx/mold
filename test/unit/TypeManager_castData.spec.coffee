@@ -98,6 +98,15 @@ describe 'Unit. TypeManager.castData.', ->
       assert.deepEqual @typeManager.castData(@testSchema, data), {
         numberParam: 5
       }
+    it 'cast boolean to number', ->
+      data = { numberParam: true }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        numberParam: 1
+      }
+      data = { numberParam: false }
+      assert.deepEqual @typeManager.castData(@testSchema, data), {
+        numberParam: 0
+      }
 
   describe 'string', ->
     it "Don't cast", ->
