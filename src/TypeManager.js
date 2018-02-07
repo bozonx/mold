@@ -41,8 +41,9 @@ export default class TypeManager {
     return this._types[schema.type].validate(schema, value);
   }
 
+  // TODO: вообще нигде не используется
   validateData(schema, data) {
-    this._validateParams(schema, data);
+    //this._validateParams(schema, data);
 
     return this.validateValue(schema, data);
   }
@@ -56,28 +57,28 @@ export default class TypeManager {
     return this._types[typeName].getInitial();
   }
 
-  // TODO: check
+
   castData(schema, data) {
-    // TODO: зачем эта валидация???
-    this._validateParams(schema, data);
+    //this._validateParams(schema, data);
 
     return this.castValue(schema, data);
   }
 
-  _validateParams(schema, data) {
-    if (schema.type === 'assoc') {
-      if (!_.isPlainObject(data)) {
-        this._main.$$log.fatal(`Incorrect data, it has to be a plain object: ${JSON.stringify(data)}`);
-      }
-    }
-    else if (schema.type === 'collection') {
-      if (!_.isArray(data)) {
-        this._main.$$log.fatal(`Incorrect data, it has to be an array: ${JSON.stringify(data)}`);
-      }
-    }
-    else {
-      this._main.$$log.fatal(`Incorrect schema, it has to be an assoc or collection: ${JSON.stringify(data)}`);
-    }
-  }
+  // TODO: не нужен метод, так как в молд и так будет либо assoc либо collection
+  // _validateParams(schema, data) {
+  //   if (schema.type === 'assoc') {
+  //     if (!_.isPlainObject(data)) {
+  //       this._main.$$log.fatal(`Incorrect data, it has to be a plain object: ${JSON.stringify(data)}`);
+  //     }
+  //   }
+  //   else if (schema.type === 'collection') {
+  //     if (!_.isArray(data)) {
+  //       this._main.$$log.fatal(`Incorrect data, it has to be an array: ${JSON.stringify(data)}`);
+  //     }
+  //   }
+  //   else {
+  //     this._main.$$log.fatal(`Incorrect schema, it has to be an assoc or collection: ${JSON.stringify(data)}`);
+  //   }
+  // }
 
 }
