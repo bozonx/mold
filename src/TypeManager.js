@@ -47,6 +47,7 @@ export default class TypeManager {
     return this.validateValue(schema, data);
   }
 
+  // TODO: это только для типов - нужно переименовать чтобы не путать с castData
   castValue(schema, value) {
     return this._types[schema.type].cast(schema, value);
   }
@@ -55,7 +56,9 @@ export default class TypeManager {
     return this._types[typeName].getInitial();
   }
 
+  // TODO: check
   castData(schema, data) {
+    // TODO: зачем эта валидация???
     this._validateParams(schema, data);
 
     return this.castValue(schema, data);

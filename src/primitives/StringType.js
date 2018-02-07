@@ -22,6 +22,15 @@ export default class StringType {
     return true;
   }
 
+  /**
+   * Cast number to string. Other types cast like this:
+   *   * Boolean and NaN = undefined
+   *   * string, null and undefined as is.
+   *   * other types won't be casted.
+   * @param {object} schema - schema of this type
+   * @param {*} rawValue - raw value
+   * @return {string|undefined|null} - correct value
+   */
   cast(schema, rawValue) {
     // there isn't reason to cast
     if (_.isString(rawValue)) return rawValue;
