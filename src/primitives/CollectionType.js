@@ -48,8 +48,18 @@ export default class CollectionType {
     return true;
   }
 
-  cast(schema, data) {
+  /**
+   * Cast items of collection.
+   * @param {object} schema - schema of this type
+   * @param {array} rawData - raw collection
+   * @return {array} - correct values
+   */
+  cast(schema, rawData) {
+    // TODO: is it need to support of udefined and null?
+    if (!_.isArray(rawData)) return rawData;
+
     // do nothing if there isn't schema for assoc
+    // TODO: is it need to return [] of undefined?
     if (!schema.item) return;
 
     const itemSchema = {
@@ -59,7 +69,8 @@ export default class CollectionType {
 
     const castedData = [];
 
-    _.each(data, (rawValue, index) => {
+    _.each(rawData, (rawValue, index) => {
+      // TODO: наверное оставить значение как есть чтобы потом валидировать
       if (!_.isPlainObject(rawValue)) return;
       castedData[index] = this._typeManager.castValue(itemSchema, rawValue);
     });

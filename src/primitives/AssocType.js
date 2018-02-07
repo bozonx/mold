@@ -57,7 +57,7 @@ export default class AssocType {
     _.each(rawData, (rawValue, name) => {
       const primitiveSchema = schema.items[name];
       // do nothing if there isn't schema definition for this param
-      // TODO: наверное оставить значение как есть
+      // TODO: наверное оставить значение как есть чтобы потом валидировать
       if (!primitiveSchema || !primitiveSchema.type) return;
 
       castedData[name] = this._typeManager.castValue(primitiveSchema, rawValue);

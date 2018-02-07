@@ -40,17 +40,17 @@ export default class ArrayType {
   /**
    * Cast items of array.
    * @param {object} schema - schema of this type
-   * @param {array} rawValue - raw value
+   * @param {array} rawData - raw value
    * @return {array} - correct values
    */
-  cast(schema, rawValue) {
+  cast(schema, rawData) {
     // TODO: is it need to support of udefined and null?
-    if (!_.isArray(rawValue)) return rawValue;
+    if (!_.isArray(rawData)) return rawData;
 
     const castedData = [];
     const primitiveSchema = { type: schema.itemsType };
 
-    _.each(rawValue, (item, index) => {
+    _.each(rawData, (item, index) => {
       castedData[index] = this._typeManager.castValue(primitiveSchema, item);
       // TODO: а валидация разве не нужна???
 
