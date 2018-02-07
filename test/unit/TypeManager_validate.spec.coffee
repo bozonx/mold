@@ -40,26 +40,26 @@ describe 'Unit. TypeManager.validate.', ->
         nestedNumberParam: 5
       }
     }
-    assert.isTrue(@typeManager.validateData(@testSchema, data))
+    assert.isTrue(@typeManager.validateValue(@testSchema, data))
 
     data = {
       nested: {
         nestedNumberParam: 'aa'
       }
     }
-    assert.isFalse(@typeManager.validateData(@testSchema, data))
+    assert.isFalse(@typeManager.validateValue(@testSchema, data))
 
   it 'array', ->
     # TODO: валидировать если это не массива, а строка например
     data = {
       arrayParam: [5, 8]
     }
-    assert.isTrue(@typeManager.validateData(@testSchema, data))
+    assert.isTrue(@typeManager.validateValue(@testSchema, data))
 
     data = {
       arrayParam: ['d5', 5]
     }
-    assert.isFalse(@typeManager.validateData(@testSchema, data))
+    assert.isFalse(@typeManager.validateValue(@testSchema, data))
 
   it 'collection', ->
     data = {
@@ -67,75 +67,75 @@ describe 'Unit. TypeManager.validate.', ->
         { numberParam: 5 }
       ]
     }
-    assert.isTrue(@typeManager.validateData(@testSchema, data))
+    assert.isTrue(@typeManager.validateValue(@testSchema, data))
 
     data = {
       collection: [
         { numberParam: '5f' }
       ]
     }
-    assert.isFalse(@typeManager.validateData(@testSchema, data))
+    assert.isFalse(@typeManager.validateValue(@testSchema, data))
 
   describe 'number', ->
     it "valid: 5, null, undefined, NaN", ->
       # number
-      assert.isTrue(@typeManager.validateData(@testSchema, { numberParam: 5 }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { numberParam: 5 }))
       # null
-      assert.isTrue(@typeManager.validateData(@testSchema, { numberParam: null }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { numberParam: null }))
       # undefined
-      assert.isTrue(@typeManager.validateData(@testSchema, { numberParam: undefined }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { numberParam: undefined }))
       # NaN
-      assert.isTrue(@typeManager.validateData(@testSchema, { numberParam: NaN }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { numberParam: NaN }))
 
     it "invalid: {}, [], '5a', true", ->
       # {}
-      assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: {} }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: {} }))
       # []
-      assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: [] }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: [] }))
       # '5a'
-      assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: '5a' }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: '5a' }))
       # TODO: boolean will cat to 1,0
       # true
-      assert.isFalse(@typeManager.validateData(@testSchema, { numberParam: true }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: true }))
 
   describe 'string', ->
     # don't check number because it has to be casted
     it "valid: 'str', null, undefined", ->
       # string
-      assert.isTrue(@typeManager.validateData(@testSchema, { stringParam: 'str' }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { stringParam: 'str' }))
       # null
-      assert.isTrue(@typeManager.validateData(@testSchema, { stringParam: null }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { stringParam: null }))
       # undefined
-      assert.isTrue(@typeManager.validateData(@testSchema, { stringParam: undefined }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { stringParam: undefined }))
 
     it "invalid: NaN, true, {}, []", ->
       # NaN
-      assert.isFalse(@typeManager.validateData(@testSchema, { stringParam: NaN }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { stringParam: NaN }))
       # true
-      assert.isFalse(@typeManager.validateData(@testSchema, { stringParam: true }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { stringParam: true }))
       # {}
-      assert.isFalse(@typeManager.validateData(@testSchema, { stringParam: {} }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { stringParam: {} }))
       # []
-      assert.isFalse(@typeManager.validateData(@testSchema, { stringParam: [] }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { stringParam: [] }))
 
   describe 'boolean', ->
     # don't check number because it has to be casted
     it "valid: true, false, null, undefined", ->
       # true
-      assert.isTrue(@typeManager.validateData(@testSchema, { boolParam: true }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { boolParam: true }))
       # false
-      assert.isTrue(@typeManager.validateData(@testSchema, { boolParam: false }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { boolParam: false }))
       # null
-      assert.isTrue(@typeManager.validateData(@testSchema, { boolParam: null }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { boolParam: null }))
       # undefined
-      assert.isTrue(@typeManager.validateData(@testSchema, { boolParam: undefined }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { boolParam: undefined }))
 
     it "invalid: NaN, string, {}, []", ->
       # NaN
-      assert.isFalse(@typeManager.validateData(@testSchema, { boolParam: NaN }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { boolParam: NaN }))
       # string
-      assert.isFalse(@typeManager.validateData(@testSchema, { boolParam: 'string' }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { boolParam: 'string' }))
       # {}
-      assert.isFalse(@typeManager.validateData(@testSchema, { boolParam: {} }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { boolParam: {} }))
       # []
-      assert.isFalse(@typeManager.validateData(@testSchema, { boolParam: [] }))
+      assert.isFalse(@typeManager.validateValue(@testSchema, { boolParam: [] }))

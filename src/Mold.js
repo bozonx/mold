@@ -28,7 +28,7 @@ export default class _Mold {
 
   setSilent(newState) {
     // TODO: test
-    const correctValues = this._main.$$typeManager.castData(this._schema, newState);
+    const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
 
     this._checkForUpdateReadOnly(newState);
     this._main.$$storage.setTopLevelSilent(this._moldPath, this._actionName, correctValues);
@@ -40,7 +40,7 @@ export default class _Mold {
    * @param {object, array} newState - it's plain object or collection
    */
   update(newState) {
-    const correctValues = this._main.$$typeManager.castData(this._schema, newState);
+    const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
 
     this._checkForUpdateReadOnly(newState);
     this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
@@ -52,7 +52,7 @@ export default class _Mold {
    * @param {object, array} newState - it's plain object or collection
    */
   updateSilent(newState) {
-    const correctValues = this._main.$$typeManager.castData(this._schema, newState);
+    const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
 
     this._checkForUpdateReadOnly(newState);
     this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
@@ -132,7 +132,7 @@ export default class _Mold {
 
   _checkForUpdateReadOnly(newState) {
     // TODO: проходимся по всем элементнам newState и сверяем со схемой, если assoc или collecton идем глубже
-    
+
 
     // // TODO: do it recursively - support collections, assoc and arrays
     // //const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);

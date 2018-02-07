@@ -41,27 +41,12 @@ export default class TypeManager {
     return this._types[schema.type].validate(schema, value);
   }
 
-  // TODO: вообще нигде не используется
-  validateData(schema, data) {
-    //this._validateParams(schema, data);
-
-    return this.validateValue(schema, data);
-  }
-
-  // TODO: это только для типов - нужно переименовать чтобы не путать с castData
   castValue(schema, value) {
     return this._types[schema.type].cast(schema, value);
   }
 
   getInitial(typeName) {
     return this._types[typeName].getInitial();
-  }
-
-
-  castData(schema, data) {
-    //this._validateParams(schema, data);
-
-    return this.castValue(schema, data);
   }
 
   // TODO: не нужен метод, так как в молд и так будет либо assoc либо collection
