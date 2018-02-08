@@ -10,16 +10,16 @@ export default class BooleanType {
     return undefined;
   }
 
+  validateSchema(schema) {
+    // TODO: do it
+    return true;
+  }
+
   validate(schema, value) {
     // undefined and null are allowed
     if (_.isNil(value)) return true;
 
     return _.isBoolean(value);
-  }
-
-  validateSchema(schema) {
-    // TODO: do it
-    return true;
   }
 
   /**

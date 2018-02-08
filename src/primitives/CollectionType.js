@@ -12,6 +12,11 @@ export default class CollectionType {
     return [];
   }
 
+  validateSchema(schema) {
+    // TODO: do it
+    return true;
+  }
+
   validate(schema, data) {
     if (!isSimpleCollection(data)) return false;
 
@@ -41,11 +46,6 @@ export default class CollectionType {
     });
 
     return isValid;
-  }
-
-  validateSchema(schema) {
-    // TODO: do it
-    return true;
   }
 
   /**

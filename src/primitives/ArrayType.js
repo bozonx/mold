@@ -12,6 +12,12 @@ export default class ArrayType {
     return [];
   }
 
+  validateSchema(schema) {
+    // TODO: do it
+    // TODO: itemsType
+    return true;
+  }
+
   validate(schema, data) {
     if (!isSimpleArray(data)) return false;
 
@@ -29,12 +35,6 @@ export default class ArrayType {
     });
 
     return isValid;
-  }
-
-  validateSchema(schema) {
-    // TODO: do it
-    // TODO: itemsType
-    return true;
   }
 
   /**

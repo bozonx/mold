@@ -10,6 +10,11 @@ export default class AssocType {
     return {};
   }
 
+  validateSchema(schema) {
+    // TODO: do it
+    return true;
+  }
+
   validate(schema, data) {
     if (!_.isPlainObject(data)) return false;
 
@@ -31,11 +36,6 @@ export default class AssocType {
     });
 
     return isValid;
-  }
-
-  validateSchema(schema) {
-    // TODO: do it
-    return true;
   }
 
   /**

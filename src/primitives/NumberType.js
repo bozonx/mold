@@ -10,16 +10,16 @@ export default class NumberType {
     return undefined;
   }
 
+  validateSchema(schema) {
+    // TODO: do it
+    return true;
+  }
+
   validate(schema, value) {
     // undefined and null are allowed
     if (_.isNil(value)) return true;
 
     return _.isNumber(value);
-  }
-
-  validateSchema(schema) {
-    // TODO: do it
-    return true;
   }
 
   /**

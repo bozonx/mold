@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import ArrayType from './primitives/ArrayType';
 import AssocType from './primitives/AssocType';
 import BooleanType from './primitives/BooleanType';
@@ -29,6 +27,10 @@ export default class TypeManager {
     return this._types[typeName];
   }
 
+  getInitial(typeName) {
+    return this._types[typeName].getInitial();
+  }
+
   isRegistered(typeName) {
     return Boolean(this._types[typeName]);
   }
@@ -44,26 +46,5 @@ export default class TypeManager {
   castValue(schema, value) {
     return this._types[schema.type].cast(schema, value);
   }
-
-  getInitial(typeName) {
-    return this._types[typeName].getInitial();
-  }
-
-  // TODO: не нужен метод, так как в молд и так будет либо assoc либо collection
-  // _validateParams(schema, data) {
-  //   if (schema.type === 'assoc') {
-  //     if (!_.isPlainObject(data)) {
-  //       this._main.$$log.fatal(`Incorrect data, it has to be a plain object: ${JSON.stringify(data)}`);
-  //     }
-  //   }
-  //   else if (schema.type === 'collection') {
-  //     if (!_.isArray(data)) {
-  //       this._main.$$log.fatal(`Incorrect data, it has to be an array: ${JSON.stringify(data)}`);
-  //     }
-  //   }
-  //   else {
-  //     this._main.$$log.fatal(`Incorrect schema, it has to be an assoc or collection: ${JSON.stringify(data)}`);
-  //   }
-  // }
 
 }
