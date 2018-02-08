@@ -8,7 +8,6 @@ export default class _Mold {
     this._main = main;
     this._moldPath = moldPath;
     this._actionName = actionName;
-    // TODO: move to init
     this._schema = fullSchema;
   }
 
@@ -28,6 +27,8 @@ export default class _Mold {
 
   setSilent(newState) {
     // TODO: test
+    // validate new state. It trows an error if state isn't valid.
+    this._main.$$typeManager.validateValue(this._schema, newState);
     const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
 
     this._checkForUpdateReadOnly(newState);
@@ -40,6 +41,8 @@ export default class _Mold {
    * @param {object, array} newState - it's plain object or collection
    */
   update(newState) {
+    // validate new state. It trows an error if state isn't valid.
+    this._main.$$typeManager.validateValue(this._schema, newState);
     const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
 
     this._checkForUpdateReadOnly(newState);
@@ -52,6 +55,8 @@ export default class _Mold {
    * @param {object, array} newState - it's plain object or collection
    */
   updateSilent(newState) {
+    // validate new state. It trows an error if state isn't valid.
+    this._main.$$typeManager.validateValue(this._schema, newState);
     const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
 
     this._checkForUpdateReadOnly(newState);
