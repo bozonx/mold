@@ -277,7 +277,7 @@ export default class Storage {
   }
 
   /**
-   * Destroy an action. It removes whole data of actions and destroy events of this data.
+   * Destroy an action. It removes whole data of action and destroy events of this data.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
    */

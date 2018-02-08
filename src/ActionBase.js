@@ -47,6 +47,7 @@ export default class ActionBase {
   }
 
   clearTopLevel() {
+    // TODO: разве не через молд надо делать?
     this._main.$$storage.clearTopLevel(this._moldPath, this._actionName);
   }
 
@@ -81,6 +82,7 @@ export default class ActionBase {
     return this._doRequest(driverRequestParams, payload)
       .then((rawResp) => {
         let resp = rawResp;
+        // transform response if need
         if (this.responseTransformCb) {
           resp = this.responseTransformCb(resp);
         }
