@@ -39,6 +39,11 @@ export default class BooleanType {
     if (rawValue === 'true') return true;
     if (rawValue === 'false') return false;
 
+    // don't cast other values e.g. array or object
+    if (!_.isNumber(rawValue) && !_.isString(rawValue)) {
+      return rawValue;
+    }
+
     // cast number or string as a boolean
     return Boolean(rawValue);
   }

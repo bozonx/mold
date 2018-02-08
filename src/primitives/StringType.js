@@ -37,11 +37,13 @@ export default class StringType {
     // don't cast undefined or null
     if (_.isNil(rawValue)) return rawValue;
 
-    // boolean or NaN casts to undefined
+    // boolean or NaN cast to undefined
     if (_.isBoolean(rawValue) || _.isNaN(rawValue)) return undefined;
-    // cast number to string
+
+    // if it isn't a number e.g. array or object - do nothing
     if (!_.isNumber(rawValue)) return rawValue;
 
+    // cast number to string
     return _.toString(rawValue);
   }
 
