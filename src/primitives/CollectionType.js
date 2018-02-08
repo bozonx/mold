@@ -18,6 +18,7 @@ export default class CollectionType {
   }
 
   validate(schema, data) {
+    // TODO: nil is allowes
     if (!isSimpleCollection(data)) return false;
 
     const itemSchema = {

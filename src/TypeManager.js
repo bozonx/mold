@@ -38,6 +38,7 @@ export default class TypeManager {
   /**
    * Try to normalize value e.g. '10' => 10, 'true' => true etc.
    * If it can't cast a value it will let it as is.
+   * It allows undefined and null as a value for each type.
    * @param {object} schema - schema of primitive
    * @param {*} value - raw value
    * @return {*} - correct value for primitive type.

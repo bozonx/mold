@@ -16,6 +16,8 @@ export default class AssocType {
   }
 
   validate(schema, data) {
+    // TODO: nil is allowes
+
     if (!_.isPlainObject(data)) return false;
 
     let isValid = true;

@@ -39,10 +39,15 @@ export default class NumberType {
     // don't cast NaN
     if (_.isNaN(rawValue)) return rawValue;
 
+    // don't cast other values e.g. array or object
+    if (!_.isBoolean(rawValue) && !_.isString(rawValue)) {
+      return rawValue;
+    }
+
     // cast string and boolean as a number
     const toNumber = _.toNumber(rawValue);
 
-    // don't cast invalid value
+    // don't cast invalid value like '5a'
     if (_.isNaN(toNumber)) return rawValue;
 
     return toNumber;

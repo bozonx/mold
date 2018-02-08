@@ -19,6 +19,8 @@ export default class ArrayType {
   }
 
   validate(schema, data) {
+    // TODO: nil is allowes
+
     if (!isSimpleArray(data)) return false;
 
     const primitiveSchema = { type: schema.itemsType };
