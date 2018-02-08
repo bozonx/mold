@@ -35,6 +35,21 @@ export default class TypeManager {
     return Boolean(this._types[typeName]);
   }
 
+  validateSchema(schema) {
+    return this._types[schema.type].validateSchema(schema);
+  }
+
+  /**
+   * Validate previously casted value.
+   * Value is invalid if it wasn't casted correctly.
+   * @param {object} schema - schema of primitive
+   * @param {*} value - previously casted value
+   * @return {boolean} - true if value is correct, otherwise false.
+   */
+  validateValue(schema, value) {
+    return this._types[schema.type].validate(schema, value);
+  }
+
   /**
    * Try to normalize value e.g. '10' => 10, 'true' => true etc.
    * If it can't cast a value it will let it as is.
@@ -45,15 +60,6 @@ export default class TypeManager {
    */
   castValue(schema, value) {
     return this._types[schema.type].cast(schema, value);
-  }
-
-  validateSchema(schema) {
-    return this._types[schema.type].validateSchema(schema);
-  }
-
-  validateValue(schema, value) {
-    // TODO: it has to do log.fatal
-    return this._types[schema.type].validate(schema, value);
   }
 
 }

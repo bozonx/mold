@@ -27,11 +27,9 @@ export default class _Mold {
 
   setSilent(newState) {
     // TODO: test
-    // validate new state. It trows an error if state isn't valid.
-    this._main.$$typeManager.validateValue(this._schema, newState);
     const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
+    this._checkValue(correctValues);
 
-    this._checkForUpdateReadOnly(newState);
     this._main.$$storage.setTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
 
@@ -41,11 +39,9 @@ export default class _Mold {
    * @param {object, array} newState - it's plain object or collection
    */
   update(newState) {
-    // validate new state. It trows an error if state isn't valid.
-    this._main.$$typeManager.validateValue(this._schema, newState);
     const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
+    this._checkValue(correctValues);
 
-    this._checkForUpdateReadOnly(newState);
     this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
   }
 
@@ -55,11 +51,9 @@ export default class _Mold {
    * @param {object, array} newState - it's plain object or collection
    */
   updateSilent(newState) {
-    // validate new state. It trows an error if state isn't valid.
-    this._main.$$typeManager.validateValue(this._schema, newState);
     const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
+    this._checkValue(correctValues);
 
-    this._checkForUpdateReadOnly(newState);
     this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
 
@@ -118,6 +112,21 @@ export default class _Mold {
     });
 
     return result;
+  }
+
+  /**
+   * Check value and trow an error if it is invalid or read only.
+   * @param {array|object|null} correctValues - casted values.
+   * @private
+   */
+  _checkValue(correctValues) {
+    // validate normalized values. It trows an error if state isn't valid.
+    const isValid = this._main.$$typeManager.validateValue(this._schema, correctValues);
+    if (!isValid) {
+      this._main.$$log.fatal(`on mold path ${this._moldPath}: Invalid data ${JSON.stringify(correctValues)}`);
+    }
+
+    this._checkForUpdateReadOnly(correctValues);
   }
 
   // _collectRoProps() {
