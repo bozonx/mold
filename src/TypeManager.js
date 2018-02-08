@@ -35,16 +35,23 @@ export default class TypeManager {
     return Boolean(this._types[typeName]);
   }
 
+  /**
+   * Normalize value e.g. '10' => 10, 'true' => true etc.
+   * @param {object} schema - schema of primitive
+   * @param {*} value - raw value
+   * @return {*} - correct value for primitive type.
+   */
+  castValue(schema, value) {
+    return this._types[schema.type].cast(schema, value);
+  }
+
   validateSchema(schema) {
     return this._types[schema.type].validateSchema(schema);
   }
 
   validateValue(schema, value) {
+    // TODO: it has to do log.fatal
     return this._types[schema.type].validate(schema, value);
-  }
-
-  castValue(schema, value) {
-    return this._types[schema.type].cast(schema, value);
   }
 
 }

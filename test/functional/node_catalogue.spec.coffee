@@ -33,31 +33,31 @@ describe 'Functional. Catalogue node.', ->
       'Schema definition of container on "container" must has a "schema" param!'
     )
 
-  it 'load()', ->
-    _.set(@mold.$$driverManager.$defaultMemoryDb, 'catalogue', @testValues)
-
-    assert.deepEqual(@catalogue.mold, [])
-    assert.isFalse(@catalogue.loading)
-
-    promise = @catalogue.load()
-
-    assert.isTrue(@catalogue.loading)
-
-    result = [
-      { $id: 1, $$key: 1, name: 'value1' }
-      { $id: 2, $$key: 2, name: 'value2' }
-    ]
-
-    promise
-      .then (response) =>
-        assert.deepEqual(response.body, result)
-        assert.deepEqual(@catalogue.actions.default._main.$$storage.getState(
-          @catalogue.actions.default._moldPath,
-          @catalogue.actions.default._actionName
-        ), result)
-        assert.deepEqual(@catalogue.actions.default.mold, result)
-        assert.deepEqual(@catalogue.mold, result)
-        assert.isFalse(@catalogue.loading)
+#  it 'load()', ->
+#    _.set(@mold.$$driverManager.$defaultMemoryDb, 'catalogue', @testValues)
+#
+#    assert.deepEqual(@catalogue.mold, [])
+#    assert.isFalse(@catalogue.loading)
+#
+#    promise = @catalogue.load()
+#
+#    assert.isTrue(@catalogue.loading)
+#
+#    result = [
+#      { $id: 1, $$key: 1, name: 'value1' }
+#      { $id: 2, $$key: 2, name: 'value2' }
+#    ]
+#
+#    promise
+#      .then (response) =>
+#        assert.deepEqual(response.body, result)
+#        assert.deepEqual(@catalogue.actions.default._main.$$storage.getState(
+#          @catalogue.actions.default._moldPath,
+#          @catalogue.actions.default._actionName
+#        ), result)
+#        assert.deepEqual(@catalogue.actions.default.mold, result)
+#        assert.deepEqual(@catalogue.mold, result)
+#        assert.isFalse(@catalogue.loading)
 
   it 'load page', ->
     # TODO: !!!!
