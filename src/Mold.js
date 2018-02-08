@@ -76,7 +76,7 @@ export default class _Mold {
   _initSchema() {
     let initialState = this._getRootInitialState();
 
-    // init primitives
+    // init primitives for document
     if (_.isPlainObject(initialState)) {
       initialState = this._getPrimitivesInitialStates();
     }
@@ -88,27 +88,27 @@ export default class _Mold {
     const rootTypeName = this._schema.type;
 
     if (!_.includes([ 'assoc', 'collection' ], rootTypeName)) {
-      this._main.$$log.fatal(`Bad root type "${rootTypeName}" for "${this._moldPath}" action "${this._actionName}"`);
+      this._main.$$log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Bad root type "${rootTypeName}"`);
     }
 
-    const rootType = this._main.$$typeManager.getType(rootTypeName);
-
-    return rootType.getInitial();
+    return this._main.$$typeManager.getInitial(rootTypeName);
   }
 
   _getPrimitivesInitialStates() {
     const result = {};
+    // get schema for document or catalogue
     const schema = this._schema.items || this._schema.item;
 
     _.each(schema, (item, name) => {
       if (!_.isUndefined(item.initial)) {
-        // set initial value
+        // set initial value from schema
         result[name] = item.initial;
+
+        return;
       }
-      else {
-        // set default type's initial value
-        result[name] = this._main.$$typeManager.getInitial(item.type);
-      }
+
+      // set default initial value of type
+      result[name] = this._main.$$typeManager.getInitial(item.type);
     });
 
     return result;
@@ -123,7 +123,7 @@ export default class _Mold {
     // validate normalized values. It trows an error if state isn't valid.
     const isValid = this._main.$$typeManager.validateValue(this._schema, correctValues);
     if (!isValid) {
-      this._main.$$log.fatal(`on mold path ${this._moldPath}: Invalid data ${JSON.stringify(correctValues)}`);
+      this._main.$$log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid data ${JSON.stringify(correctValues)}`);
     }
 
     this._checkForUpdateReadOnly(correctValues);
