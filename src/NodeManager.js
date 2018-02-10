@@ -35,6 +35,7 @@ export default class NodeManager {
   }
 
   validateSchema(typeName, schema, schemaPath) {
+    // TODO: возвращать строку в случае ошибки
     if (!this._registeredTypes[typeName]) return;
 
     if (!this._registeredTypes[typeName].validateSchema) {

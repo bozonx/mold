@@ -79,10 +79,12 @@ export default class SchemaManager {
     eachSchema(this._schema, (moldPath, schemaPath, schema) => {
       // check node
       if ( this._main.$$nodeManager.isRegistered(schema.type) ) {
+        // TODO: писать сообщение об ошибке
         this._main.$$nodeManager.validateSchema(schema.type, schema, schemaPath);
       }
       // check primitive
       else if (this._main.$$typeManager.isRegistered(schema.type)) {
+        // TODO: писать сообщение об ошибке
         this._main.$$typeManager.validateSchema(schema);
       }
       else {

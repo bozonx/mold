@@ -11,7 +11,22 @@ export default class StringType {
   }
 
   validateSchema(schema) {
-    // TODO: do it
+    const diff = _.difference(_.keys(schema), [ 'type', 'initial' ]);
+
+    if (!_.isEmpty(diff)) return `Unknown params: ${JSON.stringify(diff)}`;
+
+    let error;
+
+    _.find(schema, (value, name) => {
+      if (name === 'initial' && !_.isString(value)) {
+        error = `Invalid initial value`;
+
+        return true;
+      }
+    });
+
+    if (error) return error;
+
     return true;
   }
 
