@@ -35,18 +35,13 @@ export default class NodeManager {
   }
 
   validateSchema(typeName, schema, schemaPath) {
-    // TODO: возвращать строку в случае ошибки
-    if (!this._registeredTypes[typeName]) return;
+    if (!this._registeredTypes[typeName]) return `Unregistered type "${typeName}"`;
 
     if (!this._registeredTypes[typeName].validateSchema) {
-      this._main.$$log.fatal(`Can't find "validateSchema" class prop on "${schemaPath}"`);
+      return `Can't find "validateSchema" class prop on "${schemaPath}"`;
     }
 
-    const result = this._registeredTypes[typeName].validateSchema(schema, schemaPath);
-
-    if (_.isString(result)) {
-      this._main.$$log.fatal(result);
-    }
+    return this._registeredTypes[typeName].validateSchema(schema, schemaPath);
   }
 
   _newInstance(moldPath, schema) {
