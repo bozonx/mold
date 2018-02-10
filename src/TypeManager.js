@@ -35,6 +35,11 @@ export default class TypeManager {
     return Boolean(this._types[typeName]);
   }
 
+  /**
+   * Validate schema
+   * @param {object} schema - schema of primitive
+   * @return {string|boolean} - true if valid or error message if invalid.
+   */
   validateSchema(schema) {
     return this._types[schema.type].validateSchema(schema);
   }

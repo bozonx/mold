@@ -59,7 +59,7 @@ export function correctUpdatePayload(currentData, newData) {
       newerState[name] = item;
     }
   });
-  
+
   return newerState;
 }
 
@@ -80,7 +80,7 @@ export function getPrimaryName(schema) {
   _.find(schemaToFind, (value, name) => {
     if (_.isPlainObject(value) && value.primary) {
       primary = name;
-      
+
       return true;
     }
   });
@@ -94,7 +94,7 @@ export function omitUnsaveable(payload, documentSchema) {
   _.each(documentSchema.schema, (item, name) => {
     if (item.saveable === false) unsaveableParamsNames.push(name);
   });
-  
+
   return _.omit(payload, unsaveableParamsNames);
 }
 
@@ -143,7 +143,7 @@ export function convertFromUrlToLodash(url) {
       converted += `.${part}`;
     }
   });
-  
+
   return _.trimStart(converted, '.');
 }
 
@@ -201,7 +201,7 @@ export function splitPath(moldPath) {
   // ff[1][3] = > ff.[1].[2] => ['ff', '[1]', [2]]
   const pathParts = moldPath.replace(/\[/g, '.[');
 
-  
+
   return _.compact(pathParts.split('.'));
 }
 
@@ -256,6 +256,32 @@ export function isSimpleCollection(value) {
   const head = _.head(compacted);
 
   return _.isPlainObject(head);
+}
+
+export function validateParams(obj, cb) {
+  const checkedNames = [];
+
+  let error;
+
+  _.find(obj, (value, name) => {
+    const result = cb(value, name);
+
+    if (_.isString(result)) {
+      error = result;
+      checkedNames.push(name);
+
+      return true;
+    }
+    else if (result === true) checkedNames.push(name);
+  });
+
+  if (error) return error;
+
+  const diff = _.difference(_.keys(obj), checkedNames);
+
+  if (!_.isEmpty(diff)) return `Unknown params: ${JSON.stringify(diff)}`;
+
+  return true;
 }
 
 

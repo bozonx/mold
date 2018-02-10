@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { validateParams } from '../helpers/helpers';
+
 
 export default class StringType {
   constructor(typeManager) {
@@ -11,23 +13,14 @@ export default class StringType {
   }
 
   validateSchema(schema) {
-    const diff = _.difference(_.keys(schema), [ 'type', 'initial' ]);
-
-    if (!_.isEmpty(diff)) return `Unknown params: ${JSON.stringify(diff)}`;
-
-    let error;
-
-    _.find(schema, (value, name) => {
-      if (name === 'initial' && !_.isString(value)) {
-        error = `Invalid initial value`;
+    return validateParams(_.omit(schema, 'type'), (value, name) => {
+      if (name === 'initial') {
+        if (!_.isString(value)) return `Invalid initial value`;
 
         return true;
       }
+
     });
-
-    if (error) return error;
-
-    return true;
   }
 
   validate(schema, value) {
