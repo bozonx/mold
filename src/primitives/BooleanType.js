@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { validateParams } from '../helpers/helpers';
+
 
 export default class BooleanType {
   constructor(typeManager) {
@@ -11,8 +13,14 @@ export default class BooleanType {
   }
 
   validateSchema(schema) {
-    // TODO: do it
-    return true;
+    return validateParams(_.omit(schema, 'type'), (value, name) => {
+      if (name === 'initial') {
+        if (!_.isBoolean(value)) return `Invalid initial value`;
+
+        return true;
+      }
+
+    });
   }
 
   validate(schema, value) {

@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { validateParams } from '../helpers/helpers';
+
 
 export default class NumberType {
   constructor(typeManager) {
@@ -11,8 +13,19 @@ export default class NumberType {
   }
 
   validateSchema(schema) {
-    // TODO: do it
-    return true;
+    return validateParams(_.omit(schema, 'type'), (value, name) => {
+      if (name === 'initial') {
+        if (!_.isNumber(value)) return `Invalid initial value`;
+
+        return true;
+      }
+      else if (name === 'primary') {
+        if (!_.isBoolean(value)) return `Invalid primary param`;
+
+        return true;
+      }
+
+    });
   }
 
   validate(schema, value) {
