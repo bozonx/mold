@@ -1,4 +1,3 @@
-import { splitPath, joinPath } from '../helpers/helpers';
 import ActionBase from '../ActionBase';
 
 
@@ -10,14 +9,15 @@ export default class _NodeBase {
 
   /**
    * Get mold path
-   * @returns {string}
+   * @return {string} - root path of node.
    */
   get root() {
     return this._moldPath;
   }
 
   /**
-   * Get real mold.
+   * Get mold of default action.
+   * @return {object} - mold.
    */
   get mold() {
     return this.actions.default.mold;
@@ -30,7 +30,7 @@ export default class _NodeBase {
   $init(moldPath, schema) {
     this._moldPath = moldPath;
     this._schema = schema;
-    this.actions = { default: this.$generateDefaultAction() };
+    this.actions = { 'default': this.$generateDefaultAction() };
   }
 
   $createAction(actionName, cb) {
@@ -50,8 +50,8 @@ export default class _NodeBase {
   }
 
   /**
-   * Update container data
-   * @param {string} newState
+   * Update mold default action.
+   * @param {string} newState - partial data
    */
   update(newState) {
     this.actions.default.update(newState);
@@ -69,15 +69,15 @@ export default class _NodeBase {
   // }
 
   /**
-   * Listen changes of instance and its primitives.
-   * @param {function} handler
+   * Listen changes of mold of default action.
+   * @param {function} handler - Your handler.
    */
   onChange(handler) {
-    return this.actions.default.onChange(handler);
+    this.actions.default.onChange(handler);
   }
 
   onAnyChange(handler) {
-    return this.actions.default.onAnyChange(handler);
+    this.actions.default.onAnyChange(handler);
   }
 
   /**
@@ -86,13 +86,14 @@ export default class _NodeBase {
    * @param {function} handler - handler to remove
    */
   off(eventName, handler) {
-    return this.actions.default.off(eventName, handler);
+    this.actions.default.off(eventName, handler);
   }
 
   /**
    * It removes all the events listeners and clears action storage.
    */
   destroy() {
-    return this.actions.default.destroy();
+    this.actions.default.destroy();
   }
+
 }

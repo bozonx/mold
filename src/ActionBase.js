@@ -72,7 +72,7 @@ export default class ActionBase {
   }
 
   destroy() {
-    return this._mold.destroy();
+    this._mold.destroy();
   }
 
   request(payload) {
