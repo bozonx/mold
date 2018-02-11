@@ -6,6 +6,11 @@ Primitives are part of document of item of catalogue.
 
 * Schema of primitive has to have a "type" parameter points on primitive type
 * Schema can has an initial param which contain initial value
+* if you don't specify a schema of primitive, it value of document or item of catalogue
+  will not be validated, but you can use it value.
+* you can use undefined or null instead value of all the types.
+* when you set a new value mold validate it and tries cast value
+  e.g. '10' casts to 10 if number uses, 'false' casts to false, 10 casts to '10' if string uses etc. 
 
 
 ### String, number, boolean
@@ -42,6 +47,20 @@ This schema has to not include an "initial" param.
         initial: [ [1], [2] ],
         item: {
           type: 'array',
+        },
+      }
+    }
+    
+
+### Assoc
+
+    {
+      arrayParam: {
+        type: 'assoc',
+        items: {
+          stringParam: { type: 'string' },
+          numberParam: { type: 'number' },
+          booleanParam: { type: 'boolean' },
         },
       }
     }
