@@ -21,9 +21,9 @@ export default class ArrayType {
 
         return true;
       }
-      if (name === 'itemsType') {
+      if (name === 'item') {
         if (!_.includes(allowedTypes, value)) {
-          return `Invalid "itemsType" value "${value}"`;
+          return `Invalid "item" value "${value}"`;
         }
 
         // check each initial item
@@ -49,7 +49,7 @@ export default class ArrayType {
 
     if (!isSimpleArray(data)) return false;
 
-    const primitiveSchema = { type: schema.itemsType };
+    const primitiveSchema = { type: schema.item };
     let isValid = true;
 
     _.find(data, (rawValue) => {
@@ -76,7 +76,7 @@ export default class ArrayType {
     if (!_.isArray(rawData)) return rawData;
 
     const castedData = [];
-    const primitiveSchema = { type: schema.itemsType };
+    const primitiveSchema = { type: schema.item };
 
     _.each(rawData, (item, index) => {
       castedData[index] = this._typeManager.castValue(primitiveSchema, item);

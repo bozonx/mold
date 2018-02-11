@@ -14,7 +14,7 @@
             numberParam: { type: 'number' },
             array: {
               type: 'array',
-              itemsType: 'string',
+              item: 'string',
               default: ['first', 'second'],
             },
             collection: {
@@ -57,7 +57,7 @@ It's just array with primitive values
 
 Params:
 
-* itemsType - specify a primitive type one of: string, boolean, number, array
+* item - specify a primitive type one of: string, boolean, number, array
 * default - default values
 
 

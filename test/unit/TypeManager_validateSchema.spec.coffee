@@ -56,8 +56,8 @@ describe 'Unit. TypeManager.validateSchema.', ->
       assert.isTrue(@typeManager.validateSchema({ type: 'array' }))
       # initial
       assert.isTrue(@typeManager.validateSchema({ type: 'array', initial: [ 1, 2, 3 ] }))
-      # itemsType
-      assert.isTrue(@typeManager.validateSchema({ type: 'array', itemsType: 'number' }))
+      # item
+      assert.isTrue(@typeManager.validateSchema({ type: 'array', item: 'number' }))
 
     it "invalid", ->
       # bad param
@@ -65,6 +65,6 @@ describe 'Unit. TypeManager.validateSchema.', ->
       # bad initial
       assert.isString(@typeManager.validateSchema({ type: 'array', initial: true }))
       # bad initial
-      assert.isString(@typeManager.validateSchema({ type: 'array', itemsType: 'number', initial: [ 1, 'a' ] }))
-      # bad itemsType
-      assert.isString(@typeManager.validateSchema({ type: 'array', itemsType: 'other' }))
+      assert.isString(@typeManager.validateSchema({ type: 'array', item: 'number', initial: [ 1, 'a' ] }))
+      # bad item
+      assert.isString(@typeManager.validateSchema({ type: 'array', item: 'other' }))

@@ -14,7 +14,7 @@ describe 'Unit. TypeManager.castValue.', ->
         numberParam: {type: 'number'}
         arrayParam: {
           type: 'array'
-          itemsType: 'number'
+          item: 'number'
         }
         nested: {
           type: 'assoc'
