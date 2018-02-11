@@ -58,6 +58,14 @@ describe 'Unit. TypeManager.validateSchema.', ->
       assert.isTrue(@typeManager.validateSchema({ type: 'array', initial: [ 1, 2, 3 ] }))
       # item
       assert.isTrue(@typeManager.validateSchema({ type: 'array', item: 'number' }))
+      # nested schema
+      assert.isTrue(@typeManager.validateSchema({ type: 'array', item: { type: 'array' } }))
+      # nested schema with initial
+      assert.isTrue(@typeManager.validateSchema({
+        type: 'array'
+        initial: [ [1], [2] ]
+        item: { type: 'array', item: 'number' }
+      }))
 
     it "invalid", ->
       # bad param
@@ -68,3 +76,13 @@ describe 'Unit. TypeManager.validateSchema.', ->
       assert.isString(@typeManager.validateSchema({ type: 'array', item: 'number', initial: [ 1, 'a' ] }))
       # bad item
       assert.isString(@typeManager.validateSchema({ type: 'array', item: 'other' }))
+      # nested schema
+      assert.isString(@typeManager.validateSchema({ type: 'array', item: { } }))
+      # nested schema
+      assert.isString(@typeManager.validateSchema({ type: 'array', item: { type: 'number' } }))
+      # nested schema with initial
+      assert.isString(@typeManager.validateSchema({
+        type: 'array'
+        initial: [ [1], [2] ]
+        item: { type: 'array', item: 'string' }
+      }))

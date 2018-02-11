@@ -12,8 +12,15 @@ export default class ArrayType {
     return [];
   }
 
+  /**
+   * Validate schema of array.
+   * * initial - it can be like [ 1, 2, 3 ] or [ [1], [2] ]
+   * * item - type or schema of item it can be: string, boolean, number or schema like { type: 'array', ...}
+   * @param {object} schema - schema of this type
+   * @return {string|boolean} - error string or true if valid.
+   */
   validateSchema(schema) {
-    const allowedTypes = [ 'string', 'number', 'boolean', 'array', 'collection' ];
+    const allowedTypes = [ 'string', 'number', 'boolean' ];
 
     return validateParams(_.omit(schema, 'type'), (value, name) => {
       if (name === 'initial') {
@@ -22,7 +29,29 @@ export default class ArrayType {
         return true;
       }
       if (name === 'item') {
-        if (!_.includes(allowedTypes, value)) {
+        if (_.isPlainObject(value)) {
+          if (!value.type) return `Invalid "item" params. Nested schema doesn't have a type param`;
+          if (!_.includes([ 'array', 'collection' ], value.type)) return `Invalid type of nested schema: "${value.type}"`;
+
+          let errMsg;
+          _.find(schema.initial, (val) => {
+            const subSchemaCheck = this._typeManager.validateSchema({
+              ...value,
+              initial: val,
+            });
+
+            if (_.isString(subSchemaCheck)) {
+              errMsg = subSchemaCheck;
+
+              return true;
+            }
+          });
+
+          if (errMsg) return errMsg;
+
+          return true;
+        }
+        else if (!_.includes(allowedTypes, value)) {
           return `Invalid "item" value "${value}"`;
         }
 
@@ -35,8 +64,6 @@ export default class ArrayType {
 
         if (!_.isUndefined(badItem)) return `Bad type of array's item ${JSON.stringify(badItem)}`;
 
-
-        // TODO: ??? проверить item - схема для вложенной array и collection
 
         return true;
       }
