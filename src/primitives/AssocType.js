@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { validateParams } from '../helpers/helpers';
+
 
 export default class AssocType {
   constructor(typeManager) {
