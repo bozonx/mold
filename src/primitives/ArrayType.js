@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { isSimpleArray } from '../helpers/helpers';
+import { isSimpleArray, validateParams } from '../helpers/helpers';
 
 
 export default class ArrayType {
@@ -13,13 +13,28 @@ export default class ArrayType {
   }
 
   validateSchema(schema) {
-    // TODO: do it
-    // TODO: itemsType
-    return true;
+    return validateParams(_.omit(schema, 'type'), (value, name) => {
+      if (name === 'initial') {
+        if (!_.isArray(value)) return `Invalid initial value`;
+
+        return true;
+      }
+      if (name === 'itemsType') {
+        if (!_.includes([ 'string', 'number', 'boolean', 'array', 'collection' ], value)) {
+          return `Invalid "itemsType" value "${value}"`;
+        }
+
+        // TODO: проверить все значения inital на соответствие itemsType
+        // TODO: проверить item - схема для вложенной array и collection
+
+        return true;
+      }
+
+    });
   }
 
   validate(schema, data) {
-    // TODO: nil is allowes
+    // TODO: nil is allows
 
     if (!isSimpleArray(data)) return false;
 

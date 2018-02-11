@@ -20,7 +20,7 @@ describe 'Unit. TypeManager.validateSchema.', ->
       assert.isString(@typeManager.validateSchema({ type: 'number', badParam: 'str' }))
       # bad initial
       assert.isString(@typeManager.validateSchema({ type: 'number', initial: true }))
-      # primary
+      # bad primary
       assert.isString(@typeManager.validateSchema({ type: 'number', primary: 'str' }))
 
   describe 'string', ->
@@ -48,3 +48,21 @@ describe 'Unit. TypeManager.validateSchema.', ->
       assert.isString(@typeManager.validateSchema({ type: 'boolean', badParam: 5 }))
       # bad initial
       assert.isString(@typeManager.validateSchema({ type: 'boolean', initial: 2 }))
+
+
+  describe 'array', ->
+    it "valid", ->
+      # without params
+      assert.isTrue(@typeManager.validateSchema({ type: 'array' }))
+      # initial
+      assert.isTrue(@typeManager.validateSchema({ type: 'array', initial: [ 1, 2, 3 ] }))
+      # itemsType
+      assert.isTrue(@typeManager.validateSchema({ type: 'array', itemsType: 'number' }))
+
+    it "invalid", ->
+      # bad param
+      assert.isString(@typeManager.validateSchema({ type: 'array', badParam: 5 }))
+      # bad initial
+      assert.isString(@typeManager.validateSchema({ type: 'array', initial: true }))
+      # bad itemsType
+      assert.isString(@typeManager.validateSchema({ type: 'array', itemsType: 'other' }))
