@@ -106,7 +106,10 @@ describe 'Unit. TypeManager.validateSchema.', ->
         type: 'assoc'
         items: {
           param: { type: 'array', item: 'number', initial: [ 1, 2 ] }
-          #param: { type: 'assoc', items: { type: 'string', initial: 'str' } }
+          param: { type: 'assoc', items: {
+            subParam: { type: 'string', initial: 'str' }
+          }}
+          # TODO: add collection
           #param: { type: 'collection', initial: true }
         }
       }))
@@ -128,10 +131,13 @@ describe 'Unit. TypeManager.validateSchema.', ->
           param: { type: 'array', item: 'number', initial: [ '1', 2 ] }
         }
       }))
-#      # assoc
-#      assert.isString(@typeManager.validateSchema({
-#        type: 'assoc'
-#        items: {
-#          param: { type: 'assoc', items: { type: 'string', initial: 5 } }
-#        }
-#      }))
+      # assoc
+      assert.isString(@typeManager.validateSchema({
+        type: 'assoc'
+        items: {
+          param: { type: 'assoc', items: {
+            subParam: { type: 'string', initial: 5 }
+          }}
+        }
+      }))
+# TODO: add collection
