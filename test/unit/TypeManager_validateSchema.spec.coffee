@@ -86,3 +86,52 @@ describe 'Unit. TypeManager.validateSchema.', ->
         initial: [ [1], [2] ]
         item: { type: 'array', item: 'string' }
       }))
+
+
+  describe 'assoc', ->
+    it "valid", ->
+      # without params
+      assert.isTrue(@typeManager.validateSchema({ type: 'assoc' }))
+      # simple items
+      assert.isTrue(@typeManager.validateSchema({
+        type: 'assoc'
+        items: {
+          param: { type: 'string', initial: 'str' }
+          param: { type: 'number', initial: 5 }
+          param: { type: 'boolean', initial: true }
+        }
+      }))
+      # array, assoc, collection
+      assert.isTrue(@typeManager.validateSchema({
+        type: 'assoc'
+        items: {
+          param: { type: 'array', item: 'number', initial: [ 1, 2 ] }
+          #param: { type: 'assoc', items: { type: 'string', initial: 'str' } }
+          #param: { type: 'collection', initial: true }
+        }
+      }))
+
+    it "invalid", ->
+      # bad param
+      assert.isString(@typeManager.validateSchema({ type: 'assoc', badParam: 5 }))
+      # simple items
+      assert.isString(@typeManager.validateSchema({
+        type: 'assoc'
+        items: {
+          param: { type: 'string', initial: 5 }
+        }
+      }))
+      # array
+      assert.isString(@typeManager.validateSchema({
+        type: 'assoc'
+        items: {
+          param: { type: 'array', item: 'number', initial: [ '1', 2 ] }
+        }
+      }))
+#      # assoc
+#      assert.isString(@typeManager.validateSchema({
+#        type: 'assoc'
+#        items: {
+#          param: { type: 'assoc', items: { type: 'string', initial: 5 } }
+#        }
+#      }))

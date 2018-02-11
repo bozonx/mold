@@ -41,6 +41,8 @@ export default class TypeManager {
    * @return {string|boolean} - true if valid or error message if invalid.
    */
   validateSchema(schema) {
+    // TODO: проверить что тип зарегистрован
+
     return this._types[schema.type].validateSchema(schema);
   }
 

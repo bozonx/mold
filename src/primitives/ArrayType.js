@@ -116,9 +116,7 @@ export default class ArrayType {
       }
     });
 
-    if (errMsg) return errMsg;
-
-    return true;
+    return errMsg || true;
   }
 
 }

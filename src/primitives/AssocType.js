@@ -13,12 +13,34 @@ export default class AssocType {
   }
 
   validateSchema(schema) {
-    // TODO: do it
-    return true;
+    return validateParams(_.omit(schema, 'type'), (value, name) => {
+      if (name === 'items') {
+        if (!_.isPlainObject(value)) {
+          return `Invalid type of "items" param`;
+        }
+
+        if (_.isEmpty(value)) {
+          return `Items are empty`;
+        }
+
+        let errMsg;
+
+        _.find(value, (subSchema, subName) => {
+          const result = this._typeManager.validateSchema(subSchema);
+          if (_.isString(result)) {
+            errMsg = `Param "${subName}": ${result}`;
+
+            return true;
+          }
+        });
+
+        return errMsg || true;
+      }
+    });
   }
 
   validate(schema, data) {
-    // TODO: nil is allowes
+    // TODO: nil is allows
 
     if (!_.isPlainObject(data)) return false;
 
