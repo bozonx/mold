@@ -140,4 +140,4 @@ describe 'Unit. TypeManager.validateSchema.', ->
           }}
         }
       }))
-# TODO: add collection
+      # TODO: add collection
