@@ -64,5 +64,7 @@ describe 'Unit. TypeManager.validateSchema.', ->
       assert.isString(@typeManager.validateSchema({ type: 'array', badParam: 5 }))
       # bad initial
       assert.isString(@typeManager.validateSchema({ type: 'array', initial: true }))
+      # bad initial
+      assert.isString(@typeManager.validateSchema({ type: 'array', itemsType: 'number', initial: [ 1, 'a' ] }))
       # bad itemsType
       assert.isString(@typeManager.validateSchema({ type: 'array', itemsType: 'other' }))

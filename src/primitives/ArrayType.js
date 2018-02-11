@@ -13,6 +13,8 @@ export default class ArrayType {
   }
 
   validateSchema(schema) {
+    const allowedTypes = [ 'string', 'number', 'boolean', 'array', 'collection' ];
+
     return validateParams(_.omit(schema, 'type'), (value, name) => {
       if (name === 'initial') {
         if (!_.isArray(value)) return `Invalid initial value`;
@@ -20,12 +22,21 @@ export default class ArrayType {
         return true;
       }
       if (name === 'itemsType') {
-        if (!_.includes([ 'string', 'number', 'boolean', 'array', 'collection' ], value)) {
+        if (!_.includes(allowedTypes, value)) {
           return `Invalid "itemsType" value "${value}"`;
         }
 
-        // TODO: проверить все значения inital на соответствие itemsType
-        // TODO: проверить item - схема для вложенной array и collection
+        // check each initial item
+        if (!schema.initial) return true;
+
+        const badItem = _.find(schema.initial, (val) => {
+          return !_[`is${_.capitalize(value)}`](val);
+        });
+
+        if (!_.isUndefined(badItem)) return `Bad type of array's item ${JSON.stringify(badItem)}`;
+
+
+        // TODO: ??? проверить item - схема для вложенной array и collection
 
         return true;
       }
