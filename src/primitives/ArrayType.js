@@ -30,42 +30,13 @@ export default class ArrayType {
       }
       if (name === 'item') {
         if (_.isPlainObject(value)) {
-          if (!value.type) return `Invalid "item" params. Nested schema doesn't have a type param`;
-          if (!_.includes([ 'array', 'collection' ], value.type)) return `Invalid type of nested schema: "${value.type}"`;
-
-          let errMsg;
-          _.find(schema.initial, (val) => {
-            const subSchemaCheck = this._typeManager.validateSchema({
-              ...value,
-              initial: val,
-            });
-
-            if (_.isString(subSchemaCheck)) {
-              errMsg = subSchemaCheck;
-
-              return true;
-            }
-          });
-
-          if (errMsg) return errMsg;
-
-          return true;
+          return this._validateNestedSchema(schema.initial, value);
         }
         else if (!_.includes(allowedTypes, value)) {
           return `Invalid "item" value "${value}"`;
         }
 
-        // check each initial item
-        if (!schema.initial) return true;
-
-        const badItem = _.find(schema.initial, (val) => {
-          return !_[`is${_.capitalize(value)}`](val);
-        });
-
-        if (!_.isUndefined(badItem)) return `Bad type of array's item ${JSON.stringify(badItem)}`;
-
-
-        return true;
+        return this._validateSimpleInitialItems(schema.initial, value);
       }
 
     });
@@ -112,6 +83,42 @@ export default class ArrayType {
     });
 
     return castedData;
+  }
+
+  _validateSimpleInitialItems(initial, itemsType) {
+    // check each initial item
+    if (!initial) return true;
+
+    const badItem = _.find(initial, (val) => {
+      return !_[`is${_.capitalize(itemsType)}`](val);
+    });
+
+    if (!_.isUndefined(badItem)) return `Bad type of array's item ${JSON.stringify(badItem)}`;
+
+    return true;
+  }
+
+  _validateNestedSchema(initial, nestedSchema) {
+    if (!nestedSchema.type) return `Invalid "item" params. Nested schema doesn't have a type param`;
+    if (!_.includes([ 'array', 'collection' ], nestedSchema.type)) return `Invalid type of nested schema: "${nestedSchema.type}"`;
+
+    let errMsg;
+    _.find(initial, (val) => {
+      const subSchemaCheck = this._typeManager.validateSchema({
+        ...nestedSchema,
+        initial: val,
+      });
+
+      if (_.isString(subSchemaCheck)) {
+        errMsg = subSchemaCheck;
+
+        return true;
+      }
+    });
+
+    if (errMsg) return errMsg;
+
+    return true;
   }
 
 }
