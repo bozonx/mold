@@ -40,6 +40,7 @@ export default class TypeManager {
    */
   validateSchema(schema) {
     // TODO: проверить что тип зарегистрован
+    // TODO: добавить к сообщениям об ошибках источник???
 
     return this._types[schema.type].validateSchema(schema);
   }

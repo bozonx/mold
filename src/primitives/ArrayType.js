@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { isSimpleArray, validateParams } from '../helpers/helpers';
+import { validateParams } from '../helpers/helpers';
 
 
 export default class ArrayType {
@@ -45,7 +45,7 @@ export default class ArrayType {
   validate(schema, data) {
     // TODO: nil is allows
 
-    if (!isSimpleArray(data)) return false;
+    if (!_.isArray(data)) return false;
 
     const primitiveSchema = { type: schema.item };
     let isValid = true;
@@ -98,13 +98,12 @@ export default class ArrayType {
     return true;
   }
 
-  _validateNestedSchema(initial, nestedSchema) {
+  _validateNestedSchema(arrayInitial, nestedSchema) {
     if (!nestedSchema.type) return `Invalid "item" params. Nested schema doesn't have a type param`;
-    // TODO: нету collection уже - use assoc
-    if (!_.includes([ 'array', 'collection' ], nestedSchema.type)) return `Invalid type of nested schema: "${nestedSchema.type}"`;
+    if (!_.includes([ 'array', 'assoc' ], nestedSchema.type)) return `Invalid type of nested schema: "${nestedSchema.type}"`;
 
     let errMsg;
-    _.find(initial, (val) => {
+    _.find(arrayInitial, (val) => {
       const subSchemaCheck = this._typeManager.validateSchema({
         ...nestedSchema,
         initial: val,

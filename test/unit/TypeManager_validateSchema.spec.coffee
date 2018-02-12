@@ -66,8 +66,17 @@ describe 'Unit. TypeManager.validateSchema.', ->
         initial: [ [1], [2] ]
         item: { type: 'array', item: 'number' }
       }))
-    # TODO: add assoc
-
+      # collection like
+      assert.isTrue(@typeManager.validateSchema({
+        type: 'array'
+        initial: [ {id: 1}, {id:2} ]
+        item: {
+          type: 'assoc'
+          items: {
+            param: { type: 'number' }
+          }
+        }
+      }))
 
     it "invalid", ->
       # bad param
@@ -87,6 +96,17 @@ describe 'Unit. TypeManager.validateSchema.', ->
         type: 'array'
         initial: [ [1], [2] ]
         item: { type: 'array', item: 'string' }
+      }))
+      # collection like
+      assert.isString(@typeManager.validateSchema({
+        type: 'array'
+        initial: [ {id: 1}, {id:2} ]
+        item: {
+          type: 'assoc'
+          items: {
+            param: { type: 'number', initial: true }
+          }
+        }
       }))
 
 
