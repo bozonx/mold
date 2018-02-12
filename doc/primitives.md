@@ -51,6 +51,21 @@ This schema has to not include an "initial" param.
       }
     }
     
+#### Collection
+
+    {
+      arrayParam: {
+        type: 'array',
+        initial: [ {id: 1}, {id:2} ],
+        item: {
+          type: 'assoc',
+          items: {
+            param: { type: 'number' }
+          },
+        },
+      }
+    }
+    
 
 ### Assoc
 

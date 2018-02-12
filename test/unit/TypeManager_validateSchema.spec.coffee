@@ -66,6 +66,8 @@ describe 'Unit. TypeManager.validateSchema.', ->
         initial: [ [1], [2] ]
         item: { type: 'array', item: 'number' }
       }))
+    # TODO: add assoc
+
 
     it "invalid", ->
       # bad param
@@ -109,8 +111,6 @@ describe 'Unit. TypeManager.validateSchema.', ->
           param: { type: 'assoc', items: {
             subParam: { type: 'string', initial: 'str' }
           }}
-          # TODO: add collection
-          #param: { type: 'collection', initial: true }
         }
       }))
 
@@ -140,4 +140,3 @@ describe 'Unit. TypeManager.validateSchema.', ->
           }}
         }
       }))
-      # TODO: add collection
