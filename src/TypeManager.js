@@ -1,13 +1,12 @@
 import ArrayType from './primitives/ArrayType';
 import AssocType from './primitives/AssocType';
 import BooleanType from './primitives/BooleanType';
-import CollectionType from './primitives/CollectionType';
 import NumberType from './primitives/NumberType';
 import StringType from './primitives/StringType';
 
 
 /**
- * It manages of primitive types: string, number, boolean, array, assoc, collection.
+ * It manages of primitive types: string, number, boolean, array, assoc.
  * @class
  */
 export default class TypeManager {
@@ -19,7 +18,6 @@ export default class TypeManager {
       boolean: new BooleanType(this),
       array: new ArrayType(this),
       assoc: new AssocType(this),
-      collection: new CollectionType(this),
     };
   }
 

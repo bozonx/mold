@@ -68,21 +68,3 @@ This schema has to not include an "initial" param.
         },
       }
     }
-    
-    
-### Collection
-
-    {
-      collectionParam: {
-        type: 'collection',
-        item: {
-          stringParam: { type: 'string' },
-          numberParam: { type: 'number' },
-          booleanParam: { type: 'boolean' },
-          arrayParam: { type: 'array', item: 'number', initial: [ 1, 2 ] }
-          assocParam: { type: 'assoc', items: {
-            subParam: { type: 'string', initial: 'str' }
-          },
-        },
-      }
-    }

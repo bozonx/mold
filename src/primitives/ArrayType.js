@@ -100,6 +100,7 @@ export default class ArrayType {
 
   _validateNestedSchema(initial, nestedSchema) {
     if (!nestedSchema.type) return `Invalid "item" params. Nested schema doesn't have a type param`;
+    // TODO: нету collection уже - use assoc
     if (!_.includes([ 'array', 'collection' ], nestedSchema.type)) return `Invalid type of nested schema: "${nestedSchema.type}"`;
 
     let errMsg;

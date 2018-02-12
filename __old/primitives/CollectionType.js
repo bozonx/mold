@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { isSimpleCollection } from '../helpers/helpers';
+import { isSimpleCollection } from '../../src/helpers/helpers';
 
 
 export default class CollectionType {

@@ -72,6 +72,7 @@ describe 'Unit. mutate.', ->
   describe 'Collections updates', ->
     it 'init', ->
       storage =
+        # TODO: нету накого типа уже
         collection: []
       newData = [
         {

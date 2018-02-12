@@ -28,7 +28,8 @@ export default class Catalogue extends State {
   $init(moldPath, schema) {
     // convert to simple schema type
     this.$fullSchema = {
-      type: 'collection',
+      // TODO: нету collection уже
+      type: 'array',
       item: schema.item,
     };
 

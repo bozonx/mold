@@ -4,6 +4,7 @@ describe 'Unit. helpers.', ->
   describe 'eachSchema.', ->
     it 'common', ->
       schema =
+        # TODO: нету накого типа уже
         collection:
           type: 'collection'
           item:

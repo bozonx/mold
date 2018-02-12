@@ -22,12 +22,6 @@ describe 'Unit. TypeManager.castValue.', ->
             nestedNumberParam: {type: 'number'}
           }
         }
-        collection: {
-          type: 'collection'
-          item: {
-            numberParam: {type: 'number'}
-          }
-        }
       }
     }
 
@@ -44,18 +38,6 @@ describe 'Unit. TypeManager.castValue.', ->
       nested: {
         nestedNumberParam: 5
       }
-    }
-
-  it 'collection', ->
-    data = {
-      collection: [
-        { numberParam: '5' }
-      ]
-    }
-    assert.deepEqual @typeManager.castValue(@testSchema, data), {
-      collection: [
-        { numberParam: 5 }
-      ]
     }
 
   describe 'array', ->

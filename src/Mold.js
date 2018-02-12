@@ -87,7 +87,8 @@ export default class _Mold {
   _getRootInitialState() {
     const rootTypeName = this._schema.type;
 
-    if (!_.includes([ 'assoc', 'collection' ], rootTypeName)) {
+    // TODO: наверное надо array использовать вместо collection
+    if (!_.includes([ 'assoc', 'array' ], rootTypeName)) {
       this._main.$$log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Bad root type "${rootTypeName}"`);
     }
 

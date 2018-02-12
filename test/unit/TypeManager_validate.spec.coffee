@@ -22,12 +22,6 @@ describe 'Unit. TypeManager.validate.', ->
             nestedNumberParam: {type: 'number'}
           }
         }
-        collection: {
-          type: 'collection'
-          item: {
-            numberParam: {type: 'number'}
-          }
-        }
       }
     }
 
@@ -58,21 +52,6 @@ describe 'Unit. TypeManager.validate.', ->
 
     data = {
       arrayParam: ['d5', 5]
-    }
-    assert.isFalse(@typeManager.validateValue(@testSchema, data))
-
-  it 'collection', ->
-    data = {
-      collection: [
-        { numberParam: 5 }
-      ]
-    }
-    assert.isTrue(@typeManager.validateValue(@testSchema, data))
-
-    data = {
-      collection: [
-        { numberParam: '5f' }
-      ]
     }
     assert.isFalse(@typeManager.validateValue(@testSchema, data))
 
