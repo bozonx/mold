@@ -41,6 +41,24 @@ describe 'Unit. TypeManager.castValue.', ->
     }
 
   describe 'array', ->
+    it "Don't cast", ->
+      # number
+      data = { arrayParam: 5 }
+      assert.deepEqual @typeManager.castValue(@testSchema, data), {
+        arrayParam: 5
+      }
+      # undefined
+      data = { arrayParam: undefined }
+      assert.deepEqual @typeManager.castValue(@testSchema, data), {
+        arrayParam: undefined
+      }
+      # null
+      data = { arrayParam: null }
+      assert.deepEqual @typeManager.castValue(@testSchema, data), {
+        arrayParam: null
+      }
+      # and other...
+
     it 'correct', ->
       data = {
         arrayParam: ['5', '6a', '123']

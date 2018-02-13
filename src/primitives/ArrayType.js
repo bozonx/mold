@@ -65,12 +65,13 @@ export default class ArrayType {
 
   /**
    * Cast items of array.
+   * It doesn't cast other types.
    * @param {object} schema - schema of this type
    * @param {array} rawData - raw value
    * @return {array} - correct values
    */
   cast(schema, rawData) {
-    // TODO: is it need to support of udefined and null?
+    // don't cast other types
     if (!_.isArray(rawData)) return rawData;
 
     const castedData = [];
