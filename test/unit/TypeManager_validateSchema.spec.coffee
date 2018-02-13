@@ -73,7 +73,7 @@ describe 'Unit. TypeManager.validateSchema.', ->
         item: {
           type: 'assoc'
           items: {
-            param: { type: 'number' }
+            id: { type: 'number' }
           }
         }
       }))
@@ -114,6 +114,8 @@ describe 'Unit. TypeManager.validateSchema.', ->
     it "valid", ->
       # without params
       assert.isTrue(@typeManager.validateSchema({ type: 'assoc' }))
+      # initial
+      assert.isTrue(@typeManager.validateSchema({ type: 'assoc', initial: { id: 1 } }))
       # simple items
       assert.isTrue(@typeManager.validateSchema({
         type: 'assoc'
@@ -137,6 +139,8 @@ describe 'Unit. TypeManager.validateSchema.', ->
     it "invalid", ->
       # bad param
       assert.isString(@typeManager.validateSchema({ type: 'assoc', badParam: 5 }))
+      # bad initial
+      assert.isString(@typeManager.validateSchema({ type: 'assoc', initial: true }))
       # simple items
       assert.isString(@typeManager.validateSchema({
         type: 'assoc'

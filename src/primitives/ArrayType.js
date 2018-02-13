@@ -104,6 +104,7 @@ export default class ArrayType {
 
     let errMsg;
     _.find(arrayInitial, (val) => {
+
       const subSchemaCheck = this._typeManager.validateSchema({
         ...nestedSchema,
         initial: val,
@@ -115,6 +116,7 @@ export default class ArrayType {
         return true;
       }
     });
+
 
     return errMsg || true;
   }

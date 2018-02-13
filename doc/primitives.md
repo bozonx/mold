@@ -72,6 +72,7 @@ This schema has to not include an "initial" param.
     {
       assocParam: {
         type: 'assoc',
+        initial: { id: 1 }
         items: {
           stringParam: { type: 'string' },
           numberParam: { type: 'number' },

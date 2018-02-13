@@ -14,7 +14,12 @@ export default class AssocType {
 
   validateSchema(schema) {
     return validateParams(_.omit(schema, 'type'), (value, name) => {
-      if (name === 'items') {
+      if (name === 'initial') {
+        if (!_.isPlainObject(value)) return `Invalid initial value`;
+
+        return true;
+      }
+      else if (name === 'items') {
         if (!_.isPlainObject(value)) {
           return `Invalid type of "items" param`;
         }
@@ -26,6 +31,8 @@ export default class AssocType {
         let errMsg;
 
         _.find(value, (subSchema, subName) => {
+          // TODO: pass initial to sub items to check
+
           const result = this._typeManager.validateSchema(subSchema);
           if (_.isString(result)) {
             errMsg = `Param "${subName}": ${result}`;
