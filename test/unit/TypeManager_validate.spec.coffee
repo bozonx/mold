@@ -73,7 +73,7 @@ describe 'Unit. TypeManager.validate.', ->
       assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: [] }))
       # '5a'
       assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: '5a' }))
-      # TODO: boolean will cat to 1,0
+      # TODO: boolean will cast to 1,0
       # true
       assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: true }))
 
