@@ -141,6 +141,14 @@ describe 'Unit. TypeManager.validateSchema.', ->
       assert.isString(@typeManager.validateSchema({ type: 'assoc', badParam: 5 }))
       # bad initial
       assert.isString(@typeManager.validateSchema({ type: 'assoc', initial: true }))
+      # bad nested initial
+      assert.isString(@typeManager.validateSchema({
+        type: 'assoc',
+        initial: {id: 'str'}
+        items: {
+          id: { type: 'number' }
+        }
+      }))
       # simple items
       assert.isString(@typeManager.validateSchema({
         type: 'assoc'

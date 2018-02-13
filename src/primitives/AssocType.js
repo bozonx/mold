@@ -31,9 +31,16 @@ export default class AssocType {
         let errMsg;
 
         _.find(value, (subSchema, subName) => {
-          // TODO: pass initial to sub items to check
+          let preparedSubSchema = subSchema;
+          if (schema.initial) {
+            preparedSubSchema = {
+              ...subSchema,
+              initial: schema.initial && schema.initial[subName],
+            };
+          }
 
-          const result = this._typeManager.validateSchema(subSchema);
+          const result = this._typeManager.validateSchema(preparedSubSchema);
+
           if (_.isString(result)) {
             errMsg = `Param "${subName}": ${result}`;
 
