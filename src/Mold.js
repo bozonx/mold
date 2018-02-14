@@ -58,11 +58,11 @@ export default class _Mold {
   }
 
   onChange(...params) {
-    this._main.$$storage.onChange(this._moldPath, this._actionName, ...params);
+    this._main.$$storage.onChangeAction(this._moldPath, this._actionName, ...params);
   }
 
   onAnyChange(...params) {
-    this._main.$$storage.onAnyChange(this._moldPath, this._actionName, ...params);
+    this._main.$$storage.onAnyChangeAction(this._moldPath, this._actionName, ...params);
   }
 
   off(...params) {

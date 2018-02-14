@@ -12,39 +12,47 @@ export default class Events {
     this.eventEmitter.emit(this._getEventName(path, eventName), eventData);
   }
 
-  onChange(path, handler) {
-    this.on(path, 'change', handler);
-  }
-
-  onAnyChange(path, handler) {
-    this.on(path, 'any', handler);
-  }
-
   on(path, eventName, handler) {
-    if (!this._handlers[path]) {
-      this._handlers[path] = {};
+    const pathParam = path || '$root';
+
+    if (!this._handlers[pathParam]) {
+      this._handlers[pathParam] = {};
     }
-    if (!this._handlers[path][eventName]) {
-      this._handlers[path][eventName] = [];
+    if (!this._handlers[pathParam][eventName]) {
+      this._handlers[pathParam][eventName] = [];
     }
 
-    this._handlers[path][eventName].push(handler);
-    this.eventEmitter.on(this._getEventName(path, eventName), handler);
+    this._handlers[pathParam][eventName].push(handler);
+
+    if (path) {
+      this.eventEmitter.on(this._getEventName(path, eventName), handler);
+    }
+    else {
+      this.eventEmitter.on(eventName, handler);
+    }
   }
 
   off(path, eventName, handler) {
     // TODO: test it
-    if (this._handlers[path] && this._handlers[path][eventName]) {
-      _.find(this._handlers[path][eventName], (foundHandler, index) => {
+    const pathParam = path || '$root';
+
+    if (this._handlers[pathParam] && this._handlers[pathParam][eventName]) {
+      // remove listener from list
+      _.find(this._handlers[pathParam][eventName], (foundHandler, index) => {
         if (foundHandler === handler) {
-          this._handlers[path][eventName].splice(index, 1);
+          this._handlers[pathParam][eventName].splice(index, 1);
 
           return true;
         }
       });
     }
 
-    this.eventEmitter.off(this._getEventName(path, eventName), handler);
+    if (path) {
+      this.eventEmitter.off(this._getEventName(path, eventName), handler);
+    }
+    else {
+      this.eventEmitter.off(eventName, handler);
+    }
   }
 
   destroy(path) {

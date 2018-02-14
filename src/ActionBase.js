@@ -56,11 +56,11 @@ export default class ActionBase {
   }
 
   onChange(...params) {
-    this._mold.onChange(...params);
+    this._mold.onChangeAction(...params);
   }
 
   onAnyChange(...params) {
-    this._mold.onAnyChange(...params);
+    this._mold.onAnyChangeAction(...params);
   }
 
   off(...params) {

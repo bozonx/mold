@@ -14,7 +14,7 @@ describe 'Unit. Storage.', ->
     handlerAnyChange = sinon.spy()
     @storage.$init({})
     @storage.initState(@moldPath, @defaultAction, {})
-    @storage.onChange(@moldPath, @defaultAction, handlerChange)
+    @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
     @storage.onAnyChange(@moldPath, @defaultAction, handlerAnyChange)
 
     @storage.updateTopLevel(@moldPath, @defaultAction, { data: 1 })

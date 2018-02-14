@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import { mutate } from './helpers/mutate';
+import Events from './Events';
 
 
 /**
@@ -21,8 +22,8 @@ import { mutate } from './helpers/mutate';
  * @class
  */
 export default class Storage {
-  constructor(events) {
-    this._events = events;
+  constructor() {
+    this._events = new Events();
     this._storage = null;
   }
 
@@ -264,15 +265,24 @@ export default class Storage {
     });
   }
 
-  onChange(moldPath, action, handler) {
-    this._events.onChange(this._getFullPath(moldPath, action), handler);
+  onChange(handler) {
+    this._events.on(null, 'change', handler);
   }
 
   onAnyChange(moldPath, action, handler) {
-    this._events.onAnyChange(this._getFullPath(moldPath, action), handler);
+    this._events.on(null, 'any', handler);
+  }
+
+  onChangeAction(moldPath, action, handler) {
+    this._events.on(this._getFullPath(moldPath, action), 'change', handler);
+  }
+
+  onAnyChangeAction(moldPath, action, handler) {
+    this._events.on(this._getFullPath(moldPath, action), 'any', handler);
   }
 
   off(moldPath, action, event, handler) {
+    // TODO: поддержка off из Main.off
     this._events.off(this._getFullPath(moldPath, action), event, handler);
   }
 
@@ -313,12 +323,16 @@ export default class Storage {
   _emitActionEvent(moldPath, action, eventName, eventData) {
     const data = {
       ...eventData,
+      moldPath,
       action,
     };
     // emit event only for certain event
     this._events.emit(this._getFullPath(moldPath, action), eventName, data);
+    // TODO: не используется
     // emit event for mold path
     this._events.emit(moldPath, eventName, data);
+    // emit common event
+    this._events.emit(eventName, data);
   }
 
   _getFullPath(moldPath, action) {

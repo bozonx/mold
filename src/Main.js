@@ -20,14 +20,13 @@ export default class Main {
     const configInstance = new Config(config);
 
     this.$$config = configInstance.get();
-    this.$$events = this.$$config.eventEmitter;
     this.$$log = this.$$config.logger;
     this.$$request = new Request(this);
     this.$$nodeManager = new NodeManager(this);
     this.$$driverManager = new DriverManager(this);
     this.$$typeManager = new TypeManager(this);
     this.$$schemaManager = new SchemaManager(this);
-    this.$$storage = new Storage(this.$$events);
+    this.$$storage = new Storage();
 
     // register base types
     this.$$nodeManager.register('container', Container);
@@ -92,24 +91,24 @@ export default class Main {
 
   /**
    * Listen to all the changes made by user.
-   * @param {function} handler
+   * @param {function} handler - event handler
    */
   onChange(handler) {
-    this.$$events.onChange('change', handler);
+    this.$$storage.onChange('change', handler);
   }
 
   /**
    * Listen to all the changes silent or by user.
    * Don't use it in common purpose. It's only usual for application or component inner state updates.
-   * @param handler
+   * @param {function} handler - event handler
    */
   onAnyChange(handler) {
-    this.$$events.onChange('anyChange', handler);
+    this.$$storage.onChange('anyChange', handler);
   }
 
   off(handler) {
-    this.$$events.off('change', handler);
-    this.$$events.off('anyChange', handler);
+    this.$$storage.off('change', handler);
+    this.$$storage.off('anyChange', handler);
   }
 
   /**
