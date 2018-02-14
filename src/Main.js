@@ -107,8 +107,7 @@ export default class Main {
   }
 
   off(handler) {
-    this.$$storage.off('change', handler);
-    this.$$storage.off('any', handler);
+    this.$$storage.off(handler);
   }
 
   /**

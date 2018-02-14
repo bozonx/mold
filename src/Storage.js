@@ -265,25 +265,44 @@ export default class Storage {
     });
   }
 
+  /**
+   * Listen for user's changes of whole storage.
+   * @param {function} handler - event handler
+   */
   onChange(handler) {
-    this._events.on(null, 'change', handler);
+    this._events.on('change', handler);
   }
 
+  /**
+   * Listen for any changes of whole storage.
+   * @param {function} handler - event handler
+   */
   onAnyChange(handler) {
-    this._events.on(null, 'any', handler);
+    this._events.on('any', handler);
+  }
+
+  /**
+   * Remove listener of whole storage.
+   * @param {function} handler - event handler
+   */
+  off(handler) {
+    this._events.off('change', handler);
+    this._events.off('any', handler);
   }
 
   onChangeAction(moldPath, action, handler) {
-    this._events.on(this._getFullPath(moldPath, action), 'change', handler);
+    const fullEventName = this._getEventName( this._getFullPath(moldPath, action), 'change' );
+    this._events.on(fullEventName, handler);
   }
 
   onAnyChangeAction(moldPath, action, handler) {
-    this._events.on(this._getFullPath(moldPath, action), 'any', handler);
+    const fullEventName = this._getEventName( this._getFullPath(moldPath, action), 'any' );
+    this._events.on(fullEventName, handler);
   }
 
-  off(moldPath, action, event, handler) {
-    // TODO: поддержка off из Main.off
-    this._events.off(this._getFullPath(moldPath, action), event, handler);
+  offAction(moldPath, action, event, handler) {
+    const fullEventName = this._getEventName( this._getFullPath(moldPath, action), 'event' );
+    this._events.off(fullEventName, handler);
   }
 
   /**
@@ -292,6 +311,7 @@ export default class Storage {
    * @param {string} action - name of action e.g. 'default'.
    */
   destroy(moldPath, action) {
+    // TODO: review
     if (this._storage.items[moldPath] && this._storage.items[moldPath][action]) {
       delete this._storage.items[moldPath][action];
     }
@@ -326,12 +346,13 @@ export default class Storage {
       moldPath,
       action,
     };
+
     // emit event only for certain event
-    this._events.emit(this._getFullPath(moldPath, action), eventName, data);
+    this._events.emit(this._getEventName( this._getFullPath(moldPath, action), eventName ), data);
     // TODO: не используется
     // emit event for mold path
-    this._events.emit(moldPath, eventName, data);
-    // emit common event
+    this._events.emit(this._getEventName( moldPath, eventName ), data);
+    // emit common event like change or any
     this._events.emit(eventName, data);
   }
 
@@ -382,4 +403,11 @@ export default class Storage {
       mutate(this._storage.items[moldPath][action].combined).combine(newData);
     }
   }
+
+  _getEventName(path, eventName) {
+    if (!path) return eventName;
+
+    return `${path}|${eventName}`;
+  }
+
 }

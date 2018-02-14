@@ -23,6 +23,8 @@ export default class Events {
     const eventNames = this.eventEmitter.eventNames();
 
     _.find(eventNames, (name) => {
+      // TODO: может нужно полностью сравнивать?
+      //if (name === path) {
       if (name.indexOf(path) === 0) {
         _.each(this.eventEmitter.listeners(name), (handler) => {
           this.eventEmitter.off(name, handler);
@@ -32,12 +34,6 @@ export default class Events {
       }
     });
 
-  }
-
-  _getEventName(path, eventName) {
-    if (!path) return eventName;
-
-    return `${path}|${eventName}`;
   }
 
 }

@@ -1,7 +1,7 @@
 Events = require('../../src/Events').default
 
 
-describe.only 'Unit. Events.', ->
+describe 'Unit. Events.', ->
   beforeEach () ->
     @events = new Events()
     @handler1 = sinon.spy()

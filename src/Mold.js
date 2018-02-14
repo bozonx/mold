@@ -66,7 +66,7 @@ export default class _Mold {
   }
 
   off(...params) {
-    this._main.$$storage.off(this._moldPath, this._actionName, ...params);
+    this._main.$$storage.offAction(this._moldPath, this._actionName, ...params);
   }
 
   destroy() {
