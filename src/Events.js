@@ -5,55 +5,33 @@ import EventEmitter from 'eventemitter3';
 export default class Events {
   constructor() {
     this.eventEmitter = new EventEmitter();
-    //this._handlers = {};
   }
 
-  emit(path, eventName, eventData) {
-    const fullPath = this._getEventName(path, eventName);
-
-    this.eventEmitter.emit(fullPath, eventData);
+  emit(eventName, eventData) {
+    this.eventEmitter.emit(eventName, eventData);
   }
 
-  on(path, eventName, handler) {
-    const fullPath = this._getEventName(path, eventName);
-
-    // if (!this._handlers[fullPath]) {
-    //   this._handlers[fullPath] = [];
-    // }
-    //
-    // this._handlers[pathParam][eventName].push(handler);
-
-    this.eventEmitter.on(fullPath, handler);
+  on(eventName, handler) {
+    this.eventEmitter.on(eventName, handler);
   }
 
-  off(path, eventName, handler) {
-    // TODO: test it
-    const fullPath = this._getEventName(path, eventName);
-
-    // if (this._handlers[pathParam] && this._handlers[pathParam][eventName]) {
-    //   // remove listener from list
-    //   _.find(this._handlers[pathParam][eventName], (foundHandler, index) => {
-    //     if (foundHandler === handler) {
-    //       this._handlers[pathParam][eventName].splice(index, 1);
-    //
-    //       return true;
-    //     }
-    //   });
-    // }
-
-    this.eventEmitter.off(fullPath, handler);
+  off(eventName, handler) {
+    this.eventEmitter.off(eventName, handler);
   }
 
   destroy(path) {
-    // TODO: get listeners from events
-    // _.each(this._handlers[path], (handlers, eventName) => {
-    //   const fullPath = this._getEventName(path, eventName);
-    //
-    //   _.each(this._handlers[path][eventName], (handler, index) => {
-    //     this._handlers[path][eventName].splice(index, 1);
-    //     this.eventEmitter.off(fullPath, handler);
-    //   });
-    // });
+    const eventNames = this.eventEmitter.eventNames();
+
+    _.find(eventNames, (name) => {
+      if (name.indexOf(path) === 0) {
+        _.each(this.eventEmitter.listeners(name), (handler) => {
+          this.eventEmitter.off(name, handler);
+        });
+
+        return true;
+      }
+    });
+
   }
 
   _getEventName(path, eventName) {
