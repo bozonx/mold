@@ -269,7 +269,7 @@ export default class Storage {
     this._events.on(null, 'change', handler);
   }
 
-  onAnyChange(moldPath, action, handler) {
+  onAnyChange(handler) {
     this._events.on(null, 'any', handler);
   }
 

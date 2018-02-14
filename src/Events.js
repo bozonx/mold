@@ -5,68 +5,60 @@ import EventEmitter from 'eventemitter3';
 export default class Events {
   constructor() {
     this.eventEmitter = new EventEmitter();
-    this._handlers = {};
+    //this._handlers = {};
   }
 
   emit(path, eventName, eventData) {
-    this.eventEmitter.emit(this._getEventName(path, eventName), eventData);
+    const fullPath = this._getEventName(path, eventName);
+
+    this.eventEmitter.emit(fullPath, eventData);
   }
 
   on(path, eventName, handler) {
-    const pathParam = path || '$root';
+    const fullPath = this._getEventName(path, eventName);
 
-    if (!this._handlers[pathParam]) {
-      this._handlers[pathParam] = {};
-    }
-    if (!this._handlers[pathParam][eventName]) {
-      this._handlers[pathParam][eventName] = [];
-    }
+    // if (!this._handlers[fullPath]) {
+    //   this._handlers[fullPath] = [];
+    // }
+    //
+    // this._handlers[pathParam][eventName].push(handler);
 
-    this._handlers[pathParam][eventName].push(handler);
-
-    if (path) {
-      this.eventEmitter.on(this._getEventName(path, eventName), handler);
-    }
-    else {
-      this.eventEmitter.on(eventName, handler);
-    }
+    this.eventEmitter.on(fullPath, handler);
   }
 
   off(path, eventName, handler) {
     // TODO: test it
-    const pathParam = path || '$root';
+    const fullPath = this._getEventName(path, eventName);
 
-    if (this._handlers[pathParam] && this._handlers[pathParam][eventName]) {
-      // remove listener from list
-      _.find(this._handlers[pathParam][eventName], (foundHandler, index) => {
-        if (foundHandler === handler) {
-          this._handlers[pathParam][eventName].splice(index, 1);
+    // if (this._handlers[pathParam] && this._handlers[pathParam][eventName]) {
+    //   // remove listener from list
+    //   _.find(this._handlers[pathParam][eventName], (foundHandler, index) => {
+    //     if (foundHandler === handler) {
+    //       this._handlers[pathParam][eventName].splice(index, 1);
+    //
+    //       return true;
+    //     }
+    //   });
+    // }
 
-          return true;
-        }
-      });
-    }
-
-    if (path) {
-      this.eventEmitter.off(this._getEventName(path, eventName), handler);
-    }
-    else {
-      this.eventEmitter.off(eventName, handler);
-    }
+    this.eventEmitter.off(fullPath, handler);
   }
 
   destroy(path) {
-    _.each(this._handlers[path], (handlers, eventName) => {
-      const fullPath = this._getEventName(path, eventName);
-
-      _.each(this._handlers[path][eventName], (handler, index) => {
-        this._handlers[path][eventName].splice(index, 1);
-        this.eventEmitter.off(fullPath, handler);
-      });
-    });
+    // TODO: get listeners from events
+    // _.each(this._handlers[path], (handlers, eventName) => {
+    //   const fullPath = this._getEventName(path, eventName);
+    //
+    //   _.each(this._handlers[path][eventName], (handler, index) => {
+    //     this._handlers[path][eventName].splice(index, 1);
+    //     this.eventEmitter.off(fullPath, handler);
+    //   });
+    // });
   }
 
   _getEventName(path, eventName) {
+    if (!path) return eventName;
+
     return `${path}|${eventName}`;
   }
 
