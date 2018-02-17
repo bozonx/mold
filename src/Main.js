@@ -6,7 +6,7 @@ import SchemaManager from './SchemaManager';
 import NodeManager from './NodeManager';
 import DriverManager from './DriverManager';
 import Request from './Request';
-import Config from './Config';
+import defaultConfig from './defaultConfig';
 
 import Container from './nodes/Container';
 import Driver from './nodes/Driver';
@@ -16,11 +16,9 @@ import Catalogue from './nodes/Catalogue';
 
 
 export default class Main {
-  constructor(schema, config) {
-    const configInstance = new Config(config);
-
-    this.config = configInstance.get();
-    this.log = this.config.logger;
+  constructor(schema, givenCconfig) {
+    this.config = this._mergeConfig(givenCconfig);
+    this.log = this._getLogger(this.config.logger);
     this.request = new Request(this);
     this.nodeManager = new NodeManager(this);
     this.driverManager = new DriverManager(this);
@@ -28,6 +26,10 @@ export default class Main {
     this.schemaManager = new SchemaManager(this);
     this.storage = new Storage();
 
+    this._init(schema);
+  }
+
+  _init(schema) {
     // register base types
     this.nodeManager.register('container', Container);
     this.nodeManager.register('driver', Driver);
@@ -44,12 +46,17 @@ export default class Main {
     this.storage.$init({});
   }
 
+  _mergeConfig(givenCconfig) {
+    return _.defaultsDeep({ ...givenCconfig }, defaultConfig);
+  }
+
   _getLogger(externalLogger) {
     let logger = externalLogger;
 
     if (!externalLogger) {
       // use default logger
-      logger = require('./defaultLoger');
+      const Log = require('./DefaultLoger');
+      logger = new Log({ silent: this._config.silent });
     }
 
     return logger;
