@@ -1,4 +1,4 @@
-mold = require('../../src/index').default
+index = require('../../src/index').default
 Document = require('../../src/nodes/Document').default
 
 # TODO: test delete
@@ -24,7 +24,7 @@ describe 'Functional. Document node.', ->
 
     @testSchema = testSchema()
     @moldPath = 'document'
-    @mold = mold( @testSchema, {silent: true} )
+    @mold = index( @testSchema, {silent: true} )
     @document = @mold.get(@moldPath)
     @document.$init(@moldPath, @testSchema.document)
 
@@ -56,7 +56,7 @@ describe 'Functional. Document node.', ->
     )
 
   it 'load()', ->
-    _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
+    _.set(@mold.$main.$$driverManager.$defaultMemoryDb, 'document', @testValues)
 
     assert.isFalse(@document.loading)
 
@@ -71,7 +71,7 @@ describe 'Functional. Document node.', ->
         assert.isFalse(@document.loading)
 
   it 'put()', ->
-    _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
+    _.set(@mold.$main.$$driverManager.$defaultMemoryDb, 'document', @testValues)
 
     assert.isFalse(@document.saving)
 
@@ -99,7 +99,7 @@ describe 'Functional. Document node.', ->
         assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'default'), newData)
 
   it 'patch()', ->
-    _.set(@mold.$$driverManager.$defaultMemoryDb, 'document', @testValues)
+    _.set(@mold.$main.$$driverManager.$defaultMemoryDb, 'document', @testValues)
 
     assert.isFalse(@document.saving)
 

@@ -24,8 +24,8 @@ describe 'Unit. SchemaManager.', ->
     @mold = mold( this.testSchema, {silent: true} )
 
   it "setSchema - check short containers", ->
-    @mold.$$nodeManager.validateSchema = sinon.spy()
-    @mold.$$typeManager.validateSchema = sinon.spy()
+    @mold.$main.$$nodeManager.validateSchema = sinon.spy()
+    @mold.$main.$$typeManager.validateSchema = sinon.spy()
 
     testSchema = {
       container: {
@@ -40,9 +40,9 @@ describe 'Unit. SchemaManager.', ->
       }
     }
 
-    assert.doesNotThrow(() => @mold.$$schemaManager.setSchema(testSchema))
+    assert.doesNotThrow(() => @mold.$main.$$schemaManager.setSchema(testSchema))
 
-    assert.deepEqual(@mold.$$schemaManager.getFullSchema(), {
+    assert.deepEqual(@mold.$main.$$schemaManager.getFullSchema(), {
       container: {
         type: 'container'
         schema: {
@@ -61,8 +61,8 @@ describe 'Unit. SchemaManager.', ->
       }
     })
 
-    sinon.assert.calledThrice(@mold.$$nodeManager.validateSchema)
-    sinon.assert.calledOnce(@mold.$$typeManager.validateSchema)
+    sinon.assert.calledThrice(@mold.$main.$$nodeManager.validateSchema)
+    sinon.assert.calledOnce(@mold.$main.$$typeManager.validateSchema)
 
   it "set schema to not root", ->
     newNode = {
@@ -96,11 +96,11 @@ describe 'Unit. SchemaManager.', ->
       }
     }
 
-    @mold.$$schemaManager.setSchema(@testSchema)
-    assert.doesNotThrow(() => @mold.$$schemaManager.setNode('container.container.newSchema', newNode))
+    @mold.$main.$$schemaManager.setSchema(@testSchema)
+    assert.doesNotThrow(() => @mold.$main.$$schemaManager.setNode('container.container.newSchema', newNode))
 
-    assert.deepEqual(@mold.$$schemaManager.getFullSchema(), result)
-    assert.deepEqual(@mold.$$schemaManager.getSchema('container.container.newSchema'), newNode)
+    assert.deepEqual(@mold.$main.$$schemaManager.getFullSchema(), result)
+    assert.deepEqual(@mold.$main.$$schemaManager.getSchema('container.container.newSchema'), newNode)
 
   it "bad schema - node isn't registered", ->
     testSchema = {
@@ -110,6 +110,6 @@ describe 'Unit. SchemaManager.', ->
     }
 
     assert.throws(
-      () => @mold.$$schemaManager.setSchema(testSchema),
+      () => @mold.$main.$$schemaManager.setSchema(testSchema),
       "Unknown schema node or primitive {\"type\":\"another\"} !"
     )

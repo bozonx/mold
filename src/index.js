@@ -2,20 +2,19 @@ import Main from './Main';
 
 
 export default function(userSchema, config) {
-  const main = new Main(userSchema, config);
-
-  // TODO: доделать разделение
-  return main;
+  const $main = new Main(userSchema, config);
 
   // public api
   return {
+    $main,
+
     /**
      * Get real storage. Use it only for binding to frameworks.
      * For other ways use exportStorage.
      * @returns {object} - whole storage
      */
     $getWholeStorageState() {
-      return main.$$storage.$getWholeStorageState();
+      return $main.$$storage.$getWholeStorageState();
     },
 
     /**
@@ -23,7 +22,7 @@ export default function(userSchema, config) {
      * @param {object} newStorage - your storage
      */
     $setWholeStorageState(newStorage) {
-      main.$$storage.$init(newStorage);
+      $main.$$storage.$init(newStorage);
     },
 
     /**
@@ -31,7 +30,7 @@ export default function(userSchema, config) {
      * @returns {object} - Whole storage
      */
     exportStorage() {
-      return _.cloneDeep(main.$$storage.$getWholeStorageState());
+      return _.cloneDeep($main.$$storage.$getWholeStorageState());
     },
 
     /**
@@ -40,7 +39,7 @@ export default function(userSchema, config) {
      * @returns {object} requested node instance
      */
     get(moldPath) {
-      return main.$$nodeManager.getInstance(moldPath);
+      return $main.$$nodeManager.getInstance(moldPath);
     },
 
     /**
@@ -51,7 +50,7 @@ export default function(userSchema, config) {
      * @returns {object|undefined} - Driver of undefined if it hasn't found.
      */
     getDriver(moldPath) {
-      return main.$$driverManager.getDriver(moldPath);
+      return $main.$$driverManager.getDriver(moldPath);
     },
 
     /**
@@ -59,7 +58,7 @@ export default function(userSchema, config) {
      * @param {function} handler - event handler
      */
     onChange(handler) {
-      main.$$storage.onChange(handler);
+      $main.$$storage.onChange(handler);
     },
 
     /**
@@ -68,24 +67,15 @@ export default function(userSchema, config) {
      * @param {function} handler - event handler
      */
     onAnyChange(handler) {
-      main.$$storage.onAnyChange(handler);
+      $main.$$storage.onAnyChange(handler);
     },
 
     off(handler) {
-      main.$$storage.off(handler);
-    },
-
-    /**
-     * Register your own node.
-     * @param typeName
-     * @param typeClass
-     */
-    registerNode(typeName, typeClass) {
-      main.$$nodeManager.register(typeName, typeClass);
+      $main.$$storage.off(handler);
     },
 
     setNode(moldPath, schema) {
-      main.$$schemaManager.setNode(moldPath, schema);
+      $main.$$schemaManager.setNode(moldPath, schema);
     },
 
   };

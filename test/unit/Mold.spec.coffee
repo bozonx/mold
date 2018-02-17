@@ -1,4 +1,4 @@
-mold = require('../../src/index').default
+index = require('../../src/index').default
 Mold = require('../../src/Mold').default
 
 # TODO: test don't update read only props
@@ -12,8 +12,8 @@ describe 'Functional. Mold.', ->
       }
     }
     @moldPath = 'state'
-    @main = mold( {}, {silent: true} )
-    @moldInstance = new Mold(@main, @moldPath, 'default', @fullSchema);
+    @index = index( {}, {silent: true} )
+    @moldInstance = new Mold(@index.$main, @moldPath, 'default', @fullSchema);
     @moldInstance.init()
 
     assert.deepEqual(@moldInstance.state, {
@@ -44,8 +44,8 @@ describe 'Functional. Mold.', ->
         }
       }
       @moldPath = 'state'
-      @main = mold( {}, {silent: true} )
-      @moldInstance = new Mold(@main, @moldPath, 'default', @fullSchema);
+      @index = index( {}, {silent: true} )
+      @moldInstance = new Mold(@index.$main, @moldPath, 'default', @fullSchema);
       @moldInstance.init()
 
     it "init", ->
