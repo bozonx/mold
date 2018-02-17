@@ -73,7 +73,7 @@ export default class State {
    */
   remove(storagePath, itemToRemove, eventData=undefined) {
     if (!_.isNumber(itemToRemove.$index)) {
-      this._main.$$log.fatal(`Deleted item must has an $index param.`);
+      this._main.log.fatal(`Deleted item must has an $index param.`);
     }
 
     this._storage.remove(storagePath, itemToRemove.$index, eventData);

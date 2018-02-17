@@ -295,7 +295,7 @@ export default function(driverConfig) {
   this.driverConfig = driverConfig;
 
   if (!driverConfig.db) {
-    this._main.$$log.fatal(`The "db" field in config is required!`);
+    this._main.log.fatal(`The "db" field in config is required!`);
   }
 
   this.db = driverConfig.db;

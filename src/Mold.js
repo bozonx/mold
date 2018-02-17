@@ -89,7 +89,7 @@ export default class _Mold {
 
     // TODO: наверное надо array использовать вместо collection
     if (!_.includes([ 'assoc', 'array' ], rootTypeName)) {
-      this._main.$$log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Bad root type "${rootTypeName}"`);
+      this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Bad root type "${rootTypeName}"`);
     }
 
     return this._main.typeManager.getInitial(rootTypeName);
@@ -124,7 +124,7 @@ export default class _Mold {
     // validate normalized values. It trows an error if state isn't valid.
     const isValid = this._main.typeManager.validateValue(this._schema, correctValues);
     if (!isValid) {
-      this._main.$$log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid data ${JSON.stringify(correctValues)}`);
+      this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid data ${JSON.stringify(correctValues)}`);
     }
 
     this._checkForUpdateReadOnly(correctValues);
@@ -157,7 +157,7 @@ export default class _Mold {
     // // TODO: add support for collection
     //
     // if (!_.isEmpty(forbiddenRoProps)) {
-    //   this._main.$$log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
+    //   this._main.log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
     // }
   }
 

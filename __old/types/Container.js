@@ -61,7 +61,7 @@ export default class Container extends _TypeBase{
    * @returns {*}
    */
   $getChildInstance(childPath) {
-    if (childPath.match(/(\.|\[)/)) this._main.$$log.fatal(`Bad child path "${childPath}"`);
+    if (childPath.match(/(\.|\[)/)) this._main.log.fatal(`Bad child path "${childPath}"`);
 
     const paths = this.$getChildPaths(childPath);
 
@@ -88,7 +88,7 @@ export default class Container extends _TypeBase{
     const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);
 
     if (!_.isEmpty(forbiddenRoProps)) {
-      this._main.$$log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
+      this._main.log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
     }
   }
 

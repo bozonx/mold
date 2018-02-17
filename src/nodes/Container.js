@@ -17,7 +17,7 @@ export default class Container {
   }
 
   $init(moldPath, schema) {
-    this._main.$$log.fatal(`You can't get instance of simple container node on path "${moldPath}"`);
+    this._main.log.fatal(`You can't get instance of simple container node on path "${moldPath}"`);
   }
 
 }

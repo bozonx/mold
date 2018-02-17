@@ -29,7 +29,7 @@ export default class DriverManager {
       const upperDriverMoldPath = this.getClosestDriverPath(moldPath);
 
       if (upperDriverMoldPath && upperDriverMoldPath !== moldPath) {
-        this._main.$$log.fatal(`You can't specify more than one driver to one branch of schema!`);
+        this._main.log.fatal(`You can't specify more than one driver to one branch of schema!`);
       }
 
       this._registerDriver(moldPath, schema.driver);
@@ -79,7 +79,7 @@ export default class DriverManager {
    * @returns {string|undefined} real driver path
    */
   getClosestDriverPath(moldPath) {
-    if (!_.isString(moldPath)) this._main.$$log.fatal(`You must pass the moldPath argument!`);
+    if (!_.isString(moldPath)) this._main.log.fatal(`You must pass the moldPath argument!`);
 
     return getTheBestMatchPath(moldPath, _.keys(this._drivers));
   }

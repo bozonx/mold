@@ -93,7 +93,7 @@ export default class PagedCollection extends _TypeBase {
   //  */
   // $getChildInstance(primaryId) {
   //   if (!primaryId || !_.isString(primaryId)) return;
-  //   if (!primaryId.match(/^\[\d+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
+  //   if (!primaryId.match(/^\[\d+]$/)) this._main.log.fatal(`Bad primaryId "${primaryId}"`);
   //
   //   const paths = this.$getChildPaths(primaryId);
   //
@@ -124,7 +124,7 @@ export default class PagedCollection extends _TypeBase {
    */
   unshift(newItem, eventData=undefined) {
     if (!_.isPlainObject(newItem))
-      this._main.$$log.fatal(`You can add item only of plain object type!`);
+      this._main.log.fatal(`You can add item only of plain object type!`);
 
     // there is no matter to up change event, because event will rise after inserting.
     newItem.$addedUnsaved = true;
@@ -142,7 +142,7 @@ export default class PagedCollection extends _TypeBase {
    */
   push(newItem, eventData=undefined) {
     if (!_.isPlainObject(newItem))
-      this._main.$$log.fatal(`You can add item only of plain object type!`);
+      this._main.log.fatal(`You can add item only of plain object type!`);
 
     // there is no matter to up change event, because event will rise after inserting.
     newItem.$addedUnsaved = true;
@@ -165,10 +165,10 @@ export default class PagedCollection extends _TypeBase {
       pageNum = this._moldPages.length;
     }
     else if (!_.isNumber(pageNum)) {
-      this._main.$$log.fatal(`The pageNum must be type of number!`);
+      this._main.log.fatal(`The pageNum must be type of number!`);
     }
     if (!_.isArray(page))
-      this._main.$$log.fatal(`The page must be type of array!`);
+      this._main.log.fatal(`The page must be type of array!`);
 
     const preparedPage = _.cloneDeep(page);
     this._main.$$state.setPage(this._storagePagesPath, preparedPage, pageNum, eventData);
@@ -181,7 +181,7 @@ export default class PagedCollection extends _TypeBase {
    */
   removePage(pageNum, eventData=undefined) {
     if (!_.isNumber(pageNum))
-      this._main.$$log.fatal(`The pageNum must be type of number!`);
+      this._main.log.fatal(`The pageNum must be type of number!`);
 
     this._main.$$state.removePage(this._storagePagesPath, pageNum, eventData);
   }

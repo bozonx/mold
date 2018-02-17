@@ -69,7 +69,7 @@ export default class Request {
     ];
 
     return Promise.all(promises).then((results) => {
-      this._main.$$log.info('---> finish save collection: ', results);
+      this._main.log.info('---> finish save collection: ', results);
       return results;
     });
 
@@ -84,7 +84,7 @@ export default class Request {
     //   ];
     //
     //   Promise.all(promises).then((results) => {
-    //     this._main.$$log.info('---> finish save collection: ', results);
+    //     this._main.log.info('---> finish save collection: ', results);
     //     mainResolve(results);
     //   });
     // });
@@ -144,7 +144,7 @@ export default class Request {
     var schema = this._main.schemaManager.get(storagePath);
 
     var req = this._generateRequest(method, storagePath, payload, sourceParams, schema);
-    this._main.$$log.info('---> start request: ', req);
+    this._main.log.info('---> start request: ', req);
 
     return driver.startRequest(req);
   }
@@ -193,14 +193,14 @@ export default class Request {
   }
 
   _successHandler(resp) {
-    this._main.$$log.info('---> finish request: ', resp);
+    this._main.log.info('---> finish request: ', resp);
     // update mold with server response data
     this._storage.update(resp.request.storagePath, resp.coocked);
     return resp;
   }
 
   _errorHandler(err) {
-    this._main.$$log.error('---> ERROR: failed request: ', err);
+    this._main.log.error('---> ERROR: failed request: ', err);
     return err;
   }
 

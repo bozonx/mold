@@ -115,7 +115,7 @@ export default class DocumentsCollection extends PagedCollection {
    */
   $getChildInstance(primaryId) {
     if (!primaryId || !_.isString(primaryId)) return;
-    if (!primaryId.match(/^\[[^\s\[\]]+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
+    if (!primaryId.match(/^\[[^\s\[\]]+]$/)) this._main.log.fatal(`Bad primaryId "${primaryId}"`);
 
     const paths = this.$getChildPaths(primaryId);
 
@@ -134,7 +134,7 @@ export default class DocumentsCollection extends PagedCollection {
    * @returns {Promise}
    */
   $load(pageNum, preRequest=undefined) {
-    if (!_.isNumber(pageNum)) this._main.$$log.fatal(`The "pageNum" param is required!`);
+    if (!_.isNumber(pageNum)) this._main.log.fatal(`The "pageNum" param is required!`);
 
     let metaParams = _.omitBy({
       pageNum: pageNum,

@@ -127,7 +127,7 @@ export default class Catalogue extends State {
    * @returns {Promise}
    */
   $load(pageNum, preRequest = undefined) {
-    if (!_.isNumber(pageNum)) this._main.$$log.fatal(`The "pageNum" param is required!`);
+    if (!_.isNumber(pageNum)) this._main.log.fatal(`The "pageNum" param is required!`);
 
     const metaParams = _.omitBy({
       pageNum,

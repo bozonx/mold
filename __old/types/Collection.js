@@ -61,7 +61,7 @@ export default class Collection extends _TypeBase {
    */
   $getChildInstance(primaryId) {
     if (!primaryId || !_.isString(primaryId)) return;
-    if (!primaryId.match(/^\[[^\s\[\]]+]$/)) this._main.$$log.fatal(`Bad primaryId "${primaryId}"`);
+    if (!primaryId.match(/^\[[^\s\[\]]+]$/)) this._main.log.fatal(`Bad primaryId "${primaryId}"`);
 
     const paths = this.$getChildPaths(primaryId);
 

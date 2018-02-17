@@ -22,13 +22,13 @@ export default class NodeManager {
    */
   getInstance(moldPath) {
     if (!moldPath || !_.isString(moldPath)) {
-      this._main.$$log.fatal(`Bad "moldPath" param: ${JSON.stringify(moldPath)}`);
+      this._main.log.fatal(`Bad "moldPath" param: ${JSON.stringify(moldPath)}`);
     }
 
     const schema = this._main.schemaManager.getSchema(moldPath);
 
     if (_.isUndefined(schema)) {
-      this._main.$$log.fatal(`Schema on path "${moldPath}" doesn't exists`);
+      this._main.log.fatal(`Schema on path "${moldPath}" doesn't exists`);
     }
 
     return this._newInstance(moldPath, schema);

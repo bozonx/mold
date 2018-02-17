@@ -5,7 +5,7 @@ describe 'Unit. DriverManager.', ->
   describe 'driver on the root.', ->
     beforeEach () ->
       @main = {
-        $$log: {
+        log: {
           fatal: (err) -> throw new Error(err)
         }
       }
@@ -50,7 +50,7 @@ describe 'Unit. DriverManager.', ->
   describe 'two level driver', ->
     beforeEach () ->
       @main = {
-        $$log: {
+        log: {
           fatal: (err) -> throw new Error(err)
         }
       }

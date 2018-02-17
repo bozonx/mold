@@ -170,10 +170,10 @@ export default class Document extends Container {
     const myDocumentsCollection = this.getParent();
 
     if (!myDocumentsCollection)
-      this._main.$$log.fatal(`You can remove only from DocumentsCollection`);
+      this._main.log.fatal(`You can remove only from DocumentsCollection`);
 
     if (myDocumentsCollection.type != 'documentsCollection')
-      this._main.$$log.fatal(`The parent of document isn't a DocumentsCollection. You can remove only from DocumentsCollection`);
+      this._main.log.fatal(`The parent of document isn't a DocumentsCollection. You can remove only from DocumentsCollection`);
 
     return myDocumentsCollection.remove(this.mold, preRequest);
   }

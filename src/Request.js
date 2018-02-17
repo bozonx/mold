@@ -31,12 +31,12 @@ export default class Request {
       schema,
       urlParams);
 
-    this._main.$$log.info('---> start request: ', request);
+    this._main.log.info('---> start request: ', request);
 
     const promise = driver.startRequest(request);
     promise
-      .then((resp) => this._main.$$log.info('---> finish request: ', resp))
-      .catch((err) => this._main.$$log.info('---> failed request: ', err));
+      .then((resp) => this._main.log.info('---> finish request: ', resp))
+      .catch((err) => this._main.log.info('---> failed request: ', err));
 
     return promise;
   }

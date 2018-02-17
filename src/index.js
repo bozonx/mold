@@ -5,6 +5,7 @@ export default function(userSchema, config) {
   const $main = new Main(userSchema, config);
 
   // public api
+
   return {
     $main,
 

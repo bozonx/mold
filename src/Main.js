@@ -20,7 +20,7 @@ export default class Main {
     const configInstance = new Config(config);
 
     this.config = configInstance.get();
-    this.$$log = this.config.logger;
+    this.log = this.config.logger;
     this.request = new Request(this);
     this.nodeManager = new NodeManager(this);
     this.driverManager = new DriverManager(this);

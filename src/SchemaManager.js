@@ -35,7 +35,7 @@ export default class SchemaManager {
    */
   getSchema(moldPath) {
     if (!moldPath || !_.isString(moldPath)) {
-      this._main.$$log.fatal(`Bad "moldPath" param: ${JSON.stringify(moldPath)}`);
+      this._main.log.fatal(`Bad "moldPath" param: ${JSON.stringify(moldPath)}`);
     }
 
     const schemaPath = convertFromLodashToSchema(moldPath);
@@ -50,11 +50,11 @@ export default class SchemaManager {
    */
   setNode(moldPath, schema) {
     if (!moldPath || !_.isString(moldPath)) {
-      this._main.$$log.fatal(`Bad "moldPath" param: ${JSON.stringify(moldPath)}`);
+      this._main.log.fatal(`Bad "moldPath" param: ${JSON.stringify(moldPath)}`);
     }
 
     const schemaPath = convertFromLodashToSchema(moldPath);
-    const fullSchema = convertShortSchemaToFull(schema, this._main.$$log);
+    const fullSchema = convertShortSchemaToFull(schema, this._main.log);
 
     _.set(this._schema, schemaPath, fullSchema);
 
@@ -68,7 +68,7 @@ export default class SchemaManager {
    * @param {object} schema - your schema.
    */
   setSchema(schema) {
-    this._schema = convertShortSchemaToFull(schema, this._main.$$log);
+    this._schema = convertShortSchemaToFull(schema, this._main.log);
 
     this._checkWholeSchema();
     // collect driver from whole schema, but don't reinit they if they were inited.
@@ -80,15 +80,15 @@ export default class SchemaManager {
       // check node
       if ( this._main.nodeManager.isRegistered(schema.type) ) {
         const result = this._main.nodeManager.validateSchema(schema.type, schema, schemaPath);
-        if (_.isString(result)) this._main.$$log.fatal(result);
+        if (_.isString(result)) this._main.log.fatal(result);
       }
       // check primitive
       else if (this._main.typeManager.isRegistered(schema.type)) {
         const result = this._main.typeManager.validateSchema(schema);
-        if (_.isString(result)) this._main.$$log.fatal(result);
+        if (_.isString(result)) this._main.log.fatal(result);
       }
       else {
-        this._main.$$log.fatal(`Unknown schema node or primitive ${JSON.stringify(schema)} !`);
+        this._main.log.fatal(`Unknown schema node or primitive ${JSON.stringify(schema)} !`);
       }
     });
   }
