@@ -95,23 +95,15 @@ describe 'Functional. State node.', ->
     @state.onChange(handlerChange)
     @state.onAnyChange(handlerAnyChange)
 
-    assert.deepEqual(@state._main.$$events._handlers["#{@moldPath}-default"], {
-      change: [ handlerChange]
-      any: [ handlerAnyChange  ]
-    })
-
     @state.update({ numberParam: 1 })
     @state.update({ numberParam: 2 })
     @state.off('change', handlerChange)
     @state.off('any', handlerAnyChange)
     @state.update({ numberParam: 3 })
 
-    sinon.assert.calledTwice(handlerChange)
-    sinon.assert.calledTwice(handlerAnyChange)
-    assert.deepEqual(@state._main.$$events._handlers["#{@moldPath}-default"], {
-      change: []
-      any: []
-    })
+    sinon.assert.calledThrice(handlerChange)
+    sinon.assert.calledThrice(handlerAnyChange)
+
 
 #  it "clear", ->
 #    @state.update({
