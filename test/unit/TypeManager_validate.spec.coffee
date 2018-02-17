@@ -43,17 +43,29 @@ describe 'Unit. TypeManager.validate.', ->
     }
     assert.isFalse(@typeManager.validateValue(@testSchema, data))
 
-  it 'array', ->
-    # TODO: валидировать если это не массива, а строка например
-    data = {
-      arrayParam: [5, 8]
-    }
-    assert.isTrue(@typeManager.validateValue(@testSchema, data))
+  describe 'array', ->
+    it 'valid', ->
+      data = {
+        arrayParam: [5, 8]
+      }
+      assert.isTrue(@typeManager.validateValue(@testSchema, data))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { arrayParam: undefined }))
+      assert.isTrue(@typeManager.validateValue(@testSchema, { arrayParam: null }))
 
-    data = {
-      arrayParam: ['d5', 5]
-    }
-    assert.isFalse(@typeManager.validateValue(@testSchema, data))
+      # TODO: Может возвращать сообщение?
+      # TODO: check inner arrays and assoc
+
+    it 'invalid', ->
+      data = {
+        arrayParam: true
+      }
+      assert.isFalse(@typeManager.validateValue(@testSchema, data))
+
+      data = {
+        arrayParam: ['d5', 5]
+      }
+      assert.isFalse(@typeManager.validateValue(@testSchema, data))
+
 
   describe 'number', ->
     it "valid: 5, null, undefined, NaN", ->

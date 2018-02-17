@@ -42,11 +42,19 @@ export default class ArrayType {
     });
   }
 
+  /**
+   * Validate previously casted data.
+   * Rules:
+   * * undefined and null are allowed
+   * * item of array have to be valid.
+   * @param {object} schema - schema of this type
+   * @param {array} data - data to validate
+   * @return {boolean} - valid state
+   */
   validate(schema, data) {
-    // TODO: nil is allows
+    if (!_.isArray(data) && !_.isNil(data)) return false;
 
-    if (!_.isArray(data)) return false;
-
+    // TODO: type может быть не только строкой
     const primitiveSchema = { type: schema.item };
     let isValid = true;
 
