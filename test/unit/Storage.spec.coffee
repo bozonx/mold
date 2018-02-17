@@ -1,12 +1,11 @@
 Storage = require('../../src/Storage').default
-Events = require('../../src/Events').default
 
 
 describe 'Unit. Storage.', ->
   beforeEach ->
     @defaultAction = 'default'
-    @events = new Events()
-    @storage = new Storage(@events)
+    @storage = new Storage()
+    @events = @storage._events
     @moldPath = 'path.to[256]'
 
   it 'destroy', ->
@@ -15,7 +14,7 @@ describe 'Unit. Storage.', ->
     @storage.$init({})
     @storage.initState(@moldPath, @defaultAction, {})
     @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
-    @storage.onAnyChange(@moldPath, @defaultAction, handlerAnyChange)
+    @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
 
     @storage.updateTopLevel(@moldPath, @defaultAction, { data: 1 })
 
@@ -37,8 +36,8 @@ describe 'Unit. Storage.', ->
     it 'set new data twice', ->
       bottomHandler = sinon.spy()
       anyHandler = sinon.spy()
-      @events.on(@moldPath, 'bottom', bottomHandler)
-      @events.on(@moldPath, 'any', anyHandler)
+      @events.on("#{@moldPath}|bottom", bottomHandler)
+      @events.on("#{@moldPath}|any", anyHandler)
       newData1 = {
         id: 1
         param1: 'value1'
@@ -62,8 +61,8 @@ describe 'Unit. Storage.', ->
     it 'set new data and update it', ->
       changeHandler = sinon.spy()
       anyHandler = sinon.spy()
-      @events.on(@moldPath, 'change', changeHandler)
-      @events.on(@moldPath, 'any', anyHandler)
+      @events.on("#{@moldPath}|change", changeHandler)
+      @events.on("#{@moldPath}|any", anyHandler)
       newData1 = {
         id: 1
         param1: 'value1'
@@ -91,8 +90,8 @@ describe 'Unit. Storage.', ->
     it 'updateTopLevelSilent', ->
       silentHandler = sinon.spy()
       anyHandler = sinon.spy()
-      @events.on(@moldPath, 'silent', silentHandler)
-      @events.on(@moldPath, 'any', anyHandler)
+      @events.on("#{@moldPath}|silent", silentHandler)
+      @events.on("#{@moldPath}|any", anyHandler)
       newData1 = {
         id: 1
         param1: 'value1'
@@ -133,7 +132,8 @@ describe 'Unit. Storage.', ->
 
     it 'meta', ->
       anyHandler = sinon.spy()
-      @events.on(@moldPath, 'any', anyHandler)
+      @events.on("#{@moldPath}-#{@defaultAction}|any", anyHandler)
+
       metaData = {
         param1: 'value1'
       }
