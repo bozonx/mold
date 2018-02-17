@@ -44,4 +44,15 @@ export default class Main {
     this.storage.$init({});
   }
 
+  _getLogger(externalLogger) {
+    let logger = externalLogger;
+
+    if (!externalLogger) {
+      // use default logger
+      logger = require('./defaultLoger');
+    }
+
+    return logger;
+  }
+
 }
