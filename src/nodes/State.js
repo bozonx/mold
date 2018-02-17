@@ -35,7 +35,7 @@ export default class State extends _NodeBase {
         }
 
         request() {
-          throw new Error(`State can't do requests`);
+          this._main.log.fatal(`State can't do requests`);
         }
       };
     });

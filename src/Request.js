@@ -36,7 +36,7 @@ export default class Request {
     const promise = driver.startRequest(request);
     promise
       .then((resp) => this._main.log.info('---> finish request: ', resp))
-      .catch((err) => this._main.log.info('---> failed request: ', err));
+      .catch((err) => this._main.log.error('---> failed request: ', err));
 
     return promise;
   }

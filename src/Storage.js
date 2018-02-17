@@ -22,7 +22,8 @@ import Events from './Events';
  * @class
  */
 export default class Storage {
-  constructor() {
+  constructor(log) {
+    this._log = log;
     this._events = new Events();
     this._storage = null;
   }
@@ -63,7 +64,7 @@ export default class Storage {
    * @return {object|undefined} - all the actions of mold path. Undefined if action hasn't set.
    */
   getNode(moldPath) {
-    if (!moldPath) throw new Error(`MoldPath is empty`);
+    if (!moldPath) this._log.fatal(`MoldPath is empty`);
 
     return this._storage.items[moldPath];
   }
@@ -361,8 +362,8 @@ export default class Storage {
   }
 
   _checkParams(moldPath, action) {
-    if (!moldPath) throw new Error(`MoldPath is empty`);
-    if (!action) throw new Error(`Action is empty`);
+    if (!moldPath) this._log.fatal(`MoldPath is empty`);
+    if (!action) this._log.fatal(`Action is empty`);
   }
 
   _update(moldPath, action, subPath, partialData) {

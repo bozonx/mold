@@ -24,7 +24,7 @@ export default class Main {
     this.driverManager = new DriverManager(this);
     this.typeManager = new TypeManager(this);
     this.schemaManager = new SchemaManager(this);
-    this.storage = new Storage();
+    this.storage = new Storage(this.log);
 
     this._init(schema);
   }
