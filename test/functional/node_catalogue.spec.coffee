@@ -34,7 +34,7 @@ describe 'Functional. Catalogue node.', ->
     )
 
 #  it 'load()', ->
-#    _.set(@mold.$$driverManager.$defaultMemoryDb, 'catalogue', @testValues)
+#    _.set(@mold.driverManager.$defaultMemoryDb, 'catalogue', @testValues)
 #
 #    assert.deepEqual(@catalogue.mold, [])
 #    assert.isFalse(@catalogue.loading)
@@ -96,7 +96,7 @@ describe 'Functional. Catalogue node.', ->
 #    documentsCollection = moldInstance.child('documentsCollection')
 #
 #    items = [{$id: 0}]
-#    _.set(moldInstance.$$driverManager.$defaultMemoryDb, 'documentsCollection', items)
+#    _.set(moldInstance.driverManager.$defaultMemoryDb, 'documentsCollection', items)
 #
 #    expect(documentsCollection.load(0)).to.eventually.notify =>
 #      expect(Promise.resolve(documentsCollection.mold)).to.eventually
@@ -122,7 +122,7 @@ describe 'Functional. Catalogue node.', ->
 #  describe "load", ->
 #    beforeEach () ->
 #      this.items = [{$id: 0}]
-#      _.set(this.mold.$$driverManager.$defaultMemoryDb, 'documentsCollection', this.items)
+#      _.set(this.mold.driverManager.$defaultMemoryDb, 'documentsCollection', this.items)
 #
 #    it 'load(page) - check promise', ->
 #      promise = this.documentsCollection.load(0)
@@ -137,7 +137,7 @@ describe 'Functional. Catalogue node.', ->
 #
 #    it 'load(1) - load second page', (done) ->
 #      this.items = [{$id: 0}, {$id: 1}, {$id: 2}, {$id: 3}, {$id: 4}]
-#      _.set(this.mold.$$driverManager.$defaultMemoryDb, 'documentsCollection', this.items)
+#      _.set(this.mold.driverManager.$defaultMemoryDb, 'documentsCollection', this.items)
 #
 #      this.documentsCollection.perPage = 2
 #

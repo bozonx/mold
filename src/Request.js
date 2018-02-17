@@ -19,9 +19,9 @@ export default class Request {
     // TODO: schema не нужна
     // TODO: ??? urlParams
 
-    // TODO: use this._main.$$driverManager.getDriver()
-    const driverRoot = this._main.$$driverManager.getClosestDriverPath(rawRequest.moldPath);
-    const driver = this._main.$$driverManager.getDriverStrict(driverRoot);
+    // TODO: use this._main.driverManager.getDriver()
+    const driverRoot = this._main.driverManager.getClosestDriverPath(rawRequest.moldPath);
+    const driver = this._main.driverManager.getDriverStrict(driverRoot);
 
     const request = this._generateRequest(
       {

@@ -23,7 +23,7 @@ export default class Main {
     this.$$log = this.$$config.logger;
     this.$$request = new Request(this);
     this.$$nodeManager = new NodeManager(this);
-    this.$$driverManager = new DriverManager(this);
+    this.driverManager = new DriverManager(this);
     this.$$typeManager = new TypeManager(this);
     this.$$schemaManager = new SchemaManager(this);
     this.$$storage = new Storage();
@@ -38,7 +38,7 @@ export default class Main {
     // TODO: run plugins
 
     // initialize
-    this.$$driverManager.init();
+    this.driverManager.init();
     this.$$schemaManager.init();
     this.$$schemaManager.setSchema(schema);
     this.$$storage.$init({});

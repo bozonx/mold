@@ -56,7 +56,7 @@ describe 'Functional. Document node.', ->
     )
 
   it 'load()', ->
-    _.set(@mold.$main.$$driverManager.$defaultMemoryDb, 'document', @testValues)
+    _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
 
     assert.isFalse(@document.loading)
 
@@ -71,7 +71,7 @@ describe 'Functional. Document node.', ->
         assert.isFalse(@document.loading)
 
   it 'put()', ->
-    _.set(@mold.$main.$$driverManager.$defaultMemoryDb, 'document', @testValues)
+    _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
 
     assert.isFalse(@document.saving)
 
@@ -99,7 +99,7 @@ describe 'Functional. Document node.', ->
         assert.deepEqual(@document._main.$$storage.getSolid(@document._moldPath, 'default'), newData)
 
   it 'patch()', ->
-    _.set(@mold.$main.$$driverManager.$defaultMemoryDb, 'document', @testValues)
+    _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
 
     assert.isFalse(@document.saving)
 
@@ -171,11 +171,11 @@ describe 'Functional. Document node.', ->
 #    moldMain = mold( {silent: true}, testSchema() )
 #    document = moldMain.child('documentsCollection[0]')
 #
-#    _.set(moldMain.$$driverManager.$defaultMemoryDb, 'documentsCollection', [testDoc])
+#    _.set(moldMain.driverManager.$defaultMemoryDb, 'documentsCollection', [testDoc])
 #    _.set(moldMain.$$state._storage._storage, 'documentsCollection.action.load[0]', [testDoc])
 #    _.extend(_.get(moldMain.$$state._storage._storage, 'documentsCollection.documents.0'), testDoc)
 #
-#    assert.deepEqual(moldMain.$$driverManager.$defaultMemoryDb.documentsCollection, [testDoc])
+#    assert.deepEqual(moldMain.driverManager.$defaultMemoryDb.documentsCollection, [testDoc])
 #    assert.deepEqual(moldMain.$$state._storage._storage.documentsCollection.action.load, [[testDoc]])
 #    assert.deepEqual(document.mold, testDoc)
 #
@@ -190,7 +190,7 @@ describe 'Functional. Document node.', ->
 #        expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.action.load)).to.eventually.deep.equal([[]])
 #        # don't delete form documents
 #        expect(Promise.resolve(moldMain.$$state._storage._storage.documentsCollection.documents['0'].$id)).to.eventually.equal(0)
-#        expect(Promise.resolve(moldMain.$$driverManager.$defaultMemoryDb.documentsCollection)).to.eventually.deep.equal([])
+#        expect(Promise.resolve(moldMain.driverManager.$defaultMemoryDb.documentsCollection)).to.eventually.deep.equal([])
 #      ])).to.eventually.notify(done)
 #
 #  it "try to save unsaveable", ->

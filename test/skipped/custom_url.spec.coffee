@@ -11,7 +11,7 @@ testSchema = () ->
 describe.skip 'Functional. Url.', ->
   beforeEach () ->
     this.mold = mold( {silent: true}, testSchema() )
-    _.set(this.mold.$$driverManager.$defaultMemoryDb, 'collection[0]', {
+    _.set(this.mold.driverManager.$defaultMemoryDb, 'collection[0]', {
       id: 0
       name: 'value0'
     })
@@ -40,7 +40,7 @@ describe.skip 'Functional. Url.', ->
       name: 'new value'
     })
     expect(document.put()).to.eventually.notify =>
-      expect(Promise.resolve(_.get(this.mold.$$driverManager.$defaultMemoryDb, 'collection[0]'))).to.eventually
+      expect(Promise.resolve(_.get(this.mold.driverManager.$defaultMemoryDb, 'collection[0]'))).to.eventually
       .deep.equal({
         id: 0
         name: 'new value'

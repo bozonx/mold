@@ -50,7 +50,7 @@ export default function(userSchema, config) {
      * @returns {object|undefined} - Driver of undefined if it hasn't found.
      */
     getDriver(moldPath) {
-      return $main.$$driverManager.getDriver(moldPath);
+      return $main.driverManager.getDriver(moldPath);
     },
 
     /**

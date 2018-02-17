@@ -15,7 +15,7 @@ describe.skip 'Integration.', ->
 
       this.testSchema = testSchema()
       this.mold = mold( {silent: true}, this.testSchema )
-      _.set(this.mold.$$driverManager.$defaultMemoryDb, 'documentsCollection', [
+      _.set(this.mold.driverManager.$defaultMemoryDb, 'documentsCollection', [
         {id: 0}
       ])
       this.document = this.mold.child('documentsCollection[0]')

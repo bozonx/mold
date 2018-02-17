@@ -60,7 +60,7 @@ export default class SchemaManager {
 
     this._checkWholeSchema();
     // collect driver from whole schema, but don't reinit they if they were inited.
-    this._main.$$driverManager.collectDrivers(this._schema);
+    this._main.driverManager.collectDrivers(this._schema);
   }
 
   /**
@@ -72,7 +72,7 @@ export default class SchemaManager {
 
     this._checkWholeSchema();
     // collect driver from whole schema, but don't reinit they if they were inited.
-    this._main.$$driverManager.collectDrivers(this._schema);
+    this._main.driverManager.collectDrivers(this._schema);
   }
 
   _checkWholeSchema() {

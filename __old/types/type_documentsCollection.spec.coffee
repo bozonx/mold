@@ -23,7 +23,7 @@ describe 'Functional. DocumentsCollection type.', ->
     documentsCollection = moldInstance.child('documentsCollection')
 
     items = [{$id: 0}]
-    _.set(moldInstance.$$driverManager.$defaultMemoryDb, 'documentsCollection', items)
+    _.set(moldInstance.driverManager.$defaultMemoryDb, 'documentsCollection', items)
 
     expect(documentsCollection.load(0)).to.eventually.notify =>
       expect(Promise.resolve(documentsCollection.mold)).to.eventually
@@ -49,7 +49,7 @@ describe 'Functional. DocumentsCollection type.', ->
   describe "load", ->
     beforeEach () ->
       this.items = [{$id: 0}]
-      _.set(this.mold.$$driverManager.$defaultMemoryDb, 'documentsCollection', this.items)
+      _.set(this.mold.driverManager.$defaultMemoryDb, 'documentsCollection', this.items)
 
     it 'load(page) - check promise', ->
       promise = this.documentsCollection.load(0)
@@ -64,7 +64,7 @@ describe 'Functional. DocumentsCollection type.', ->
 
     it 'load(1) - load second page', (done) ->
       this.items = [{$id: 0}, {$id: 1}, {$id: 2}, {$id: 3}, {$id: 4}]
-      _.set(this.mold.$$driverManager.$defaultMemoryDb, 'documentsCollection', this.items)
+      _.set(this.mold.driverManager.$defaultMemoryDb, 'documentsCollection', this.items)
 
       this.documentsCollection.perPage = 2
 
