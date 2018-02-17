@@ -47,7 +47,7 @@ export default class Main {
   /**
    * Get real storage. Use it only for binding to frameworks.
    * For other ways use exportStorage.
-   * @returns {object}
+   * @returns {object} - whole storage
    */
   $getWholeStorageState() {
     return this.$$storage.$getWholeStorageState();
@@ -55,15 +55,15 @@ export default class Main {
 
   /**
    * Set storage data. Only for test or dev purposes.
-   * @param {object} newStorage
+   * @param {object} newStorage - your storage
    */
   $setWholeStorageState(newStorage) {
-    return this.$$storage.$init(newStorage);
+    this.$$storage.$init(newStorage);
   }
 
   /**
    * Export storage
-   * @returns {object} Whole storage
+   * @returns {object} - Whole storage
    */
   exportStorage() {
     return _.cloneDeep(this.$$storage.$getWholeStorageState());
@@ -82,8 +82,8 @@ export default class Main {
    * Get driver by moldPath in schema.
    * You cat pass path deeper than certain driver path.
    * If no one driver has found it returns a default driver (memory)
-   * @param {string} moldPath
-   * @returns {object|undefined}
+   * @param {string} moldPath - absolute mold path in schema
+   * @returns {object|undefined} - Driver of undefined if it hasn't found.
    */
   getDriver(moldPath) {
     return this.$$driverManager.getDriver(moldPath);
@@ -111,11 +111,11 @@ export default class Main {
   }
 
   /**
-   * Register your own type
+   * Register your own node.
    * @param typeName
    * @param typeClass
    */
-  registerType(typeName, typeClass) {
+  registerNode(typeName, typeClass) {
     this.$$nodeManager.register(typeName, typeClass);
   }
 
