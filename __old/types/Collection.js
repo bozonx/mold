@@ -65,7 +65,7 @@ export default class Collection extends _TypeBase {
 
     const paths = this.$getChildPaths(primaryId);
 
-    return this._main.$$typeManager.$getInstanceByFullPath(paths);
+    return this._main.typeManager.$getInstanceByFullPath(paths);
   }
 
   /**

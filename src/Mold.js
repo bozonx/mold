@@ -27,7 +27,7 @@ export default class _Mold {
 
   setSilent(newState) {
     // TODO: test
-    const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
+    const correctValues = this._main.typeManager.castValue(this._schema, newState);
     this._checkValue(correctValues);
 
     this._main.$$storage.setTopLevelSilent(this._moldPath, this._actionName, correctValues);
@@ -39,7 +39,7 @@ export default class _Mold {
    * @param {object, array} newState - it's plain object or collection
    */
   update(newState) {
-    const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
+    const correctValues = this._main.typeManager.castValue(this._schema, newState);
     this._checkValue(correctValues);
 
     this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
@@ -51,7 +51,7 @@ export default class _Mold {
    * @param {object, array} newState - it's plain object or collection
    */
   updateSilent(newState) {
-    const correctValues = this._main.$$typeManager.castValue(this._schema, newState);
+    const correctValues = this._main.typeManager.castValue(this._schema, newState);
     this._checkValue(correctValues);
 
     this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
@@ -92,7 +92,7 @@ export default class _Mold {
       this._main.$$log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Bad root type "${rootTypeName}"`);
     }
 
-    return this._main.$$typeManager.getInitial(rootTypeName);
+    return this._main.typeManager.getInitial(rootTypeName);
   }
 
   _getPrimitivesInitialStates() {
@@ -109,7 +109,7 @@ export default class _Mold {
       }
 
       // set default initial value of type
-      result[name] = this._main.$$typeManager.getInitial(item.type);
+      result[name] = this._main.typeManager.getInitial(item.type);
     });
 
     return result;
@@ -122,7 +122,7 @@ export default class _Mold {
    */
   _checkValue(correctValues) {
     // validate normalized values. It trows an error if state isn't valid.
-    const isValid = this._main.$$typeManager.validateValue(this._schema, correctValues);
+    const isValid = this._main.typeManager.validateValue(this._schema, correctValues);
     if (!isValid) {
       this._main.$$log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid data ${JSON.stringify(correctValues)}`);
     }

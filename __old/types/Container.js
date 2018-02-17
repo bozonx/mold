@@ -66,7 +66,7 @@ export default class Container extends _TypeBase{
     const paths = this.$getChildPaths(childPath);
 
     // get container instance
-    return this._main.$$typeManager.$getInstanceByFullPath(paths);
+    return this._main.typeManager.$getInstanceByFullPath(paths);
   }
 
   /**

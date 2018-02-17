@@ -139,9 +139,9 @@ export default class Request {
    * @private
    */
   _startDriverRequest(method, storagePath, payload, sourceParams) {
-    var driver = this._main.$$schemaManager.getDriver(storagePath);
+    var driver = this._main.schemaManager.getDriver(storagePath);
     // It rise an error if path doesn't consist with schema
-    var schema = this._main.$$schemaManager.get(storagePath);
+    var schema = this._main.schemaManager.get(storagePath);
 
     var req = this._generateRequest(method, storagePath, payload, sourceParams, schema);
     this._main.$$log.info('---> start request: ', req);

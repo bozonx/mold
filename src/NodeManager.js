@@ -25,7 +25,7 @@ export default class NodeManager {
       this._main.$$log.fatal(`Bad "moldPath" param: ${JSON.stringify(moldPath)}`);
     }
 
-    const schema = this._main.$$schemaManager.getSchema(moldPath);
+    const schema = this._main.schemaManager.getSchema(moldPath);
 
     if (_.isUndefined(schema)) {
       this._main.$$log.fatal(`Schema on path "${moldPath}" doesn't exists`);

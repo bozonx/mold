@@ -22,25 +22,25 @@ export default class Main {
     this.$$config = configInstance.get();
     this.$$log = this.$$config.logger;
     this.$$request = new Request(this);
-    this.$$nodeManager = new NodeManager(this);
+    this.nodeManager = new NodeManager(this);
     this.driverManager = new DriverManager(this);
-    this.$$typeManager = new TypeManager(this);
-    this.$$schemaManager = new SchemaManager(this);
+    this.typeManager = new TypeManager(this);
+    this.schemaManager = new SchemaManager(this);
     this.$$storage = new Storage();
 
     // register base types
-    this.$$nodeManager.register('container', Container);
-    this.$$nodeManager.register('driver', Driver);
-    this.$$nodeManager.register('state', StateType);
-    this.$$nodeManager.register('document', Document);
-    this.$$nodeManager.register('catalogue', Catalogue);
+    this.nodeManager.register('container', Container);
+    this.nodeManager.register('driver', Driver);
+    this.nodeManager.register('state', StateType);
+    this.nodeManager.register('document', Document);
+    this.nodeManager.register('catalogue', Catalogue);
 
     // TODO: run plugins
 
     // initialize
     this.driverManager.init();
-    this.$$schemaManager.init();
-    this.$$schemaManager.setSchema(schema);
+    this.schemaManager.init();
+    this.schemaManager.setSchema(schema);
     this.$$storage.$init({});
   }
 

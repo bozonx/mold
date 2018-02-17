@@ -15,7 +15,7 @@
 #
 #  describe 'Document.', ->
 #    it "Load", ->
-#      _.set(this.mold.$$schemaManager.$defaultMemoryDb, 'collection[0]', {
+#      _.set(this.mold.schemaManager.$defaultMemoryDb, 'collection[0]', {
 #        stringParam: 'value'
 #      })
 #      container = this.mold.instance('collection[0]')

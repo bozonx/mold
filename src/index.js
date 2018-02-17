@@ -39,7 +39,7 @@ export default function(userSchema, config) {
      * @returns {object} requested node instance
      */
     get(moldPath) {
-      return $main.$$nodeManager.getInstance(moldPath);
+      return $main.nodeManager.getInstance(moldPath);
     },
 
     /**
@@ -75,7 +75,7 @@ export default function(userSchema, config) {
     },
 
     setNode(moldPath, schema) {
-      $main.$$schemaManager.setNode(moldPath, schema);
+      $main.schemaManager.setNode(moldPath, schema);
     },
 
   };

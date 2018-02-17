@@ -99,7 +99,7 @@ export default class PagedCollection extends _TypeBase {
   //
   //   if (!paths.storage) return;
   //
-  //   return this._main.$$schemaManager.$getInstanceByFullPath(paths);
+  //   return this._main.schemaManager.$getInstanceByFullPath(paths);
   // }
 
   /**

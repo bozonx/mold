@@ -78,13 +78,13 @@ export default class SchemaManager {
   _checkWholeSchema() {
     eachSchema(this._schema, (moldPath, schemaPath, schema) => {
       // check node
-      if ( this._main.$$nodeManager.isRegistered(schema.type) ) {
-        const result = this._main.$$nodeManager.validateSchema(schema.type, schema, schemaPath);
+      if ( this._main.nodeManager.isRegistered(schema.type) ) {
+        const result = this._main.nodeManager.validateSchema(schema.type, schema, schemaPath);
         if (_.isString(result)) this._main.$$log.fatal(result);
       }
       // check primitive
-      else if (this._main.$$typeManager.isRegistered(schema.type)) {
-        const result = this._main.$$typeManager.validateSchema(schema);
+      else if (this._main.typeManager.isRegistered(schema.type)) {
+        const result = this._main.typeManager.validateSchema(schema);
         if (_.isString(result)) this._main.$$log.fatal(result);
       }
       else {
