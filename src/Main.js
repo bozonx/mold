@@ -55,8 +55,8 @@ export default class Main {
 
     if (!externalLogger) {
       // use default logger
-      const Log = require('./DefaultLoger');
-      logger = new Log({ silent: this._config.silent });
+      const DefaultLoger = require('./DefaultLoger').default;
+      logger = new DefaultLoger({ silent: this.config.silent });
     }
 
     return logger;

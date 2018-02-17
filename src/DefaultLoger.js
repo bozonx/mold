@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export default class Log {
+export default class DefaultLoger {
   constructor(config) {
     this._isSilent = (_.isBoolean(config.silent)) ? config.silent : true;
   }
