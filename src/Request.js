@@ -52,7 +52,7 @@ export default class Request {
   _generateRequest(rawRequest, schema, urlParams) {
     let payload = rawRequest.payload;
     if (_.isPlainObject(payload)) {
-      payload = _.omit(_.cloneDeep(payload), ...this._main.$$config.omitParamsToRequest);
+      payload = _.omit(_.cloneDeep(payload), ...this._main.config.omitParamsToRequest);
       payload = _.omitBy(payload, _.isUndefined);
     }
     // it clears an empty array or objects

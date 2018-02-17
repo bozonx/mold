@@ -54,8 +54,8 @@ describe.skip 'Functional. Action.', ->
 
     it "action defaults", ->
       handlerSendRequest = sinon.spy();
-      savedMethod = this.documentsCollection._main.$$state.$$request.sendRequest.bind(this.documentsCollection._main.$$state.$$request)
-      this.documentsCollection._main.$$state.$$request.sendRequest = (rawRequest, schema, urlParams) ->
+      savedMethod = this.documentsCollection._main.$$state.request.sendRequest.bind(this.documentsCollection._main.$$state.request)
+      this.documentsCollection._main.$$state.request.sendRequest = (rawRequest, schema, urlParams) ->
         handlerSendRequest(rawRequest, schema, urlParams)
         return savedMethod(rawRequest, schema, urlParams)
       this.documentsCollection.load(1);
@@ -86,8 +86,8 @@ describe.skip 'Functional. Action.', ->
 
       it "action defaults", ->
         handlerSendRequest = sinon.spy();
-        savedMethod = this.document._main.$$state.$$request.sendRequest.bind(this.document._main.$$state.$$request)
-        this.document._main.$$state.$$request.sendRequest = (rawRequest, schema, urlParams) ->
+        savedMethod = this.document._main.$$state.request.sendRequest.bind(this.document._main.$$state.request)
+        this.document._main.$$state.request.sendRequest = (rawRequest, schema, urlParams) ->
           handlerSendRequest(rawRequest, schema, urlParams)
           return savedMethod(rawRequest, schema, urlParams)
         this.document.load(1);

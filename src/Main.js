@@ -19,14 +19,14 @@ export default class Main {
   constructor(schema, config) {
     const configInstance = new Config(config);
 
-    this.$$config = configInstance.get();
-    this.$$log = this.$$config.logger;
-    this.$$request = new Request(this);
+    this.config = configInstance.get();
+    this.$$log = this.config.logger;
+    this.request = new Request(this);
     this.nodeManager = new NodeManager(this);
     this.driverManager = new DriverManager(this);
     this.typeManager = new TypeManager(this);
     this.schemaManager = new SchemaManager(this);
-    this.$$storage = new Storage();
+    this.storage = new Storage();
 
     // register base types
     this.nodeManager.register('container', Container);
@@ -41,7 +41,7 @@ export default class Main {
     this.driverManager.init();
     this.schemaManager.init();
     this.schemaManager.setSchema(schema);
-    this.$$storage.$init({});
+    this.storage.$init({});
   }
 
 }

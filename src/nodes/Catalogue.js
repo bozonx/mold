@@ -144,7 +144,7 @@ export default class Catalogue extends State {
       metaParams,
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+    return this._main.$$state.request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         this._setPageLoadingState(pageNum, false);
         // update mold with server response data
@@ -175,7 +175,7 @@ export default class Catalogue extends State {
       payload: documentMold,
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+    return this._main.$$state.request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         // update document if it's in storage
         this._updateDoc(documentMold, {
@@ -213,7 +213,7 @@ export default class Catalogue extends State {
       payload: documentMold,
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+    return this._main.$$state.request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         this._updateDoc(documentMold, {
           $deleting: false,

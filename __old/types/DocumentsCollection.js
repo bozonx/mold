@@ -151,7 +151,7 @@ export default class DocumentsCollection extends PagedCollection {
       metaParams,
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+    return this._main.$$state.request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         this._setPageLoadingState(pageNum, false);
         // update mold with server response data
@@ -183,7 +183,7 @@ export default class DocumentsCollection extends PagedCollection {
       payload: documentMold,
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+    return this._main.$$state.request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         // update document if it's in storage
         this._updateDoc(documentMold, {
@@ -222,7 +222,7 @@ export default class DocumentsCollection extends PagedCollection {
       payload: documentMold,
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+    return this._main.$$state.request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         this._updateDoc(documentMold, {
           $deleting: false,

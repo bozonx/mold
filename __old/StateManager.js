@@ -13,7 +13,7 @@ export default class StateManager {
     this._main = main;
     this._storage = storage;
     // TODO: сделать общим в main
-    this.$$request = new Request(this._main);
+    this.request = new Request(this._main);
     this._handlers = {};
 
     this._storage.$init({});

@@ -83,7 +83,7 @@ export default class Document extends Container {
       moldPath: this._moldPath,
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams())
+    return this._main.$$state.request.sendRequest(request, this.schema, this.getUrlParams())
       .then((resp) => {
         // update mold with server response data
         this._main.$$state.updateSilent(this._storagePath, {$loading: false});
@@ -114,7 +114,7 @@ export default class Document extends Container {
       payload: omitUnsaveable(this._mold, this.schema),
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
+    return this._main.$$state.request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.updateSilent(this._storagePath, {
         ...resp.body,
@@ -145,7 +145,7 @@ export default class Document extends Container {
       payload: omitUnsaveable(this._lastChanges, this.schema),
     }, preRequest);
 
-    return this._main.$$state.$$request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
+    return this._main.$$state.request.sendRequest(request, this.schema, this.getUrlParams()).then((resp) => {
       // update mold with server response data
       this._main.$$state.updateSilent(this._storagePath, {
         ...resp.body,

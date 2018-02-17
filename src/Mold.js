@@ -12,7 +12,7 @@ export default class _Mold {
   }
 
   get state() {
-    return this._main.$$storage.getCombined(this._moldPath, this._actionName);
+    return this._main.storage.getCombined(this._moldPath, this._actionName);
   }
 
   init() {
@@ -30,7 +30,7 @@ export default class _Mold {
     const correctValues = this._main.typeManager.castValue(this._schema, newState);
     this._checkValue(correctValues);
 
-    this._main.$$storage.setTopLevelSilent(this._moldPath, this._actionName, correctValues);
+    this._main.storage.setTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
 
   /**
@@ -42,7 +42,7 @@ export default class _Mold {
     const correctValues = this._main.typeManager.castValue(this._schema, newState);
     this._checkValue(correctValues);
 
-    this._main.$$storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
+    this._main.storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
   }
 
   /**
@@ -54,23 +54,23 @@ export default class _Mold {
     const correctValues = this._main.typeManager.castValue(this._schema, newState);
     this._checkValue(correctValues);
 
-    this._main.$$storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
+    this._main.storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
   }
 
   onChange(...params) {
-    this._main.$$storage.onChangeAction(this._moldPath, this._actionName, ...params);
+    this._main.storage.onChangeAction(this._moldPath, this._actionName, ...params);
   }
 
   onAnyChange(...params) {
-    this._main.$$storage.onAnyChangeAction(this._moldPath, this._actionName, ...params);
+    this._main.storage.onAnyChangeAction(this._moldPath, this._actionName, ...params);
   }
 
   off(...params) {
-    this._main.$$storage.offAction(this._moldPath, this._actionName, ...params);
+    this._main.storage.offAction(this._moldPath, this._actionName, ...params);
   }
 
   destroy() {
-    this._main.$$storage.destroy(this._moldPath, this._actionName);
+    this._main.storage.destroy(this._moldPath, this._actionName);
   }
 
   _initSchema() {
@@ -81,7 +81,7 @@ export default class _Mold {
       initialState = this._getPrimitivesInitialStates();
     }
 
-    this._main.$$storage.initState(this._moldPath, this._actionName, initialState);
+    this._main.storage.initState(this._moldPath, this._actionName, initialState);
   }
 
   _getRootInitialState() {

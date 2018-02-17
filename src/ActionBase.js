@@ -6,7 +6,7 @@ import Mold from './Mold';
 export default class ActionBase {
   constructor(main, nodeInstance, moldPath, actionName, fullSchema) {
     this._main = main;
-    this.$storage = main.$$storage;
+    this.$storage = main.storage;
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
@@ -48,11 +48,11 @@ export default class ActionBase {
 
   clearTopLevel() {
     // TODO: разве не через молд надо делать?
-    this._main.$$storage.clearTopLevel(this._moldPath, this._actionName);
+    this._main.storage.clearTopLevel(this._moldPath, this._actionName);
   }
 
   setBottomLevel(newData) {
-    this._main.$$storage.setBottomLevel(this._moldPath, this._actionName, newData);
+    this._main.storage.setBottomLevel(this._moldPath, this._actionName, newData);
   }
 
   onChange(...params) {
@@ -103,11 +103,11 @@ export default class ActionBase {
   }
 
   _getMeta(param) {
-    return this._main.$$storage.getMeta(this._moldPath, this._actionName, param);
+    return this._main.storage.getMeta(this._moldPath, this._actionName, param);
   }
 
   _updateMeta(partialData) {
-    this._main.$$storage.updateMeta(this._moldPath, this._actionName, partialData);
+    this._main.storage.updateMeta(this._moldPath, this._actionName, partialData);
   }
 
   _doRequest(driverRequestParams, payload) {
@@ -121,7 +121,7 @@ export default class ActionBase {
 
     // TODO: ??? getUrlParams
     // TODO: ??? this.schema
-    return this._main.$$request.sendRequest(request, {}, {});
+    return this._main.request.sendRequest(request, {}, {});
   }
 
 }
