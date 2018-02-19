@@ -49,26 +49,26 @@ export default class ArrayType {
    * * item of array have to be valid.
    * @param {object} schema - schema of this type
    * @param {array} data - data to validate
-   * @return {boolean} - valid state
+   * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
    */
   validate(schema, data) {
-    if (!_.isArray(data) && !_.isNil(data)) return false;
+    if (!_.isArray(data) && !_.isNil(data)) return `Bas type`;
 
     // TODO: type может быть не только строкой
     const primitiveSchema = { type: schema.item };
-    let isValid = true;
+    let invalidMsg;
 
     _.find(data, (rawValue) => {
       const result = this._typeManager.validateValue(primitiveSchema, rawValue);
 
-      if (!result) {
-        isValid = false;
+      if (result) {
+        invalidMsg = result;
 
         return true;
       }
     });
 
-    return isValid;
+    return invalidMsg;
   }
 
   /**

@@ -122,9 +122,9 @@ export default class _Mold {
    */
   _checkValue(correctValues) {
     // validate normalized values. It trows an error if state isn't valid.
-    const isValid = this._main.typeManager.validateValue(this._schema, correctValues);
-    if (!isValid) {
-      this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid data ${JSON.stringify(correctValues)}`);
+    const validMsg = this._main.typeManager.validateValue(this._schema, correctValues);
+    if (validMsg) {
+      this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid data ${JSON.stringify(correctValues)}. ${validMsg}`);
     }
 
     this._checkForUpdateReadOnly(correctValues);

@@ -41,6 +41,8 @@ export default class TypeManager {
   validateSchema(schema) {
     // TODO: проверить что тип зарегистрован?
     // TODO: добавить к сообщениям об ошибках источник???
+    // TODO: True не нужно
+
 
     return this._types[schema.type].validateSchema(schema);
   }
@@ -50,7 +52,7 @@ export default class TypeManager {
    * Value is invalid if it wasn't casted correctly.
    * @param {object} schema - schema of primitive
    * @param {*} value - previously casted value
-   * @return {boolean} - true if value is correct, otherwise false.
+   * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
    */
   validateValue(schema, value) {
     return this._types[schema.type].validate(schema, value);

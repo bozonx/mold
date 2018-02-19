@@ -59,12 +59,12 @@ describe 'Unit. TypeManager.validate.', ->
       data = {
         arrayParam: true
       }
-      assert.isFalse(@typeManager.validateValue(@testSchema, data))
+      assert.isString(@typeManager.validateValue(@testSchema, data))
 
       data = {
         arrayParam: ['d5', 5]
       }
-      assert.isFalse(@typeManager.validateValue(@testSchema, data))
+      assert.isString(@typeManager.validateValue(@testSchema, data))
 
 
   describe 'number', ->
