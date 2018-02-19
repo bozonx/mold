@@ -9,13 +9,6 @@ describe 'Unit. TypeManager.validate.', ->
     @testSchema = {
       type: 'assoc'
       items: {
-        boolParam: {type: 'boolean'}
-        stringParam: {type: 'string'}
-        numberParam: {type: 'number'}
-        arrayParam: {
-          type: 'array'
-          item: 'number'
-        }
         nested: {
           type: 'assoc'
           items: {
@@ -29,59 +22,66 @@ describe 'Unit. TypeManager.validate.', ->
     @typeManager = new TypeManager(@main);
 
   it 'nested', ->
+
+    # TODO: remake
+
     data = {
       nested: {
         nestedNumberParam: 5
       }
     }
-    assert.isTrue(@typeManager.validateValue(@testSchema, data))
+    assert.isUndefined(@typeManager.validateValue(@testSchema, data))
 
     data = {
       nested: {
         nestedNumberParam: 'aa'
       }
     }
-    assert.isFalse(@typeManager.validateValue(@testSchema, data))
+    assert.isString(@typeManager.validateValue(@testSchema, data))
 
   describe 'array', ->
-    it 'valid', ->
-      data = {
-        arrayParam: [5, 8]
+    beforeEach () ->
+      @schema = {
+        type: 'array'
+        item: 'number'
       }
-      assert.isTrue(@typeManager.validateValue(@testSchema, data))
-      assert.isTrue(@typeManager.validateValue(@testSchema, { arrayParam: undefined }))
-      assert.isTrue(@typeManager.validateValue(@testSchema, { arrayParam: null }))
 
-      # TODO: Может возвращать сообщение?
-      # TODO: check inner arrays and assoc
+    it 'valid', ->
+      assert.isUndefined(@typeManager.validateValue(@schema, [5, 8]))
+      assert.isUndefined(@typeManager.validateValue(@schema, undefined))
+      assert.isUndefined(@typeManager.validateValue(@schema, null))
+
+      # TODO: check inner arrays
+      # TODO: check assoc
 
     it 'invalid', ->
-      data = {
-        arrayParam: true
-      }
-      assert.isString(@typeManager.validateValue(@testSchema, data))
-
-      data = {
-        arrayParam: ['d5', 5]
-      }
-      assert.isString(@typeManager.validateValue(@testSchema, data))
+      # {}
+      assert.isString(@typeManager.validateValue(@schema, {}))
+      # string
+      assert.isString(@typeManager.validateValue(@schema, 'str'))
+      # number
+      assert.isString(@typeManager.validateValue(@schema, 5))
+      # true
+      assert.isString(@typeManager.validateValue(@schema, true))
+      # invalid
+      assert.isString(@typeManager.validateValue(@schema, ['d5', 5]))
 
 
   describe 'number', ->
     beforeEach () ->
-      @schema = {type: 'number'}
+      @schema = { type: 'number' }
 
     it "valid: 5, null, undefined, NaN", ->
       # number
-      assert.isTrue(@typeManager.validateValue(@schema, { numberParam: 5 }))
+      assert.isUndefined(@typeManager.validateValue(@schema, 5))
       # null
-      assert.isTrue(@typeManager.validateValue(@schema, { numberParam: null }))
+      assert.isUndefined(@typeManager.validateValue(@schema, null))
       # undefined
-      assert.isTrue(@typeManager.validateValue(@schema, { numberParam: undefined }))
+      assert.isUndefined(@typeManager.validateValue(@schema, undefined))
       # NaN
-      assert.isTrue(@typeManager.validateValue(@schema, { numberParam: NaN }))
+      assert.isUndefined(@typeManager.validateValue(@schema, NaN))
 
-    it.only "invalid: {}, [], '5a', true", ->
+    it "invalid: {}, [], '5a', true", ->
       # {}
       assert.isString(@typeManager.validateValue(@schema, {}))
       # []
@@ -92,43 +92,49 @@ describe 'Unit. TypeManager.validate.', ->
       assert.isString(@typeManager.validateValue(@schema, true))
 
   describe 'string', ->
+    beforeEach () ->
+      @schema = { type: 'string' }
+
     # don't check number because it has to be casted
     it "valid: 'str', null, undefined", ->
       # string
-      assert.isTrue(@typeManager.validateValue(@testSchema, { stringParam: 'str' }))
+      assert.isUndefined(@typeManager.validateValue(@schema, 'str'))
       # null
-      assert.isTrue(@typeManager.validateValue(@testSchema, { stringParam: null }))
+      assert.isUndefined(@typeManager.validateValue(@schema, null))
       # undefined
-      assert.isTrue(@typeManager.validateValue(@testSchema, { stringParam: undefined }))
+      assert.isUndefined(@typeManager.validateValue(@schema, undefined))
 
     it "invalid: NaN, true, {}, []", ->
       # NaN
-      assert.isFalse(@typeManager.validateValue(@testSchema, { stringParam: NaN }))
+      assert.isString(@typeManager.validateValue(@schema, NaN))
       # true
-      assert.isFalse(@typeManager.validateValue(@testSchema, { stringParam: true }))
+      assert.isString(@typeManager.validateValue(@schema, true))
       # {}
-      assert.isFalse(@typeManager.validateValue(@testSchema, { stringParam: {} }))
+      assert.isString(@typeManager.validateValue(@schema, {}))
       # []
-      assert.isFalse(@typeManager.validateValue(@testSchema, { stringParam: [] }))
+      assert.isString(@typeManager.validateValue(@schema, []))
 
   describe 'boolean', ->
+    beforeEach () ->
+      @schema = { type: 'boolean' }
+
     # don't check number because it has to be casted
     it "valid: true, false, null, undefined", ->
       # true
-      assert.isTrue(@typeManager.validateValue(@testSchema, { boolParam: true }))
+      assert.isUndefined(@typeManager.validateValue(@schema, true))
       # false
-      assert.isTrue(@typeManager.validateValue(@testSchema, { boolParam: false }))
+      assert.isUndefined(@typeManager.validateValue(@schema, false))
       # null
-      assert.isTrue(@typeManager.validateValue(@testSchema, { boolParam: null }))
+      assert.isUndefined(@typeManager.validateValue(@schema, null))
       # undefined
-      assert.isTrue(@typeManager.validateValue(@testSchema, { boolParam: undefined }))
+      assert.isUndefined(@typeManager.validateValue(@schema, undefined))
 
     it "invalid: NaN, string, {}, []", ->
       # NaN
-      assert.isFalse(@typeManager.validateValue(@testSchema, { boolParam: NaN }))
+      assert.isString(@typeManager.validateValue(@schema, NaN))
       # string
-      assert.isFalse(@typeManager.validateValue(@testSchema, { boolParam: 'string' }))
+      assert.isString(@typeManager.validateValue(@schema, 'str'))
       # {}
-      assert.isFalse(@typeManager.validateValue(@testSchema, { boolParam: {} }))
+      assert.isString(@typeManager.validateValue(@schema, {}))
       # []
-      assert.isFalse(@typeManager.validateValue(@testSchema, { boolParam: [] }))
+      assert.isString(@typeManager.validateValue(@schema, []))

@@ -23,11 +23,14 @@ export default class StringType {
     });
   }
 
+  /**
+   * Validate previously casted data. Undefined and null are allowed
+   * @param {object} schema - schema of this type
+   * @param {array} value - value to validate
+   * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
+   */
   validate(schema, value) {
-    // undefined and null are allowed
-    if (_.isNil(value)) return true;
-
-    return _.isString(value);
+    if (!_.isString(value) && !_.isNil(value)) return `Bad type`;
   }
 
   /**

@@ -28,6 +28,12 @@ export default class NumberType {
     });
   }
 
+  /**
+   * Validate previously casted data. Undefined and null are allowed
+   * @param {object} schema - schema of this type
+   * @param {array} value - value to validate
+   * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
+   */
   validate(schema, value) {
     if (!_.isNumber(value) && !_.isNil(value) && !_.isNaN(value)) return `Bad type`;
   }
