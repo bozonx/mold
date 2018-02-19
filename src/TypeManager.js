@@ -39,7 +39,8 @@ export default class TypeManager {
    * @return {string|boolean} - true if valid or error message if invalid.
    */
   validateSchema(schema) {
-    // TODO: проверить что тип зарегистрован?
+    if (!this._types[schema.type]) return `Type hasn't registered`;
+
     // TODO: добавить к сообщениям об ошибках источник???
     // TODO: True не нужно
 
@@ -55,6 +56,8 @@ export default class TypeManager {
    * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
    */
   validateValue(schema, value) {
+    if (!this._types[schema.type]) return `Type "${schema.type}" hasn't registered`;
+
     return this._types[schema.type].validate(schema, value);
   }
 

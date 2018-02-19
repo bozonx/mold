@@ -52,7 +52,7 @@ export default class ArrayType {
    * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
    */
   validate(schema, data) {
-    if (!_.isArray(data) && !_.isNil(data)) return `Bas type`;
+    if (!_.isArray(data) && !_.isNil(data)) return `Bad type`;
 
     // TODO: type может быть не только строкой
     const primitiveSchema = { type: schema.item };

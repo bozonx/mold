@@ -68,26 +68,28 @@ describe 'Unit. TypeManager.validate.', ->
 
 
   describe 'number', ->
+    beforeEach () ->
+      @schema = {type: 'number'}
+
     it "valid: 5, null, undefined, NaN", ->
       # number
-      assert.isTrue(@typeManager.validateValue(@testSchema, { numberParam: 5 }))
+      assert.isTrue(@typeManager.validateValue(@schema, { numberParam: 5 }))
       # null
-      assert.isTrue(@typeManager.validateValue(@testSchema, { numberParam: null }))
+      assert.isTrue(@typeManager.validateValue(@schema, { numberParam: null }))
       # undefined
-      assert.isTrue(@typeManager.validateValue(@testSchema, { numberParam: undefined }))
+      assert.isTrue(@typeManager.validateValue(@schema, { numberParam: undefined }))
       # NaN
-      assert.isTrue(@typeManager.validateValue(@testSchema, { numberParam: NaN }))
+      assert.isTrue(@typeManager.validateValue(@schema, { numberParam: NaN }))
 
-    it "invalid: {}, [], '5a', true", ->
+    it.only "invalid: {}, [], '5a', true", ->
       # {}
-      assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: {} }))
+      assert.isString(@typeManager.validateValue(@schema, {}))
       # []
-      assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: [] }))
+      assert.isString(@typeManager.validateValue(@schema, []))
       # '5a'
-      assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: '5a' }))
-      # TODO: boolean will cast to 1,0
+      assert.isString(@typeManager.validateValue(@schema, '5a'))
       # true
-      assert.isFalse(@typeManager.validateValue(@testSchema, { numberParam: true }))
+      assert.isString(@typeManager.validateValue(@schema, true))
 
   describe 'string', ->
     # don't check number because it has to be casted

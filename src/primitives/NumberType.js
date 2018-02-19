@@ -29,11 +29,7 @@ export default class NumberType {
   }
 
   validate(schema, value) {
-    // TODO: check in test - NaN is allowed
-    // undefined and null are allowed
-    if (_.isNil(value)) return true;
-
-    return _.isNumber(value);
+    if (!_.isNumber(value) && !_.isNil(value) && !_.isNaN(value)) return `Bad type`;
   }
 
   /**
