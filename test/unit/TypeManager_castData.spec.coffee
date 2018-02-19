@@ -76,56 +76,30 @@ describe 'Unit. TypeManager.castValue.', ->
       assert.deepEqual @typeManager.castValue(@schema, 'incorrect'), 'incorrect'
 
   describe 'number', ->
+    beforeEach () ->
+      @schema = { type: 'number' }
+
+    it "Don't cast invalid string value", ->
+      assert.deepEqual( @typeManager.castValue(@schema, '5a'), '5a' )
+    it 'cast string number to number', ->
+      assert.deepEqual( @typeManager.castValue(@schema, '5'), 5 )
+    it 'cast boolean to number', ->
+      assert.deepEqual( @typeManager.castValue(@schema, true), 1 )
+      assert.deepEqual( @typeManager.castValue(@schema, false), 0 )
+
     it "Don't cast", ->
       # number
-      data = { numberParam: 5 }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        numberParam: 5
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, 5), 5 )
       # undefined
-      data = { numberParam: undefined }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        numberParam: undefined
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, undefined), undefined )
       # null
-      data = { numberParam: null }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        numberParam: null
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, null), null )
       # NaN
-      data = { numberParam: NaN }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        numberParam: NaN
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, NaN), NaN )
       # {}
-      data = { numberParam: {} }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        numberParam: {}
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, {}), {} )
       # []
-      data = { numberParam: [] }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        numberParam: []
-      }
-    it "Don't cast invalid string value", ->
-      data = { numberParam: '5a' }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        numberParam: '5a'
-      }
-    it 'cast string number to number', ->
-      data = { numberParam: '5' }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        numberParam: 5
-      }
-    it 'cast boolean to number', ->
-      data = { numberParam: true }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        numberParam: 1
-      }
-      data = { numberParam: false }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        numberParam: 0
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, []), [] )
 
   describe 'string', ->
     it "Don't cast", ->
