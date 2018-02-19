@@ -83,12 +83,15 @@ export default class ArrayType {
     if (!_.isArray(rawData)) return rawData;
 
     const castedData = [];
-    const primitiveSchema = { type: schema.item };
+
+    let primitiveSchema = { type: schema.item };
+
+    if (_.isPlainObject(schema.item)) {
+      primitiveSchema = schema.item;
+    }
 
     _.each(rawData, (item, index) => {
       castedData[index] = this._typeManager.castValue(primitiveSchema, item);
-      // TODO: а валидация разве не нужна???
-
     });
 
     return castedData;

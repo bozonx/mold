@@ -60,12 +60,28 @@ describe 'Unit. TypeManager.castValue.', ->
       # and other...
 
     it 'correct', ->
-      data = {
-        arrayParam: ['5', '6a', '123']
+      schema = {
+        type: 'array'
+        item: 'number'
       }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        arrayParam: [5, '6a', 123]
+      assert.deepEqual( @typeManager.castValue(schema, ['5', '6a', '123']), [5, '6a', 123] )
+
+      schema = {
+        type: 'array'
+        item: { type: 'array', item: 'number' }
       }
+      assert.deepEqual( @typeManager.castValue(schema, [['5']]), [[5]] )
+
+      schema = {
+        type: 'array'
+        item: {
+          type: 'assoc'
+          items: {
+            id: { type: 'number' }
+          }
+        }
+      }
+      assert.deepEqual( @typeManager.castValue(schema, [{id: '5'}]), [{id: 5}] )
 
     it 'incorrect - just return its value', ->
       assert.deepEqual @typeManager.castValue(@testSchema.items.arrayParam, 'incorrect'), 'incorrect'
