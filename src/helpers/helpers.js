@@ -280,8 +280,6 @@ export function validateParams(obj, cb) {
   const diff = _.difference(_.keys(obj), checkedNames);
 
   if (!_.isEmpty(diff)) return `Unknown params: ${JSON.stringify(diff)}`;
-
-  return true;
 }
 
 

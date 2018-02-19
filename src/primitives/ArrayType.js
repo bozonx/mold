@@ -17,7 +17,7 @@ export default class ArrayType {
    * * initial - it can be like [ 1, 2, 3 ] or [ [1], [2] ]
    * * item - type or schema of item it can be: string, boolean, number or schema like { type: 'array', ...}
    * @param {object} schema - schema of this type
-   * @return {string|boolean} - error string or true if valid.
+   * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
    */
   validateSchema(schema) {
     const allowedTypes = [ 'string', 'number', 'boolean' ];

@@ -9,11 +9,11 @@ describe 'Unit. TypeManager.validateSchema.', ->
   describe 'number', ->
     it "valid", ->
       # without params
-      assert.isTrue(@typeManager.validateSchema({ type: 'number' }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'number' }))
       # initial
-      assert.isTrue(@typeManager.validateSchema({ type: 'number', initial: 5 }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'number', initial: 5 }))
       # primary
-      assert.isTrue(@typeManager.validateSchema({ type: 'number', primary: true }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'number', primary: true }))
 
     it "invalid", ->
       # bad param
@@ -26,9 +26,9 @@ describe 'Unit. TypeManager.validateSchema.', ->
   describe 'string', ->
     it "valid", ->
       # without params
-      assert.isTrue(@typeManager.validateSchema({ type: 'string' }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'string' }))
       # initial
-      assert.isTrue(@typeManager.validateSchema({ type: 'string', initial: 'str' }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'string', initial: 'str' }))
 
     it "invalid", ->
       # bad param
@@ -39,9 +39,9 @@ describe 'Unit. TypeManager.validateSchema.', ->
   describe 'boolean', ->
     it "valid", ->
       # without params
-      assert.isTrue(@typeManager.validateSchema({ type: 'boolean' }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'boolean' }))
       # initial
-      assert.isTrue(@typeManager.validateSchema({ type: 'boolean', initial: true }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'boolean', initial: true }))
 
     it "invalid", ->
       # bad param
@@ -53,21 +53,21 @@ describe 'Unit. TypeManager.validateSchema.', ->
   describe 'array', ->
     it "valid", ->
       # without params
-      assert.isTrue(@typeManager.validateSchema({ type: 'array' }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'array' }))
       # initial
-      assert.isTrue(@typeManager.validateSchema({ type: 'array', initial: [ 1, 2, 3 ] }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'array', initial: [ 1, 2, 3 ] }))
       # item
-      assert.isTrue(@typeManager.validateSchema({ type: 'array', item: 'number' }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'array', item: 'number' }))
       # nested schema
-      assert.isTrue(@typeManager.validateSchema({ type: 'array', item: { type: 'array' } }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'array', item: { type: 'array' } }))
       # nested schema with initial
-      assert.isTrue(@typeManager.validateSchema({
+      assert.isUndefined(@typeManager.validateSchema({
         type: 'array'
         initial: [ [1], [2] ]
         item: { type: 'array', item: 'number' }
       }))
       # collection like
-      assert.isTrue(@typeManager.validateSchema({
+      assert.isUndefined(@typeManager.validateSchema({
         type: 'array'
         initial: [ {id: 1}, {id:2} ]
         item: {
@@ -113,11 +113,11 @@ describe 'Unit. TypeManager.validateSchema.', ->
   describe 'assoc', ->
     it "valid", ->
       # without params
-      assert.isTrue(@typeManager.validateSchema({ type: 'assoc' }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'assoc' }))
       # initial
-      assert.isTrue(@typeManager.validateSchema({ type: 'assoc', initial: { id: 1 } }))
+      assert.isUndefined(@typeManager.validateSchema({ type: 'assoc', initial: { id: 1 } }))
       # simple items
-      assert.isTrue(@typeManager.validateSchema({
+      assert.isUndefined(@typeManager.validateSchema({
         type: 'assoc'
         items: {
           param: { type: 'string', initial: 'str' }
@@ -126,7 +126,7 @@ describe 'Unit. TypeManager.validateSchema.', ->
         }
       }))
       # array, assoc, collection
-      assert.isTrue(@typeManager.validateSchema({
+      assert.isUndefined(@typeManager.validateSchema({
         type: 'assoc'
         items: {
           param: { type: 'array', item: 'number', initial: [ 1, 2 ] }

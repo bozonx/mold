@@ -79,13 +79,13 @@ export default class SchemaManager {
     eachSchema(this._schema, (moldPath, schemaPath, schema) => {
       // check node
       if ( this._main.nodeManager.isRegistered(schema.type) ) {
-        const result = this._main.nodeManager.validateSchema(schema.type, schema, schemaPath);
-        if (_.isString(result)) this._main.log.fatal(result);
+        const errorMsg = this._main.nodeManager.validateSchema(schema.type, schema, schemaPath);
+        if (errorMsg) this._main.log.fatal(errorMsg);
       }
       // check primitive
       else if (this._main.typeManager.isRegistered(schema.type)) {
-        const result = this._main.typeManager.validateSchema(schema);
-        if (_.isString(result)) this._main.log.fatal(result);
+        const errorMsg = this._main.typeManager.validateSchema(schema);
+        if (errorMsg) this._main.log.fatal(errorMsg);
       }
       else {
         this._main.log.fatal(`Unknown schema node or primitive ${JSON.stringify(schema)} !`);

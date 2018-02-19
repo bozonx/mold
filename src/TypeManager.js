@@ -36,14 +36,10 @@ export default class TypeManager {
   /**
    * Validate schema
    * @param {object} schema - schema of primitive
-   * @return {string|boolean} - true if valid or error message if invalid.
+   * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
    */
   validateSchema(schema) {
     if (!this._types[schema.type]) return `Type hasn't registered`;
-
-    // TODO: добавить к сообщениям об ошибках источник???
-    // TODO: True не нужно
-
 
     return this._types[schema.type].validateSchema(schema);
   }
