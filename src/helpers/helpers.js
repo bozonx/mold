@@ -258,6 +258,15 @@ export function isSimpleCollection(value) {
   return _.isPlainObject(head);
 }
 
+/**
+ * Validate schema params.
+ * @param {object} obj - raw schema
+ * @param {function} cb - callback which checks params. It has return:
+ * * error message
+ * * or true if it ok
+ * * or undefined if params is unknown
+ * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
+ */
 export function validateParams(obj, cb) {
   const checkedNames = [];
 
