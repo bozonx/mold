@@ -54,28 +54,25 @@ export default class AssocType {
   }
 
   validate(schema, data) {
-    // TODO: nil is allows
+    if (!_.isPlainObject(data) && !_.isNil(data)) return `Bad type`;
 
-    if (!_.isPlainObject(data)) return false;
-
-    let isValid = true;
+    let invalidMsg;
 
     _.find(data, (rawValue, name) => {
       const primitiveSchema = schema.items[name];
       // do nothing if there isn't schema definition for this param
-
       if (!primitiveSchema || !primitiveSchema.type) return;
 
       const result = this._typeManager.validateValue(primitiveSchema, rawValue);
 
-      if (!result) {
-        isValid = false;
+      if (result) {
+        invalidMsg = result;
 
         return true;
       }
     });
 
-    return isValid;
+    return invalidMsg;
   }
 
   /**

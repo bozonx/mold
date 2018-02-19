@@ -3,41 +3,33 @@ TypeManager = require('../../src/TypeManager').default
 
 describe 'Unit. TypeManager.validate.', ->
   beforeEach () ->
-    @main = {
-    }
-
-    @testSchema = {
-      type: 'assoc'
-      items: {
-        nested: {
-          type: 'assoc'
-          items: {
-            nestedNumberParam: {type: 'number'}
-          }
-        }
-      }
-    }
-
-    @moldPath = 'container.state'
+    @main = {}
     @typeManager = new TypeManager(@main);
 
-  it 'nested', ->
-
-    # TODO: remake
-
-    data = {
-      nested: {
-        nestedNumberParam: 5
+  describe 'assoc', ->
+    beforeEach () ->
+      @schema = {
+        type: 'assoc'
+        items: {
+          param: { type: 'number' }
+        }
       }
-    }
-    assert.isUndefined(@typeManager.validateValue(@testSchema, data))
 
-    data = {
-      nested: {
-        nestedNumberParam: 'aa'
-      }
-    }
-    assert.isString(@typeManager.validateValue(@testSchema, data))
+    it 'valid', ->
+      assert.isUndefined(@typeManager.validateValue(@schema, { param: 5 }))
+
+    it 'invalid', ->
+      # []
+      assert.isString(@typeManager.validateValue(@schema, []))
+      # string
+      assert.isString(@typeManager.validateValue(@schema, 'str'))
+      # number
+      assert.isString(@typeManager.validateValue(@schema, 5))
+      # true
+      assert.isString(@typeManager.validateValue(@schema, true))
+      # invalid
+      assert.isString(@typeManager.validateValue(@schema, { param: 'str' }))
+
 
   describe 'array', ->
     beforeEach () ->
