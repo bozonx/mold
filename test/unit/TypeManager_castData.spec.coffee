@@ -12,10 +12,6 @@ describe 'Unit. TypeManager.castValue.', ->
         boolParam: {type: 'boolean'}
         stringParam: {type: 'string'}
         numberParam: {type: 'number'}
-        arrayParam: {
-          type: 'array'
-          item: 'number'
-        }
         nested: {
           type: 'assoc'
           items: {
@@ -41,30 +37,14 @@ describe 'Unit. TypeManager.castValue.', ->
     }
 
   describe 'array', ->
-    it "Don't cast", ->
-      # number
-      data = { arrayParam: 5 }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        arrayParam: 5
-      }
-      # undefined
-      data = { arrayParam: undefined }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        arrayParam: undefined
-      }
-      # null
-      data = { arrayParam: null }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        arrayParam: null
-      }
-      # and other...
-
-    it 'correct', ->
-      schema = {
+    beforeEach () ->
+      @schema = {
         type: 'array'
         item: 'number'
       }
-      assert.deepEqual( @typeManager.castValue(schema, ['5', '6a', '123']), [5, '6a', 123] )
+
+    it 'correct', ->
+      assert.deepEqual( @typeManager.castValue(@schema, ['5', '6a', '123']), [5, '6a', 123] )
 
       schema = {
         type: 'array'
@@ -83,8 +63,17 @@ describe 'Unit. TypeManager.castValue.', ->
       }
       assert.deepEqual( @typeManager.castValue(schema, [{id: '5'}]), [{id: 5}] )
 
+    it "Don't cast", ->
+      # number
+      assert.deepEqual( @typeManager.castValue(@testSchema, 5), 5 )
+      # undefined
+      assert.deepEqual( @typeManager.castValue(@testSchema, undefined), undefined )
+      # null
+      assert.deepEqual( @typeManager.castValue(@testSchema, null), null )
+      # and other...
+
     it 'incorrect - just return its value', ->
-      assert.deepEqual @typeManager.castValue(@testSchema.items.arrayParam, 'incorrect'), 'incorrect'
+      assert.deepEqual @typeManager.castValue(@schema, 'incorrect'), 'incorrect'
 
   describe 'number', ->
     it "Don't cast", ->
