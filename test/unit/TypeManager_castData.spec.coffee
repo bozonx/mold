@@ -9,9 +9,6 @@ describe 'Unit. TypeManager.castValue.', ->
     @testSchema = {
       type: 'assoc'
       items: {
-        boolParam: {type: 'boolean'}
-        stringParam: {type: 'string'}
-        numberParam: {type: 'number'}
         nested: {
           type: 'assoc'
           items: {
@@ -102,110 +99,56 @@ describe 'Unit. TypeManager.castValue.', ->
       assert.deepEqual( @typeManager.castValue(@schema, []), [] )
 
   describe 'string', ->
+    beforeEach () ->
+      @schema = { type: 'string' }
+
     it "Don't cast", ->
       # string
-      data = { stringParam: 'string' }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        stringParam: 'string'
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, 'string'), 'string' )
       # undefined
-      data = { stringParam: undefined }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        stringParam: undefined
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, undefined), undefined )
       # null
-      data = { stringParam: null }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        stringParam: null
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, null), null )
       # {}
-      data = { stringParam: {} }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        stringParam: {}
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, {}), {} )
       # []
-      data = { stringParam: [] }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        stringParam: []
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, []), [] )
     it "Boolean or NaN cast to undefined", ->
       # boolean
-      data = { stringParam: true }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        stringParam: undefined
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, true), undefined )
       # NaN
-      data = { stringParam: NaN }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        stringParam: undefined
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, NaN), undefined )
     it "Number cast to string", ->
-      data = { stringParam: 5 }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        stringParam: '5'
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, 5), '5' )
 
   describe 'Boolean', ->
+    beforeEach () ->
+      @schema = { type: 'boolean' }
+
     it "Don't cast", ->
       # boolean
-      data = { boolParam: true }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: true
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, true), true )
       # undefined
-      data = { boolParam: undefined }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: undefined
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, undefined), undefined )
       # null
-      data = { boolParam: null }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: null
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, null), null )
       # {}
-      data = { boolParam: {} }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: {}
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, {}), {} )
       # []
-      data = { boolParam: [] }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: []
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, []), [] )
     it "Cast 'true' and 'false' to bool", ->
       # "true"
-      data = { boolParam: 'true' }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: true
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, 'true'), true )
       # "false"
-      data = { boolParam: 'false' }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: false
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, 'false'), false )
     it "Cast other types to bool", ->
       # NaN
-      data = { boolParam: NaN }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: false
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, NaN), false)
       # an empty string
-      data = { boolParam: '' }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: false
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, ''), false )
       # string
-      data = { boolParam: 'str' }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: true
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, 'str'), true )
       # 0
-      data = { boolParam: 0 }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: false
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, 0), false )
       # number
-      data = { boolParam: 5 }
-      assert.deepEqual @typeManager.castValue(@testSchema, data), {
-        boolParam: true
-      }
+      assert.deepEqual( @typeManager.castValue(@schema, 5), true )
