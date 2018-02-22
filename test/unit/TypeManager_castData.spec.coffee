@@ -11,13 +11,50 @@ describe 'Unit. TypeManager.castValue.', ->
       @schema = {
         type: 'assoc'
         items: {
-          nestedNumberParam: {type: 'number'}
+          param: { type: 'number' }
         }
       }
 
     it 'correct', ->
-      data = { nestedNumberParam: '5' }
-      assert.deepEqual( @typeManager.castValue(@schema, data), { nestedNumberParam: 5 } )
+      data = { param: '5' }
+      assert.deepEqual( @typeManager.castValue(@schema, data), { param: 5 } )
+
+      # nested array
+      schema = {
+        type: 'assoc'
+        items: {
+          arr: {
+            type: 'array'
+            item: 'number'
+          }
+        }
+      }
+      data = { arr: [ '5' ] }
+      assert.deepEqual( @typeManager.castValue(schema, data), { arr: [ 5 ] } )
+
+      # nested assoc
+      schema = {
+        type: 'assoc'
+        items: {
+          nestedAssoc: {
+            type: 'assoc'
+            items: {
+              param: { type: 'string' }
+            }
+          }
+        }
+      }
+      data = { nestedAssoc: { param: 5 } }
+      assert.deepEqual( @typeManager.castValue(schema, data), { nestedAssoc: { param: '5' } } )
+
+    it "Don't cast", ->
+      # array
+      assert.deepEqual( @typeManager.castValue(@schema, []), [] )
+      # undefined
+      assert.deepEqual( @typeManager.castValue(@schema, undefined), undefined )
+      # null
+      assert.deepEqual( @typeManager.castValue(@schema, null), null )
+      # and other...
 
   describe 'array', ->
     beforeEach () ->

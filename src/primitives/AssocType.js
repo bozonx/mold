@@ -82,7 +82,7 @@ export default class AssocType {
    * @return {{}} - correct values
    */
   cast(schema, rawData) {
-    // TODO: is it need to support of udefined and null?
+    // don't cast other types
     if (!_.isPlainObject(rawData)) return rawData;
 
     // do nothing if there isn't schema for assoc
