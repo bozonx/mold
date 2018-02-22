@@ -90,8 +90,8 @@ export default class Document extends _NodeBase {
 
           return super.request(payload)
             .then((resp) => {
-              document.actions.default.clearTopLevel();
-              document.actions.default.setBottomLevel(resp.body);
+              document.actions.default.clearStateLayer();
+              document.actions.default.setSolidLayer(resp.body);
 
               return resp;
             });
@@ -121,8 +121,8 @@ export default class Document extends _NodeBase {
 
           return super.request(payload)
             .then((resp) => {
-              document.actions.default.clearTopLevel();
-              document.actions.default.setBottomLevel(resp.body);
+              document.actions.default.clearStateLayer();
+              document.actions.default.setSolidLayer(resp.body);
 
               return resp;
             });

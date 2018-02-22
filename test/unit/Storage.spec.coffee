@@ -16,7 +16,7 @@ describe 'Unit. Storage.', ->
     @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
     @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
 
-    @storage.updateTopLevel(@moldPath, @defaultAction, { data: 1 })
+    @storage.updateStateLayer(@moldPath, @defaultAction, { data: 1 })
 
     assert.deepEqual(@storage._storage.items[@moldPath][@defaultAction], {
       state: { data: 1 }
@@ -27,7 +27,7 @@ describe 'Unit. Storage.', ->
     # the action's storage has to be clear
     assert.isUndefined(@storage._storage.items[@moldPath][@defaultAction])
     # after that assigned events have to be not rose
-    @storage.updateTopLevel(@moldPath, @defaultAction, { data: 2 })
+    @storage.updateStateLayer(@moldPath, @defaultAction, { data: 2 })
 
     # TODO: выяснить почему дваждый вызывается
     #sinon.assert.calledOnce(handlerChange)
@@ -51,8 +51,8 @@ describe 'Unit. Storage.', ->
 
       @storage.$init({})
       @storage.initState(@moldPath, @defaultAction, {})
-      @storage.setBottomLevel(@moldPath, @defaultAction, newData1)
-      @storage.setBottomLevel(@moldPath, @defaultAction, newData2)
+      @storage.setSolidLayer(@moldPath, @defaultAction, newData1)
+      @storage.setSolidLayer(@moldPath, @defaultAction, newData2)
 
       expect(@storage.getSolid(@moldPath, @defaultAction)).to.be.deep.equal(newData2)
       expect(bottomHandler).to.be.calledTwice
@@ -76,8 +76,8 @@ describe 'Unit. Storage.', ->
 
       @storage.$init({})
       @storage.initState(@moldPath, @defaultAction, {})
-      @storage.updateTopLevel(@moldPath, @defaultAction, newData1)
-      @storage.updateTopLevel(@moldPath, @defaultAction, newData2)
+      @storage.updateStateLayer(@moldPath, @defaultAction, newData1)
+      @storage.updateStateLayer(@moldPath, @defaultAction, newData2)
 
       result = {
         id: 2
@@ -88,7 +88,7 @@ describe 'Unit. Storage.', ->
       expect(changeHandler).to.be.calledTwice
       expect(anyHandler).to.be.calledTwice
 
-    it 'updateTopLevelSilent', ->
+    it 'updateStateLayerSilent', ->
       silentHandler = sinon.spy()
       anyHandler = sinon.spy()
       @events.on("#{@moldPath}|silent", silentHandler)
@@ -100,7 +100,7 @@ describe 'Unit. Storage.', ->
 
       @storage.$init({})
       @storage.initState(@moldPath, @defaultAction, {})
-      @storage.updateTopLevelSilent(@moldPath, @defaultAction, newData1)
+      @storage.updateStateLayerSilent(@moldPath, @defaultAction, newData1)
 
       expect(@storage.getState(@moldPath, @defaultAction)).to.be.deep.equal(newData1)
       expect(silentHandler).to.be.calledOnce
@@ -119,8 +119,8 @@ describe 'Unit. Storage.', ->
 
       @storage.$init({})
       @storage.initState(@moldPath, @defaultAction, {})
-      @storage.setBottomLevel(@moldPath, @defaultAction, bottomData)
-      @storage.updateTopLevel(@moldPath, @defaultAction, topData)
+      @storage.setSolidLayer(@moldPath, @defaultAction, bottomData)
+      @storage.updateStateLayer(@moldPath, @defaultAction, topData)
 
       expect(@storage.getSolid(@moldPath, @defaultAction)).to.be.deep.equal(bottomData)
       expect(@storage.getState(@moldPath, @defaultAction)).to.be.deep.equal(topData)

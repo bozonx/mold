@@ -46,13 +46,13 @@ export default class ActionBase {
     return this._mold.updateSilent(partialData);
   }
 
-  clearTopLevel() {
+  clearStateLayer() {
     // TODO: разве не через молд надо делать?
-    this._main.storage.clearTopLevel(this._moldPath, this._actionName);
+    this._main.storage.clearStateLayer(this._moldPath, this._actionName);
   }
 
-  setBottomLevel(newData) {
-    this._main.storage.setBottomLevel(this._moldPath, this._actionName, newData);
+  setSolidLayer(newData) {
+    this._main.storage.setSolidLayer(this._moldPath, this._actionName, newData);
   }
 
   onChange(...params) {
@@ -90,8 +90,8 @@ export default class ActionBase {
         const result = resp.body;
 
         this._updateMeta({ pending: false });
-        this.setBottomLevel(result);
-        this.clearTopLevel();
+        this.setSolidLayer(result);
+        this.clearStateLayer();
 
         return resp;
       })

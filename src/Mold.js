@@ -30,7 +30,7 @@ export default class _Mold {
     const correctValues = this._main.typeManager.castValue(this._schema, newState);
     this._checkValue(correctValues);
 
-    this._main.storage.setTopLevelSilent(this._moldPath, this._actionName, correctValues);
+    this._main.storage.setStateLayerSilent(this._moldPath, this._actionName, correctValues);
   }
 
   /**
@@ -42,7 +42,7 @@ export default class _Mold {
     const correctValues = this._main.typeManager.castValue(this._schema, newState);
     this._checkValue(correctValues);
 
-    this._main.storage.updateTopLevel(this._moldPath, this._actionName, correctValues);
+    this._main.storage.updateStateLayer(this._moldPath, this._actionName, correctValues);
   }
 
   /**
@@ -54,7 +54,7 @@ export default class _Mold {
     const correctValues = this._main.typeManager.castValue(this._schema, newState);
     this._checkValue(correctValues);
 
-    this._main.storage.updateTopLevelSilent(this._moldPath, this._actionName, correctValues);
+    this._main.storage.updateStateLayerSilent(this._moldPath, this._actionName, correctValues);
   }
 
   onChange(...params) {
