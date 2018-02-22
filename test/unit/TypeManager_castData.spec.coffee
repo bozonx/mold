@@ -48,6 +48,10 @@ describe 'Unit. TypeManager.castValue.', ->
       assert.deepEqual( @typeManager.castValue(schema, data), { nestedAssoc: { param: '5' } } )
 
     it "Don't cast", ->
+      # don't cast an odd param
+      data = { param: '5', param2: '2' }
+      assert.deepEqual( @typeManager.castValue(@schema, data), { param: 5, param2: '2' } )
+
       # array
       assert.deepEqual( @typeManager.castValue(@schema, []), [] )
       # undefined

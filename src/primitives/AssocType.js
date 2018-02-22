@@ -86,19 +86,21 @@ export default class AssocType {
     if (!_.isPlainObject(rawData)) return rawData;
 
     // do nothing if there isn't schema for assoc
-    // TODO: is it need to return {} of undefined?
-    if (!schema.items) return;
+    if (!schema.items) return rawData;
 
     const castedData = {};
 
     _.each(rawData, (rawValue, name) => {
       const primitiveSchema = schema.items[name];
-      // do nothing if there isn't schema definition for this param
-      // TODO: наверное оставить значение как есть чтобы потом валидировать
-      if (!primitiveSchema || !primitiveSchema.type) return;
+      // don't cast if there isn't schema definition for this param
+      if (!primitiveSchema || !primitiveSchema.type) {
+        castedData[name] = rawValue;
 
+        return;
+      }
+
+      // cast
       castedData[name] = this._typeManager.castValue(primitiveSchema, rawValue);
-      // TODO: а валидация разве не нужна???
     });
 
     return castedData;
