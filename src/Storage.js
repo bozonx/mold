@@ -50,6 +50,7 @@ export default class Storage {
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
    * @param {object|array} initialState - initial state object or array which will store state.
+   *                                      usually it is an empty [] or {}.
    */
   initState(moldPath, action, initialState) {
     this._checkParams(moldPath, action);
@@ -60,11 +61,12 @@ export default class Storage {
   }
 
   /**
-   * Get all the actions ofy mold path.
+   * Get all the actions of mold path.
+   * Don't change this object.
    * @param {string} moldPath - path in your schema.
-   * @return {object|undefined} - all the actions of mold path. Undefined if action hasn't set.
+   * @return {object|undefined} - all the actions of mold path. Undefined if the action hasn't set.
    */
-  getNode(moldPath) {
+  getAllActions(moldPath) {
     if (!moldPath) this._log.fatal(`MoldPath is empty`);
 
     return this._storage.items[moldPath];
