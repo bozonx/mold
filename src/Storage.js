@@ -5,20 +5,22 @@ import Events from './Events';
 
 
 /**
- * Storage keep state, server data and meta data of your actions.
+ * Storage keeps state, server data and meta data of your actions.
  * It has structure like this:
  *     {
  *       items: {
  *         'mold.path.to': {
- *           state: {} || [],      // state of your forms and ui elements.
- *           solid: {} || [],     // it is usually data received from server.
- *           combined: {} || [],   // combined state of state and solid
- *           meta: {},             // meta data like page number, etc
+ *           'default': {            // action
+ *             state: {} || [],      // state of your forms and ui elements.
+ *             solid: {} || [],      // it is usually data received from server.
+ *             combined: {} || [],   // combined state of state and solid
+ *             meta: {},             // meta data like page number, etc
+ *           }
  *         }
  *       }
  *     }
  *
- * If solid level uses state level will has to have the same structure as solid level.
+ * If solid level uses, state level will has to have the same structure as solid level.
  * @class
  */
 export default class Storage {
@@ -29,9 +31,8 @@ export default class Storage {
   }
 
   /**
-   * Set new storage.
-   * This method runs one time from State.js.
-   * Don't run it from your application.
+   * This method runs only once on init time.
+   * You can set your own storage as initial storage.
    * @param {object} newStorage - your storage
    */
   $init(newStorage) {
@@ -44,7 +45,7 @@ export default class Storage {
   }
 
   /**
-   * Initialize state level on specific mold path.
+   * Initialize state layer of specific mold path.
    * State level uses for real-time ui data.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
