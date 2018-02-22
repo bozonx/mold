@@ -3,35 +3,21 @@ TypeManager = require('../../src/TypeManager').default
 
 describe 'Unit. TypeManager.castValue.', ->
   beforeEach () ->
-    @main = {
-    }
-
-    @testSchema = {
-      type: 'assoc'
-      items: {
-        nested: {
-          type: 'assoc'
-          items: {
-            nestedNumberParam: {type: 'number'}
-          }
-        }
-      }
-    }
-
-    @moldPath = 'container.state'
+    @main = {}
     @typeManager = new TypeManager(@main);
 
-  it 'nested', ->
-    data = {
-      nested: {
-        nestedNumberParam: '5'
+  describe 'assoc', ->
+    beforeEach () ->
+      @schema = {
+        type: 'assoc'
+        items: {
+          nestedNumberParam: {type: 'number'}
+        }
       }
-    }
-    assert.deepEqual @typeManager.castValue(@testSchema, data), {
-      nested: {
-        nestedNumberParam: 5
-      }
-    }
+
+    it 'correct', ->
+      data = { nestedNumberParam: '5' }
+      assert.deepEqual( @typeManager.castValue(@schema, data), { nestedNumberParam: 5 } )
 
   describe 'array', ->
     beforeEach () ->
@@ -62,15 +48,15 @@ describe 'Unit. TypeManager.castValue.', ->
 
     it "Don't cast", ->
       # number
-      assert.deepEqual( @typeManager.castValue(@testSchema, 5), 5 )
+      assert.deepEqual( @typeManager.castValue(@schema, 5), 5 )
       # undefined
-      assert.deepEqual( @typeManager.castValue(@testSchema, undefined), undefined )
+      assert.deepEqual( @typeManager.castValue(@schema, undefined), undefined )
       # null
-      assert.deepEqual( @typeManager.castValue(@testSchema, null), null )
+      assert.deepEqual( @typeManager.castValue(@schema, null), null )
       # and other...
 
     it 'incorrect - just return its value', ->
-      assert.deepEqual @typeManager.castValue(@schema, 'incorrect'), 'incorrect'
+      assert.deepEqual( @typeManager.castValue(@schema, 'incorrect'), 'incorrect' )
 
   describe 'number', ->
     beforeEach () ->
@@ -83,7 +69,6 @@ describe 'Unit. TypeManager.castValue.', ->
     it 'cast boolean to number', ->
       assert.deepEqual( @typeManager.castValue(@schema, true), 1 )
       assert.deepEqual( @typeManager.castValue(@schema, false), 0 )
-
     it "Don't cast", ->
       # number
       assert.deepEqual( @typeManager.castValue(@schema, 5), 5 )
@@ -102,6 +87,13 @@ describe 'Unit. TypeManager.castValue.', ->
     beforeEach () ->
       @schema = { type: 'string' }
 
+    it "Boolean or NaN cast to undefined", ->
+      # boolean
+      assert.deepEqual( @typeManager.castValue(@schema, true), undefined )
+      # NaN
+      assert.deepEqual( @typeManager.castValue(@schema, NaN), undefined )
+    it "Number cast to string", ->
+      assert.deepEqual( @typeManager.castValue(@schema, 5), '5' )
     it "Don't cast", ->
       # string
       assert.deepEqual( @typeManager.castValue(@schema, 'string'), 'string' )
@@ -113,29 +105,11 @@ describe 'Unit. TypeManager.castValue.', ->
       assert.deepEqual( @typeManager.castValue(@schema, {}), {} )
       # []
       assert.deepEqual( @typeManager.castValue(@schema, []), [] )
-    it "Boolean or NaN cast to undefined", ->
-      # boolean
-      assert.deepEqual( @typeManager.castValue(@schema, true), undefined )
-      # NaN
-      assert.deepEqual( @typeManager.castValue(@schema, NaN), undefined )
-    it "Number cast to string", ->
-      assert.deepEqual( @typeManager.castValue(@schema, 5), '5' )
 
   describe 'Boolean', ->
     beforeEach () ->
       @schema = { type: 'boolean' }
 
-    it "Don't cast", ->
-      # boolean
-      assert.deepEqual( @typeManager.castValue(@schema, true), true )
-      # undefined
-      assert.deepEqual( @typeManager.castValue(@schema, undefined), undefined )
-      # null
-      assert.deepEqual( @typeManager.castValue(@schema, null), null )
-      # {}
-      assert.deepEqual( @typeManager.castValue(@schema, {}), {} )
-      # []
-      assert.deepEqual( @typeManager.castValue(@schema, []), [] )
     it "Cast 'true' and 'false' to bool", ->
       # "true"
       assert.deepEqual( @typeManager.castValue(@schema, 'true'), true )
@@ -152,3 +126,14 @@ describe 'Unit. TypeManager.castValue.', ->
       assert.deepEqual( @typeManager.castValue(@schema, 0), false )
       # number
       assert.deepEqual( @typeManager.castValue(@schema, 5), true )
+    it "Don't cast", ->
+      # boolean
+      assert.deepEqual( @typeManager.castValue(@schema, true), true )
+      # undefined
+      assert.deepEqual( @typeManager.castValue(@schema, undefined), undefined )
+      # null
+      assert.deepEqual( @typeManager.castValue(@schema, null), null )
+      # {}
+      assert.deepEqual( @typeManager.castValue(@schema, {}), {} )
+      # []
+      assert.deepEqual( @typeManager.castValue(@schema, []), [] )
