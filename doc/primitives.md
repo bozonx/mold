@@ -47,11 +47,12 @@ This schema has to not include an "initial" param.
         initial: [ [1], [2] ],
         item: {
           type: 'array',
+          item: 'number'
         },
       }
     }
     
-#### Collection
+#### Collection like
 
     {
       arrayParam: {
@@ -72,12 +73,16 @@ This schema has to not include an "initial" param.
     {
       assocParam: {
         type: 'assoc',
-        initial: { id: 1 }
+        initial: { stringParam: 'value' }
         items: {
           stringParam: { type: 'string' },
           numberParam: { type: 'number' },
           booleanParam: { type: 'boolean' },
-          arrayParam: { type: 'array', item: 'number', initial: [ 1, 2 ] }
+          arrayParam: {
+            type: 'array',
+            item: 'number',
+            initial: [ 1, 2 ]
+          }
           assocParam: { type: 'assoc', items: {
             subParam: { type: 'string', initial: 'str' }
           },

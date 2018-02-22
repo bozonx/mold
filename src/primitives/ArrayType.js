@@ -54,8 +54,11 @@ export default class ArrayType {
   validate(schema, data) {
     if (!_.isArray(data) && !_.isNil(data)) return `Bad type`;
 
-    // TODO: type может быть не только строкой
-    const primitiveSchema = { type: schema.item };
+    let primitiveSchema = { type: schema.item };
+    if (_.isPlainObject(schema.item)) {
+      primitiveSchema = schema.item;
+    }
+
     let invalidMsg;
 
     _.find(data, (rawValue) => {
@@ -85,7 +88,6 @@ export default class ArrayType {
     const castedData = [];
 
     let primitiveSchema = { type: schema.item };
-
     if (_.isPlainObject(schema.item)) {
       primitiveSchema = schema.item;
     }

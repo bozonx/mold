@@ -43,8 +43,25 @@ describe 'Unit. TypeManager.validate.', ->
       assert.isUndefined(@typeManager.validateValue(@schema, undefined))
       assert.isUndefined(@typeManager.validateValue(@schema, null))
 
-      # TODO: check inner arrays
-      # TODO: check assoc
+      schema = {
+        type: 'array'
+        item: {
+          type: 'array'
+          item: 'number'
+        }
+      }
+      assert.isUndefined(@typeManager.validateValue(schema, [ [5], [8] ]))
+
+      schema = {
+        type: 'array'
+        item: {
+          type: 'assoc'
+          items: {
+            param: { type: 'number' }
+          }
+        }
+      }
+      assert.isUndefined(@typeManager.validateValue(schema, [ { param: 5 } ]))
 
     it 'invalid', ->
       # {}
@@ -58,6 +75,25 @@ describe 'Unit. TypeManager.validate.', ->
       # invalid
       assert.isString(@typeManager.validateValue(@schema, ['d5', 5]))
 
+      schema = {
+        type: 'array'
+        item: {
+          type: 'array'
+          item: 'number'
+        }
+      }
+      assert.isString(@typeManager.validateValue(schema, [ [5], ['8'] ]))
+
+      schema = {
+        type: 'array'
+        item: {
+          type: 'assoc'
+          items: {
+            param: { type: 'number' }
+          }
+        }
+      }
+      assert.isString(@typeManager.validateValue(schema, [ { param: '5' } ]))
 
   describe 'number', ->
     beforeEach () ->
