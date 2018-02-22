@@ -76,40 +76,40 @@ export default class Storage {
    * Get combined state of state and solid.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @return {object|array|undefined} - combined state of state and solid.
+   * @return {object|array|undefined} - combined state of state and solid layers. Undefined if action hasn't set.
    */
   getCombined(moldPath, action) {
     this._checkParams(moldPath, action);
 
-    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
-      return;
-    }
+    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
 
     return this._storage.items[moldPath][action].combined;
   }
 
   /**
-   * Get state level.
+   * Get state layer.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @return {object|array|undefined} - state object or array. Undefined if action hasn't set.
+   * @return {object|array|undefined} - state layer. It can be an object of an array. Undefined if action hasn't set.
    */
   getState(moldPath, action) {
     this._checkParams(moldPath, action);
 
-    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
-      return;
-    }
+    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
 
     return this._storage.items[moldPath][action].state;
   }
 
+  /**
+   * Get solid layer.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   * @return {object|array|undefined} - solid layer. It can be an object of an array. Undefined if action hasn't set.
+   */
   getSolid(moldPath, action) {
     this._checkParams(moldPath, action);
 
-    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) {
-      return;
-    }
+    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
 
     return this._storage.items[moldPath][action].solid;
   }
