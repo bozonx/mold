@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { Map, List } from 'immutable';
 
 import { mutate } from './helpers/mutate';
 import Events from './Events';
@@ -53,10 +54,11 @@ export default class Storage {
    *                                      usually it is an empty [] or {}.
    */
   initState(moldPath, action, initialState) {
+    // TODO: впринципе в этой ф-ии нет особого смысла. Она должна была поставить либо массив либо объект в начале
     this._checkParams(moldPath, action);
     this._initActionIfNeed(moldPath, action);
 
-    this._storage.items[moldPath][action].state = initialState;
+    //this._storage.items[moldPath][action].state = initialState;
     this._generateCombined(moldPath, action);
   }
 
@@ -69,6 +71,7 @@ export default class Storage {
   getAllActions(moldPath) {
     if (!moldPath) this._log.fatal(`MoldPath is empty`);
 
+    // TODO: use immutable
     return this._storage.items[moldPath];
   }
 
@@ -83,7 +86,7 @@ export default class Storage {
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
 
-    return this._storage.items[moldPath][action].combined;
+    return this._storage.items[moldPath][action].combined.toJs();
   }
 
   /**
@@ -97,7 +100,7 @@ export default class Storage {
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
 
-    return this._storage.items[moldPath][action].state;
+    return this._storage.items[moldPath][action].state && this._storage.items[moldPath][action].state.toJS();
   }
 
   /**
@@ -111,7 +114,7 @@ export default class Storage {
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
 
-    return this._storage.items[moldPath][action].solid;
+    return this._storage.items[moldPath][action].solid && this._storage.items[moldPath][action].solid.toJS();
   }
 
   /**
@@ -123,6 +126,8 @@ export default class Storage {
    */
   getMeta(moldPath, action, metaPath = undefined) {
     this._checkParams(moldPath, action);
+
+    // TODO: use immutable
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
 
@@ -142,18 +147,18 @@ export default class Storage {
    * @param {object|array} fullData - the new data.
    */
   setStateLayerSilent(moldPath, action, fullData) {
-    // TODO: test
     this._checkParams(moldPath, action);
 
     // do nothing if data the same
-    if (_.isEqual(this._storage.items[moldPath][action].state, fullData)) {
+    if (_.isEqual(fullData, this._storage.items[moldPath][action].state && this._storage.items[moldPath][action].state.toJS())) {
       return;
     }
 
     this._initActionIfNeed(moldPath, action);
+
     // set data
-    // TODO: поидее с мутацией надо
-    this._storage.items[moldPath][action].state = fullData;
+    this._storage.items[moldPath][action].state = this._newImmutable(fullData);
+
     this._generateCombined(moldPath, action);
 
     this._emitActionEvent(moldPath, action, 'any', {
@@ -170,6 +175,7 @@ export default class Storage {
    * @param {object|array} partialData - the new partial data.
    */
   updateStateLayer(moldPath, action, partialData) {
+    // TODO: remake tests
     this._updateStateLayer(moldPath, action, partialData);
 
     this._emitActionEvent(moldPath, action, 'change', {
@@ -184,6 +190,7 @@ export default class Storage {
   }
 
   updateStateLayerSilent(moldPath, action, partialData) {
+    // TODO: remake tests
     this._updateStateLayer(moldPath, action, partialData);
 
     this._emitActionEvent(moldPath, action, 'silent', {
@@ -212,6 +219,7 @@ export default class Storage {
     this._storage.items[moldPath][action].solid = newData;
     this._generateCombined(moldPath, action);
 
+    // TODO: use immutable
     // TODO: наверное не bottom а solid???
     this._emitActionEvent(moldPath, action, 'bottom', {
       data: newData,
@@ -229,6 +237,7 @@ export default class Storage {
     this._checkParams(moldPath, action);
     this._initActionIfNeed(moldPath, action);
 
+    // TODO: use immutable
     // TODO: может использовать this._update ?
     const currentData = this._storage.items[moldPath][action].meta;
     this._storage.items[moldPath][action].meta = _.defaultsDeep(_.cloneDeep(partialData), currentData);
@@ -258,6 +267,8 @@ export default class Storage {
     if (_.isPlainObject(this._storage.items[moldPath][action].state)) {
       newData = {};
     }
+
+    // TODO: use immutable
 
     this._storage.items[moldPath][action].state = newData;
 
@@ -324,6 +335,22 @@ export default class Storage {
     this._events.destroy(this._getFullPath(moldPath, action));
   }
 
+  _newImmutable(fullData) {
+    // TODO: может использовать Seq?
+    let immutableData;
+    if (_.isPlainObject(fullData)) {
+      immutableData = new Map(fullData);
+    }
+    else if (_.isArray(fullData)) {
+      immutableData = new List(fullData);
+    }
+    else {
+      this._log.fatal(`Bad type of data`);
+    }
+
+    return immutableData;
+  }
+
   _initActionIfNeed(moldPath, action) {
     if (!this._storage.items[moldPath]) {
       this._storage.items[moldPath] = {};
@@ -335,8 +362,11 @@ export default class Storage {
   }
 
   _updateStateLayer(moldPath, action, partialData) {
+    // TODO: review
+
     this._checkParams(moldPath, action);
 
+    // TODO: наверное просто use immutable
     const wereChanges = this._update(moldPath, action, 'state', partialData);
 
     // do nothing if there weren't any changes
@@ -383,6 +413,7 @@ export default class Storage {
     //   return;
     // }
 
+    // TODO: use immutable
     // TODO: test arrays
     // TODO: если есть массивы, то они полностью берутся из новых данных
     // TODO: наверное можно использоват mutate, но контейнеры обновлять с алгоритмом defaults
@@ -396,6 +427,7 @@ export default class Storage {
     const top = this._storage.items[moldPath][action].state;
     const bottom = this._storage.items[moldPath][action].solid;
 
+    // TODO: use immutable
     // TODO: test arrays
     // TODO: наверное можно использоват mutate, но контейнеры обновлять с алгоритмом defaults
     const newData = _.defaultsDeep(_.cloneDeep(top), bottom);

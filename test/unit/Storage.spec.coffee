@@ -8,6 +8,29 @@ describe 'Unit. Storage.', ->
     @events = @storage._events
     @moldPath = 'path.to[256]'
 
+  it "setStateLayerSilent", ->
+    handlerChange = sinon.spy()
+    handlerAnyChange = sinon.spy()
+    @storage.$init({})
+    @storage.initState(@moldPath, @defaultAction, {})
+    @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
+    @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
+
+    @storage.setStateLayerSilent(@moldPath, @defaultAction, { name: 'value' })
+    assert.deepEqual(@storage.getState(@moldPath, @defaultAction), { name: 'value' })
+
+    # TODO: check combined
+
+    sinon.assert.notCalled(handlerChange);
+    sinon.assert.calledOnce(handlerAnyChange);
+
+
+  it.only "setSolidLayer", ->
+
+
+
+  ############3 TODO: review
+
   it 'destroy', ->
     handlerChange = sinon.spy()
     handlerAnyChange = sinon.spy()
