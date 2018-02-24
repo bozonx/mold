@@ -91,7 +91,8 @@ export default class Document extends _NodeBase {
 
           return super.request(payload)
             .then((resp) => {
-              document.actions.default.clearStateLayer();
+              // TODO: тут clear не правильно работает - нужно очистить только то что придетс с сервера
+              //document.actions.default.clearStateLayer();
               document.actions.default.setSolidLayer(resp.body);
 
               return resp;
@@ -122,7 +123,7 @@ export default class Document extends _NodeBase {
 
           return super.request(payload)
             .then((resp) => {
-              document.actions.default.clearStateLayer();
+              //document.actions.default.clearStateLayer();
               document.actions.default.setSolidLayer(resp.body);
 
               return resp;

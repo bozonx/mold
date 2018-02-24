@@ -46,10 +46,11 @@ export default class ActionBase {
     return this._mold.updateSilent(partialData);
   }
 
-  clearStateLayer() {
-    // TODO: разве не через молд надо делать?
-    this._main.storage.clearStateLayer(this._moldPath, this._actionName);
-  }
+  // clearStateLayer() {
+  //   // TODO: разве не через молд надо делать?
+  //   // TODO: нужно все очистить или только то что должно быть замененно с сервера?
+  //   this._main.storage.clearStateLayer(this._moldPath, this._actionName);
+  // }
 
   setSolidLayer(newData) {
     this._main.storage.setSolidLayer(this._moldPath, this._actionName, newData);
@@ -91,7 +92,8 @@ export default class ActionBase {
 
         this._updateMeta({ pending: false });
         this.setSolidLayer(result);
-        this.clearStateLayer();
+        // TODO: зачем тут????
+        //this.clearStateLayer();
 
         return resp;
       })

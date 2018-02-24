@@ -242,6 +242,7 @@ export default class Storage {
 
     // set data
     this._storage.items[moldPath][action].solid = new Seq(newData);
+    this._clearStateBeforeSetSolid(this._storage.items[moldPath][action]);
     this._generateCombined(moldPath, action);
 
     this._emitActionEvent(moldPath, action, 'solid', {
@@ -272,35 +273,37 @@ export default class Storage {
     });
   }
 
-  /**
-   * Clear state level silently.
-   * @param {string} moldPath - path in your schema.
-   * @param {string} action - name of action e.g. 'default'.
-   */
-  clearStateLayer(moldPath, action) {
-    // TODO: test
-    if (!this._storage.items[moldPath]
-      || !this._storage.items[moldPath][action]
-      || !this._storage.items[moldPath][action].state) {
-      return;
-    }
-
-    // TODO: поидее с мутацией надо ???
-    let newData = [];
-    if (_.isPlainObject(this._storage.items[moldPath][action].state)) {
-      newData = {};
-    }
-
-    // TODO: use immutable
-
-    this._storage.items[moldPath][action].state = newData;
-
-    this._emitActionEvent(moldPath, action, 'any', {
-      data: newData,
-      by: 'program',
-      type: 'silent',
-    });
-  }
+  // /**
+  //  * Clear state level silently.
+  //  * @param {string} moldPath - path in your schema.
+  //  * @param {string} action - name of action e.g. 'default'.
+  //  */
+  // clearStateLayer(moldPath, action) {
+  //   // TODO: нужно все очистить или только то что должно быть замененно с сервера?
+  //
+  //   // TODO: test
+  //   if (!this._storage.items[moldPath]
+  //     || !this._storage.items[moldPath][action]
+  //     || !this._storage.items[moldPath][action].state) {
+  //     return;
+  //   }
+  //
+  //   // TODO: поидее с мутацией надо ???
+  //   let newData = [];
+  //   if (_.isPlainObject(this._storage.items[moldPath][action].state)) {
+  //     newData = {};
+  //   }
+  //
+  //   // TODO: use immutable
+  //
+  //   this._storage.items[moldPath][action].state = newData;
+  //
+  //   this._emitActionEvent(moldPath, action, 'any', {
+  //     data: newData,
+  //     by: 'program',
+  //     type: 'silent',
+  //   });
+  // }
 
 
   /**
@@ -460,19 +463,33 @@ export default class Storage {
     const bottom = this._storage.items[moldPath][action].solid;
 
     // TODO: test arrays
-    // TODO: наверное можно использоват mutate, но контейнеры обновлять с алгоритмом defaults
-    const newData = new Seq( _.defaultsDeep(top.toJS(), bottom.toJS()) );
+    const merged = _.defaultsDeep(top.toJS(), bottom.toJS());
 
-    this._storage.items[moldPath][action].combined = newData;
+    this._storage.items[moldPath][action].combined = new Seq(merged);
+  }
 
+  _clearStateBeforeSetSolid(action) {
+    // TODO: test it
 
-    // if (_.isUndefined(this._storage.items[moldPath][action].combined)) {
-    //   this._storage.items[moldPath][action].combined = newData;
-    // }
-    // else {
-    //   if (_.isUndefined(newData)) return;
-    //   mutate(this._storage.items[moldPath][action].combined).combine(newData);
-    // }
+    const solid = action.solid.toJS();
+
+    const clearObject = (localSolid, localState) => {
+      const solidKeys = _.keys( localSolid );
+      _.each(solidKeys, (name) => delete localState[name]);
+    };
+
+    if (_.isArray(solid)) {
+      _.each(solid, (item, index) => {
+        if (!_.isPlainObject(action.state.item)) return;
+        action.state[index] = new Seq( clearObject(item, action.state[index].toJS()) );
+      });
+    }
+    else if (_.isPlainObject(solid)){
+      action.state = new Seq( clearObject(solid, action.state.toJS()) );
+    }
+    else {
+      this._log.fatal(`Invalid type of solid layer`);
+    }
   }
 
   _getEventName(path, eventName) {

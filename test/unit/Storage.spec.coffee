@@ -41,31 +41,52 @@ describe 'Unit. Storage.', ->
     sinon.assert.calledOnce(handlerChange);
     sinon.assert.calledOnce(handlerAnyChange);
 
+#    @storage.setSolidLayer(@moldPath, @defaultAction, {
+#      name: 'newValue'
+#      nested: {
+#        param: {
+#          name: 'newNestedName'
+#        }
+#      }
+#      arr: [ [3], 4 ]
+#    })
+#    @storage.setStateLayerSilent(@moldPath, @defaultAction, {
+#      name: 'value'
+#      nested: {
+#        param: {
+#          name: 'oldNestedName'
+#        }
+#      }
+#      arr: [ [1], 2 ]
+#      odd: 'oddValue'
+#    })
+#
+#    assert.deepEqual(@storage.getCombined(@moldPath, @defaultAction), {
+#      name: 'newValue'
+#      nested: {
+#        param: {
+#          name: 'newNestedName'
+#        }
+#      }
+#      arr: [ [3], 4 ]
+#      odd: 'oddValue'
+#    })
+
   it.only "_generateCombined with objects", ->
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, {})
 
-    @storage.setSolidLayer(@moldPath, @defaultAction, {
-      name: 'newValue'
-      nested: {
-        param: {
-          name: 'newNestedName'
-        }
-      }
-      arr: [ [3], 4 ]
-    })
-    @storage.setStateLayerSilent(@moldPath, @defaultAction, {
+    @storage.setSolidLayer @moldPath, @defaultAction, {
       name: 'value'
       nested: {
         param: {
           name: 'oldNestedName'
         }
       }
-      arr: [ [1], 2 ]
+      arr: [ [1], 2, 3 ]
       odd: 'oddValue'
-    })
-
-    assert.deepEqual(@storage.getCombined(@moldPath, @defaultAction), {
+    }
+    @storage.setStateLayerSilent @moldPath, @defaultAction, {
       name: 'newValue'
       nested: {
         param: {
@@ -73,15 +94,67 @@ describe 'Unit. Storage.', ->
         }
       }
       arr: [ [3], 4 ]
+      oddState: 'oddValue'
+    }
+
+    assert.deepEqual @storage.getCombined(@moldPath, @defaultAction), {
+      name: 'newValue'
+      nested: {
+        param: {
+          name: 'newNestedName'
+        }
+      }
+      arr: [ [3], 4, 3 ]
       odd: 'oddValue'
-    })
+      oddState: 'oddValue'
+    }
 
 
   it.only "_generateCombined with arrays", ->
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, [])
 
-    @storage.setSolidLayer(@moldPath, @defaultAction, [ 'value' ])
+    @storage.setSolidLayer @moldPath, @defaultAction, [
+      {
+        name: 'value'
+        nested: {
+          param: {
+            name: 'oldNestedName'
+          }
+        }
+        arr: [ [1], 2, 3 ]
+        odd: 'oddValue'
+      }
+    ]
+
+    @storage.setStateLayerSilent @moldPath, @defaultAction, [
+      {
+        name: 'newValue'
+        nested: {
+          param: {
+            name: 'newNestedName'
+          }
+        }
+        arr: [ [3], 4 ]
+        oddState: 'oddValue'
+      }
+    ]
+
+    assert.deepEqual @storage.getCombined(@moldPath, @defaultAction), [
+      {
+        name: 'newValue'
+        nested: {
+          param: {
+            name: 'newNestedName'
+          }
+        }
+        arr: [ [3], 4, 3 ]
+        odd: 'oddValue'
+        oddState: 'oddValue'
+      }
+    ]
+
+
 
 
 
