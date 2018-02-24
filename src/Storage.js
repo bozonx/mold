@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Map, List, Seq } from 'immutable';
+import { Map, List, Seq, mergeDeep } from 'immutable';
 
 import { mutate } from './helpers/mutate';
 import Events from './Events';
@@ -36,7 +36,8 @@ export default class Storage {
    * You can set your own storage as initial storage.
    * @param {object} newStorage - your storage
    */
-  $init(newStorage) {
+  $init(newStorage = {}) {
+    // TODO: не нужно устанавливать newStorage
     this._storage = newStorage;
     this._storage.items = {};
   }
@@ -59,7 +60,7 @@ export default class Storage {
 
     // TODO: test
 
-    if (!_.isArray(initialContainer) || !_.isPlainObject(initialContainer)) {
+    if (!_.isArray(initialContainer) && !_.isPlainObject(initialContainer)) {
       this._log.fatal(`Invalid type of initial state`);
     }
 
@@ -71,6 +72,7 @@ export default class Storage {
       state: new Seq(initialContainer),
       solid: new Seq(initialContainer),
       combined: new Seq(initialContainer),
+      meta: new Map(),
     };
   }
 
@@ -80,32 +82,18 @@ export default class Storage {
     return this._storage.items[moldPath][action];
   }
 
-  /**
-   * Get all the actions of mold path.
-   * Don't change this object.
-   * @param {string} moldPath - path in your schema.
-   * @return {object|undefined} - all the actions of mold path. Undefined if the action hasn't set.
-   */
-  getAllActions(moldPath) {
-    if (!moldPath) this._log.fatal(`MoldPath is empty`);
-
-    // TODO: use immutable
-    return this._storage.items[moldPath];
-  }
-
-  /**
-   * Get combined state of state and solid.
-   * @param {string} moldPath - path in your schema.
-   * @param {string} action - name of action e.g. 'default'.
-   * @return {object|array|undefined} - combined state of state and solid layers. Undefined if action hasn't set.
-   */
-  getCombined(moldPath, action) {
-    this._checkParams(moldPath, action);
-
-    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
-
-    return this._storage.items[moldPath][action].combined.toJs();
-  }
+  // /**
+  //  * Get all the actions of mold path.
+  //  * Don't change this object.
+  //  * @param {string} moldPath - path in your schema.
+  //  * @return {object|undefined} - all the actions of mold path. Undefined if the action hasn't set.
+  //  */
+  // getAllActions(moldPath) {
+  //   if (!moldPath) this._log.fatal(`MoldPath is empty`);
+  //
+  //   // TODO: use immutable
+  //   return this._storage.items[moldPath];
+  // }
 
   /**
    * Get state layer.
@@ -118,7 +106,7 @@ export default class Storage {
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
 
-    return this._storage.items[moldPath][action].state && this._storage.items[moldPath][action].state.toJS();
+    return this._storage.items[moldPath][action].state.toJS();
   }
 
   /**
@@ -132,7 +120,21 @@ export default class Storage {
 
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
 
-    return this._storage.items[moldPath][action].solid && this._storage.items[moldPath][action].solid.toJS();
+    return this._storage.items[moldPath][action].solid.toJS();
+  }
+
+  /**
+   * Get combined state of state and solid.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   * @return {object|array|undefined} - combined state of state and solid layers. Undefined if action hasn't set.
+   */
+  getCombined(moldPath, action) {
+    this._checkParams(moldPath, action);
+
+    if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
+
+    return this._storage.items[moldPath][action].combined.toJS();
   }
 
   /**
@@ -162,23 +164,23 @@ export default class Storage {
    * Replace state data with new data.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @param {object|array} fullData - the new data.
+   * @param {object|array} newData - the new data.
    */
-  setStateLayerSilent(moldPath, action, fullData) {
+  setStateLayerSilent(moldPath, action, newData) {
     this._checkParams(moldPath, action);
 
     // do nothing if data the same
-    if (_.isEqual(fullData, this._storage.items[moldPath][action].state && this._storage.items[moldPath][action].state.toJS())) {
+    if (_.isEqual(newData, this._storage.items[moldPath][action].state.toJS())) {
       return;
     }
 
     // set data
-    this._storage.items[moldPath][action].state = this._newImmutable(fullData);
+    this._storage.items[moldPath][action].state = new Seq(newData);
 
     this._generateCombined(moldPath, action);
 
     this._emitActionEvent(moldPath, action, 'any', {
-      data: fullData,
+      data: this._storage.items[moldPath][action].state.toJS(),
       by: 'program',
       type: 'silent',
     });
@@ -193,6 +195,8 @@ export default class Storage {
   updateStateLayer(moldPath, action, partialData) {
     // TODO: remake tests
     this._updateStateLayer(moldPath, action, partialData);
+
+    // TODO: если не было изменений наверное не поднимать события
 
     this._emitActionEvent(moldPath, action, 'change', {
       data: partialData,
@@ -209,6 +213,7 @@ export default class Storage {
     // TODO: remake tests
     this._updateStateLayer(moldPath, action, partialData);
 
+    // TODO: если не было изменений наверное не поднимать события
     this._emitActionEvent(moldPath, action, 'silent', {
       data: partialData,
       by: 'program',
@@ -230,20 +235,22 @@ export default class Storage {
   setSolidLayer(moldPath, action, newData) {
     this._checkParams(moldPath, action);
 
-    //this._initActionIfNeed(moldPath, action);
+    // do nothing if data the same
+    if (_.isEqual(newData, this._storage.items[moldPath][action].solid.toJS())) {
+      return;
+    }
 
-    this._storage.items[moldPath][action].solid = newData;
+    // set data
+    this._storage.items[moldPath][action].solid = new Seq(newData);
     this._generateCombined(moldPath, action);
 
-    // TODO: use immutable
-    // TODO: наверное не bottom а solid???
-    this._emitActionEvent(moldPath, action, 'bottom', {
-      data: newData,
+    this._emitActionEvent(moldPath, action, 'solid', {
+      data: this._storage.items[moldPath][action].solid.toJS(),
       by: 'program',
       type: 'silent',
     });
     this._emitActionEvent(moldPath, action, 'any', {
-      data: newData,
+      data: this._storage.items[moldPath][action].solid.toJS(),
       by: 'program',
       type: 'silent',
     });
@@ -296,6 +303,14 @@ export default class Storage {
   }
 
 
+  /**
+   * Listen for any event.
+   * @param {string} eventName - event name
+   * @param {function} handler - event handler
+   */
+  on(eventName, handler) {
+    this._events.on(eventName, handler);
+  }
 
   /**
    * Listen for user's changes of whole storage.
@@ -332,8 +347,8 @@ export default class Storage {
     this._events.on(fullEventName, handler);
   }
 
-  offAction(moldPath, action, event, handler) {
-    const fullEventName = this._getEventName( this._getFullPath(moldPath, action), 'event' );
+  offAction(moldPath, action, eventName, handler) {
+    const fullEventName = this._getEventName( this._getFullPath(moldPath, action), eventName );
     this._events.off(fullEventName, handler);
   }
 
@@ -351,21 +366,21 @@ export default class Storage {
     this._events.destroy(this._getFullPath(moldPath, action));
   }
 
-  _newImmutable(fullData) {
-    // TODO: может использовать Seq?
-    let immutableData;
-    if (_.isPlainObject(fullData)) {
-      immutableData = new Map(fullData);
-    }
-    else if (_.isArray(fullData)) {
-      immutableData = new List(fullData);
-    }
-    else {
-      this._log.fatal(`Bad type of data`);
-    }
-
-    return immutableData;
-  }
+  // _newImmutable(fullData) {
+  //   // TODO: может использовать Seq?
+  //   let immutableData;
+  //   if (_.isPlainObject(fullData)) {
+  //     immutableData = new Map(fullData);
+  //   }
+  //   else if (_.isArray(fullData)) {
+  //     immutableData = new List(fullData);
+  //   }
+  //   else {
+  //     this._log.fatal(`Bad type of data`);
+  //   }
+  //
+  //   return immutableData;
+  // }
 
   // _initAction(moldPath, action) {
   //   if (!this._storage.items[moldPath]) {
@@ -382,7 +397,8 @@ export default class Storage {
 
     this._checkParams(moldPath, action);
 
-    // TODO: наверное просто use immutable
+    // TODO: наверное просто use immutable and deep merge
+    // TODO: были ли изменения - можно понять сравнив со старыми данными
     const wereChanges = this._update(moldPath, action, 'state', partialData);
 
     // do nothing if there weren't any changes
@@ -443,18 +459,20 @@ export default class Storage {
     const top = this._storage.items[moldPath][action].state;
     const bottom = this._storage.items[moldPath][action].solid;
 
-    // TODO: use immutable
     // TODO: test arrays
     // TODO: наверное можно использоват mutate, но контейнеры обновлять с алгоритмом defaults
-    const newData = _.defaultsDeep(_.cloneDeep(top), bottom);
+    const newData = new Seq( _.defaultsDeep(top.toJS(), bottom.toJS()) );
 
-    if (_.isUndefined(this._storage.items[moldPath][action].combined)) {
-      this._storage.items[moldPath][action].combined = newData;
-    }
-    else {
-      if (_.isUndefined(newData)) return;
-      mutate(this._storage.items[moldPath][action].combined).combine(newData);
-    }
+    this._storage.items[moldPath][action].combined = newData;
+
+
+    // if (_.isUndefined(this._storage.items[moldPath][action].combined)) {
+    //   this._storage.items[moldPath][action].combined = newData;
+    // }
+    // else {
+    //   if (_.isUndefined(newData)) return;
+    //   mutate(this._storage.items[moldPath][action].combined).combine(newData);
+    // }
   }
 
   _getEventName(path, eventName) {

@@ -8,11 +8,11 @@ describe 'Unit. Storage.', ->
     @events = @storage._events
     @moldPath = 'path.to[256]'
 
-  it.only "setStateLayerSilent", ->
+  it "setStateLayerSilent", ->
     handlerChange = sinon.spy()
     handlerAnyChange = sinon.spy()
-    @storage.$init({})
-    @storage.initState(@moldPath, @defaultAction, {})
+    @storage.$init()
+    @storage.initAction(@moldPath, @defaultAction, {})
     @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
     @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
 
@@ -26,6 +26,63 @@ describe 'Unit. Storage.', ->
 
 
   it.only "setSolidLayer", ->
+    handlerChange = sinon.spy()
+    handlerAnyChange = sinon.spy()
+    @storage.$init()
+    @storage.initAction(@moldPath, @defaultAction, {})
+    @storage.on(@storage._getEventName( @storage._getFullPath(@moldPath, @defaultAction), 'solid' ), handlerChange)
+    @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
+
+    @storage.setSolidLayer(@moldPath, @defaultAction, { name: 'value' })
+    assert.deepEqual(@storage.getSolid(@moldPath, @defaultAction), { name: 'value' })
+
+    # TODO: check combined
+
+    sinon.assert.calledOnce(handlerChange);
+    sinon.assert.calledOnce(handlerAnyChange);
+
+  it.only "_generateCombined with objects", ->
+    @storage.$init()
+    @storage.initAction(@moldPath, @defaultAction, {})
+
+    @storage.setSolidLayer(@moldPath, @defaultAction, {
+      name: 'newValue'
+      nested: {
+        param: {
+          name: 'newNestedName'
+        }
+      }
+      arr: [ [3], 4 ]
+    })
+    @storage.setStateLayerSilent(@moldPath, @defaultAction, {
+      name: 'value'
+      nested: {
+        param: {
+          name: 'oldNestedName'
+        }
+      }
+      arr: [ [1], 2 ]
+      odd: 'oddValue'
+    })
+
+    assert.deepEqual(@storage.getCombined(@moldPath, @defaultAction), {
+      name: 'newValue'
+      nested: {
+        param: {
+          name: 'newNestedName'
+        }
+      }
+      arr: [ [3], 4 ]
+      odd: 'oddValue'
+    })
+
+
+  it.only "_generateCombined with arrays", ->
+    @storage.$init()
+    @storage.initAction(@moldPath, @defaultAction, [])
+
+    @storage.setSolidLayer(@moldPath, @defaultAction, [ 'value' ])
+
 
 
 
