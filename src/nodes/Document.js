@@ -28,6 +28,7 @@ export default class Document extends _NodeBase {
 
   $init(moldPath, schema) {
     // convert to simple schema type
+    // TODO: это primitive schema
     this.$fullSchema = this.$fullSchema || {
       type: 'assoc',
       items: schema.schema,

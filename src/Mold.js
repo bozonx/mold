@@ -77,14 +77,18 @@ export default class _Mold {
   }
 
   _initActionStorage() {
-    let initialState = this._getRootInitialState();
+    const initialContainer = this._getRootInitialState();
 
+    this._main.storage.initAction(this._moldPath, this._actionName, initialContainer);
+
+    let initialState;
     // init primitives for document
-    if (_.isPlainObject(initialState)) {
+    // TODO: массив тоже может иметь initial state
+    if (_.isPlainObject(initialContainer)) {
       initialState = this._getPrimitivesInitialStates();
     }
 
-    this._main.storage.initAction(this._moldPath, this._actionName, initialState);
+    this._main.storage.setStateLayerSilent(this._moldPath, this._actionName, initialState);
   }
 
   _getRootInitialState() {
@@ -99,6 +103,8 @@ export default class _Mold {
 
   _getPrimitivesInitialStates() {
     // TODO: review
+    // TODO: массив тоже может иметь initial state
+
     const result = {};
     // get schema for document or catalogue
     const schema = this._schema.items || this._schema.item;

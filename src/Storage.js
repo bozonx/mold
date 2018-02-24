@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { Map, List } from 'immutable';
+import { Map, List, Seq } from 'immutable';
 
 import { mutate } from './helpers/mutate';
 import Events from './Events';
@@ -52,15 +52,14 @@ export default class Storage {
    * And you have to call this method only once, not for each instance.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @param {object|array} initialState - initial state object or array.
-   *                                      It is an empty or with initial values [] or {}.
+   * @param {object|array} initialContainer - initial state: an empty [] or {}.
    */
-  initAction(moldPath, action, initialState) {
+  initAction(moldPath, action, initialContainer) {
     this._checkParams(moldPath, action);
 
     // TODO: test
 
-    if (!_.isArray(initialState) || !_.isPlainObject(initialState)) {
+    if (!_.isArray(initialContainer) || !_.isPlainObject(initialContainer)) {
       this._log.fatal(`Invalid type of initial state`);
     }
 
@@ -69,11 +68,10 @@ export default class Storage {
     }
 
     this._storage.items[moldPath][action] = {
-      state: this._newImmutable(initialState),
-      solid: (_.isArray(initialState)) ? new List() : new Map(),
+      state: new Seq(initialContainer),
+      solid: new Seq(initialContainer),
+      combined: new Seq(initialContainer),
     };
-
-    this._generateCombined(moldPath, action);
   }
 
   getAction(moldPath, action) {
@@ -173,8 +171,6 @@ export default class Storage {
     if (_.isEqual(fullData, this._storage.items[moldPath][action].state && this._storage.items[moldPath][action].state.toJS())) {
       return;
     }
-
-    //this._initActionIfNeed(moldPath, action);
 
     // set data
     this._storage.items[moldPath][action].state = this._newImmutable(fullData);
