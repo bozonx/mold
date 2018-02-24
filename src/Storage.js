@@ -48,18 +48,38 @@ export default class Storage {
   /**
    * Initialize state layer of specific mold path.
    * State level uses for real-time ui data.
+   * You have to call this method before use action's data.
+   * And you have to call this method only once, not for each instance.
    * @param {string} moldPath - path in your schema.
    * @param {string} action - name of action e.g. 'default'.
-   * @param {object|array} initialState - initial state object or array which will store state.
-   *                                      usually it is an empty [] or {}.
+   * @param {object|array} initialState - initial state object or array.
+   *                                      It is an empty or with initial values [] or {}.
    */
-  initState(moldPath, action, initialState) {
-    // TODO: впринципе в этой ф-ии нет особого смысла. Она должна была поставить либо массив либо объект в начале
+  initAction(moldPath, action, initialState) {
     this._checkParams(moldPath, action);
-    this._initActionIfNeed(moldPath, action);
 
-    //this._storage.items[moldPath][action].state = initialState;
+    // TODO: test
+
+    if (!_.isArray(initialState) || !_.isPlainObject(initialState)) {
+      this._log.fatal(`Invalid type of initial state`);
+    }
+
+    if (!this._storage.items[moldPath]) {
+      this._storage.items[moldPath] = {};
+    }
+
+    this._storage.items[moldPath][action] = {
+      state: this._newImmutable(initialState),
+      solid: (_.isArray(initialState)) ? new List() : new Map(),
+    };
+
     this._generateCombined(moldPath, action);
+  }
+
+  getAction(moldPath, action) {
+    this._checkParams(moldPath, action);
+
+    return this._storage.items[moldPath][action];
   }
 
   /**
@@ -154,7 +174,7 @@ export default class Storage {
       return;
     }
 
-    this._initActionIfNeed(moldPath, action);
+    //this._initActionIfNeed(moldPath, action);
 
     // set data
     this._storage.items[moldPath][action].state = this._newImmutable(fullData);
@@ -214,7 +234,7 @@ export default class Storage {
   setSolidLayer(moldPath, action, newData) {
     this._checkParams(moldPath, action);
 
-    this._initActionIfNeed(moldPath, action);
+    //this._initActionIfNeed(moldPath, action);
 
     this._storage.items[moldPath][action].solid = newData;
     this._generateCombined(moldPath, action);
@@ -235,7 +255,7 @@ export default class Storage {
 
   updateMeta(moldPath, action, partialData) {
     this._checkParams(moldPath, action);
-    this._initActionIfNeed(moldPath, action);
+    //this._initActionIfNeed(moldPath, action);
 
     // TODO: use immutable
     // TODO: может использовать this._update ?
@@ -351,15 +371,15 @@ export default class Storage {
     return immutableData;
   }
 
-  _initActionIfNeed(moldPath, action) {
-    if (!this._storage.items[moldPath]) {
-      this._storage.items[moldPath] = {};
-    }
-
-    if (!this._storage.items[moldPath][action]) {
-      this._storage.items[moldPath][action] = {};
-    }
-  }
+  // _initAction(moldPath, action) {
+  //   if (!this._storage.items[moldPath]) {
+  //     this._storage.items[moldPath] = {};
+  //   }
+  //
+  //   if (!this._storage.items[moldPath][action]) {
+  //     this._storage.items[moldPath][action] = {};
+  //   }
+  // }
 
   _updateStateLayer(moldPath, action, partialData) {
     // TODO: review
@@ -401,7 +421,7 @@ export default class Storage {
   }
 
   _update(moldPath, action, subPath, partialData) {
-    this._initActionIfNeed(moldPath, action);
+    //this._initActionIfNeed(moldPath, action);
 
     const currentData = this._storage.items[moldPath][action][subPath];
     const oldDataCopy = _.clone(this._storage.items[moldPath][action][subPath]);

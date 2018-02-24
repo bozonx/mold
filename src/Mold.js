@@ -8,6 +8,7 @@ export default class _Mold {
     this._main = main;
     this._moldPath = moldPath;
     this._actionName = actionName;
+    // TODO: наверное имеется ввиду _primitiveSchema ?
     this._schema = fullSchema;
   }
 
@@ -16,7 +17,9 @@ export default class _Mold {
   }
 
   init() {
-    this._initSchema();
+    if (this._main.storage.getAction(this._moldPath, this._actionName)) {
+      this._initActionStorage();
+    }
     // this.__readOnlyProps = this._collectRoProps();
   }
 
@@ -73,7 +76,7 @@ export default class _Mold {
     this._main.storage.destroy(this._moldPath, this._actionName);
   }
 
-  _initSchema() {
+  _initActionStorage() {
     let initialState = this._getRootInitialState();
 
     // init primitives for document
@@ -81,13 +84,12 @@ export default class _Mold {
       initialState = this._getPrimitivesInitialStates();
     }
 
-    this._main.storage.initState(this._moldPath, this._actionName, initialState);
+    this._main.storage.initAction(this._moldPath, this._actionName, initialState);
   }
 
   _getRootInitialState() {
     const rootTypeName = this._schema.type;
 
-    // TODO: наверное надо array использовать вместо collection
     if (!_.includes([ 'assoc', 'array' ], rootTypeName)) {
       this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Bad root type "${rootTypeName}"`);
     }
@@ -96,6 +98,7 @@ export default class _Mold {
   }
 
   _getPrimitivesInitialStates() {
+    // TODO: review
     const result = {};
     // get schema for document or catalogue
     const schema = this._schema.items || this._schema.item;

@@ -8,7 +8,7 @@ describe 'Unit. Storage.', ->
     @events = @storage._events
     @moldPath = 'path.to[256]'
 
-  it "setStateLayerSilent", ->
+  it.only "setStateLayerSilent", ->
     handlerChange = sinon.spy()
     handlerAnyChange = sinon.spy()
     @storage.$init({})
