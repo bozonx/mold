@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+// TODO: isn't used
+
 import { concatPath, isCollection } from './helpers';
 
 /**
@@ -168,7 +170,7 @@ class Mutate {
     if (!root) {
       return this.storage;
     }
-    
+
     return _.get(this.storage, root);
   }
 

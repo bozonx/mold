@@ -17,7 +17,7 @@ export default class _Mold {
   }
 
   init() {
-    if (this._main.storage.getAction(this._moldPath, this._actionName)) {
+    if (!this._main.storage.isActionInited(this._moldPath, this._actionName)) {
       this._initActionStorage();
     }
     // this.__readOnlyProps = this._collectRoProps();

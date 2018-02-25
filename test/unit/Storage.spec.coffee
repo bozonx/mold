@@ -8,6 +8,28 @@ describe 'Unit. Storage.', ->
     @events = @storage._events
     @moldPath = 'path.to[256]'
 
+  it.only "initAction with plain object", ->
+    @storage.$init()
+    @storage.initAction(@moldPath, @defaultAction, {})
+
+    assert.deepEqual(@storage.getAction(@moldPath, @defaultAction), {
+      state: {},
+      solid: {},
+      combined: {},
+      meta: {},
+    })
+
+  it.only "initAction with plain object", ->
+    @storage.$init()
+    @storage.initAction(@moldPath, @defaultAction, [])
+
+    assert.deepEqual(@storage.getAction(@moldPath, @defaultAction), {
+      state: [],
+      solid: [],
+      combined: [],
+      meta: {},
+    })
+
   it "setStateLayerSilent", ->
     handlerChange = sinon.spy()
     handlerAnyChange = sinon.spy()

@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import { Map, List, Seq, mergeDeep } from 'immutable';
+import { Map, Seq, mergeDeep } from 'immutable';
 
-import { mutate } from './helpers/mutate';
 import Events from './Events';
 
 
@@ -58,7 +57,6 @@ export default class Storage {
   initAction(moldPath, action, initialContainer) {
     this._checkParams(moldPath, action);
 
-    // TODO: test
 
     if (!_.isArray(initialContainer) && !_.isPlainObject(initialContainer)) {
       this._log.fatal(`Invalid type of initial state`);
@@ -79,7 +77,14 @@ export default class Storage {
   getAction(moldPath, action) {
     this._checkParams(moldPath, action);
 
-    return this._storage.items[moldPath][action];
+    const result = {};
+    _.each(this._storage.items[moldPath][action], (item, paramName) => result[paramName] = item.toJS());
+
+    return result;
+  }
+
+  isActionInited(moldPath, action) {
+    return Boolean(this._storage.items[moldPath][action]);
   }
 
   // /**
@@ -91,8 +96,10 @@ export default class Storage {
   // getAllActions(moldPath) {
   //   if (!moldPath) this._log.fatal(`MoldPath is empty`);
   //
-  //   // TODO: use immutable
-  //   return this._storage.items[moldPath];
+  //   const result = {};
+  //   _.each(this._storage.items[moldPath], (item, actionName) => result[actionName] = item.toJS());
+  //
+  //   return result;
   // }
 
   /**
