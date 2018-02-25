@@ -8,7 +8,7 @@ describe 'Unit. Storage.', ->
     @events = @storage._events
     @moldPath = 'path.to[256]'
 
-  it.only "initAction with plain object", ->
+  it "initAction with plain object", ->
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, {})
 
@@ -19,7 +19,7 @@ describe 'Unit. Storage.', ->
       meta: {},
     })
 
-  it.only "initAction with plain object", ->
+  it "initAction with plain array", ->
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, [])
 
@@ -40,14 +40,13 @@ describe 'Unit. Storage.', ->
 
     @storage.setStateLayerSilent(@moldPath, @defaultAction, { name: 'value' })
     assert.deepEqual(@storage.getState(@moldPath, @defaultAction), { name: 'value' })
-
-    # TODO: check combined
+    assert.deepEqual(@storage.getCombined(@moldPath, @defaultAction), { name: 'value' })
 
     sinon.assert.notCalled(handlerChange);
     sinon.assert.calledOnce(handlerAnyChange);
 
 
-  it.only "setSolidLayer", ->
+  it "setSolidLayer with object", ->
     handlerChange = sinon.spy()
     handlerAnyChange = sinon.spy()
     @storage.$init()
@@ -55,46 +54,93 @@ describe 'Unit. Storage.', ->
     @storage.on(@storage._getEventName( @storage._getFullPath(@moldPath, @defaultAction), 'solid' ), handlerChange)
     @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
 
-    @storage.setSolidLayer(@moldPath, @defaultAction, { name: 'value' })
-    assert.deepEqual(@storage.getSolid(@moldPath, @defaultAction), { name: 'value' })
+    @storage.setStateLayerSilent @moldPath, @defaultAction, {
+      name: 'value'
+      nested: {
+        param: {
+          name: 'oldNestedName'
+        }
+      }
+      arr: [ [1], 2 ]
+      odd: 'oddValue'
+    }
+    @storage.setSolidLayer @moldPath, @defaultAction, {
+      name: 'newValue'
+      nested: {
+        param: {
+          name: 'newNestedName'
+        }
+      }
+      arr: [ [3], 4 ]
+    }
 
-    # TODO: check combined
+    assert.deepEqual @storage.getState(@moldPath, @defaultAction), {
+      odd: 'oddValue'
+    }
+
+    assert.deepEqual @storage.getCombined(@moldPath, @defaultAction), {
+      name: 'newValue'
+      nested: {
+        param: {
+          name: 'newNestedName'
+        }
+      }
+      arr: [ [3], 4 ]
+      odd: 'oddValue'
+    }
 
     sinon.assert.calledOnce(handlerChange);
-    sinon.assert.calledOnce(handlerAnyChange);
+    sinon.assert.calledTwice(handlerAnyChange);
 
-#    @storage.setSolidLayer(@moldPath, @defaultAction, {
-#      name: 'newValue'
-#      nested: {
-#        param: {
-#          name: 'newNestedName'
-#        }
-#      }
-#      arr: [ [3], 4 ]
-#    })
-#    @storage.setStateLayerSilent(@moldPath, @defaultAction, {
-#      name: 'value'
-#      nested: {
-#        param: {
-#          name: 'oldNestedName'
-#        }
-#      }
-#      arr: [ [1], 2 ]
-#      odd: 'oddValue'
-#    })
-#
-#    assert.deepEqual(@storage.getCombined(@moldPath, @defaultAction), {
-#      name: 'newValue'
-#      nested: {
-#        param: {
-#          name: 'newNestedName'
-#        }
-#      }
-#      arr: [ [3], 4 ]
-#      odd: 'oddValue'
-#    })
+  it "setSolidLayer with array", ->
+    @storage.$init()
+    @storage.initAction(@moldPath, @defaultAction, {})
 
-  it.only "_generateCombined with objects", ->
+    @storage.setStateLayerSilent @moldPath, @defaultAction, [
+      {
+        name: 'value'
+        nested: {
+          param: {
+            name: 'oldNestedName'
+          }
+        }
+        arr: [ [1], 2 ]
+        odd: 'oddValue'
+      }
+    ]
+    @storage.setSolidLayer @moldPath, @defaultAction, [
+      {
+        name: 'newValue'
+        nested: {
+          param: {
+            name: 'newNestedName'
+          }
+        }
+        arr: [ [3], 4 ]
+      }
+    ]
+
+    assert.deepEqual @storage.getState(@moldPath, @defaultAction), [
+      {
+        odd: 'oddValue'
+      }
+    ]
+
+    assert.deepEqual @storage.getCombined(@moldPath, @defaultAction), [
+      {
+        name: 'newValue'
+        nested: {
+          param: {
+            name: 'newNestedName'
+          }
+        }
+        arr: [ [3], 4 ]
+        odd: 'oddValue'
+      }
+    ]
+
+
+  it "_generateCombined with objects", ->
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, {})
 
@@ -132,7 +178,7 @@ describe 'Unit. Storage.', ->
     }
 
 
-  it.only "_generateCombined with arrays", ->
+  it "_generateCombined with arrays", ->
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, [])
 
@@ -177,10 +223,6 @@ describe 'Unit. Storage.', ->
     ]
 
 
-
-
-
-
   ############3 TODO: review
 
   it 'destroy', ->
@@ -208,103 +250,6 @@ describe 'Unit. Storage.', ->
     #sinon.assert.calledOnce(handlerChange)
     #sinon.assert.calledOnce(handlerAnyChange)
 
-  describe 'bottom level (solid)', ->
-    it 'set new data twice', ->
-      bottomHandler = sinon.spy()
-      anyHandler = sinon.spy()
-      @events.on("#{@moldPath}|bottom", bottomHandler)
-      @events.on("#{@moldPath}|any", anyHandler)
-      newData1 = {
-        id: 1
-        param1: 'value1'
-        param2: 'value2'
-      }
-      newData2 = {
-        id: 2
-        param1: 'value11'
-      }
-
-      @storage.$init({})
-      @storage.initState(@moldPath, @defaultAction, {})
-      @storage.setSolidLayer(@moldPath, @defaultAction, newData1)
-      @storage.setSolidLayer(@moldPath, @defaultAction, newData2)
-
-      expect(@storage.getSolid(@moldPath, @defaultAction)).to.be.deep.equal(newData2)
-      expect(bottomHandler).to.be.calledTwice
-      expect(anyHandler).to.be.calledTwice
-
-  describe 'top level', ->
-    it 'set new data and update it', ->
-      changeHandler = sinon.spy()
-      anyHandler = sinon.spy()
-      @events.on("#{@moldPath}|change", changeHandler)
-      @events.on("#{@moldPath}|any", anyHandler)
-      newData1 = {
-        id: 1
-        param1: 'value1'
-        param2: 'value2'
-      }
-      newData2 = {
-        id: 2
-        param1: 'value11'
-      }
-
-      @storage.$init({})
-      @storage.initState(@moldPath, @defaultAction, {})
-      @storage.updateStateLayer(@moldPath, @defaultAction, newData1)
-      @storage.updateStateLayer(@moldPath, @defaultAction, newData2)
-
-      result = {
-        id: 2
-        param1: 'value11'
-        param2: 'value2'
-      }
-      expect(@storage.getState(@moldPath, @defaultAction)).to.be.deep.equal(result)
-      expect(changeHandler).to.be.calledTwice
-      expect(anyHandler).to.be.calledTwice
-
-    it 'updateStateLayerSilent', ->
-      silentHandler = sinon.spy()
-      anyHandler = sinon.spy()
-      @events.on("#{@moldPath}|silent", silentHandler)
-      @events.on("#{@moldPath}|any", anyHandler)
-      newData1 = {
-        id: 1
-        param1: 'value1'
-      }
-
-      @storage.$init({})
-      @storage.initState(@moldPath, @defaultAction, {})
-      @storage.updateStateLayerSilent(@moldPath, @defaultAction, newData1)
-
-      expect(@storage.getState(@moldPath, @defaultAction)).to.be.deep.equal(newData1)
-      expect(silentHandler).to.be.calledOnce
-      expect(anyHandler).to.be.calledOnce
-
-    it 'combine with bottom level', ->
-      bottomData = {
-        id: 1
-        param1: 'value1'
-        param2: 'value2'
-      }
-      topData = {
-        param2: 'value22'
-        param3: 'value3'
-      }
-
-      @storage.$init({})
-      @storage.initState(@moldPath, @defaultAction, {})
-      @storage.setSolidLayer(@moldPath, @defaultAction, bottomData)
-      @storage.updateStateLayer(@moldPath, @defaultAction, topData)
-
-      expect(@storage.getSolid(@moldPath, @defaultAction)).to.be.deep.equal(bottomData)
-      expect(@storage.getState(@moldPath, @defaultAction)).to.be.deep.equal(topData)
-      expect(@storage.getCombined(@moldPath, @defaultAction)).to.be.deep.equal {
-        id: 1
-        param1: 'value1'
-        param2: 'value22'
-        param3: 'value3'
-      }
 
     it 'meta', ->
       anyHandler = sinon.spy()

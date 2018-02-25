@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Map, Seq, mergeDeep } from 'immutable';
 
-import Events from './Events';
+import Events from './StorageEvents';
 
 
 /**
@@ -57,7 +57,6 @@ export default class Storage {
   initAction(moldPath, action, initialContainer) {
     this._checkParams(moldPath, action);
 
-
     if (!_.isArray(initialContainer) && !_.isPlainObject(initialContainer)) {
       this._log.fatal(`Invalid type of initial state`);
     }
@@ -86,21 +85,6 @@ export default class Storage {
   isActionInited(moldPath, action) {
     return Boolean(this._storage.items[moldPath][action]);
   }
-
-  // /**
-  //  * Get all the actions of mold path.
-  //  * Don't change this object.
-  //  * @param {string} moldPath - path in your schema.
-  //  * @return {object|undefined} - all the actions of mold path. Undefined if the action hasn't set.
-  //  */
-  // getAllActions(moldPath) {
-  //   if (!moldPath) this._log.fatal(`MoldPath is empty`);
-  //
-  //   const result = {};
-  //   _.each(this._storage.items[moldPath], (item, actionName) => result[actionName] = item.toJS());
-  //
-  //   return result;
-  // }
 
   /**
    * Get state layer.
@@ -249,7 +233,7 @@ export default class Storage {
 
     // set data
     this._storage.items[moldPath][action].solid = new Seq(newData);
-    this._clearStateBeforeSetSolid(this._storage.items[moldPath][action]);
+    this._clearStateAfterSetSolid(moldPath, action);
     this._generateCombined(moldPath, action);
 
     this._emitActionEvent(moldPath, action, 'solid', {
@@ -268,6 +252,7 @@ export default class Storage {
     this._checkParams(moldPath, action);
     //this._initActionIfNeed(moldPath, action);
 
+    // TODO: test
     // TODO: use immutable
     // TODO: может использовать this._update ?
     const currentData = this._storage.items[moldPath][action].meta;
@@ -279,38 +264,6 @@ export default class Storage {
       type: 'meta',
     });
   }
-
-  // /**
-  //  * Clear state level silently.
-  //  * @param {string} moldPath - path in your schema.
-  //  * @param {string} action - name of action e.g. 'default'.
-  //  */
-  // clearStateLayer(moldPath, action) {
-  //   // TODO: нужно все очистить или только то что должно быть замененно с сервера?
-  //
-  //   // TODO: test
-  //   if (!this._storage.items[moldPath]
-  //     || !this._storage.items[moldPath][action]
-  //     || !this._storage.items[moldPath][action].state) {
-  //     return;
-  //   }
-  //
-  //   // TODO: поидее с мутацией надо ???
-  //   let newData = [];
-  //   if (_.isPlainObject(this._storage.items[moldPath][action].state)) {
-  //     newData = {};
-  //   }
-  //
-  //   // TODO: use immutable
-  //
-  //   this._storage.items[moldPath][action].state = newData;
-  //
-  //   this._emitActionEvent(moldPath, action, 'any', {
-  //     data: newData,
-  //     by: 'program',
-  //     type: 'silent',
-  //   });
-  // }
 
 
   /**
@@ -376,32 +329,6 @@ export default class Storage {
     this._events.destroy(this._getFullPath(moldPath, action));
   }
 
-  // _newImmutable(fullData) {
-  //   // TODO: может использовать Seq?
-  //   let immutableData;
-  //   if (_.isPlainObject(fullData)) {
-  //     immutableData = new Map(fullData);
-  //   }
-  //   else if (_.isArray(fullData)) {
-  //     immutableData = new List(fullData);
-  //   }
-  //   else {
-  //     this._log.fatal(`Bad type of data`);
-  //   }
-  //
-  //   return immutableData;
-  // }
-
-  // _initAction(moldPath, action) {
-  //   if (!this._storage.items[moldPath]) {
-  //     this._storage.items[moldPath] = {};
-  //   }
-  //
-  //   if (!this._storage.items[moldPath][action]) {
-  //     this._storage.items[moldPath][action] = {};
-  //   }
-  // }
-
   _updateStateLayer(moldPath, action, partialData) {
     // TODO: review
 
@@ -437,6 +364,12 @@ export default class Storage {
     return `${moldPath}-${action}`;
   }
 
+  _getEventName(path, eventName) {
+    if (!path) return eventName;
+
+    return `${path}|${eventName}`;
+  }
+
   _checkParams(moldPath, action) {
     if (!moldPath) this._log.fatal(`MoldPath is empty`);
     if (!action) this._log.fatal(`Action is empty`);
@@ -469,40 +402,128 @@ export default class Storage {
     const top = this._storage.items[moldPath][action].state;
     const bottom = this._storage.items[moldPath][action].solid;
 
-    // TODO: test arrays
     const merged = _.defaultsDeep(top.toJS(), bottom.toJS());
 
     this._storage.items[moldPath][action].combined = new Seq(merged);
   }
 
-  _clearStateBeforeSetSolid(action) {
-    // TODO: test it
+  /**
+   * Clear params in state which in the solid layer.
+   * @param {string} moldPath - path in your schema.
+   * @param {string} action - name of action e.g. 'default'.
+   * @private
+   */
+  _clearStateAfterSetSolid(moldPath, action) {
+    const actionObj = this._storage.items[moldPath][action];
 
-    const solid = action.solid.toJS();
+    const solid = actionObj.solid.toJS();
 
     const clearObject = (localSolid, localState) => {
       const solidKeys = _.keys( localSolid );
       _.each(solidKeys, (name) => delete localState[name]);
+
+      return localState;
     };
 
-    if (_.isArray(solid)) {
-      _.each(solid, (item, index) => {
-        if (!_.isPlainObject(action.state.item)) return;
-        action.state[index] = new Seq( clearObject(item, action.state[index].toJS()) );
-      });
+    if (_.isPlainObject(solid)) {
+      actionObj.state = new Seq( clearObject(solid, actionObj.state.toJS()) );
     }
-    else if (_.isPlainObject(solid)){
-      action.state = new Seq( clearObject(solid, action.state.toJS()) );
+    else if (_.isArray(solid)) {
+      const resultArr = [];
+      const state = actionObj.state.toJS();
+
+      _.each(solid, (itemSolid, index) => {
+        if (!_.isPlainObject(itemSolid)) return;
+
+        if (!_.isPlainObject(state[index])) {
+          resultArr[index] = new Seq({});
+
+          return;
+        }
+
+        resultArr[index] = new Seq( clearObject(itemSolid, state[index]) );
+      });
+
+      actionObj.state = new Seq(resultArr);
     }
     else {
       this._log.fatal(`Invalid type of solid layer`);
     }
   }
 
-  _getEventName(path, eventName) {
-    if (!path) return eventName;
+  // /**
+  //  * Get all the actions of mold path.
+  //  * Don't change this object.
+  //  * @param {string} moldPath - path in your schema.
+  //  * @return {object|undefined} - all the actions of mold path. Undefined if the action hasn't set.
+  //  */
+  // getAllActions(moldPath) {
+  //   if (!moldPath) this._log.fatal(`MoldPath is empty`);
+  //
+  //   const result = {};
+  //   _.each(this._storage.items[moldPath], (item, actionName) => result[actionName] = item.toJS());
+  //
+  //   return result;
+  // }
 
-    return `${path}|${eventName}`;
-  }
+  // /**
+  //  * Clear state level silently.
+  //  * @param {string} moldPath - path in your schema.
+  //  * @param {string} action - name of action e.g. 'default'.
+  //  */
+  // clearStateLayer(moldPath, action) {
+  //   // TODO: нужно все очистить или только то что должно быть замененно с сервера?
+  //
+  //   // TODO: test
+  //   if (!this._storage.items[moldPath]
+  //     || !this._storage.items[moldPath][action]
+  //     || !this._storage.items[moldPath][action].state) {
+  //     return;
+  //   }
+  //
+  //   // TODO: поидее с мутацией надо ???
+  //   let newData = [];
+  //   if (_.isPlainObject(this._storage.items[moldPath][action].state)) {
+  //     newData = {};
+  //   }
+  //
+  //   // TODO: use immutable
+  //
+  //   this._storage.items[moldPath][action].state = newData;
+  //
+  //   this._emitActionEvent(moldPath, action, 'any', {
+  //     data: newData,
+  //     by: 'program',
+  //     type: 'silent',
+  //   });
+  // }
+
+
+  // _newImmutable(fullData) {
+  //   // TODO: может использовать Seq?
+  //   let immutableData;
+  //   if (_.isPlainObject(fullData)) {
+  //     immutableData = new Map(fullData);
+  //   }
+  //   else if (_.isArray(fullData)) {
+  //     immutableData = new List(fullData);
+  //   }
+  //   else {
+  //     this._log.fatal(`Bad type of data`);
+  //   }
+  //
+  //   return immutableData;
+  // }
+
+  // _initAction(moldPath, action) {
+  //   if (!this._storage.items[moldPath]) {
+  //     this._storage.items[moldPath] = {};
+  //   }
+  //
+  //   if (!this._storage.items[moldPath][action]) {
+  //     this._storage.items[moldPath][action] = {};
+  //   }
+  // }
+
 
 }
