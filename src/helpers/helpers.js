@@ -212,52 +212,6 @@ export function joinPath(pathArray) {
   return joined.replace(/\.\[/g, '[');
 }
 
-export function isSimpleArray(value) {
-  // TODO: test it
-  if (!_.isArray(value)) return false;
-
-  const compacted = _.compact(value);
-
-  if (compacted.length === 0) return true;
-
-  const head = _.head(compacted);
-
-  if (!_.isPlainObject(head)) return true;
-
-  return _.isUndefined(head.$$key);
-}
-
-export function isCollection(value) {
-  // TODO: дублирует isSimpleCollection
-  // TODO: test it
-  if (!_.isArray(value)) return false;
-
-  const compacted = _.compact(value);
-
-  if (compacted.length === 0) return false;
-
-  const head = _.head(compacted);
-
-  if (!_.isPlainObject(head)) return false;
-
-
-  // TODO: зачем эта проверка???
-  return _.isNumber(head.$$key) || _.isString(head.$$key);
-}
-
-export function isSimpleCollection(value) {
-  // TODO: test it
-  if (!_.isArray(value)) return false;
-
-  const compacted = _.compact(value);
-
-  if (compacted.length === 0) return false;
-
-  const head = _.head(compacted);
-
-  return _.isPlainObject(head);
-}
-
 /**
  * Validate schema params.
  * @param {object} obj - raw schema
@@ -290,6 +244,53 @@ export function validateParams(obj, cb) {
 
   if (!_.isEmpty(diff)) return `Unknown params: ${JSON.stringify(diff)}`;
 }
+
+
+// export function isSimpleArray(value) {
+//   // TODO: isn't used
+//   if (!_.isArray(value)) return false;
+//
+//   const compacted = _.compact(value);
+//
+//   if (compacted.length === 0) return true;
+//
+//   const head = _.head(compacted);
+//
+//   if (!_.isPlainObject(head)) return true;
+//
+//   return _.isUndefined(head.$$key);
+// }
+//
+// export function isCollection(value) {
+//   // TODO: дублирует isSimpleCollection
+//   // TODO: isn't used
+//   if (!_.isArray(value)) return false;
+//
+//   const compacted = _.compact(value);
+//
+//   if (compacted.length === 0) return false;
+//
+//   const head = _.head(compacted);
+//
+//   if (!_.isPlainObject(head)) return false;
+//
+//
+//   // TODO: зачем эта проверка???
+//   return _.isNumber(head.$$key) || _.isString(head.$$key);
+// }
+//
+// export function isSimpleCollection(value) {
+//   // TODO: isn't used
+//   if (!_.isArray(value)) return false;
+//
+//   const compacted = _.compact(value);
+//
+//   if (compacted.length === 0) return false;
+//
+//   const head = _.head(compacted);
+//
+//   return _.isPlainObject(head);
+// }
 
 
 // export function getFirstChildPath(path) {

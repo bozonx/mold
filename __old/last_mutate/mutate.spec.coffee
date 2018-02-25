@@ -1,4 +1,4 @@
-mutate = require('../../src/helpers/mutate').mutate
+mutate = require('./mutate').mutate
 
 describe 'Unit. mutate.', ->
   describe 'containers and primitives updates', ->

@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 // TODO: isn't used
 
-import { concatPath, isCollection } from './helpers';
+import { concatPath, isCollection } from '../../src/helpers/helpers';
 
 /**
  * Mutate storage.
