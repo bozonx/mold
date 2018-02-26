@@ -7,6 +7,10 @@ export default class Events {
     this.eventEmitter = new EventEmitter();
   }
 
+  getListeners(name) {
+    return this.eventEmitter.listeners(name);
+  }
+
   emit(eventName, eventData) {
     this.eventEmitter.emit(eventName, eventData);
   }
@@ -26,7 +30,7 @@ export default class Events {
       // TODO: может нужно полностью сравнивать?
       //if (name === path) {
       if (name.indexOf(path) === 0) {
-        _.each(this.eventEmitter.listeners(name), (handler) => {
+        _.each(this.getListeners(name), (handler) => {
           this.eventEmitter.off(name, handler);
         });
 

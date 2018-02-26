@@ -271,6 +271,8 @@ describe 'Unit. Storage.', ->
   it.only 'destroy', ->
     handlerChange = sinon.spy()
     handlerAnyChange = sinon.spy()
+    hangeEventName = @storage._getEventName( @storage._getFullPath(@moldPath, @defaultAction) , 'change')
+    anyEventName = @storage._getEventName( @storage._getFullPath(@moldPath, @defaultAction) , 'any')
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, {})
     @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
@@ -279,6 +281,8 @@ describe 'Unit. Storage.', ->
     @storage.updateStateLayer(@moldPath, @defaultAction, { data: 1 })
 
     assert.deepEqual(@storage.getState(@moldPath, @defaultAction), { data: 1 })
+    assert.equal(@storage._events.getListeners(hangeEventName).length, 1)
+    assert.equal(@storage._events.getListeners(anyEventName).length, 1)
 
     @storage.destroy(@moldPath, @defaultAction)
 
@@ -286,10 +290,9 @@ describe 'Unit. Storage.', ->
     assert.isUndefined(@storage._storage.items[@moldPath][@defaultAction])
     # you can't set data to action if it hasn't inited after destroy
     assert.throws(() => @storage.updateStateLayer(@moldPath, @defaultAction, { data: 2 }))
-
-    #sinon.assert.calledOnce(@log.fatal)
-#    sinon.assert.calledOnce(handlerChange)
-#    sinon.assert.calledOnce(handlerAnyChange)
+    # event handlers has to be clear
+    assert.equal(@storage._events.getListeners(hangeEventName).length, 0)
+    assert.equal(@storage._events.getListeners(anyEventName).length, 0)
 
 
   it "_generateCombined with objects", ->
