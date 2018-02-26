@@ -268,21 +268,20 @@ describe 'Unit. Storage.', ->
     sinon.assert.calledTwice(handlerAnyChange);
 
 
-  it.only 'destroy', ->
-    handlerChange = sinon.spy()
-    handlerAnyChange = sinon.spy()
-    hangeEventName = @storage._getEventName( @storage._getFullPath(@moldPath, @defaultAction) , 'change')
-    anyEventName = @storage._getEventName( @storage._getFullPath(@moldPath, @defaultAction) , 'any')
+  it 'destroy', ->
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, {})
-    @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
-    @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
+    @storage.onChangeAction(@moldPath, @defaultAction, sinon.spy())
+    @storage.onAnyChangeAction(@moldPath, @defaultAction, sinon.spy())
+    changeEventName = @storage._getEventName( @storage._getFullPath(@moldPath, @defaultAction) , 'change')
+    anyEventName = @storage._getEventName( @storage._getFullPath(@moldPath, @defaultAction) , 'any')
+
+    assert.equal(@storage._events.getListeners(changeEventName).length, 1)
+    assert.equal(@storage._events.getListeners(anyEventName).length, 1)
 
     @storage.updateStateLayer(@moldPath, @defaultAction, { data: 1 })
 
     assert.deepEqual(@storage.getState(@moldPath, @defaultAction), { data: 1 })
-    assert.equal(@storage._events.getListeners(hangeEventName).length, 1)
-    assert.equal(@storage._events.getListeners(anyEventName).length, 1)
 
     @storage.destroy(@moldPath, @defaultAction)
 
@@ -291,7 +290,7 @@ describe 'Unit. Storage.', ->
     # you can't set data to action if it hasn't inited after destroy
     assert.throws(() => @storage.updateStateLayer(@moldPath, @defaultAction, { data: 2 }))
     # event handlers has to be clear
-    assert.equal(@storage._events.getListeners(hangeEventName).length, 0)
+    assert.equal(@storage._events.getListeners(changeEventName).length, 0)
     assert.equal(@storage._events.getListeners(anyEventName).length, 0)
 
 

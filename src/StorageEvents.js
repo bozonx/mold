@@ -23,19 +23,20 @@ export default class Events {
     this.eventEmitter.off(eventName, handler);
   }
 
+  /**
+   * Destroy all the events on mold path and its events.
+   * @param {string} path - mold path
+   */
   destroy(path) {
     const eventNames = this.eventEmitter.eventNames();
 
-    _.find(eventNames, (name) => {
-      // TODO: может нужно полностью сравнивать?
-      //if (name === path) {
-      if (name.indexOf(path) === 0) {
-        _.each(this.getListeners(name), (handler) => {
-          this.eventEmitter.off(name, handler);
-        });
+    _.each(eventNames, (name) => {
+      if (name.indexOf(path) !== 0) return;
 
-        return true;
-      }
+      // get handlers by name
+      _.each(this.getListeners(name), (handler) => {
+        this.eventEmitter.off(name, handler);
+      });
     });
 
   }
