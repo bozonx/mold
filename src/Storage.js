@@ -184,10 +184,14 @@ export default class Storage {
    * @param {object|array} partialData - the new partial data.
    */
   updateStateLayer(moldPath, action, partialData) {
-    // TODO: remake tests
-    this._updateStateLayer(moldPath, action, partialData);
 
-    // TODO: если не было изменений наверное не поднимать события
+    // TODO: test
+    // TODO: test коллекций
+
+    const wasChanged = this._updateStateLayer(moldPath, action, partialData);
+
+    // don't rise events if there weren't any changes.
+    if (!wasChanged) return;
 
     this._emitActionEvent(moldPath, action, 'change', {
       data: partialData,
@@ -201,10 +205,15 @@ export default class Storage {
   }
 
   updateStateLayerSilent(moldPath, action, partialData) {
-    // TODO: remake tests
-    this._updateStateLayer(moldPath, action, partialData);
 
-    // TODO: если не было изменений наверное не поднимать события
+    // TODO: test
+    // TODO: test коллекций
+
+    const wasChanged = this._updateStateLayer(moldPath, action, partialData);
+
+    // don't rise events if there weren't any changes.
+    if (!wasChanged) return;
+
     this._emitActionEvent(moldPath, action, 'silent', {
       data: partialData,
       by: 'program',
@@ -250,13 +259,14 @@ export default class Storage {
 
   updateMeta(moldPath, action, partialData) {
     this._checkParams(moldPath, action);
-    //this._initActionIfNeed(moldPath, action);
 
     // TODO: test
-    // TODO: use immutable
-    // TODO: может использовать this._update ?
-    const currentData = this._storage.items[moldPath][action].meta;
-    this._storage.items[moldPath][action].meta = _.defaultsDeep(_.cloneDeep(partialData), currentData);
+    // TODO: тоже надо проверить были ли изменения
+
+    // update only received data.  It replaces arrays and plain objects
+    _.each(partialData, (item, name) => {
+      this._storage.items[moldPath][action].meta = this._storage.items[moldPath][action].meta.set(name, item);
+    });
 
     this._emitActionEvent(moldPath, action, 'any', {
       data: partialData,
@@ -330,18 +340,25 @@ export default class Storage {
   }
 
   _updateStateLayer(moldPath, action, partialData) {
-    // TODO: review
-
     this._checkParams(moldPath, action);
 
-    // TODO: наверное просто use immutable and deep merge
-    // TODO: были ли изменения - можно понять сравнив со старыми данными
     const wereChanges = this._update(moldPath, action, 'state', partialData);
+    if (wereChanges) this._generateCombined(moldPath, action);
 
-    // do nothing if there weren't any changes
-    if (!wereChanges) return;
+    return wereChanges;
+  }
 
-    this._generateCombined(moldPath, action);
+  _update(moldPath, action, subPath, partialData) {
+    const oldData = this._storage.items[moldPath][action][subPath].toJS();
+
+    // TODO: если есть массивы, то они полностью берутся из новых данных
+    // TODO: объекты наверное тоже заменяются?
+    const merged = _.defaultsDeep(partialData, oldData);
+
+    this._storage.items[moldPath][action][subPath] = new Seq(merged);
+
+    // if were changes - return true, else false
+    return !_.isEqual(oldData, merged);
   }
 
   _emitActionEvent(moldPath, action, eventName, eventData) {
@@ -373,29 +390,6 @@ export default class Storage {
   _checkParams(moldPath, action) {
     if (!moldPath) this._log.fatal(`MoldPath is empty`);
     if (!action) this._log.fatal(`Action is empty`);
-  }
-
-  _update(moldPath, action, subPath, partialData) {
-    //this._initActionIfNeed(moldPath, action);
-
-    const currentData = this._storage.items[moldPath][action][subPath];
-    const oldDataCopy = _.clone(this._storage.items[moldPath][action][subPath]);
-
-    // // if there isn't any current data - just set it
-    // if (_.isUndefined(currentData)) {
-    //   this._storage.items[moldPath][action][subPath] = _.cloneDeep(partialData);
-    //
-    //   return;
-    // }
-
-    // TODO: use immutable
-    // TODO: test arrays
-    // TODO: если есть массивы, то они полностью берутся из новых данных
-    // TODO: наверное можно использоват mutate, но контейнеры обновлять с алгоритмом defaults
-    this._storage.items[moldPath][action][subPath] = _.defaultsDeep(_.cloneDeep(partialData), currentData);
-
-    // if were changes - return true, else false
-    return !_.isEqual(oldDataCopy, this._storage.items[moldPath][action][subPath]);
   }
 
   _generateCombined(moldPath, action) {

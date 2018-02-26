@@ -140,6 +140,47 @@ describe 'Unit. Storage.', ->
     ]
 
 
+  it.only "updateStateLayer with objects", ->
+    handlerChange = sinon.spy()
+    handlerAnyChange = sinon.spy()
+    @storage.$init()
+    @storage.initAction(@moldPath, @defaultAction, {})
+    @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
+    @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
+
+    @storage.setStateLayerSilent @moldPath, @defaultAction, {
+      name: 'newValue'
+      nested: {
+        param: {
+          name: 'nestedName'
+        }
+      }
+      arr: [ [1], 2 ]
+    }
+
+    @storage.updateStateLayer @moldPath, @defaultAction, {
+      nested: {
+        param: {
+          name2: 'newNestedName2'
+        }
+      }
+      arr: [ [3] ]
+    }
+
+    assert.deepEqual(@storage.getState(@moldPath, @defaultAction), {
+      name: 'newValue'
+      nested: {
+        param: {
+          name2: 'newNestedName2'
+        }
+      }
+      arr: [ [3] ]
+    })
+
+    sinon.assert.calledOnce(handlerChange);
+    sinon.assert.calledTwice(handlerAnyChange);
+
+
   it "_generateCombined with objects", ->
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, {})
@@ -176,7 +217,6 @@ describe 'Unit. Storage.', ->
       odd: 'oddValue'
       oddState: 'oddValue'
     }
-
 
   it "_generateCombined with arrays", ->
     @storage.$init()
@@ -221,6 +261,8 @@ describe 'Unit. Storage.', ->
         oddState: 'oddValue'
       }
     ]
+
+
 
 
   ############3 TODO: review
