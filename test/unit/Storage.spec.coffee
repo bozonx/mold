@@ -4,7 +4,10 @@ Storage = require('../../src/Storage').default
 describe 'Unit. Storage.', ->
   beforeEach ->
     @defaultAction = 'default'
-    @storage = new Storage()
+    @log = {
+      fatal: (err) => throw new Error(err)
+    }
+    @storage = new Storage(@log)
     @events = @storage._events
     @moldPath = 'path.to[256]'
 
@@ -184,7 +187,7 @@ describe 'Unit. Storage.', ->
     handlerChange = sinon.spy()
     handlerAnyChange = sinon.spy()
     @storage.$init()
-    @storage.initAction(@moldPath, @defaultAction, {})
+    @storage.initAction(@moldPath, @defaultAction, [])
     @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
     @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
 
@@ -227,7 +230,7 @@ describe 'Unit. Storage.', ->
     sinon.assert.calledTwice(handlerAnyChange);
 
 
-  it.only "updateMeta", ->
+  it "updateMeta", ->
     handlerAnyChange = sinon.spy()
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, {})
@@ -263,6 +266,30 @@ describe 'Unit. Storage.', ->
     }
 
     sinon.assert.calledTwice(handlerAnyChange);
+
+
+  it.only 'destroy', ->
+    handlerChange = sinon.spy()
+    handlerAnyChange = sinon.spy()
+    @storage.$init()
+    @storage.initAction(@moldPath, @defaultAction, {})
+    @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
+    @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
+
+    @storage.updateStateLayer(@moldPath, @defaultAction, { data: 1 })
+
+    assert.deepEqual(@storage.getState(@moldPath, @defaultAction), { data: 1 })
+
+    @storage.destroy(@moldPath, @defaultAction)
+
+    # the action's storage has to be clear
+    assert.isUndefined(@storage._storage.items[@moldPath][@defaultAction])
+    # you can't set data to action if it hasn't inited after destroy
+    assert.throws(() => @storage.updateStateLayer(@moldPath, @defaultAction, { data: 2 }))
+
+    #sinon.assert.calledOnce(@log.fatal)
+#    sinon.assert.calledOnce(handlerChange)
+#    sinon.assert.calledOnce(handlerAnyChange)
 
 
   it "_generateCombined with objects", ->
@@ -345,49 +372,3 @@ describe 'Unit. Storage.', ->
         oddState: 'oddValue'
       }
     ]
-
-
-
-
-  ############3 TODO: review
-
-  it 'destroy', ->
-    handlerChange = sinon.spy()
-    handlerAnyChange = sinon.spy()
-    @storage.$init()
-    @storage.initState(@moldPath, @defaultAction, {})
-    @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
-    @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
-
-    @storage.updateStateLayer(@moldPath, @defaultAction, { data: 1 })
-
-    assert.deepEqual(@storage._storage.items[@moldPath][@defaultAction], {
-      state: { data: 1 }
-      combined: { data: 1 }
-    })
-
-    @storage.destroy(@moldPath, @defaultAction)
-    # the action's storage has to be clear
-    assert.isUndefined(@storage._storage.items[@moldPath][@defaultAction])
-    # after that assigned events have to be not rose
-    @storage.updateStateLayer(@moldPath, @defaultAction, { data: 2 })
-
-    # TODO: выяснить почему дваждый вызывается
-    #sinon.assert.calledOnce(handlerChange)
-    #sinon.assert.calledOnce(handlerAnyChange)
-
-
-    it 'meta', ->
-      anyHandler = sinon.spy()
-      @events.on("#{@moldPath}-#{@defaultAction}|any", anyHandler)
-
-      metaData = {
-        param1: 'value1'
-      }
-
-      @storage.$init()
-      @storage.updateMeta(@moldPath, @defaultAction, metaData)
-
-      expect(@storage.getMeta(@moldPath, @defaultAction)).to.be.deep.equal(metaData)
-      expect(@storage.getMeta(@moldPath, @defaultAction, 'param1')).to.be.deep.equal('value1')
-      expect(anyHandler).to.be.calledOnce

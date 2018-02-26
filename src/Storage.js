@@ -260,7 +260,6 @@ export default class Storage {
     });
   }
 
-
   /**
    * Listen for any event.
    * @param {string} eventName - event name
@@ -316,11 +315,11 @@ export default class Storage {
    * @param {string} action - name of action e.g. 'default'.
    */
   destroy(moldPath, action) {
-    // TODO: review
     if (this._storage.items[moldPath] && this._storage.items[moldPath][action]) {
       delete this._storage.items[moldPath][action];
     }
 
+    // TODO: review
     this._events.destroy(this._getFullPath(moldPath, action));
   }
 
@@ -369,8 +368,7 @@ export default class Storage {
 
     // emit event only for certain event
     this._events.emit(this._getEventName( this._getFullPath(moldPath, action), eventName ), data);
-    // TODO: не используется
-    // emit event for mold path
+    // emit event for mold path (if you listen to all the actions certain mold path)
     this._events.emit(this._getEventName( moldPath, eventName ), data);
     // emit common event like change or any
     this._events.emit(eventName, data);
@@ -389,6 +387,10 @@ export default class Storage {
   _checkParams(moldPath, action) {
     if (!moldPath) this._log.fatal(`MoldPath is empty`);
     if (!action) this._log.fatal(`Action is empty`);
+
+    if (this._storage.items[moldPath] && !this._storage.items[moldPath][action]) {
+      this._log.fatal(`Action "${moldPath}.${action}" has been destroyed previously. You have to init it before do changes`);
+    }
   }
 
   _generateCombined(moldPath, action) {
