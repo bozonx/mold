@@ -361,7 +361,7 @@ export default class Storage {
    * @private
    */
   _update(oldData, partialData) {
-    const result = _.clone(oldData);
+    const result = _.cloneDeep(oldData);
 
     if (_.isArray(oldData)) {
       _.each(partialData, (doc, index) => {
