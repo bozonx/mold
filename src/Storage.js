@@ -342,23 +342,37 @@ export default class Storage {
   _updateStateLayer(moldPath, action, partialData) {
     this._checkParams(moldPath, action);
 
-    const wereChanges = this._update(moldPath, action, 'state', partialData);
+    const oldData = this._storage.items[moldPath][action].state.toJS();
+    const updated = this._update(oldData, partialData);
+    this._storage.items[moldPath][action].state = new Seq( updated );
+
+    const wereChanges = !_.isEqual(oldData, updated);
     if (wereChanges) this._generateCombined(moldPath, action);
 
     return wereChanges;
   }
 
-  _update(moldPath, action, subPath, partialData) {
-    const oldData = this._storage.items[moldPath][action][subPath].toJS();
+  /**
+   * Update old data with new data.
+   * It replaces deep data of document's items or collection documment's items.
+   * @param {object|array} oldData - collection or document
+   * @param {object|array} partialData - data to update
+   * @return {object|array} - result document or collection
+   * @private
+   */
+  _update(oldData, partialData) {
+    const result = _.clone(oldData);
 
-    // TODO: если есть массивы, то они полностью берутся из новых данных
-    // TODO: объекты наверное тоже заменяются?
-    const merged = _.defaultsDeep(partialData, oldData);
+    if (_.isArray(oldData)) {
+      _.each(partialData, (doc, index) => {
+        _.each(partialData[index], (item, name) => result[index][name] = item);
+      });
+    }
+    else if (_.isPlainObject(oldData)) {
+      _.each(partialData, (item, name) => result[name] = item);
+    }
 
-    this._storage.items[moldPath][action][subPath] = new Seq(merged);
-
-    // if were changes - return true, else false
-    return !_.isEqual(oldData, merged);
+    return result;
   }
 
   _emitActionEvent(moldPath, action, eventName, eventData) {
