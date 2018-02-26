@@ -227,6 +227,44 @@ describe 'Unit. Storage.', ->
     sinon.assert.calledTwice(handlerAnyChange);
 
 
+  it.only "updateMeta", ->
+    handlerAnyChange = sinon.spy()
+    @storage.$init()
+    @storage.initAction(@moldPath, @defaultAction, {})
+    @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
+
+    @storage.updateMeta @moldPath, @defaultAction, {
+      name: 'newValue'
+      nested: {
+        param: {
+          name: 'nestedName'
+        }
+      }
+      arr: [ [1], 2 ]
+    }
+
+    @storage.updateMeta @moldPath, @defaultAction, {
+      nested: {
+        param: {
+          name2: 'newNestedName2'
+        }
+      }
+      arr: [ [3] ]
+    }
+
+    assert.deepEqual @storage.getMeta(@moldPath, @defaultAction), {
+      name: 'newValue'
+      nested: {
+        param: {
+          name2: 'newNestedName2'
+        }
+      }
+      arr: [ [3] ]
+    }
+
+    sinon.assert.calledTwice(handlerAnyChange);
+
+
   it "_generateCombined with objects", ->
     @storage.$init()
     @storage.initAction(@moldPath, @defaultAction, {})

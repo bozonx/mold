@@ -135,16 +135,14 @@ export default class Storage {
   getMeta(moldPath, action, metaPath = undefined) {
     this._checkParams(moldPath, action);
 
-    // TODO: use immutable
-
     if (!this._storage.items[moldPath] || !this._storage.items[moldPath][action]) return;
 
     if (metaPath) {
-      return _.get(this._storage.items[moldPath][action].meta, metaPath);
+      return _.get(this._storage.items[moldPath][action].meta.toJS(), metaPath);
     }
     else {
       // whole meta data
-      return this._storage.items[moldPath][action].meta;
+      return this._storage.items[moldPath][action].meta.toJS();
     }
   }
 
@@ -249,13 +247,11 @@ export default class Storage {
   updateMeta(moldPath, action, partialData) {
     this._checkParams(moldPath, action);
 
-    // TODO: test
-    // TODO: тоже надо проверить были ли изменения
+    const oldData = this._storage.items[moldPath][action].meta.toJS();
+    const updated = this._update(oldData, partialData);
+    this._storage.items[moldPath][action].meta = new Map( updated );
 
-    // update only received data.  It replaces arrays and plain objects
-    _.each(partialData, (item, name) => {
-      this._storage.items[moldPath][action].meta = this._storage.items[moldPath][action].meta.set(name, item);
-    });
+    if (_.isEqual(oldData, updated)) return;
 
     this._emitActionEvent(moldPath, action, 'any', {
       data: partialData,
