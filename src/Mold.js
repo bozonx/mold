@@ -4,12 +4,11 @@ import { eachSchema } from './helpers/helpers';
 
 
 export default class _Mold {
-  constructor(main, moldPath, actionName, fullSchema) {
+  constructor(main, moldPath, actionName, primitiveSchema) {
     this._main = main;
     this._moldPath = moldPath;
     this._actionName = actionName;
-    // TODO: наверное имеется ввиду _primitiveSchema ?
-    this._schema = fullSchema;
+    this._primitiveSchema = primitiveSchema;
   }
 
   get state() {
@@ -30,7 +29,7 @@ export default class _Mold {
 
   setSilent(newState) {
     // TODO: test
-    const correctValues = this._main.typeManager.castValue(this._schema, newState);
+    const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newState);
     this._checkValue(correctValues);
 
     this._main.storage.setStateLayerSilent(this._moldPath, this._actionName, correctValues);
@@ -42,7 +41,7 @@ export default class _Mold {
    * @param {object, array} newState - it's plain object or collection
    */
   update(newState) {
-    const correctValues = this._main.typeManager.castValue(this._schema, newState);
+    const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newState);
     this._checkValue(correctValues);
 
     this._main.storage.updateStateLayer(this._moldPath, this._actionName, correctValues);
@@ -54,7 +53,7 @@ export default class _Mold {
    * @param {object, array} newState - it's plain object or collection
    */
   updateSilent(newState) {
-    const correctValues = this._main.typeManager.castValue(this._schema, newState);
+    const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newState);
     this._checkValue(correctValues);
 
     this._main.storage.updateStateLayerSilent(this._moldPath, this._actionName, correctValues);
@@ -92,7 +91,7 @@ export default class _Mold {
   }
 
   _getRootInitialState() {
-    const rootTypeName = this._schema.type;
+    const rootTypeName = this._primitiveSchema.type;
 
     if (!_.includes([ 'assoc', 'array' ], rootTypeName)) {
       this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Bad root type "${rootTypeName}"`);
@@ -107,7 +106,7 @@ export default class _Mold {
 
     const result = {};
     // get schema for document or catalogue
-    const schema = this._schema.items || this._schema.item;
+    const schema = this._primitiveSchema.items || this._primitiveSchema.item;
 
     _.each(schema, (item, name) => {
       if (!_.isUndefined(item.initial)) {
@@ -131,7 +130,7 @@ export default class _Mold {
    */
   _checkValue(correctValues) {
     // validate normalized values. It trows an error if state isn't valid.
-    const validMsg = this._main.typeManager.validateValue(this._schema, correctValues);
+    const validMsg = this._main.typeManager.validateValue(this._primitiveSchema, correctValues);
     if (validMsg) {
       this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid data ${JSON.stringify(correctValues)}. ${validMsg}`);
     }

@@ -184,10 +184,6 @@ export default class Storage {
    * @param {object|array} partialData - the new partial data.
    */
   updateStateLayer(moldPath, action, partialData) {
-
-    // TODO: test
-    // TODO: test коллекций
-
     const wasChanged = this._updateStateLayer(moldPath, action, partialData);
 
     // don't rise events if there weren't any changes.
@@ -205,10 +201,6 @@ export default class Storage {
   }
 
   updateStateLayerSilent(moldPath, action, partialData) {
-
-    // TODO: test
-    // TODO: test коллекций
-
     const wasChanged = this._updateStateLayer(moldPath, action, partialData);
 
     // don't rise events if there weren't any changes.

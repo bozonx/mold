@@ -4,13 +4,13 @@ import Mold from './Mold';
 // TODO: test event after pending is completed
 
 export default class ActionBase {
-  constructor(main, nodeInstance, moldPath, actionName, fullSchema) {
+  constructor(main, nodeInstance, moldPath, actionName, primitiveSchema) {
     this._main = main;
     this.$storage = main.storage;
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
-    this._schema = fullSchema;
+    this._primitiveSchema = primitiveSchema;
   }
 
   get pending() {
@@ -22,7 +22,7 @@ export default class ActionBase {
   }
 
   init() {
-    this._mold = new Mold(this._main, this._moldPath, this._actionName, this._schema);
+    this._mold = new Mold(this._main, this._moldPath, this._actionName, this._primitiveSchema);
     this._mold.init();
   }
 
