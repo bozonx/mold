@@ -18,13 +18,13 @@ export default function(userSchema, config) {
       return $main.storage.$getWholeStorageState();
     },
 
-    /**
-     * Set storage data. Only for test or dev purposes.
-     * @param {object} newStorage - your storage
-     */
-    $setWholeStorageState(newStorage) {
-      $main.storage.$init(newStorage);
-    },
+    // /**
+    //  * Set storage data. Only for test or dev purposes.
+    //  * @param {object} newStorage - your storage
+    //  */
+    // $setWholeStorageState(newStorage) {
+    //   $main.storage.$init(newStorage);
+    // },
 
     /**
      * Export storage

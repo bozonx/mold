@@ -31,14 +31,11 @@ export default class Storage {
   }
 
   /**
+   * Initialize the storage.
    * This method runs only once on init time.
-   * You can set your own storage as initial storage.
-   * @param {object} newStorage - your storage
    */
-  $init(newStorage = {}) {
-    // TODO: не нужно устанавливать newStorage
-    this._storage = newStorage;
-    this._storage.items = {};
+  $init() {
+    this._storage = { items: {} };
   }
 
   $getWholeStorageState() {

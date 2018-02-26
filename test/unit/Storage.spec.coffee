@@ -316,7 +316,7 @@ describe 'Unit. Storage.', ->
   it 'destroy', ->
     handlerChange = sinon.spy()
     handlerAnyChange = sinon.spy()
-    @storage.$init({})
+    @storage.$init()
     @storage.initState(@moldPath, @defaultAction, {})
     @storage.onChangeAction(@moldPath, @defaultAction, handlerChange)
     @storage.onAnyChangeAction(@moldPath, @defaultAction, handlerAnyChange)
@@ -347,7 +347,7 @@ describe 'Unit. Storage.', ->
         param1: 'value1'
       }
 
-      @storage.$init({})
+      @storage.$init()
       @storage.updateMeta(@moldPath, @defaultAction, metaData)
 
       expect(@storage.getMeta(@moldPath, @defaultAction)).to.be.deep.equal(metaData)

@@ -43,7 +43,7 @@ export default class Main {
     this.driverManager.init();
     this.schemaManager.init();
     this.schemaManager.setSchema(schema);
-    this.storage.$init({});
+    this.storage.$init();
   }
 
   _mergeConfig(givenCconfig) {
