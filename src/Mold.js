@@ -46,7 +46,6 @@ export default class _Mold {
    * @param {object|array} newPartlyState - part of mold state to update.
    */
   update(newPartlyState) {
-    // TODO: test
     const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newPartlyState);
     this._checkValue(correctValues);
 
@@ -59,7 +58,6 @@ export default class _Mold {
    * @param {object|array} newPartlyState - part of mold state to update.
    */
   updateSilent(newPartlyState) {
-    // TODO: test
     const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newPartlyState);
     this._checkValue(correctValues);
 
@@ -103,30 +101,32 @@ export default class _Mold {
 
   _getPrimitivesInitialStates() {
     // TODO: review
-    // TODO: массив тоже может иметь initial state
+
+    let result;
 
     if (this._primitiveSchema.type === 'assoc') {
+      result = {};
+      // get schema for document or catalogue
+      const schema = this._primitiveSchema.items;
+
+      _.each(schema, (item, name) => {
+        if (!_.isUndefined(item.initial)) {
+          // set initial value from schema
+          result[name] = item.initial;
+
+          return;
+        }
+
+        // TODO: use initial param of schema
+        // set default initial value of type
+        result[name] = this._main.typeManager.getInitial(item.type);
+      });
     }
     else if (this._primitiveSchema.type === 'array') {
-      // TODO: массив тоже может иметь initial state
-
+      result = this._primitiveSchema.initial || [];
+      // TODO: для коллекций - можно пройтись по всем элементам
     }
 
-    const result = {};
-    // get schema for document or catalogue
-    const schema = this._primitiveSchema.items || this._primitiveSchema.item;
-
-    _.each(schema, (item, name) => {
-      if (!_.isUndefined(item.initial)) {
-        // set initial value from schema
-        result[name] = item.initial;
-
-        return;
-      }
-
-      // set default initial value of type
-      result[name] = this._main.typeManager.getInitial(item.type);
-    });
 
     return result;
   }

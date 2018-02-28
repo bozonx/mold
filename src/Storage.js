@@ -348,7 +348,10 @@ export default class Storage {
     const result = _.cloneDeep(oldData);
 
     if (_.isArray(oldData)) {
+      // collection
+
       _.each(partialData, (doc, index) => {
+        if (!result[index]) result[index] = {};
         _.each(partialData[index], (item, name) => result[index][name] = item);
       });
     }

@@ -70,7 +70,7 @@ describe 'Functional. Mold.', ->
       @moldInstance.update({ numParam: '5' });
       assert.deepEqual(@moldInstance.state, { numParam: 5 })
 
-    it.only "update - invalid", ->
+    it "update - invalid", ->
       @newInstance(@schema)
       assert.throws( () => @moldInstance.update({ numParam: 'str' }) )
 
@@ -79,30 +79,40 @@ describe 'Functional. Mold.', ->
       @moldInstance.updateSilent({ numParam: '5' });
       assert.deepEqual(@moldInstance.state, { numParam: 5 })
 
-#  describe 'collection.', ->
-#    beforeEach () ->
-#      @fullSchema = {
-#        type: 'collection'
-#        item: {
-#          numberParam: { type: 'number' }
-#        }
-#      }
-#      @moldPath = 'collection'
-#      @main = mold( {}, {silent: true} )
-#      @moldInstance = new Mold(@main, @moldPath, 'default', @fullSchema);
-#      @moldInstance.init()
-#
+  describe.only 'collection.', ->
+    beforeEach () ->
+      @schema = {
+        type: 'array'
+        item: {
+          type: 'assoc',
+          items: {
+            numParam1: { type: 'number' }
+            numParam2: { type: 'number' }
+          },
+        }
+      }
+
 #    it "init", ->
 #      assert.deepEqual(@moldInstance.state, [])
-#
-#    it "update - it has to cast before update", ->
-#      @moldInstance.update([ { numberParam: '5' } ]);
-#      assert.deepEqual(@moldInstance.state, [
-#        { numberParam: 5 }
-#      ])
-#
-#    it "updateSilent - it has to cast before update", ->
-#      @moldInstance.updateSilent([ { numberParam: '5' } ]);
-#      assert.deepEqual(@moldInstance.state, [
-#        { numberParam: 5 }
-#      ])
+
+    it "setSilent - it has to cast before set", ->
+      @newInstance(@schema)
+      @moldInstance.setSilent([{ numParam1: '5', numParam2: '6' }]);
+      assert.deepEqual(@moldInstance.state, [{ numParam1: 5, numParam2: 6 }])
+      @moldInstance.setSilent([{ numParam1: '5' }]);
+      assert.deepEqual(@moldInstance.state, [{ numParam1: 5 }])
+
+
+    it "update - it has to cast before update", ->
+      @newInstance(@schema)
+      @moldInstance.update([ { numParam1: '5' } ]);
+      assert.deepEqual(@moldInstance.state, [ { numParam1: 5 } ])
+
+    it "update - invalid", ->
+      @newInstance(@schema)
+      assert.throws( () => @moldInstance.update([ { numParam1: 'str' } ]) )
+
+    it "updateSilent - it has to cast before update", ->
+      @newInstance(@schema)
+      @moldInstance.updateSilent([ { numParam1: '5' } ]);
+      assert.deepEqual(@moldInstance.state, [ { numParam1: 5 } ])
