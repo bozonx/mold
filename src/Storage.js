@@ -80,7 +80,7 @@ export default class Storage {
   }
 
   isActionInited(moldPath, action) {
-    return Boolean(this._storage.items[moldPath][action]);
+    return Boolean(this._storage.items[moldPath] && this._storage.items[moldPath][action]);
   }
 
   /**

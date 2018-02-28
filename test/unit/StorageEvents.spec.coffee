@@ -1,7 +1,7 @@
 Events = require('../../src/StorageEvents').default
 
 
-describe 'Unit. Events.', ->
+describe 'Unit. StorageEvents.', ->
   beforeEach () ->
     @events = new Events()
     @handler1 = sinon.spy()

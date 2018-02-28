@@ -4,21 +4,19 @@ Mold = require('../../src/Mold').default
 # TODO: test don't update read only props
 
 describe 'Functional. Mold.', ->
-  it 'initial param.', ->
-    @fullSchema = {
-      type: 'assoc'
-      items: {
-        numberParam: { type: 'number', initial: 5 }
-      }
-    }
+  beforeEach () ->
     @moldPath = 'state'
     @index = index( {}, {silent: true} )
-    @moldInstance = new Mold(@index.$main, @moldPath, 'default', @fullSchema);
-    @moldInstance.init()
 
-    assert.deepEqual(@moldInstance.state, {
-      numberParam: 5
-    })
+#  it 'initial param.', ->
+#    @fullSchema = {
+#      type: 'assoc'
+#      items: {
+#        numberParam: { type: 'number', initial: 5 }
+#      }
+#    }
+
+
 
 #  it 'ro param.', ->
 #    @fullSchema = {
@@ -37,27 +35,44 @@ describe 'Functional. Mold.', ->
 
   describe 'assoc.', ->
     beforeEach () ->
-      @fullSchema = {
+      @schema = {
         type: 'assoc'
+        # TODO: inital может быть здесь
         items: {
-          numberParam: { type: 'number' }
+          numberParam: { type: 'number', initial: 5 }
         }
       }
-      @moldPath = 'state'
-      @index = index( {}, {silent: true} )
-      @moldInstance = new Mold(@index.$main, @moldPath, 'default', @fullSchema);
-      @moldInstance.init()
 
-    it "init", ->
-      assert.deepEqual(@moldInstance.state, {
-        numberParam: undefined
+      @newInstance = (schema) =>
+        @moldInstance = new Mold(@index.$main, @moldPath, 'default', schema);
+        @moldInstance.init()
+
+#    it "init", ->
+#      assert.deepEqual(@moldInstance.state, {
+#        numberParam: undefined
+#      })
+
+    it.only "setSilent - it has to cast before set", ->
+      @newInstance({
+        type: 'assoc'
+        items: {
+          numParam1: { type: 'number' }
+          numParam2: { type: 'number' }
+        }
       })
+      @moldInstance.setSilent({ numParam1: '5', numParam2: '6' });
+      assert.deepEqual(@moldInstance.state, { numParam1: 5, numParam2: 6 })
+      @moldInstance.setSilent({ numParam1: '5' });
+      assert.deepEqual(@moldInstance.state, { numParam1: 5 })
 
     it "update - it has to cast before update", ->
       @moldInstance.update({ numberParam: '5' });
       assert.deepEqual(@moldInstance.state, {
         numberParam: 5
       })
+
+    it "update - invalid", ->
+      # TODO: test
 
     it "updateSilent - it has to cast before update", ->
       @moldInstance.updateSilent({ numberParam: '5' });

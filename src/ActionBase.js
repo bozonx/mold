@@ -92,8 +92,6 @@ export default class ActionBase {
 
         this._updateMeta({ pending: false });
         this.setSolidLayer(result);
-        // TODO: зачем тут????
-        //this.clearStateLayer();
 
         return resp;
       })
