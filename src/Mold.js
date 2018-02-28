@@ -19,7 +19,7 @@ export default class _Mold {
     if (!this._main.storage.isActionInited(this._moldPath, this._actionName)) {
       this._initActionStorage();
     }
-    // this.__readOnlyProps = this._collectRoProps();
+    this._readOnlyProps = this._collectRoProps();
   }
 
   // clear() {
@@ -27,6 +27,11 @@ export default class _Mold {
   //   this.update(initialValues);
   // }
 
+  /**
+   * Replace mold state.
+   * It casts and validates values before update.
+   * @param {object|array} newState - full mold stat to set.
+   */
   setSilent(newState) {
     // TODO: test
     const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newState);
@@ -36,39 +41,42 @@ export default class _Mold {
   }
 
   /**
-   * Update top level state.
-   * It casts values before update.
-   * @param {object, array} newState - it's plain object or collection
+   * Update mold state. It usually calls on event of form field update by user.
+   * It rises a 'change' event.
+   * It casts and validates values before update.
+   * @param {object|array} newPartlyState - part of mold state to update.
    */
-  update(newState) {
-    const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newState);
+  update(newPartlyState) {
+    // TODO: test
+    const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newPartlyState);
     this._checkValue(correctValues);
 
     this._main.storage.updateStateLayer(this._moldPath, this._actionName, correctValues);
   }
 
   /**
-   * Update top level state silently
+   * Update mold state silently. It usually calls on programmatically updates (not by user).
    * It casts values before update.
-   * @param {object, array} newState - it's plain object or collection
+   * @param {object|array} newPartlyState - part of mold state to update.
    */
-  updateSilent(newState) {
-    const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newState);
+  updateSilent(newPartlyState) {
+    // TODO: test
+    const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newPartlyState);
     this._checkValue(correctValues);
 
     this._main.storage.updateStateLayerSilent(this._moldPath, this._actionName, correctValues);
   }
 
-  onChange(...params) {
-    this._main.storage.onChangeAction(this._moldPath, this._actionName, ...params);
+  onChange(handler) {
+    this._main.storage.onChangeAction(this._moldPath, this._actionName, handler);
   }
 
-  onAnyChange(...params) {
-    this._main.storage.onAnyChangeAction(this._moldPath, this._actionName, ...params);
+  onAnyChange(handler) {
+    this._main.storage.onAnyChangeAction(this._moldPath, this._actionName, handler);
   }
 
-  off(...params) {
-    this._main.storage.offAction(this._moldPath, this._actionName, ...params);
+  off(eventName, handler) {
+    this._main.storage.offAction(this._moldPath, this._actionName, eventName, handler);
   }
 
   destroy() {
@@ -138,20 +146,29 @@ export default class _Mold {
     this._checkForUpdateReadOnly(correctValues);
   }
 
-  // _collectRoProps() {
-  //   const roPropsPaths = [];
-  //
-  //   // collect from assoc
-  //   eachSchema(this._schema.items, (curMoldPath, curSchemaPath, curSchema) => {
-  //     if (curSchema.ro) {
-  //       roPropsPaths.push(curMoldPath);
-  //     }
-  //   });
-  //
-  //   // TODO: add support for collection
-  //
-  //   return roPropsPaths;
-  // }
+  _collectRoProps() {
+    // TODO: test
+
+    const roPropsPaths = [];
+
+    if (this._primitiveSchema.type === 'assoc') {
+      // collect from assoc
+      eachSchema(this._primitiveSchema.items, (curMoldPath, curSchemaPath, curSchema) => {
+        if (curSchema.ro) {
+          roPropsPaths.push(curMoldPath);
+        }
+      });
+    }
+    else if (this._primitiveSchema.type === 'array') {
+      // TODO: add support for collection
+
+    }
+    else {
+      this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid schema type ${this._primitiveSchema.type}`);
+    }
+
+    return roPropsPaths;
+  }
 
   _checkForUpdateReadOnly(newState) {
     // TODO: проходимся по всем элементнам newState и сверяем со схемой, если assoc или collecton идем глубже

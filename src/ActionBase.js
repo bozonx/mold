@@ -56,16 +56,16 @@ export default class ActionBase {
     this._main.storage.setSolidLayer(this._moldPath, this._actionName, newData);
   }
 
-  onChange(...params) {
-    this._mold.onChange(...params);
+  onChange(handler) {
+    this._mold.onChange(handler);
   }
 
-  onAnyChange(...params) {
-    this._mold.onAnyChange(...params);
+  onAnyChange(handler) {
+    this._mold.onAnyChange(handler);
   }
 
-  off(...params) {
-    this._mold.off(...params);
+  off(eventName, handler) {
+    this._mold.off(eventName, handler);
   }
 
   clear() {
