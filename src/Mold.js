@@ -33,7 +33,6 @@ export default class _Mold {
    * @param {object|array} newState - full mold stat to set.
    */
   setSilent(newState) {
-    // TODO: test
     const correctValues = this._main.typeManager.castValue(this._primitiveSchema, newState);
     this._checkValue(correctValues);
 

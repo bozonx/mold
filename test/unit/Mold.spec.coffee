@@ -8,6 +8,10 @@ describe 'Functional. Mold.', ->
     @moldPath = 'state'
     @index = index( {}, {silent: true} )
 
+    @newInstance = (schema) =>
+      @moldInstance = new Mold(@index.$main, @moldPath, 'default', schema);
+      @moldInstance.init()
+
 #  it 'initial param.', ->
 #    @fullSchema = {
 #      type: 'assoc'
@@ -39,20 +43,16 @@ describe 'Functional. Mold.', ->
         type: 'assoc'
         # TODO: inital может быть здесь
         items: {
-          numberParam: { type: 'number', initial: 5 }
+          numParam: { type: 'number' }
         }
       }
-
-      @newInstance = (schema) =>
-        @moldInstance = new Mold(@index.$main, @moldPath, 'default', schema);
-        @moldInstance.init()
 
 #    it "init", ->
 #      assert.deepEqual(@moldInstance.state, {
 #        numberParam: undefined
 #      })
 
-    it.only "setSilent - it has to cast before set", ->
+    it "setSilent - it has to cast before set", ->
       @newInstance({
         type: 'assoc'
         items: {
@@ -66,19 +66,18 @@ describe 'Functional. Mold.', ->
       assert.deepEqual(@moldInstance.state, { numParam1: 5 })
 
     it "update - it has to cast before update", ->
-      @moldInstance.update({ numberParam: '5' });
-      assert.deepEqual(@moldInstance.state, {
-        numberParam: 5
-      })
+      @newInstance(@schema)
+      @moldInstance.update({ numParam: '5' });
+      assert.deepEqual(@moldInstance.state, { numParam: 5 })
 
-    it "update - invalid", ->
-      # TODO: test
+    it.only "update - invalid", ->
+      @newInstance(@schema)
+      assert.throws( () => @moldInstance.update({ numParam: 'str' }) )
 
     it "updateSilent - it has to cast before update", ->
-      @moldInstance.updateSilent({ numberParam: '5' });
-      assert.deepEqual(@moldInstance.state, {
-        numberParam: 5
-      })
+      @newInstance(@schema)
+      @moldInstance.updateSilent({ numParam: '5' });
+      assert.deepEqual(@moldInstance.state, { numParam: 5 })
 
 #  describe 'collection.', ->
 #    beforeEach () ->
