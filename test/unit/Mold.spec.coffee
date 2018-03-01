@@ -3,7 +3,7 @@ Mold = require('../../src/Mold').default
 
 # TODO: test don't update read only props
 
-describe 'Functional. Mold.', ->
+describe.only 'Functional. Mold.', ->
   beforeEach () ->
     @moldPath = 'state'
     @index = index( {}, {silent: true} )
@@ -47,10 +47,55 @@ describe 'Functional. Mold.', ->
         }
       }
 
-#    it "init", ->
-#      assert.deepEqual(@moldInstance.state, {
-#        numberParam: undefined
-#      })
+    it "init - use initial of params", ->
+      @newInstance({
+        type: 'assoc'
+        items: {
+          numParam: { type: 'number', initial: 5 }
+          nested: {
+            type: 'assoc'
+            items: {
+              nestedParam: { type: 'string', initial: 'str' }
+            }
+          }
+        }
+      })
+      @moldInstance.init()
+
+      assert.deepEqual(@moldInstance.state, {
+        numParam: 5
+        nested: {
+          nestedParam: 'str'
+        }
+      })
+
+    it "init - use root initial", ->
+      @newInstance({
+        type: 'assoc'
+        initial: {
+          numParam: 5
+          nested: {
+            nestedParam: 'str'
+          }
+        }
+        items: {
+          numParam: { type: 'number' }
+          nested: {
+            type: 'assoc'
+            items: {
+              nestedParam: { type: 'string' }
+            }
+          }
+        }
+      })
+      @moldInstance.init()
+
+      assert.deepEqual(@moldInstance.state, {
+        numParam: 5
+        nested: {
+          nestedParam: 'str'
+        }
+      })
 
     it "setSilent - it has to cast before set", ->
       @newInstance({
@@ -79,7 +124,7 @@ describe 'Functional. Mold.', ->
       @moldInstance.updateSilent({ numParam: '5' });
       assert.deepEqual(@moldInstance.state, { numParam: 5 })
 
-  describe.only 'collection.', ->
+  describe 'collection.', ->
     beforeEach () ->
       @schema = {
         type: 'array'

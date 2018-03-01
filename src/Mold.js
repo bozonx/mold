@@ -100,33 +100,39 @@ export default class _Mold {
   }
 
   _getPrimitivesInitialStates() {
-    // TODO: review
-
     let result;
 
     if (this._primitiveSchema.type === 'assoc') {
       result = {};
-      // get schema for document or catalogue
-      const schema = this._primitiveSchema.items;
 
-      _.each(schema, (item, name) => {
-        if (!_.isUndefined(item.initial)) {
-          // set initial value from schema
-          result[name] = item.initial;
+      if (_.isUndefined(this._primitiveSchema.initial)) {
+        // find initial values deeply in schema
+        _.each(this._primitiveSchema.items, (itemSchema, name) => {
+          if (!_.isUndefined(itemSchema.initial)) {
+            // get schema's initial value which has validated previously on schema init time
+            result[name] = itemSchema.initial;
 
-          return;
-        }
+            return;
+          }
 
-        // TODO: use initial param of schema
-        // set default initial value of type
-        result[name] = this._main.typeManager.getInitial(item.type);
-      });
+          // TODO: use initial param of schema
+          // set default initial value of type
+          result[name] = this._main.typeManager.getInitial(itemSchema.type);
+        });
+      }
+      else {
+        // use root initial
+        result = this._primitiveSchema.initial;
+      }
+
+
     }
     else if (this._primitiveSchema.type === 'array') {
       result = this._primitiveSchema.initial || [];
       // TODO: для коллекций - можно пройтись по всем элементам
     }
 
+    console.log(11111111, result)
 
     return result;
   }
