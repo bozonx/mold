@@ -52,6 +52,7 @@ describe.only 'Functional. Mold.', ->
         type: 'assoc'
         items: {
           numParam: { type: 'number', initial: 5 }
+          strParam: { type: 'string' }
           nested: {
             type: 'assoc'
             items: {
@@ -64,6 +65,7 @@ describe.only 'Functional. Mold.', ->
 
       assert.deepEqual(@moldInstance.state, {
         numParam: 5
+        strParam: undefined
         nested: {
           nestedParam: 'str'
         }
@@ -83,7 +85,7 @@ describe.only 'Functional. Mold.', ->
           nested: {
             type: 'assoc'
             items: {
-              nestedParam: { type: 'string' }
+              nestedParam: { type: 'string', initial: 'overwritten' }
             }
           }
         }
@@ -93,7 +95,7 @@ describe.only 'Functional. Mold.', ->
       assert.deepEqual(@moldInstance.state, {
         numParam: 5
         nested: {
-          nestedParam: 'str'
+          nestedParam: 'overwritten'
         }
       })
 

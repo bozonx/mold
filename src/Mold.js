@@ -105,26 +105,13 @@ export default class _Mold {
     if (this._primitiveSchema.type === 'assoc') {
       result = {};
 
-      if (_.isUndefined(this._primitiveSchema.initial)) {
-        // find initial values deeply in schema
-        _.each(this._primitiveSchema.items, (itemSchema, name) => {
-          if (!_.isUndefined(itemSchema.initial)) {
-            // get schema's initial value which has validated previously on schema init time
-            result[name] = itemSchema.initial;
-
-            return;
-          }
-
-          // TODO: use initial param of schema
-          // set default initial value of type
-          result[name] = this._main.typeManager.getInitial(itemSchema.type);
-        });
-      }
-      else {
+      if (!_.isUndefined(this._primitiveSchema.initial)) {
         // use root initial
         result = this._primitiveSchema.initial;
       }
 
+      // find initial values deeply in schema. They owerwrites root initial values
+      result = _.defaultsDeep(this._collectAssocInitial(), result);
 
     }
     else if (this._primitiveSchema.type === 'array') {
@@ -132,7 +119,24 @@ export default class _Mold {
       // TODO: для коллекций - можно пройтись по всем элементам
     }
 
-    console.log(11111111, result)
+
+    return result;
+  }
+
+  _collectAssocInitial() {
+    const result = {};
+
+    eachSchema(this._primitiveSchema.items, (curMoldPath, curSchemaPath, curSchema) => {
+      if (!_.isUndefined(curSchema.initial)) {
+        // get schema's initial value which has validated previously on schema init time
+        _.set(result, curMoldPath, curSchema.initial);
+
+        return;
+      }
+
+      // set default initial value of type
+      _.set(result, curMoldPath, this._main.typeManager.getInitial(curSchema.type));
+    });
 
     return result;
   }
