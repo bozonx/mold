@@ -19,7 +19,6 @@ export default class _Mold {
     if (!this._main.storage.isActionInited(this._moldPath, this._actionName)) {
       this._initActionStorage();
     }
-    this._readOnlyProps = this._collectRoProps();
   }
 
   // clear() {
@@ -140,6 +139,30 @@ export default class _Mold {
     return result;
   }
 
+  // _collectRoProps() {
+  //   // TODO: не нужно!!! так как непонятно как собирать вложенные массивы
+  //
+  //   const roPropsPaths = [];
+  //
+  //   if (this._primitiveSchema.type === 'assoc') {
+  //     // collect from assoc
+  //     eachSchema(this._primitiveSchema.items, (curMoldPath, curSchemaPath, curSchema) => {
+  //       if (curSchema.ro) {
+  //         roPropsPaths.push(curMoldPath);
+  //       }
+  //     });
+  //   }
+  //   else if (this._primitiveSchema.type === 'array') {
+  //     // TODO: add support for collection
+  //
+  //   }
+  //   else {
+  //     this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid schema type ${this._primitiveSchema.type}`);
+  //   }
+  //
+  //   return roPropsPaths;
+  // }
+
   /**
    * Check value and trow an error if it is invalid or read only.
    * @param {array|object|null} correctValues - casted values.
@@ -155,44 +178,39 @@ export default class _Mold {
     this._checkForUpdateReadOnly(correctValues);
   }
 
-  _collectRoProps() {
-    // TODO: test
-
-    const roPropsPaths = [];
-
-    if (this._primitiveSchema.type === 'assoc') {
-      // collect from assoc
-      eachSchema(this._primitiveSchema.items, (curMoldPath, curSchemaPath, curSchema) => {
-        if (curSchema.ro) {
-          roPropsPaths.push(curMoldPath);
-        }
-      });
-    }
-    else if (this._primitiveSchema.type === 'array') {
-      // TODO: add support for collection
-
-    }
-    else {
-      this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid schema type ${this._primitiveSchema.type}`);
-    }
-
-    return roPropsPaths;
-  }
 
   _checkForUpdateReadOnly(newState) {
-    // TODO: проходимся по всем элементнам newState и сверяем со схемой, если assoc или collecton идем глубже
+    // TODO: test collection
+    const recursivelly = (stateToCheck, curSchema) => {
+      if (curSchema.type === 'assoc') {
+        // each assoc item
+        _.each(stateToCheck, (item, name) => {
+          if (!curSchema.items[name]) return;
+          if (curSchema.items[name].type === 'assoc') {
+            // go deeper
+            recursivelly(item, curSchema.items[name]);
+          }
+          else if (curSchema.items[name].type === 'array') {
+            // go deeper
+            recursivelly(item, curSchema.items[name]);
+          }
+          else {
+            // primitive type
+            if (!curSchema.items[name].ro) return;
 
+            this._main.log.fatal(`You can't write to read only props ${JSON.stringify(newState)}`);
+          }
+        });
+      }
+      else if (curSchema.type === 'array') {
+        _.each(newState, (arrItem) => {
+          // go deeper
+          recursivelly(arrItem, curSchema.item);
+        });
+      }
+    };
 
-    // // TODO: do it recursively - support collections, assoc and arrays
-    // //const forbiddenRoProps = _.intersection(_.keys(newState), this.__readOnlyProps);
-    //
-    // const forbiddenRoProps = [];
-    //
-    // // TODO: add support for collection
-    //
-    // if (!_.isEmpty(forbiddenRoProps)) {
-    //   this._main.log.fatal(`You can't write to read only props ${JSON.stringify(forbiddenRoProps)}`);
-    // }
+    recursivelly(newState, this._primitiveSchema);
   }
 
 }

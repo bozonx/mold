@@ -126,6 +126,42 @@ describe.only 'Functional. Mold.', ->
       @moldInstance.updateSilent({ numParam: '5' });
       assert.deepEqual(@moldInstance.state, { numParam: 5 })
 
+    it "read only simple", ->
+      @newInstance({
+        type: 'assoc'
+        items: {
+          roParam: { type: 'number', ro: true }
+        }
+      })
+
+      assert.throws(() => @moldInstance.setSilent({ roParam: 6 }))
+      assert.throws(() => @moldInstance.update({ roParam: 6 }))
+      assert.throws(() => @moldInstance.updateSilent({ roParam: 6 }))
+
+    it "read nested", ->
+      @newInstance({
+        type: 'assoc'
+        items: {
+          arr: {
+            type: 'array'
+            item: {
+              type: 'assoc'
+              items: {
+                param: { type: 'number', ro: true }
+              }
+            }
+          }
+        }
+      })
+
+      assert.throws(() => @moldInstance.update({
+        arr: [
+          {
+            param: 5
+          }
+        ]
+      }))
+
   describe 'collection.', ->
     beforeEach () ->
       @schema = {
