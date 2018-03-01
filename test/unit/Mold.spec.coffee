@@ -139,8 +139,38 @@ describe.only 'Functional. Mold.', ->
         }
       }
 
-#    it "init", ->
-#      assert.deepEqual(@moldInstance.state, [])
+
+    it "init - use root initial", ->
+      @newInstance({
+        type: 'array'
+        initial: [
+          {
+            numParam: 5
+            nested: {
+              nestedParam: 'str'
+            }
+          }
+        ]
+        item: {
+          numParam: { type: 'number' }
+          nested: {
+            type: 'assoc'
+            items: {
+              nestedParam: { type: 'string' }
+            }
+          }
+        }
+      })
+      @moldInstance.init()
+
+      assert.deepEqual(@moldInstance.state, [
+        {
+          numParam: 5
+          nested: {
+            nestedParam: 'str'
+          }
+        }
+      ])
 
     it "setSilent - it has to cast before set", ->
       @newInstance(@schema)

@@ -116,7 +116,6 @@ export default class _Mold {
     }
     else if (this._primitiveSchema.type === 'array') {
       result = this._primitiveSchema.initial || [];
-      // TODO: для коллекций - можно пройтись по всем элементам
     }
 
 
