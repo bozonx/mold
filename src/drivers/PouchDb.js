@@ -1,4 +1,4 @@
-import _ from 'lodash';
+const _ = require('lodash');
 // TODO: use real cuid repo or other collision resistance id generator
 import Cuid from './node-cuid.js';
 

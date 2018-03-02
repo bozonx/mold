@@ -1,4 +1,4 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
 const Storage = require('./Storage');
 const TypeManager = require('./TypeManager');

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
 import convertShortSchemaToFull from './helpers/convertShortSchemaToFull';
 import { eachSchema, convertFromLodashToSchema } from './helpers/helpers';

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
 //import { correctUpdatePayload, omitUnsaveable } from '../helpers/helpers';
 const _NodeBase = require('./_NodeBase');

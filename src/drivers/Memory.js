@@ -1,4 +1,4 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
 import { correctUpdatePayload, convertFromUrlToLodash } from '../helpers/helpers';
 

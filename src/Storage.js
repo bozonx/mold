@@ -1,4 +1,4 @@
-import _ from 'lodash';
+const _ = require('lodash');
 import { Map, Seq, mergeDeep } from 'immutable';
 
 const Events = require('./StorageEvents');

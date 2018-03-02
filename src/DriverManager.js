@@ -1,4 +1,4 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
 const Memory = require('./drivers/Memory');
 import { eachSchema, getTheBestMatchPath } from './helpers/helpers';
