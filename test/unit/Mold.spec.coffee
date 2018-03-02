@@ -138,11 +138,11 @@ describe.only 'Functional. Mold.', ->
       assert.throws(() => @moldInstance.update({ roParam: 6 }))
       assert.throws(() => @moldInstance.updateSilent({ roParam: 6 }))
 
-    it "read nested", ->
+    it "read only", ->
       @newInstance({
         type: 'assoc'
         items: {
-          arr: {
+          arrParam: {
             type: 'array'
             item: {
               type: 'assoc'
@@ -155,7 +155,7 @@ describe.only 'Functional. Mold.', ->
       })
 
       assert.throws(() => @moldInstance.update({
-        arr: [
+        arrParam: [
           {
             param: 5
           }

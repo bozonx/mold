@@ -181,36 +181,34 @@ export default class _Mold {
 
   _checkForUpdateReadOnly(newState) {
     // TODO: test collection
-    const recursivelly = (stateToCheck, curSchema) => {
-      if (curSchema.type === 'assoc') {
+    const recursively = (containerState, containerSchema) => {
+      if (containerSchema.type === 'assoc') {
         // each assoc item
-        _.each(stateToCheck, (item, name) => {
-          if (!curSchema.items[name]) return;
-          if (curSchema.items[name].type === 'assoc') {
-            // go deeper
-            recursivelly(item, curSchema.items[name]);
-          }
-          else if (curSchema.items[name].type === 'array') {
-            // go deeper
-            recursivelly(item, curSchema.items[name]);
+        _.each(containerState, (item, name) => {
+          // if state don't have schema - do nothing
+          if (!containerSchema.items[name]) return;
+
+          if (_.includes([ 'assoc', 'array' ], containerSchema.items[name].type)) {
+            // if container - go deeper
+            recursively(item, containerSchema.items[name]);
           }
           else {
-            // primitive type
-            if (!curSchema.items[name].ro) return;
-
+            // primitive type - check for read only
+            if (!containerSchema.items[name].ro) return;
+            // disallow to write read only state
             this._main.log.fatal(`You can't write to read only props ${JSON.stringify(newState)}`);
           }
         });
       }
-      else if (curSchema.type === 'array') {
-        _.each(newState, (arrItem) => {
+      else if (containerSchema.type === 'array') {
+        _.each(containerState, (arrItem) => {
           // go deeper
-          recursivelly(arrItem, curSchema.item);
+          recursively(arrItem, containerSchema.item);
         });
       }
     };
 
-    recursivelly(newState, this._primitiveSchema);
+    recursively(newState, this._primitiveSchema);
   }
 
 }

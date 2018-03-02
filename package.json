@@ -1,6 +1,6 @@
 {
   "name": "mold",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "description": "Structure state management",
   "repository": "git@github.com:bozonx/mold.git",
   "license": "MIT",
