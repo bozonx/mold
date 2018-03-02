@@ -1,10 +1,11 @@
 import _ from 'lodash';
 
 import { concatPath, getPrimaryName } from '../helpers/helpers';
-import State from './State';
+
+const State = require('./State');
 
 
-export default class Catalogue extends State {
+module.exports = class Catalogue extends State {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.item)) {
       return `Schema definition of catalogue on "${schemaPath}" must has an "item" param!`;
@@ -310,4 +311,4 @@ export default class Catalogue extends State {
   //   this._main.$$state.setUrlParams(this._moldPath, params);
   // }
 
-}
+};

@@ -1,5 +1,5 @@
-index = require('../../src/index').default
-Document = require('../../src/nodes/Document').default
+index = require('../../src/index')
+Document = require('../../src/nodes/Document')
 
 # TODO: test delete
 # TODO: test custom action

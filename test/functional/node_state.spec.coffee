@@ -1,5 +1,5 @@
-mold = require('../../src/index').default
-State = require('../../src/nodes/State').default
+mold = require('../../src/index')
+State = require('../../src/nodes/State')
 
 
 describe 'Functional. State node.', ->

@@ -1,4 +1,4 @@
-Storage = require('../../src/Storage').default
+Storage = require('../../src/Storage')
 
 
 describe 'Unit. Storage.', ->

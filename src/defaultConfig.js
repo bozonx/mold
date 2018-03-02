@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   silent: false,
   eventEmitter: null,
   logger: null,

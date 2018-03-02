@@ -10,7 +10,7 @@ import { eachSchema, convertFromLodashToSchema } from './helpers/helpers';
  * You can't mutate a schema
  * @class
  */
-export default class SchemaManager {
+module.exports = class SchemaManager {
   constructor(main) {
     this._main = main;
     this._schema = null;
@@ -97,4 +97,4 @@ export default class SchemaManager {
     return _.get(this._schema, schemaPath);
   }
 
-}
+};

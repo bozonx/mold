@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
-import { correctUpdatePayload, omitUnsaveable } from '../helpers/helpers';
-import _NodeBase from './_NodeBase';
+//import { correctUpdatePayload, omitUnsaveable } from '../helpers/helpers';
+const _NodeBase = require('./_NodeBase');
 
 
-export default class Document extends _NodeBase {
+module.exports = class Document extends _NodeBase {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema)) {
       return `The definition of "document" node on "${schemaPath}" must has a "schema"!`;
@@ -198,4 +198,4 @@ export default class Document extends _NodeBase {
   //   return _.defaultsDeep(_.cloneDeep(preRequest), this.actionDefaults[actionName]);
   // }
 
-}
+};

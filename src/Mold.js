@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { eachSchema } from './helpers/helpers';
 
 
-export default class _Mold {
+module.exports = class _Mold {
   constructor(main, moldPath, actionName, primitiveSchema) {
     this._main = main;
     this._moldPath = moldPath;
@@ -211,4 +211,4 @@ export default class _Mold {
     recursively(newState, this._primitiveSchema);
   }
 
-}
+};

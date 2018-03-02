@@ -1,7 +1,7 @@
-import ActionBase from '../ActionBase';
+const ActionBase = require('../ActionBase');
 
 
-export default class _NodeBase {
+module.exports = class _NodeBase {
   constructor(main) {
     this._main = main;
     this.$defaultAction = 'default';
@@ -96,4 +96,4 @@ export default class _NodeBase {
     this.actions.default.destroy();
   }
 
-}
+};

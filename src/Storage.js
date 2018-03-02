@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Map, Seq, mergeDeep } from 'immutable';
 
-import Events from './StorageEvents';
+const Events = require('./StorageEvents');
 
 
 /**
@@ -23,7 +23,7 @@ import Events from './StorageEvents';
  * If solid level uses, state level will has to have the same structure as solid level.
  * @class
  */
-export default class Storage {
+module.exports = class Storage {
   constructor(log) {
     this._log = log;
     this._events = new Events();
@@ -524,4 +524,4 @@ export default class Storage {
   // }
 
 
-}
+};

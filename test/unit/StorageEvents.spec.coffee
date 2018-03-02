@@ -1,4 +1,4 @@
-Events = require('../../src/StorageEvents').default
+Events = require('../../src/StorageEvents')
 
 
 describe 'Unit. StorageEvents.', ->

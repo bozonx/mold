@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
-export default class DefaultLoger {
+
+module.exports = class DefaultLoger {
   constructor(config) {
     this._isSilent = (_.isBoolean(config.silent)) ? config.silent : true;
   }
@@ -28,4 +29,4 @@ export default class DefaultLoger {
   verbose(message) {
     if (!this._isSilent) console.log(message);
   }
-}
+};

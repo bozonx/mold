@@ -1,4 +1,4 @@
-DriverManager = require('../../src/DriverManager').default
+DriverManager = require('../../src/DriverManager')
 
 
 describe 'Unit. DriverManager.', ->

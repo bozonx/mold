@@ -1,9 +1,9 @@
-import Mold from './Mold';
+const Mold = require('./Mold');
 
 // TODO: test unsaveble
 // TODO: test event after pending is completed
 
-export default class ActionBase {
+module.exports = class ActionBase {
   constructor(main, nodeInstance, moldPath, actionName, primitiveSchema) {
     this._main = main;
     this.$storage = main.storage;
@@ -124,4 +124,4 @@ export default class ActionBase {
     return this._main.request.sendRequest(request, {}, {});
   }
 
-}
+};

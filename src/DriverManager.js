@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
-import Memory from './drivers/Memory';
+const Memory = require('./drivers/Memory');
 import { eachSchema, getTheBestMatchPath } from './helpers/helpers';
 
 
-export default class DriverManager {
+module.exports = class DriverManager {
   constructor(main) {
     this._main = main;
     this.$defaultMemoryDb = {};
@@ -96,4 +96,4 @@ export default class DriverManager {
 
     this._defaultDriver = memoryDriver.instance({});
   }
-}
+};

@@ -1,7 +1,7 @@
-import Main from './Main';
+const Main = require('./Main');
 
 
-export default function(userSchema, config) {
+module.exports = function(userSchema, config) {
   const $main = new Main(userSchema, config);
 
   // public api
@@ -80,4 +80,4 @@ export default function(userSchema, config) {
     },
 
   };
-}
+};

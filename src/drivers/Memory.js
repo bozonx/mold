@@ -156,7 +156,7 @@ class LocalMemory {
 
       if (!collection) {
         reject({ driverError: 'Collection not found' });
-        
+
         return;
       }
 
@@ -166,7 +166,7 @@ class LocalMemory {
           driverError: 'Item not found',
           request,
         });
-        
+
         return;
       }
 
@@ -188,7 +188,7 @@ class LocalMemory {
 /**
  * Instance of this class creates once a mold instance
  */
-export default function(driverConfig) {
+module.exports = function(driverConfig) {
   this.driverConfig = driverConfig;
   if (_.isPlainObject(driverConfig.db)) {
     this.db = driverConfig.db;
@@ -206,5 +206,4 @@ export default function(driverConfig) {
     return new LocalMemory(this.driverConfig, instanceConfig, this.db);
   };
 
-}
-
+};

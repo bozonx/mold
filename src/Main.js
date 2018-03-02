@@ -1,21 +1,21 @@
 import _ from 'lodash';
 
-import Storage from './Storage';
+const Storage = require('./Storage');
 const TypeManager = require('./TypeManager');
-import SchemaManager from './SchemaManager';
-import NodeManager from './NodeManager';
-import DriverManager from './DriverManager';
-import Request from './Request';
-import defaultConfig from './defaultConfig';
+const SchemaManager = require('./SchemaManager');
+const NodeManager = require('./NodeManager');
+const DriverManager = require('./DriverManager');
+const Request = require('./Request');
+const defaultConfig = require('./defaultConfig');
 
-import Container from './nodes/Container';
-import Driver from './nodes/Driver';
-import StateType from './nodes/State';
-import Document from './nodes/Document';
-import Catalogue from './nodes/Catalogue';
+const Container = require('./nodes/Container');
+const Driver = require('./nodes/Driver');
+const StateType = require('./nodes/State');
+const Document = require('./nodes/Document');
+const Catalogue = require('./nodes/Catalogue');
 
 
-export default class Main {
+module.exports = class Main {
   constructor(schema, givenCconfig) {
     this.config = this._mergeConfig(givenCconfig);
     this.log = this._getLogger(this.config.logger);
@@ -55,11 +55,11 @@ export default class Main {
 
     if (!externalLogger) {
       // use default logger
-      const DefaultLoger = require('./DefaultLoger').default;
+      const DefaultLoger = require('./DefaultLoger');
       logger = new DefaultLoger({ silent: this.config.silent });
     }
 
     return logger;
   }
 
-}
+};

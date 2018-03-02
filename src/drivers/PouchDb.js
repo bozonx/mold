@@ -291,7 +291,7 @@ class LocalPouchDb {
 /**
  * Instance of this class creates once a mold instance
  */
-export default function(driverConfig) {
+module.exports = function(driverConfig) {
   this.driverConfig = driverConfig;
 
   if (!driverConfig.db) {
@@ -310,4 +310,4 @@ export default function(driverConfig) {
   };
 
   this.generateId = () => cuid();
-}
+};

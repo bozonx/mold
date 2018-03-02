@@ -2,7 +2,7 @@ import _ from 'lodash';
 import EventEmitter from 'eventemitter3';
 
 
-export default class Events {
+module.exports = class Events {
   constructor() {
     this.eventEmitter = new EventEmitter();
   }
@@ -41,4 +41,4 @@ export default class Events {
 
   }
 
-}
+};

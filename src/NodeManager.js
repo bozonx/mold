@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 
-export default class NodeManager {
+module.exports = class NodeManager {
   constructor(main) {
     this._main = main;
     this._registeredTypes = {};
@@ -52,4 +52,4 @@ export default class NodeManager {
     return instance;
   }
 
-}
+};

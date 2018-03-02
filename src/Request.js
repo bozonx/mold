@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { convertFromLodashToUrl } from './helpers/helpers';
 
 
-export default class Request {
+module.exports = class Request {
   constructor(main) {
     this._main = main;
   }
@@ -84,4 +84,4 @@ export default class Request {
     return defaultUrl;
   }
 
-}
+};

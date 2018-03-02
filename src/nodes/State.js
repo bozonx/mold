@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
-import _NodeBase from './_NodeBase';
+const _NodeBase = require('./_NodeBase');
 
 
-export default class State extends _NodeBase {
+module.exports = class State extends _NodeBase {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema)) {
       return `The definition of "state" node on "${schemaPath}" must has a "schema"!`;
@@ -41,4 +41,4 @@ export default class State extends _NodeBase {
     });
   }
 
-}
+};

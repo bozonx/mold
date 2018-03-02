@@ -1,5 +1,5 @@
-index = require('../../src/index').default
-Mold = require('../../src/Mold').default
+index = require('../../src/index')
+Mold = require('../../src/Mold')
 
 # TODO: test don't update read only props
 

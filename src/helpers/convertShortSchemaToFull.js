@@ -87,8 +87,8 @@ class Convert {
 
 }
 
-export default function(shortSchema, log) {
+module.exports = function(shortSchema, log) {
   const convert = new Convert(shortSchema, log);
 
   return convert.convert();
-}
+};
