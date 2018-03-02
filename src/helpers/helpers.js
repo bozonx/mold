@@ -80,19 +80,7 @@ module.exports = {
         if (isGoDeeper === false) return;
 
         letItRecursive(childMoldPath, childSchemaPath, curSchema.item);
-
-        // _.each(curSchema.item, (subSchema, paramName) => {
-        //   const childMoldPath = _.trimStart(`${curMoldPath}.${paramName}`, '.');
-        //   const childSchemaPath = _.trimStart(`${curSchemaPath}.item.${paramName}`, '.');
-        //
-        //   const isGoDeeper = cb(childMoldPath, childSchemaPath, subSchema);
-        //
-        //   if (isGoDeeper === false) return;
-        //
-        //   letItRecursive(childMoldPath, childSchemaPath, subSchema);
-        // });
       }
-
       // else is other primitive
     }
 

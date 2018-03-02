@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 
-module.exports = class Container {
+module.exports = class Driver {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema)) {
       return `Schema definition of container on "${schemaPath}" must has a "schema" param!`;

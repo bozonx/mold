@@ -155,7 +155,6 @@ module.exports = class _Mold {
 
 
   _checkForUpdateReadOnly(newState) {
-    // TODO: test collection
     const recursively = (containerState, containerSchema) => {
       if (containerSchema.type === 'assoc') {
         // each assoc item

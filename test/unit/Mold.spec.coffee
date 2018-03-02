@@ -2,7 +2,7 @@ index = require('../../src/index')
 Mold = require('../../src/Mold')
 
 
-describe.only 'Functional. Mold.', ->
+describe 'Functional. Mold.', ->
   beforeEach () ->
     @moldPath = 'state'
     @index = index( {}, {silent: true} )
@@ -101,19 +101,19 @@ describe.only 'Functional. Mold.', ->
       assert.deepEqual(@moldInstance.state, { numParam: 5 })
 
     it "read only simple", ->
-      @newInstance({
+      @newInstance {
         type: 'assoc'
         items: {
           roParam: { type: 'number', ro: true }
         }
-      })
+      }
 
       assert.throws(() => @moldInstance.setSilent({ roParam: 6 }))
       assert.throws(() => @moldInstance.update({ roParam: 6 }))
       assert.throws(() => @moldInstance.updateSilent({ roParam: 6 }))
 
     it "read only - nested", ->
-      @newInstance({
+      @newInstance {
         type: 'assoc'
         items: {
           arrParam: {
@@ -126,23 +126,24 @@ describe.only 'Functional. Mold.', ->
             }
           }
         }
-      })
+      }
 
-      assert.doesNotThrow(() => @moldInstance.update({
+      assert.doesNotThrow () => @moldInstance.update {
         arrParam: [
           {
             otherParam: 5
           }
         ]
-      }))
+      }
 
-      assert.throws(() => @moldInstance.update({
+      assert.throws () => @moldInstance.update {
         arrParam: [
           {
             param: 5
           }
         ]
-      }))
+      }
+
 
   describe 'collection.', ->
     beforeEach () ->
@@ -181,14 +182,14 @@ describe.only 'Functional. Mold.', ->
       })
       @moldInstance.init()
 
-      assert.deepEqual(@moldInstance.state, [
+      assert.deepEqual @moldInstance.state, [
         {
           numParam: 5
           nested: {
             nestedParam: 'str'
           }
         }
-      ])
+      ]
 
     it "setSilent - it has to cast before set", ->
       @newInstance(@schema)
@@ -211,3 +212,19 @@ describe.only 'Functional. Mold.', ->
       @newInstance(@schema)
       @moldInstance.updateSilent([ { numParam1: '5' } ]);
       assert.deepEqual(@moldInstance.state, [ { numParam1: 5 } ])
+
+    it "read only", ->
+      @newInstance {
+        type: 'array'
+        item: {
+          type: 'assoc'
+          items: {
+            param: { type: 'number', ro: true }
+          }
+        }
+      }
+
+      assert.doesNotThrow(() => @moldInstance.update([ { otherParam: 5 } ]))
+      assert.throws(() => @moldInstance.update([ { param: 5 } ]))
+      assert.throws(() => @moldInstance.updateSilent([ { param: 5 } ]))
+      assert.throws(() => @moldInstance.setSilent([ { param: 5 } ]))
