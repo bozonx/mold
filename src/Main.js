@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import Storage from './Storage';
-import TypeManager from './TypeManager';
+const TypeManager = require('./TypeManager');
 import SchemaManager from './SchemaManager';
 import NodeManager from './NodeManager';
 import DriverManager from './DriverManager';

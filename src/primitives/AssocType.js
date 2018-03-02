@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { validateParams } from '../helpers/helpers';
 
 
-export default class AssocType {
+module.exports = class AssocType {
   constructor(typeManager) {
     this._typeManager = typeManager;
   }
@@ -106,4 +106,4 @@ export default class AssocType {
     return castedData;
   }
 
-}
+};

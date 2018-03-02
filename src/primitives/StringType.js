@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { validateParams } from '../helpers/helpers';
 
 
-export default class StringType {
+module.exports = class StringType {
   constructor(typeManager) {
     this._typeManager = typeManager;
   }
@@ -58,4 +58,4 @@ export default class StringType {
     return _.toString(rawValue);
   }
 
-}
+};

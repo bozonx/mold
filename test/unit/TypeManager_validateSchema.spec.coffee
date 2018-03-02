@@ -1,4 +1,4 @@
-TypeManager = require('../../src/TypeManager').default
+TypeManager = require('../../src/TypeManager')
 
 
 describe 'Unit. TypeManager.validateSchema.', ->

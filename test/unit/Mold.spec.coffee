@@ -3,7 +3,7 @@ Mold = require('../../src/Mold').default
 
 # TODO: test don't update read only props
 
-describe.only 'Functional. Mold.', ->
+describe 'Functional. Mold.', ->
   beforeEach () ->
     @moldPath = 'state'
     @index = index( {}, {silent: true} )
@@ -146,9 +146,9 @@ describe.only 'Functional. Mold.', ->
             type: 'array'
             item: {
               type: 'assoc'
-              items: {
-                param: { type: 'number', ro: true }
-              }
+#              items: {
+#                param: { type: 'number', ro: true }
+#              }
             }
           }
         }

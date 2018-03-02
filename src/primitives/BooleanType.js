@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { validateParams } from '../helpers/helpers';
 
 
-export default class BooleanType {
+module.exports = class BooleanType {
   constructor(typeManager) {
     this._typeManager = typeManager;
   }
@@ -59,4 +59,4 @@ export default class BooleanType {
     return Boolean(rawValue);
   }
 
-}
+};

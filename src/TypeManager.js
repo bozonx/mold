@@ -1,15 +1,15 @@
-import ArrayType from './primitives/ArrayType';
-import AssocType from './primitives/AssocType';
-import BooleanType from './primitives/BooleanType';
-import NumberType from './primitives/NumberType';
-import StringType from './primitives/StringType';
+const ArrayType = require('./primitives/ArrayType');
+const AssocType = require('./primitives/AssocType');
+const BooleanType = require('./primitives/BooleanType');
+const NumberType = require('./primitives/NumberType');
+const StringType = require('./primitives/StringType');
 
 
 /**
  * It manages of primitive types: string, number, boolean, array, assoc.
  * @class
  */
-export default class TypeManager {
+module.exports = class TypeManager {
   constructor(main) {
     this._main = main;
     this._types = {
@@ -69,4 +69,4 @@ export default class TypeManager {
     return this._types[schema.type].cast(schema, value);
   }
 
-}
+};

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { validateParams } from '../helpers/helpers';
 
 
-export default class ArrayType {
+module.exports = class ArrayType {
   constructor(typeManager) {
     this._typeManager = typeManager;
   }
@@ -135,4 +135,4 @@ export default class ArrayType {
     return errMsg || true;
   }
 
-}
+};

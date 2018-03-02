@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { validateParams } from '../helpers/helpers';
 
 
-export default class NumberType {
+module.exports = class NumberType {
   constructor(typeManager) {
     this._typeManager = typeManager;
   }
@@ -68,4 +68,4 @@ export default class NumberType {
     return toNumber;
   }
 
-}
+};
