@@ -1,9 +1,8 @@
 index = require('../../src/index')
 Mold = require('../../src/Mold')
 
-# TODO: test don't update read only props
 
-describe 'Functional. Mold.', ->
+describe.only 'Functional. Mold.', ->
   beforeEach () ->
     @moldPath = 'state'
     @index = index( {}, {silent: true} )
@@ -12,36 +11,11 @@ describe 'Functional. Mold.', ->
       @moldInstance = new Mold(@index.$main, @moldPath, 'default', schema);
       @moldInstance.init()
 
-#  it 'initial param.', ->
-#    @fullSchema = {
-#      type: 'assoc'
-#      items: {
-#        numberParam: { type: 'number', initial: 5 }
-#      }
-#    }
-
-
-
-#  it 'ro param.', ->
-#    @fullSchema = {
-#      type: 'assoc'
-#      items: {
-#        numberParam: { type: 'number', initial: 5, ro: true }
-#      }
-#    }
-#    @moldPath = 'state'
-#    @main = mold( {silent: true}, {} )
-#    @moldInstance = new Mold(@main, @moldPath, 'default', @fullSchema);
-#    @moldInstance.init()
-#
-#    assert.throws(() => @moldInstance.update({ numberParam: 6 }))
-#    assert.throws(() => @moldInstance.updateSilent({ numberParam: 6 }))
 
   describe 'assoc.', ->
     beforeEach () ->
       @schema = {
         type: 'assoc'
-        # TODO: inital может быть здесь
         items: {
           numParam: { type: 'number' }
         }
@@ -138,7 +112,7 @@ describe 'Functional. Mold.', ->
       assert.throws(() => @moldInstance.update({ roParam: 6 }))
       assert.throws(() => @moldInstance.updateSilent({ roParam: 6 }))
 
-    it "read only", ->
+    it "read only - nested", ->
       @newInstance({
         type: 'assoc'
         items: {
@@ -146,13 +120,21 @@ describe 'Functional. Mold.', ->
             type: 'array'
             item: {
               type: 'assoc'
-#              items: {
-#                param: { type: 'number', ro: true }
-#              }
+              items: {
+                param: { type: 'number', ro: true }
+              }
             }
           }
         }
       })
+
+      assert.doesNotThrow(() => @moldInstance.update({
+        arrParam: [
+          {
+            otherParam: 5
+          }
+        ]
+      }))
 
       assert.throws(() => @moldInstance.update({
         arrParam: [

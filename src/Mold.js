@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { eachSchema } = require('./helpers/helpers');
+const { eachPrimitiveSchema } = require('./helpers/helpers');
 
 
 module.exports = class _Mold {
@@ -123,7 +123,7 @@ module.exports = class _Mold {
   _collectAssocInitial() {
     const result = {};
 
-    eachSchema(this._primitiveSchema.items, (curMoldPath, curSchemaPath, curSchema) => {
+    eachPrimitiveSchema(this._primitiveSchema, (curMoldPath, curSchemaPath, curSchema) => {
       if (!_.isUndefined(curSchema.initial)) {
         // get schema's initial value which has validated previously on schema init time
         _.set(result, curMoldPath, curSchema.initial);
@@ -137,30 +137,6 @@ module.exports = class _Mold {
 
     return result;
   }
-
-  // _collectRoProps() {
-  //   // TODO: не нужно!!! так как непонятно как собирать вложенные массивы
-  //
-  //   const roPropsPaths = [];
-  //
-  //   if (this._primitiveSchema.type === 'assoc') {
-  //     // collect from assoc
-  //     eachSchema(this._primitiveSchema.items, (curMoldPath, curSchemaPath, curSchema) => {
-  //       if (curSchema.ro) {
-  //         roPropsPaths.push(curMoldPath);
-  //       }
-  //     });
-  //   }
-  //   else if (this._primitiveSchema.type === 'array') {
-  //     // TODO: add support for collection
-  //
-  //   }
-  //   else {
-  //     this._main.log.fatal(`On mold path ${this._moldPath} action "${this._actionName}: Invalid schema type ${this._primitiveSchema.type}`);
-  //   }
-  //
-  //   return roPropsPaths;
-  // }
 
   /**
    * Check value and trow an error if it is invalid or read only.

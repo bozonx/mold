@@ -49,6 +49,56 @@ module.exports = {
     });
   },
 
+  /**
+   * It call cb recursively from root of schema.
+   * @param {object} fullSchema - schema like { type: 'myType', ... }
+   * @param {function} cb - callback like (curMoldPath, curSchemaPath, curSchema) => {}
+   */
+  eachPrimitiveSchema(fullSchema, cb) {
+    function letItRecursive(curMoldPath, curSchemaPath, curSchema) {
+      // Do nothing if its isn't a plain object
+      if (!_.isPlainObject(curSchema)) return;
+
+      if (curSchema.type === 'assoc') {
+        _.each(curSchema.items, (subSchema, paramName) => {
+          const childMoldPath = _.trimStart(`${curMoldPath}.${paramName}`, '.');
+          const childSchemaPath = _.trimStart(`${curSchemaPath}.items.${paramName}`, '.');
+
+          const isGoDeeper = cb(childMoldPath, childSchemaPath, subSchema);
+
+          if (isGoDeeper === false) return;
+
+          letItRecursive(childMoldPath, childSchemaPath, subSchema);
+        });
+      }
+      else if (curSchema.type === 'array') {
+        const childMoldPath = _.trimStart(`${curMoldPath}[]`, '.');
+        const childSchemaPath = _.trimStart(`${curSchemaPath}.item`, '.');
+
+        const isGoDeeper = cb(childMoldPath, curSchemaPath, curSchema);
+
+        if (isGoDeeper === false) return;
+
+        letItRecursive(childMoldPath, childSchemaPath, curSchema.item);
+
+        // _.each(curSchema.item, (subSchema, paramName) => {
+        //   const childMoldPath = _.trimStart(`${curMoldPath}.${paramName}`, '.');
+        //   const childSchemaPath = _.trimStart(`${curSchemaPath}.item.${paramName}`, '.');
+        //
+        //   const isGoDeeper = cb(childMoldPath, childSchemaPath, subSchema);
+        //
+        //   if (isGoDeeper === false) return;
+        //
+        //   letItRecursive(childMoldPath, childSchemaPath, subSchema);
+        // });
+      }
+
+      // else is other primitive
+    }
+
+    letItRecursive('', '', fullSchema);
+  },
+
   correctUpdatePayload(currentData, newData) {
     const newerState = _.defaultsDeep(_.cloneDeep(newData), currentData);
     // fix primitive array update. It must update all the items
