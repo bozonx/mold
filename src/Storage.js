@@ -1,6 +1,5 @@
 const _ = require('lodash');
-import { Map, Seq, mergeDeep } from 'immutable';
-
+const { Map, Seq, mergeDeep } = require('immutable');
 const Events = require('./StorageEvents');
 
 

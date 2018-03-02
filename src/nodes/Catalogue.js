@@ -1,7 +1,5 @@
 const _ = require('lodash');
-
-import { concatPath, getPrimaryName } from '../helpers/helpers';
-
+const { concatPath, getPrimaryName } = require('../helpers/helpers');
 const State = require('./State');
 
 

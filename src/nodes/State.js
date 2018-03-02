@@ -1,5 +1,4 @@
 const _ = require('lodash');
-
 const _NodeBase = require('./_NodeBase');
 
 

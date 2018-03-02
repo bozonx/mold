@@ -1,5 +1,5 @@
 const _ = require('lodash');
-import EventEmitter from 'eventemitter3';
+const EventEmitter = require('eventemitter3');
 
 
 module.exports = class Events {

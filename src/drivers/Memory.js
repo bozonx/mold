@@ -1,6 +1,6 @@
 const _ = require('lodash');
+const { correctUpdatePayload, convertFromUrlToLodash } = require('../helpers/helpers');
 
-import { correctUpdatePayload, convertFromUrlToLodash } from '../helpers/helpers';
 
 class LocalMemory {
   constructor(driverConfig, instanceConfig, db) {

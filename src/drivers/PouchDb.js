@@ -1,10 +1,10 @@
 const _ = require('lodash');
+const { correctUpdatePayload } = require('../helpers/helpers');
+
 // TODO: use real cuid repo or other collision resistance id generator
-import Cuid from './node-cuid.js';
+const Cuid = require('./node-cuid.js');
 
 const cuid = Cuid().cuid;
-
-import { correctUpdatePayload } from '../helpers/helpers';
 
 
 // from 0 to 19

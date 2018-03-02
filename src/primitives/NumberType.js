@@ -1,6 +1,5 @@
 const _ = require('lodash');
-
-import { validateParams } from '../helpers/helpers';
+const { validateParams } = require('../helpers/helpers');
 
 
 module.exports = class NumberType {

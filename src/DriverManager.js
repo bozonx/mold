@@ -1,7 +1,6 @@
 const _ = require('lodash');
-
 const Memory = require('./drivers/Memory');
-import { eachSchema, getTheBestMatchPath } from './helpers/helpers';
+const { eachSchema, getTheBestMatchPath } = require('./helpers/helpers');
 
 
 module.exports = class DriverManager {

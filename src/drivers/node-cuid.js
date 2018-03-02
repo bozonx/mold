@@ -11,7 +11,7 @@
  */
 
 /*global window, navigator, document, require, process, module */
-export default function () {
+module.exports = function () {
   'use strict';
 
 

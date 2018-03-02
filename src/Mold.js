@@ -1,6 +1,5 @@
 const _ = require('lodash');
-
-import { eachSchema } from './helpers/helpers';
+const { eachSchema } = require('./helpers/helpers');
 
 
 module.exports = class _Mold {

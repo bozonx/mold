@@ -1,6 +1,5 @@
 const _ = require('lodash');
-
-import { convertFromLodashToUrl } from './helpers/helpers';
+const { convertFromLodashToUrl } = require('./helpers/helpers');
 
 
 module.exports = class Request {

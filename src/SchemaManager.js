@@ -1,7 +1,6 @@
 const _ = require('lodash');
-
-import convertShortSchemaToFull from './helpers/convertShortSchemaToFull';
-import { eachSchema, convertFromLodashToSchema } from './helpers/helpers';
+const convertShortSchemaToFull = require('./helpers/convertShortSchemaToFull');
+const { eachSchema, convertFromLodashToSchema } = require('./helpers/helpers');
 
 
 /**
