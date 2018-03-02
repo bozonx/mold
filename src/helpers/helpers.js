@@ -1,249 +1,252 @@
 const _ = require('lodash');
 
 
-/**
- * It call cb recursively from root of schema.
- * @param fullSchema
- * @param cb
- */
-export function eachSchema(fullSchema, cb) {
-  function letItRecursive(curMoldPath, curSchemaPath, curSchema) {
-    // Do nothing if its isn't a plain object
-    if (!_.isPlainObject(curSchema)) return;
+module.exports = {
+  /**
+   * It call cb recursively from root of schema.
+   * @param fullSchema
+   * @param cb
+   */
+  eachSchema(fullSchema, cb) {
+    function letItRecursive(curMoldPath, curSchemaPath, curSchema) {
+      // Do nothing if its isn't a plain object
+      if (!_.isPlainObject(curSchema)) return;
 
-    const isGoDeeper = cb(curMoldPath, curSchemaPath, curSchema);
+      const isGoDeeper = cb(curMoldPath, curSchemaPath, curSchema);
 
-    if (isGoDeeper === false) return;
+      if (isGoDeeper === false) return;
 
-    if (curSchema.item) {
-      _.each(curSchema.item, (subSchema, nodeName) => {
-        const childMoldPath = `${curMoldPath}.${nodeName}`;
-        const childSchemaPath = `${curSchemaPath}.item.${nodeName}`;
+      if (curSchema.item) {
+        _.each(curSchema.item, (subSchema, nodeName) => {
+          const childMoldPath = `${curMoldPath}.${nodeName}`;
+          const childSchemaPath = `${curSchemaPath}.item.${nodeName}`;
 
-        letItRecursive(childMoldPath, childSchemaPath, subSchema);
-      });
+          letItRecursive(childMoldPath, childSchemaPath, subSchema);
+        });
+      }
+      else if (curSchema.schema) {
+        _.each(curSchema.schema, (subSchema, nodeName) => {
+          const childMoldPath = `${curMoldPath}.${nodeName}`;
+          const childSchemaPath = `${curSchemaPath}.schema.${nodeName}`;
+
+          letItRecursive(childMoldPath, childSchemaPath, subSchema);
+        });
+      }
+      else if (curSchema.items) {
+        _.each(curSchema.items, (subSchema, nodeName) => {
+          const childMoldPath = `${curMoldPath}.${nodeName}`;
+          const childSchemaPath = `${curSchemaPath}.items.${nodeName}`;
+
+          letItRecursive(childMoldPath, childSchemaPath, subSchema);
+        });
+      }
+      // else is one of primitive
     }
-    else if (curSchema.schema) {
-      _.each(curSchema.schema, (subSchema, nodeName) => {
-        const childMoldPath = `${curMoldPath}.${nodeName}`;
-        const childSchemaPath = `${curSchemaPath}.schema.${nodeName}`;
 
-        letItRecursive(childMoldPath, childSchemaPath, subSchema);
-      });
+    // expand the first level
+    _.each(fullSchema, (curSchema, nodeName) => {
+      letItRecursive(nodeName, nodeName, curSchema);
+    });
+  },
+
+  correctUpdatePayload(currentData, newData) {
+    const newerState = _.defaultsDeep(_.cloneDeep(newData), currentData);
+    // fix primitive array update. It must update all the items
+    // TODO: нужно поддерживать массивы в глубине
+
+    _.each(newData, (item, name) => {
+      // TODO: compact будет тормозить - оптимизировать.
+      if (_.isArray(item) && !_.isPlainObject( _.head(_.compact(item)) )) {
+        newerState[name] = item;
+      }
+    });
+
+    return newerState;
+  },
+
+  getPrimaryName(schema) {
+    let primary;
+    let schemaToFind;
+
+    if (schema.schema) {
+      schemaToFind = schema.schema;
     }
-    else if (curSchema.items) {
-      _.each(curSchema.items, (subSchema, nodeName) => {
-        const childMoldPath = `${curMoldPath}.${nodeName}`;
-        const childSchemaPath = `${curSchemaPath}.items.${nodeName}`;
-
-        letItRecursive(childMoldPath, childSchemaPath, subSchema);
-      });
-    }
-    // else is one of primitive
-  }
-
-  // expand the first level
-  _.each(fullSchema, (curSchema, nodeName) => {
-    letItRecursive(nodeName, nodeName, curSchema);
-  });
-}
-
-export function correctUpdatePayload(currentData, newData) {
-  const newerState = _.defaultsDeep(_.cloneDeep(newData), currentData);
-  // fix primitive array update. It must update all the items
-  // TODO: нужно поддерживать массивы в глубине
-
-  _.each(newData, (item, name) => {
-    // TODO: compact будет тормозить - оптимизировать.
-    if (_.isArray(item) && !_.isPlainObject( _.head(_.compact(item)) )) {
-      newerState[name] = item;
-    }
-  });
-
-  return newerState;
-}
-
-export function getPrimaryName(schema) {
-  let primary;
-  let schemaToFind;
-
-  if (schema.schema) {
-    schemaToFind = schema.schema;
-  }
-  else if (schema.item) {
-    schemaToFind = schema.item;
-  }
-  else {
-    return;
-  }
-
-  _.find(schemaToFind, (value, name) => {
-    if (_.isPlainObject(value) && value.primary) {
-      primary = name;
-
-      return true;
-    }
-  });
-
-  return primary;
-}
-
-export function omitUnsaveable(payload, documentSchema) {
-  const unsaveableParamsNames = [];
-
-  _.each(documentSchema.schema, (item, name) => {
-    if (item.saveable === false) unsaveableParamsNames.push(name);
-  });
-
-  return _.omit(payload, unsaveableParamsNames);
-}
-
-
-export function convertFromLodashToSchema(path) {
-  let newPath = path;
-  // replace collection params [1] ["dfg-ddfg-c453"]
-
-  newPath = newPath.replace(/\[[^\s.\[\]]+]/g, '!item!');
-
-  // replace "." to ".schema."
-  newPath = newPath.replace(/\./g, '.schema.');
-
-  newPath = newPath.replace(/!item!/g, '.item');
-
-  return newPath;
-}
-
-export function convertFromSchemaToLodash(path) {
-  return path.replace(/\.schema/g, '');
-}
-
-export function convertFromLodashToUrl(path) {
-  // TODO: use url encode
-  let preUrl;
-  // ["123-df"] [1]
-
-  preUrl = path.replace(/\[["']?([^\s.\[\]'"]+)["']?]/g, '.$1');
-
-  return preUrl.replace(/\./g, '/');
-}
-
-export function convertFromUrlToLodash(url) {
-  let converted = '';
-  const urlParts = url.split('/');
-
-  _.each(urlParts, (part) => {
-    // TODO: наверное сначала надо использовать url decode
-    if (part.match(/[^a-zA-Z\d_]/)) {
-      converted += `["${part}"]`;
-    }
-    else if (part.match(/^\d+$/)) {
-      converted += `[${part}]`;
+    else if (schema.item) {
+      schemaToFind = schema.item;
     }
     else {
-      converted += `.${part}`;
+      return;
     }
-  });
 
-  return _.trimStart(converted, '.');
-}
+    _.find(schemaToFind, (value, name) => {
+      if (_.isPlainObject(value) && value.primary) {
+        primary = name;
 
-export function getTheBestMatchPath(sourcePath, pathsList) {
-  let matchList = _.map(pathsList, (path) => {
-    if (sourcePath.indexOf(path) === 0) return path;
-  });
+        return true;
+      }
+    });
 
-  matchList = _.compact(matchList);
+    return primary;
+  },
 
-  if (matchList.length > 1) {
-    // two or more drivers - get the longest
-    return _.reduce(matchList, (result, value) => value > result ? value : result);
-  }
-  else if (matchList.length === 1) {
-    // one path
-    return matchList[0];
-  }
-  // Else return undefined
-}
+  omitUnsaveable(payload, documentSchema) {
+    const unsaveableParamsNames = [];
 
-/**
- * It contacts two paths. It supports arrays in lodash format.
- * @param root
- * @param relativePath
- * @returns {string}
- */
-export function concatPath(root, relativePath) {
-  if (_.isNumber(relativePath)) {
-    return `${root}[${relativePath}]`;
-  }
+    _.each(documentSchema.schema, (item, name) => {
+      if (item.saveable === false) unsaveableParamsNames.push(name);
+    });
 
-  if (_.startsWith(relativePath, '[')) {
-    return `${root}${relativePath}`;
-  }
+    return _.omit(payload, unsaveableParamsNames);
+  },
 
-  return _.trim(`${root}.${relativePath}`, '.');
-}
+  convertFromLodashToSchema(path) {
+    let newPath = path;
+    // replace collection params [1] ["dfg-ddfg-c453"]
 
-export function findTheClosestParentPath(path, assoc) {
-  // TODO: нужна ли поддержка lodash array format???
+    newPath = newPath.replace(/\[[^\s.\[\]]+]/g, '!item!');
 
-  if (_.isEmpty(assoc)) return;
+    // replace "." to ".schema."
+    newPath = newPath.replace(/\./g, '.schema.');
 
-  const parents = _.compact(_.map(assoc, (value, name) => {
-    if (path.indexOf(name) === 0) return name;
-  }));
+    newPath = newPath.replace(/!item!/g, '.item');
 
-  return _.reduce(parents, (sum, n) => {
-    return n.length > sum.length ? n : sum;
-  });
-}
+    return newPath;
+  },
 
-export function splitPath(moldPath) {
-  // ff[1][3] = > ff.[1].[2] => ['ff', '[1]', [2]]
-  const pathParts = moldPath.replace(/\[/g, '.[');
+  convertFromSchemaToLodash(path) {
+    return path.replace(/\.schema/g, '');
+  },
 
+  convertFromLodashToUrl(path) {
+    // TODO: use url encode
+    let preUrl;
+    // ["123-df"] [1]
 
-  return _.compact(pathParts.split('.'));
-}
+    preUrl = path.replace(/\[["']?([^\s.\[\]'"]+)["']?]/g, '.$1');
 
-export function joinPath(pathArray) {
-  const joined = pathArray.join('.');
-  // ['ff', '[1]', [2]] => ff.[1].[2] => ff[1][3]
+    return preUrl.replace(/\./g, '/');
+  },
 
-  return joined.replace(/\.\[/g, '[');
-}
+  convertFromUrlToLodash(url) {
+    let converted = '';
+    const urlParts = url.split('/');
 
-/**
- * Validate schema params.
- * @param {object} obj - raw schema
- * @param {function} cb - callback which checks params. It has return:
- * * error message
- * * or true if it ok
- * * or undefined if params is unknown
- * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
- */
-export function validateParams(obj, cb) {
-  const checkedNames = [];
+    _.each(urlParts, (part) => {
+      // TODO: наверное сначала надо использовать url decode
+      if (part.match(/[^a-zA-Z\d_]/)) {
+        converted += `["${part}"]`;
+      }
+      else if (part.match(/^\d+$/)) {
+        converted += `[${part}]`;
+      }
+      else {
+        converted += `.${part}`;
+      }
+    });
 
-  let error;
+    return _.trimStart(converted, '.');
+  },
 
-  _.find(obj, (value, name) => {
-    const result = cb(value, name);
+  getTheBestMatchPath(sourcePath, pathsList) {
+    let matchList = _.map(pathsList, (path) => {
+      if (sourcePath.indexOf(path) === 0) return path;
+    });
 
-    if (_.isString(result)) {
-      error = result;
-      checkedNames.push(name);
+    matchList = _.compact(matchList);
 
-      return true;
+    if (matchList.length > 1) {
+      // two or more drivers - get the longest
+      return _.reduce(matchList, (result, value) => value > result ? value : result);
     }
-    else if (result === true) checkedNames.push(name);
-  });
+    else if (matchList.length === 1) {
+      // one path
+      return matchList[0];
+    }
+    // Else return undefined
+  },
 
-  if (error) return error;
+  /**
+   * It contacts two paths. It supports arrays in lodash format.
+   * @param root
+   * @param relativePath
+   * @returns {string}
+   */
+  concatPath(root, relativePath) {
+    if (_.isNumber(relativePath)) {
+      return `${root}[${relativePath}]`;
+    }
 
-  const diff = _.difference(_.keys(obj), checkedNames);
+    if (_.startsWith(relativePath, '[')) {
+      return `${root}${relativePath}`;
+    }
 
-  if (!_.isEmpty(diff)) return `Unknown params: ${JSON.stringify(diff)}`;
-}
+    return _.trim(`${root}.${relativePath}`, '.');
+  },
+
+  findTheClosestParentPath(path, assoc) {
+    // TODO: нужна ли поддержка lodash array format???
+
+    if (_.isEmpty(assoc)) return;
+
+    const parents = _.compact(_.map(assoc, (value, name) => {
+      if (path.indexOf(name) === 0) return name;
+    }));
+
+    return _.reduce(parents, (sum, n) => {
+      return n.length > sum.length ? n : sum;
+    });
+  },
+
+  splitPath(moldPath) {
+    // ff[1][3] = > ff.[1].[2] => ['ff', '[1]', [2]]
+    const pathParts = moldPath.replace(/\[/g, '.[');
+
+
+    return _.compact(pathParts.split('.'));
+  },
+
+  joinPath(pathArray) {
+    const joined = pathArray.join('.');
+    // ['ff', '[1]', [2]] => ff.[1].[2] => ff[1][3]
+
+    return joined.replace(/\.\[/g, '[');
+  },
+
+  /**
+   * Validate schema params.
+   * @param {object} obj - raw schema
+   * @param {function} cb - callback which checks params. It has return:
+   * * error message
+   * * or true if it ok
+   * * or undefined if params is unknown
+   * @return {string|undefined} - It returns error message of undefined if there wasn't an error.
+   */
+  validateParams(obj, cb) {
+    const checkedNames = [];
+
+    let error;
+
+    _.find(obj, (value, name) => {
+      const result = cb(value, name);
+
+      if (_.isString(result)) {
+        error = result;
+        checkedNames.push(name);
+
+        return true;
+      }
+      else if (result === true) checkedNames.push(name);
+    });
+
+    if (error) return error;
+
+    const diff = _.difference(_.keys(obj), checkedNames);
+
+    if (!_.isEmpty(diff)) return `Unknown params: ${JSON.stringify(diff)}`;
+  },
+
+};
+
 
 
 // export function isSimpleArray(value) {
