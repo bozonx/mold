@@ -315,10 +315,9 @@ module.exports = class Storage {
    */
   destroy(moldPath, action) {
     if (this._storage.items[moldPath] && this._storage.items[moldPath][action]) {
-      delete this._storage.items[moldPath][action];
+      this._storage.items[moldPath][action] = null;
     }
 
-    // TODO: review
     this._events.destroy(this._getFullPath(moldPath, action));
   }
 
@@ -390,7 +389,7 @@ module.exports = class Storage {
     if (!moldPath) this._log.fatal(`MoldPath is empty`);
     if (!action) this._log.fatal(`Action is empty`);
 
-    if (this._storage.items[moldPath] && !this._storage.items[moldPath][action]) {
+    if (this._storage.items[moldPath] && this._storage.items[moldPath][action] === null) {
       this._log.fatal(`Action "${moldPath}.${action}" has been destroyed previously. You have to init it before do changes`);
     }
   }

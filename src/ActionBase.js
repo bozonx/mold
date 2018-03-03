@@ -26,10 +26,12 @@ module.exports = class ActionBase {
     this._mold.init();
   }
 
+  // TODO: review
   getDriverParams() {
     return this._getMeta('driverParams');
   }
 
+  // TODO: review
   setDriverParams(driverParams) {
     this._updateMeta({ driverParams });
   }
@@ -77,6 +79,7 @@ module.exports = class ActionBase {
   }
 
   request(payload) {
+    // TODO: review
     this._updateMeta({ pending: true });
     const driverRequestParams = this.getDriverParams();
 
@@ -102,15 +105,8 @@ module.exports = class ActionBase {
       });
   }
 
-  _getMeta(param) {
-    return this._main.storage.getMeta(this._moldPath, this._actionName, param);
-  }
-
-  _updateMeta(partialData) {
-    this._main.storage.updateMeta(this._moldPath, this._actionName, partialData);
-  }
-
   _doRequest(driverRequestParams, payload) {
+    // TODO: review
     const request = {
       ...driverRequestParams,
       moldPath: this._moldPath,
@@ -122,6 +118,14 @@ module.exports = class ActionBase {
     // TODO: ??? getUrlParams
     // TODO: ??? this.schema
     return this._main.request.sendRequest(request, {}, {});
+  }
+
+  _getMeta(param) {
+    return this._main.storage.getMeta(this._moldPath, this._actionName, param);
+  }
+
+  _updateMeta(partialData) {
+    this._main.storage.updateMeta(this._moldPath, this._actionName, partialData);
   }
 
 };

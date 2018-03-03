@@ -1,8 +1,8 @@
 const _ = require('lodash');
-const _NodeBase = require('./_NodeBase');
+const NodeBase = require('./_NodeBase');
 
 
-module.exports = class State extends _NodeBase {
+module.exports = class State extends NodeBase {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.schema)) {
       return `The definition of "state" node on "${schemaPath}" must has a "schema"!`;

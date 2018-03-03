@@ -1,10 +1,11 @@
 const _ = require('lodash');
 //import { correctUpdatePayload, omitUnsaveable } from '../helpers/helpers';
-const _NodeBase = require('./_NodeBase');
+const NodeBase = require('./_NodeBase');
 
 
-module.exports = class Document extends _NodeBase {
+module.exports = class Document extends NodeBase {
   static validateSchema(schema, schemaPath) {
+    // TODO: может переименовать в items?
     if (!_.isPlainObject(schema.schema)) {
       return `The definition of "document" node on "${schemaPath}" must has a "schema"!`;
     }
@@ -17,10 +18,12 @@ module.exports = class Document extends _NodeBase {
     return 'document';
   }
 
+  // TODO: rename to isLoading
   get loading() {
     return this.actions[this.$defaultAction].pending;
   }
 
+  // TODO: rename to isSaving
   get saving() {
     return this.actions.put.pending || this.actions.patch.pending;
   }
@@ -59,7 +62,7 @@ module.exports = class Document extends _NodeBase {
   }
 
   $generateDefaultAction() {
-    return this.$createAction(this.$defaultAction, function (Action) {
+    return this.$createAction(this.$defaultAction, (Action) => {
       return class extends Action {
         init() {
           super.init();

@@ -1,12 +1,10 @@
 index = require('../../src/index')
 Document = require('../../src/nodes/Document')
 
-# TODO: test delete
-# TODO: test custom action
 
-describe 'Functional. Document node.', ->
+describe.only 'Functional. Document node.', ->
   beforeEach () ->
-    testSchema = () ->
+    @testSchema = {
       document: {
         type: 'document'
         schema: {
@@ -15,18 +13,17 @@ describe 'Functional. Document node.', ->
           numberParam: {type: 'number'}
         }
       }
-
+    }
     @testValues = {
       boolParam: true,
       stringParam: 'newValue',
       numberParam: 5,
     }
 
-    @testSchema = testSchema()
     @moldPath = 'document'
     @mold = index( @testSchema, {silent: true} )
     @document = @mold.get(@moldPath)
-    @document.$init(@moldPath, @testSchema.document)
+    #@document.$init(@moldPath, @testSchema.document)
 
   it "validate schema - node without schema", ->
     testSchema = {

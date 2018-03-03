@@ -286,7 +286,7 @@ describe 'Unit. Storage.', ->
     @storage.destroy(@moldPath, @defaultAction)
 
     # the action's storage has to be clear
-    assert.isUndefined(@storage._storage.items[@moldPath][@defaultAction])
+    assert.isNull(@storage._storage.items[@moldPath][@defaultAction])
     # you can't set data to action if it hasn't inited after destroy
     assert.throws(() => @storage.updateStateLayer(@moldPath, @defaultAction, { data: 2 }))
     # event handlers has to be clear
