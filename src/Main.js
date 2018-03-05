@@ -59,6 +59,8 @@ module.exports = class Main {
       logger = new DefaultLoger({ silent: this.config.silent });
     }
 
+    // TODO: может нужно обернуть fatal в external logger?
+
     return logger;
   }
 

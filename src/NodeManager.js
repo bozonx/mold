@@ -18,9 +18,10 @@ module.exports = class NodeManager {
   /**
    * Get instance of type
    * @param {string} moldPath - absolute path
+   * @param {...array} params - params to instance
    * @returns {object|undefined} - instance of type
    */
-  getInstance(moldPath) {
+  getInstance(moldPath, ...params) {
     if (!moldPath || !_.isString(moldPath)) {
       this._main.log.fatal(`Bad "moldPath" param: ${JSON.stringify(moldPath)}`);
     }
@@ -31,7 +32,7 @@ module.exports = class NodeManager {
       this._main.log.fatal(`Schema on path "${moldPath}" doesn't exists`);
     }
 
-    return this._newInstance(moldPath, schema);
+    return this._newInstance(moldPath, schema, params);
   }
 
   validateSchema(typeName, schema, schemaPath) {
@@ -44,10 +45,10 @@ module.exports = class NodeManager {
     return this._registeredTypes[typeName].validateSchema(schema, schemaPath);
   }
 
-  _newInstance(moldPath, schema) {
+  _newInstance(moldPath, schema, params) {
     const instance = new this._registeredTypes[schema.type](this._main);
 
-    instance.$init(moldPath, schema);
+    instance.$init(moldPath, schema, ...params);
 
     return instance;
   }

@@ -18,7 +18,7 @@ module.exports = class State extends NodeBase {
 
   $init(moldPath, schema) {
     // convert to simple schema type
-    this.$fullSchema = this.$fullSchema || {
+    this.$primitiveSchema = this.$primitiveSchema || {
       type: 'assoc',
       items: schema.schema,
     };

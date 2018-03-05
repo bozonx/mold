@@ -41,7 +41,7 @@ module.exports = class _NodeBase {
       this,
       this._moldPath,
       actionName,
-      this.$fullSchema
+      this.$primitiveSchema
     );
 
     instance.init();

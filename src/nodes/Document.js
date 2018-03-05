@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const { Map } = require('immutable');
+
 //import { correctUpdatePayload, omitUnsaveable } from '../helpers/helpers';
 const NodeBase = require('./_NodeBase');
 
@@ -18,25 +20,29 @@ module.exports = class Document extends NodeBase {
     return 'document';
   }
 
-  // TODO: rename to isLoading
-  get loading() {
+  get params() {
+    return this._params.toJS();
+  }
+
+  get isLoading() {
     return this.actions[this.$defaultAction].pending;
   }
 
-  // TODO: rename to isSaving
-  get saving() {
+  get isSaving() {
     return this.actions.put.pending || this.actions.patch.pending;
   }
 
-  $init(moldPath, schema) {
+  $init(moldPath, schema, params) {
     // convert to simple schema type
-    // TODO: это primitive schema
-    this.$fullSchema = this.$fullSchema || {
+    this.$primitiveSchema = {
       type: 'assoc',
       items: schema.schema,
     };
 
     super.$init(moldPath, schema);
+
+    // url params
+    this._params = new Map(params);
 
     this.actions = {
       ...this.actions,

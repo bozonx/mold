@@ -20,14 +20,13 @@ module.exports = class Catalogue extends State {
     return 'catalogue';
   }
 
-  get loading() {
+  get isLoading() {
     return this.actions.default.pending;
   }
 
   $init(moldPath, schema) {
     // convert to simple schema type
-    this.$fullSchema = {
-      // TODO: нету collection уже
+    this.$primitiveSchema = {
       type: 'array',
       item: schema.item,
     };
@@ -188,6 +187,7 @@ module.exports = class Catalogue extends State {
 
         return resp;
       }, (err) => {
+        // TODO: что за $saving?
         this._updateDoc(documentMold, { $saving: false });
 
         return Promise.reject(err);

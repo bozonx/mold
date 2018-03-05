@@ -23,7 +23,6 @@ describe.only 'Functional. Document node.', ->
     @moldPath = 'document'
     @mold = index( @testSchema, {silent: true} )
     @document = @mold.get(@moldPath)
-    #@document.$init(@moldPath, @testSchema.document)
 
   it "validate schema - node without schema", ->
     testSchema = {
@@ -55,22 +54,22 @@ describe.only 'Functional. Document node.', ->
   it 'load()', ->
     _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
 
-    assert.isFalse(@document.loading)
+    assert.isFalse(@document.isLoading)
 
     promise = @document.load()
 
-    assert.isTrue(@document.loading)
+    assert.isTrue(@document.isLoading)
 
     promise
       .then (response) =>
         assert.deepEqual(response.body, @testValues)
         assert.deepEqual(@document.mold, @testValues)
-        assert.isFalse(@document.loading)
+        assert.isFalse(@document.isLoading)
 
   it 'put()', ->
     _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
 
-    assert.isFalse(@document.saving)
+    assert.isFalse(@document.isSaving)
 
     newData = {
       boolParam: false,
@@ -80,11 +79,11 @@ describe.only 'Functional. Document node.', ->
 
     assert.deepEqual(@document.actions.put.mold, newData)
     assert.deepEqual(@document.mold, newData)
-    assert.isTrue(@document.saving)
+    assert.isTrue(@document.isSaving)
 
     promise
       .then (response) =>
-        assert.isFalse(@document.saving)
+        assert.isFalse(@document.isSaving)
         assert.deepEqual(response.body, newData)
 
         assert.deepEqual(@document.actions.put.mold, newData)
@@ -98,7 +97,7 @@ describe.only 'Functional. Document node.', ->
   it 'patch()', ->
     _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
 
-    assert.isFalse(@document.saving)
+    assert.isFalse(@document.isSaving)
 
     newData = {
       stringParam: 'overlay'
@@ -118,11 +117,11 @@ describe.only 'Functional. Document node.', ->
 
     assert.deepEqual(@document.actions.patch.mold, updatedData)
     assert.deepEqual(@document.mold, updatedData)
-    assert.isTrue(@document.saving)
+    assert.isTrue(@document.isSaving)
 
     promise
       .then (response) =>
-        assert.isFalse(@document.saving)
+        assert.isFalse(@document.isSaving)
         assert.deepEqual(response.body, resultData)
 
         assert.deepEqual(@document.actions.patch.mold, resultData)
