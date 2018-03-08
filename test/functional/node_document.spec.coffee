@@ -132,21 +132,30 @@ describe.only 'Functional. Document node.', ->
         assert.deepEqual(@document._main.storage.getState(@document._moldPath, 'default'), {})
         assert.deepEqual(@document._main.storage.getSolid(@document._moldPath, 'default'), resultData)
 
-  it 'custom action', ->
+  it.only 'custom action', ->
     @testSchema.document.actions = {
-      custom: (Action) ->
-        class extends Action
-          init: ->
-            this.setDriverParams({
-              method: 'get',
-            });
+      myAction: {
+        url: '/path/to/${id}/'
+        method: 'get',
+        otherDriverParam: 'value'
+        #transform: () ->
+        #request: () ->
+      }
     }
     @document = @mold.get(@moldPath)
     @document.$init(@moldPath, @testSchema.document)
+    #@document.params({ id: 5 }, { newDriverParam: 'value '})
 
     assert.isFalse(@document.actions.custom.pending)
 
-    #promise = this.document.actions.custom.request()
+    promise = this.document.actions.myAction.request({
+      url: { id: 5 }
+      payload: { payloadParam: 'value' }
+      newDriverParam: 'value '
+    })
+    # TODO: test - указание параметров во время запросв - они должны сохраниться
+    # TODO: test - transform
+    # TODO: test - запрос через переделку request
     # TODO: make request with custom driver params and check driver request
 
 #  it "remove", (done) ->

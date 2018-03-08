@@ -20,10 +20,6 @@ module.exports = class Document extends NodeBase {
     return 'document';
   }
 
-  get params() {
-    return this._params.toJS();
-  }
-
   get isLoading() {
     return this.actions[this.$defaultAction].pending;
   }
@@ -32,7 +28,7 @@ module.exports = class Document extends NodeBase {
     return this.actions.put.pending || this.actions.patch.pending;
   }
 
-  $init(moldPath, schema, params) {
+  $init(moldPath, schema) {
     // convert to simple schema type
     this.$primitiveSchema = {
       type: 'assoc',
@@ -40,9 +36,6 @@ module.exports = class Document extends NodeBase {
     };
 
     super.$init(moldPath, schema);
-
-    // url params
-    this._params = new Map(params);
 
     this.actions = {
       ...this.actions,
@@ -53,6 +46,14 @@ module.exports = class Document extends NodeBase {
 
     this._initCustomActions();
   }
+  //
+  // params(urlParams, driverParams) {
+  //   // url params
+  //   // TODO: пока не было вызванна init() - не разрешать делать запросы и вызывать actions
+  //   this._params = new Map(urlParams);
+  //   // additional driver params
+  //   this._driverParams = new Map(driverParams);
+  // }
 
   load() {
     return this.actions.default.request();
