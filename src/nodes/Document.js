@@ -29,22 +29,24 @@ module.exports = class Document extends NodeBase {
   }
 
   $init(moldPath, schema) {
+    super.$init(moldPath, schema);
+
     // convert to simple schema type
     this.$primitiveSchema = {
       type: 'assoc',
       items: schema.schema,
     };
 
-    super.$init(moldPath, schema);
-
     this.actions = {
-      ...this.actions,
-      put: this._generatePutAction(),
-      patch: this._generatePatchAction(),
-      remove: this._generateRemoveAction(),
+      // TODO: передать вмесет с custom actions в _initActions
+      // TODO: переделать на action params
+      // 'default': this.$generateDefaultAction(),
+      // put: this._generatePutAction(),
+      // patch: this._generatePatchAction(),
+      // remove: this._generateRemoveAction(),
     };
 
-    this._initCustomActions();
+    this._initActions();
   }
   //
   // params(urlParams, driverParams) {
@@ -155,19 +157,11 @@ module.exports = class Document extends NodeBase {
     });
   }
 
-
-  _initCustomActions() {
-    _.each(this.schema.actions, (item, name) => {
-      this.actions[name] = this.$createAction(name, item);
-
-      // if (_.isFunction(item)) {
-      //   // custom method or overwrote method
-      //   this.action[name] = (...params) => item.bind(this)(...params, this);
-      // }
-      // else if (_.isPlainObject(item)) {
-      //   // Default acton's params
-      //   this.actionDefaults[name] = item;
-      // }
+  _initActions() {
+    _.each(this.schema.actions, (actionParams, actionName) => {
+      this.actions[actionName] = this.$createAction(actionName, actionParams);
+      // double to root of document for more convenience
+      this[actionName] = this.actions[actionName];
     });
   }
 

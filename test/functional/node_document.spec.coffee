@@ -133,26 +133,36 @@ describe.only 'Functional. Document node.', ->
         assert.deepEqual(@document._main.storage.getSolid(@document._moldPath, 'default'), resultData)
 
   it.only 'custom action', ->
+    @document.main.request.sendRequest = sinon.spy()
+
     @testSchema.document.actions = {
       myAction: {
         url: '/path/to/${id}/'
         method: 'get',
-        otherDriverParam: 'value'
+        defaultDriverParam: 'value'
         #transform: () ->
         #request: () ->
       }
     }
     @document = @mold.get(@moldPath)
     @document.$init(@moldPath, @testSchema.document)
-    #@document.params({ id: 5 }, { newDriverParam: 'value '})
 
-    assert.isFalse(@document.actions.custom.pending)
+    assert.isFalse(@document.myAction.pending)
 
-    promise = this.document.actions.myAction.request({
+    promise = this.document.myAction.request({
       url: { id: 5 }
-      payload: { payloadParam: 'value' }
+      body: { payloadParam: 'value' }
+      #params: { id: 5 }
+      #payload: { payloadParam: 'value' }
       newDriverParam: 'value '
     })
+
+    assert.isTrue(@document.myAction.pending)
+
+    promise
+      .then ->
+        @document.main.request.sendRequest
+
     # TODO: test - указание параметров во время запросв - они должны сохраниться
     # TODO: test - transform
     # TODO: test - запрос через переделку request

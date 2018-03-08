@@ -30,18 +30,17 @@ module.exports = class _NodeBase {
   $init(moldPath, schema) {
     this._moldPath = moldPath;
     this._schema = schema;
-    this.actions = { 'default': this.$generateDefaultAction() };
+    this.actions = {};
   }
 
-  $createAction(actionName, cb) {
-    const ActionClass = cb(ActionBase);
-
-    const instance =  new ActionClass(
+  $createAction(actionName, actionParams) {
+    const instance = new ActionBase(
       this._main,
       this,
       this._moldPath,
       actionName,
-      this.$primitiveSchema
+      this.$primitiveSchema,
+      actionParams
     );
 
     instance.init();
