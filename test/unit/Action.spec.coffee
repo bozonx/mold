@@ -176,6 +176,31 @@ describe.only 'Unit. Action.', ->
         payload: undefined
       }
 
+    it "replace request - reject of request replacement", ->
+      @actionParams.request = () -> Promise.reject('err')
+
+      promise = @action.request({})
+
+      assert.isRejected(promise)
+
+      promise
+        .catch (err) =>
+          assert.equal(err, 'err')
+          assert.equal(@action.lastError, 'err')
+
+    it "replace request - reject", ->
+      @main.request.sendRequest = () -> Promise.reject('err')
+      @actionParams.request = () -> Promise.resolve({ param: 'value' })
+
+      promise = @action.request({})
+
+      assert.isRejected(promise)
+
+      promise
+        .catch (err) =>
+          assert.equal(err, 'err')
+          assert.equal(@action.lastError, 'err')
+
     it "reject", ->
       @main.request.sendRequest = () -> Promise.reject('err')
 
