@@ -277,6 +277,7 @@ class LocalPouchDb {
   }
 
   startRequest(request) {
+    // TODO: ругаться на неизвестный метод
     return this[request.method](request);
   }
 

@@ -103,7 +103,7 @@ module.exports = class Action {
       lastRequestParams: params,
     });
 
-    return this._doRequest(params)
+    return this._doRequest(this._actionParams.request, params)
       // proceed and transform response
       .then((rawResp) => {
         this._updateMeta({ pending: false });
@@ -135,13 +135,23 @@ module.exports = class Action {
     return resp;
   }
 
-  _doRequest(requestParams) {
-    // TODO: подменить request переданной ф-ей если нужно
+  _doRequest(requestReplacement, requestParams) {
+    if (_.isFunction(requestReplacement)) {
+      const result = requestReplacement(requestParams);
 
+      if (result && result.then) {
+        // wait for promise
+        return result
+          .then((preparedParams) => this._main.request.sendRequest(preparedParams));
+      }
+      else if (_.isPlainObject(result)) {
+        // transform request
+        return this._main.request.sendRequest(result);
+      }
+      // else do nothing and call sendRequest as is
+    }
 
-    // TODO: ??? getUrlParams
-    // TODO: ??? this.schema
-    return this._main.request.sendRequest(requestParams, {}, {});
+    return this._main.request.sendRequest(requestParams);
   }
 
   _generateParams(requestParams) {
