@@ -15,7 +15,6 @@ module.exports = class Action {
   ) {
     this._main = main;
     this.$storage = main.storage;
-    // TODO: передавать в кастомный request и transform
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
@@ -124,7 +123,7 @@ module.exports = class Action {
     let resp = rawResp;
     // transform response if need
     if (_.isFunction(transform)) {
-      resp = transform(resp);
+      resp = transform(resp, this._nodeInstance);
     }
 
     const result = resp.body;
@@ -137,7 +136,7 @@ module.exports = class Action {
 
   _doRequest(requestReplacement, requestParams) {
     if (_.isFunction(requestReplacement)) {
-      const result = requestReplacement(requestParams);
+      const result = requestReplacement(requestParams, this._nodeInstance);
 
       if (result && result.then) {
         // wait for promise

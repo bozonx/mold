@@ -10,7 +10,7 @@ describe.only 'Unit. Action.', ->
         sendRequest: sinon.stub().returns(Promise.resolve({}))
       }
     }
-    @nodeInstance = {}
+    @nodeInstance = { nodeParam: 1 }
 
     @main.storage.$init()
     @main.storage.initAction('path/to/doc', 'myAction', {})
@@ -84,10 +84,11 @@ describe.only 'Unit. Action.', ->
           assert.deepEqual(@action.mold, { respParam: 'value' })
 
     it "transform response", ->
-      @actionParams.transform = (resp) ->
+      @actionParams.transform = (resp, nodeInstance) ->
         {
           resp...
           additionalParam: 'value'
+          nodeParam: nodeInstance.nodeParam
         }
 
       @main.request.sendRequest = ->
@@ -104,15 +105,17 @@ describe.only 'Unit. Action.', ->
               respParam: 'value'
             }
             additionalParam: 'value'
+            nodeParam: 1
           })
 
     it "replace request - returns promise", ->
-      @actionParams.request = (params) ->
+      @actionParams.request = (params, nodeInstance) ->
         newParams = {
           params...
           urlParams: {
             params.urlParams...
             additionalParam: 'value'
+            nodeParam: nodeInstance.nodeParam,
           }
         }
 
@@ -125,6 +128,7 @@ describe.only 'Unit. Action.', ->
               rootId: 1
               id: 5
               additionalParam: 'value'
+              nodeParam: 1
             }
             driverParams: {
               defaultDriverParam: "value",
