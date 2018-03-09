@@ -1,4 +1,4 @@
-const ActionBase = require('../ActionBase');
+const ActionBase = require('../Action');
 
 
 module.exports = class _NodeBase {
