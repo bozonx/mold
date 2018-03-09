@@ -4,7 +4,8 @@ const Mold = require('./Mold');
 // TODO: test unsaveble
 // TODO: test event after pending is completed
 
-module.exports = class ActionBase {
+
+module.exports = class Action {
   constructor(
     main,
     nodeInstance,
@@ -17,6 +18,7 @@ module.exports = class ActionBase {
   ) {
     this._main = main;
     this.$storage = main.storage;
+    // TODO: передавать в кастомный request и transform
     this._nodeInstance = nodeInstance;
     this._moldPath = moldPath;
     this._actionName = actionName;
@@ -28,6 +30,10 @@ module.exports = class ActionBase {
 
   get pending() {
     return this._getMeta('pending') || false;
+  }
+
+  get lastError() {
+    return this._getMeta('lastError');
   }
 
   get mold() {
@@ -46,12 +52,11 @@ module.exports = class ActionBase {
     this._mold = new Mold(this._main, this._moldPath, this._actionName, this._primitiveSchema);
     this._mold.init();
 
-    const driverParams = _.omit(this._actionParams, [
+    this._schemaDriverParams = _.omit(this._actionParams, [
       'url',
       'transform',
       'request',
     ]);
-    this._updateMeta(driverParams);
   }
 
   setSilent(data) {
@@ -144,11 +149,12 @@ module.exports = class ActionBase {
 
     // TODO: ??? getUrlParams
     // TODO: ??? this.schema
-    return this._main.request.sendRequest(review, {}, {});
+    return this._main.request.sendRequest(requestParams, {}, {});
   }
 
   _generateParams(requestParams) {
     const driverParams = {
+      ...this._schemaDriverParams,
       ...this._defaultDriverParams,
       ...this._getMeta('driverParams'),
       ..._.omit(requestParams, [ 'url', 'body' ]),

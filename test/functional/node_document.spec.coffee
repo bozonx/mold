@@ -2,7 +2,7 @@ index = require('../../src/index')
 Document = require('../../src/nodes/Document')
 
 
-describe.only 'Functional. Document node.', ->
+describe 'Functional. Document node.', ->
   beforeEach () ->
     @testSchema = {
       document: {
@@ -132,7 +132,7 @@ describe.only 'Functional. Document node.', ->
         assert.deepEqual(@document._main.storage.getState(@document._moldPath, 'default'), {})
         assert.deepEqual(@document._main.storage.getSolid(@document._moldPath, 'default'), resultData)
 
-  it.only 'custom action', ->
+  it 'custom action', ->
     @document.main.request.sendRequest = sinon.spy()
 
     @testSchema.document.actions = {
