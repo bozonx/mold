@@ -343,21 +343,28 @@ module.exports = class Storage {
    * @private
    */
   _update(oldData, partialData) {
-    const result = _.cloneDeep(oldData);
-
     if (_.isArray(oldData)) {
       // collection
+      const result = _.cloneDeep(oldData);
 
-      _.each(partialData, (doc, index) => {
-        if (!result[index]) result[index] = {};
-        _.each(partialData[index], (item, name) => result[index][name] = item);
+      _.each(partialData, (item, index) => {
+        partialData[index] = {
+          ...result[index],
+          ...item,
+        };
       });
+
+      return result;
     }
     else if (_.isPlainObject(oldData)) {
-      _.each(partialData, (item, name) => result[name] = item);
+      return {
+        ...oldData,
+        ...partialData,
+      };
     }
 
-    return result;
+    // return new data if the old data is undefined of null etc.
+    return partialData;
   }
 
   _emitActionEvent(moldPath, action, eventName, eventData) {

@@ -176,4 +176,17 @@ describe.only 'Unit. Action.', ->
         payload: undefined
       }
 
+    it "reject", ->
+      @main.request.sendRequest = () -> Promise.reject('err')
+
+      promise = @action.request({})
+
+      assert.isRejected(promise)
+
+      promise
+        .catch (err) =>
+          assert.equal(err, 'err')
+          assert.equal(@action.lastError, 'err')
+
+
       # TODO: test promise reject - and with request replacement
