@@ -75,12 +75,13 @@ describe.only 'Unit. Action.', ->
         }
 
       @action.request({})
-        .then (resp) ->
+        .then (resp) =>
           assert.deepEqual(resp, {
             body: {
               respParam: 'value'
             }
           })
+          assert.deepEqual(@action.mold, { respParam: 'value' })
 
     it "transform response", ->
       @actionParams.transform = (resp) ->
@@ -176,4 +177,3 @@ describe.only 'Unit. Action.', ->
       }
 
       # TODO: test promise reject - and with request replacement
-      # TODO: test event after pending is completed
