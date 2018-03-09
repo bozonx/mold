@@ -1,9 +1,6 @@
 const _ = require('lodash');
 const Mold = require('./Mold');
 
-// TODO: test unsaveble
-// TODO: test event after pending is completed
-
 
 module.exports = class Action {
   constructor(
@@ -111,7 +108,7 @@ module.exports = class Action {
       .then((rawResp) => {
         this._updateMeta({ pending: false });
 
-        return this._proceedResponse(requestParams.transform, rawResp);
+        return this._proceedResponse(this._actionParams.transform, rawResp);
       })
       .catch((err) => {
         this._updateMeta({
