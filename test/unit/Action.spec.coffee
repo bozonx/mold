@@ -7,7 +7,7 @@ describe.only 'Unit. Action.', ->
     @main = {
       storage: new Storage({})
       request: {
-        sendRequest: sinon.stub().returns(Promise.resolve())
+        sendRequest: sinon.stub().returns(Promise.resolve({}))
       }
     }
     @nodeInstance = {}
@@ -34,10 +34,19 @@ describe.only 'Unit. Action.', ->
     )
     @action.init()
 
-  it "request - check params processing", ->
+  it "request - params processing", ->
     assert.isFalse(@action.pending)
 
-    promise = @action.request({
+    @action._updateMeta({
+      urlParams: {
+        urlParamFromMeta: 'value'
+      }
+      driverParams: {
+        driverParamsFromMeta: 'value'
+      }
+    })
+
+    @action.request({
       url: { id: 5 }
       body: { payloadParam: 'value' }
       requestDriverParam: 'value '
@@ -45,13 +54,26 @@ describe.only 'Unit. Action.', ->
 
     assert.isTrue(@action.pending)
     assert.equal(@action._getMeta('lastError'), null)
-    assert.deepEqual(@action._getMeta('urlParams'), { rootId: 1, id: 5 })
+    assert.deepEqual(@action._getMeta('urlParams'), {
+      rootId: 1,
+      urlParamFromMeta: 'value'
+      id: 5
+    })
     assert.deepEqual(@action._getMeta('driverParams'), {
       method: 'get'
       schemaDriverParam: 'value'
       defaultDriverParam: 'value'
+      driverParamsFromMeta: 'value'
       requestDriverParam: 'value '
     })
 
-    # TODO: test promise result
+  it "request - check response", ->
+    promise = @action.request({
+      url: { id: 5 }
+      body: { payloadParam: 'value' }
+      requestDriverParam: 'value '
+    })
+
+    # TODO: test transromr
+    # TODO: test request replacement
     # TODO: test promise reject
