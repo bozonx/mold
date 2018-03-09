@@ -2,7 +2,7 @@ Action = require('../../src/Action')
 Storage = require('../../src/Storage')
 
 
-describe.only 'Unit. Action.', ->
+describe 'Unit. Action.', ->
   beforeEach () ->
     @main = {
       storage: new Storage({})

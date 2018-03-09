@@ -128,6 +128,9 @@ module.exports = class Action {
 
     const result = resp.body;
 
+    // TODO: cast
+    // TODO: validate
+
     // set data to solid layer
     this.setSolidLayer(result);
 

@@ -2,7 +2,7 @@ index = require('../../src/index')
 Document = require('../../src/nodes/Document')
 
 
-describe 'Functional. Document node.', ->
+describe.only 'Functional. Document node.', ->
   beforeEach () ->
     @testSchema = {
       document: {
@@ -133,15 +133,14 @@ describe 'Functional. Document node.', ->
         assert.deepEqual(@document._main.storage.getSolid(@document._moldPath, 'default'), resultData)
 
   it 'custom action', ->
-    @document.main.request.sendRequest = sinon.spy()
+    resp = { body: { param: 'value' } }
+    @document._main.request.sendRequest = sinon.stub().returns(Promise.resolve(resp))
 
     @testSchema.document.actions = {
       myAction: {
         url: '/path/${rootId}/to/${id}/'
         method: 'get',
         defaultDriverParam: 'value'
-        #transform: () ->
-        #request: () ->
       }
     }
     @document = @mold.get(@moldPath)
@@ -153,21 +152,15 @@ describe 'Functional. Document node.', ->
     promise = this.document.myAction.request({
       url: { id: 5 }
       body: { payloadParam: 'value' }
-      #params: { id: 5 }
-      #payload: { payloadParam: 'value' }
       newDriverParam: 'value '
     })
 
     assert.isTrue(@document.myAction.pending)
 
     promise
-      .then ->
-        @document.main.request.sendRequest
-
-    # TODO: test - указание параметров во время запросв - они должны сохраниться
-    # TODO: test - transform
-    # TODO: test - запрос через переделку request
-    # TODO: make request with custom driver params and check driver request
+      .then (result) =>
+        assert.isFalse(@document.myAction.pending)
+        assert.deepEqual(result, resp)
 
 #  it "remove", (done) ->
 #    testSchema = () ->
