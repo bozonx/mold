@@ -5,7 +5,16 @@ const Mold = require('./Mold');
 // TODO: test event after pending is completed
 
 module.exports = class ActionBase {
-  constructor(main, nodeInstance, moldPath, actionName, primitiveSchema, actionParams) {
+  constructor(
+    main,
+    nodeInstance,
+    moldPath,
+    actionName,
+    primitiveSchema,
+    actionParams,
+    defaultUrlParams,
+    defaultDriverParams
+  ) {
     this._main = main;
     this.$storage = main.storage;
     this._nodeInstance = nodeInstance;
@@ -13,6 +22,8 @@ module.exports = class ActionBase {
     this._actionName = actionName;
     this._primitiveSchema = primitiveSchema;
     this._actionParams = actionParams;
+    this._defaultUrlParams = defaultUrlParams;
+    this._defaultDriverParams = defaultDriverParams;
   }
 
   get pending() {
@@ -85,59 +96,78 @@ module.exports = class ActionBase {
     this._mold.destroy();
   }
 
-  request(params) {
-    const driverParams = {
-      ...this._getMeta('driverParams'),
-      ..._.omit(params, [ 'url', 'body' ]),
-    };
-
-    const payload = params.body;
+  request(requestParams) {
+    const params = this._generateParams(requestParams);
 
     this._updateMeta({
-      urlParams: params.url,
-      driverParams,
+      urlParams: params.urlParams,
+      driverParams: params.driverParams,
+      pending: true,
+      lastError: null,
     });
 
-    this._updateMeta({ pending: true });
-
-    return this._doRequest(driverParams, payload)
+    return this._doRequest(params)
+      // proceed and transform response
       .then((rawResp) => {
-
-        let resp = rawResp;
-        // transform response if need
-        if (_.isFunction(params.transform)) {
-          resp = params.transform(resp);
-        }
-
-        const result = resp.body;
-
         this._updateMeta({ pending: false });
-        // set data to solid layer
-        this.setSolidLayer(result);
 
-        return resp;
+        return this._proceedResponse(requestParams.transform, rawResp);
       })
       .catch((err) => {
-        this._updateMeta({ pending: false });
-        // TODO: установить метку что была ошибка - потом её убрать при следующем запросе
+        this._updateMeta({
+          pending: false,
+          lastError: err,
+        });
 
         return Promise.reject(err);
       });
   }
 
-  _doRequest(driverRequestParams, payload) {
-    // TODO: review
-    const request = {
-      ...driverRequestParams,
-      moldPath: this._moldPath,
-      // TODO: убрать несохраняемые данные
-      // payload: omitUnsaveable(this._mold, this.schema),
-      payload,
-    };
+  _proceedResponse(transform, rawResp) {
+    let resp = rawResp;
+    // transform response if need
+    if (_.isFunction(transform)) {
+      resp = transform(resp);
+    }
+
+    const result = resp.body;
+
+    // set data to solid layer
+    this.setSolidLayer(result);
+
+    return resp;
+  }
+
+  _doRequest(requestParams) {
+    // TODO: подменить request переданной ф-ей если нужно
+
 
     // TODO: ??? getUrlParams
     // TODO: ??? this.schema
-    return this._main.request.sendRequest(request, {}, {});
+    return this._main.request.sendRequest(review, {}, {});
+  }
+
+  _generateParams(requestParams) {
+    const driverParams = {
+      ...this._defaultDriverParams,
+      ...this._getMeta('driverParams'),
+      ..._.omit(requestParams, [ 'url', 'body' ]),
+    };
+
+    const urlParams = {
+      ...this._defaultUrlParams,
+      ...this._getMeta('urlParams'),
+      ...requestParams.url,
+    };
+
+    return {
+      urlParams,
+      driverParams,
+      // TODO: убрать несохраняемые данные
+      // payload: omitUnsaveable(this._mold, this.schema),
+      payload: requestParams.body,
+      moldPath: this._moldPath,
+    };
   }
 
   _getMeta(param) {

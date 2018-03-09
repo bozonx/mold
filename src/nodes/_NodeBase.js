@@ -33,14 +33,16 @@ module.exports = class _NodeBase {
     this.actions = {};
   }
 
-  $createAction(actionName, actionParams) {
+  $createAction(actionName, actionParams, defaultUrlParams, defaultDriverParams) {
     const instance = new ActionBase(
       this._main,
       this,
       this._moldPath,
       actionName,
       this.$primitiveSchema,
-      actionParams
+      actionParams,
+      defaultUrlParams,
+      defaultDriverParams
     );
 
     instance.init();

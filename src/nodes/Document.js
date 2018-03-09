@@ -31,6 +31,10 @@ module.exports = class Document extends NodeBase {
   $init(moldPath, schema) {
     super.$init(moldPath, schema);
 
+    // params for all the actions
+    this._urlParams = {};
+    this._driverParams = {};
+
     // convert to simple schema type
     this.$primitiveSchema = {
       type: 'assoc',
@@ -48,14 +52,11 @@ module.exports = class Document extends NodeBase {
 
     this._initActions();
   }
-  //
-  // params(urlParams, driverParams) {
-  //   // url params
-  //   // TODO: пока не было вызванна init() - не разрешать делать запросы и вызывать actions
-  //   this._params = new Map(urlParams);
-  //   // additional driver params
-  //   this._driverParams = new Map(driverParams);
-  // }
+
+  params(urlParams, driverParams) {
+    this._urlParams = _.cloneDeep(urlParams);
+    this._driverParams = _.cloneDeep(driverParams);
+  }
 
   load() {
     return this.actions.default.request();
@@ -159,7 +160,12 @@ module.exports = class Document extends NodeBase {
 
   _initActions() {
     _.each(this.schema.actions, (actionParams, actionName) => {
-      this.actions[actionName] = this.$createAction(actionName, actionParams);
+      this.actions[actionName] = this.$createAction(
+        actionName,
+        actionParams,
+        this._urlParams,
+        this._driverParams
+      );
       // double to root of document for more convenience
       this[actionName] = this.actions[actionName];
     });

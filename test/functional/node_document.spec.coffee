@@ -137,7 +137,7 @@ describe.only 'Functional. Document node.', ->
 
     @testSchema.document.actions = {
       myAction: {
-        url: '/path/to/${id}/'
+        url: '/path/${rootId}/to/${id}/'
         method: 'get',
         defaultDriverParam: 'value'
         #transform: () ->
@@ -146,6 +146,7 @@ describe.only 'Functional. Document node.', ->
     }
     @document = @mold.get(@moldPath)
     @document.$init(@moldPath, @testSchema.document)
+    @document.params({ rootId: 1 }, { defaultDriverParam: 'value' })
 
     assert.isFalse(@document.myAction.pending)
 
