@@ -40,12 +40,8 @@ module.exports = class Action {
     return this._mold.state;
   }
 
-  get urlParams() {
-    return this._getMeta('urlParams');
-  }
-
-  get driverParams() {
-    return this._getMeta('driverParams');
+  get lastRequestParams() {
+    return this._getMeta('lastRequestParams');
   }
 
   init() {
@@ -105,10 +101,9 @@ module.exports = class Action {
     const params = this._generateParams(requestParams);
 
     this._updateMeta({
-      urlParams: params.urlParams,
-      driverParams: params.driverParams,
       pending: true,
       lastError: null,
+      lastRequestParams: params,
     });
 
     return this._doRequest(params)
@@ -156,13 +151,11 @@ module.exports = class Action {
     const driverParams = {
       ...this._schemaDriverParams,
       ...this._defaultDriverParams,
-      ...this._getMeta('driverParams'),
       ..._.omit(requestParams, [ 'url', 'body' ]),
     };
 
     const urlParams = {
       ...this._defaultUrlParams,
-      ...this._getMeta('urlParams'),
       ...requestParams.url,
     };
 
@@ -172,7 +165,7 @@ module.exports = class Action {
       // TODO: убрать несохраняемые данные
       // payload: omitUnsaveable(this._mold, this.schema),
       payload: requestParams.body,
-      moldPath: this._moldPath,
+      //moldPath: this._moldPath,
     };
   }
 
