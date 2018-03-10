@@ -84,7 +84,7 @@ describe 'Unit. Action.', ->
           assert.deepEqual(@action.mold, { respParam: 'value' })
 
     it "transform response", ->
-      @actionParams.transform = (resp, nodeInstance) ->
+      @actionParams.transform = (resp, action, nodeInstance) ->
         {
           resp...
           additionalParam: 'value'
@@ -109,7 +109,7 @@ describe 'Unit. Action.', ->
           })
 
     it "replace request - returns promise", ->
-      @actionParams.request = (params, nodeInstance) ->
+      @actionParams.request = (params, action, nodeInstance) ->
         newParams = {
           params...
           urlParams: {

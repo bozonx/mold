@@ -41,15 +41,9 @@ module.exports = class Document extends NodeBase {
       items: schema.schema,
     };
 
-    this.actions = {
-      // TODO: передать вмесет с custom actions в _initActions
-      // TODO: переделать на action params
-      // 'default': this.$generateDefaultAction(),
-      // put: this._generatePutAction(),
-      // patch: this._generatePatchAction(),
-      // remove: this._generateRemoveAction(),
+    this.actions = {};
 
-
+    const defaultActions = {
       'default': {
         method: 'get',
         ...this._schema.actions && this._schema.actions.default,
@@ -60,6 +54,37 @@ module.exports = class Document extends NodeBase {
       },
       patch: {
         method: 'patch',
+        beforeRequest: (params, action, document) => {
+          if (!_.isUndefined(params.payload)) {
+            // update default and path actions
+            this.updateSilent(params.payload);
+            action.setSolidLayer(params.payload);
+          }
+        },
+        afterRequest: (resp, document) => {
+          this.setSolidLayer(resp.body);
+        },
+
+        // request: (params, document) => {
+        //   // if we set new data - update default action
+        //
+        //   if (params.payload) {
+        //     // update path action
+        //     this.updateSilent(params.payload);
+        //
+        //     console.log(11111111, this.mold)
+        //
+        //   }
+        //
+        //   // return super.request(payload)
+        //   //   .then((resp) => {
+        //   //     //document.actions.default.clearStateLayer();
+        //   //     //document.actions.default.setSolidLayer(resp.body);
+        //   //     this.setSolidLayer(resp.body);
+        //   //
+        //   //     return resp;
+        //   //   });
+        // },
         ...this._schema.actions && this._schema.actions.patch,
       },
       remove: {
@@ -68,7 +93,7 @@ module.exports = class Document extends NodeBase {
       },
     };
 
-    this._initActions();
+    this._initActions(defaultActions);
   }
 
   params(urlParams, driverParams) {
@@ -176,8 +201,10 @@ module.exports = class Document extends NodeBase {
     });
   }
 
-  _initActions() {
-    _.each(this.schema.actions, (actionParams, actionName) => {
+  _initActions(defaultActions) {
+    const actions = _.defaultsDeep(_.cloneDeep(this.schema.actions), defaultActions);
+
+    _.each(actions, (actionParams, actionName) => {
       this.actions[actionName] = this.$createAction(
         actionName,
         actionParams,

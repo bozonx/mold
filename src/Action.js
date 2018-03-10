@@ -102,6 +102,10 @@ module.exports = class Action {
       lastRequestParams: params,
     });
 
+    if (this._actionParams.beforeRequest) {
+      this._actionParams.beforeRequest(params, this, this._nodeInstance);
+    }
+
     return this._doRequest(this._actionParams.request, params)
       // proceed and transform response
       .then((rawResp) => {
@@ -123,7 +127,7 @@ module.exports = class Action {
     let resp = rawResp;
     // transform response if need
     if (_.isFunction(transform)) {
-      resp = transform(resp, this._nodeInstance);
+      resp = transform(resp, this, this._nodeInstance);
     }
 
     const result = resp.body;
@@ -139,7 +143,7 @@ module.exports = class Action {
 
   _doRequest(requestReplacement, requestParams) {
     if (_.isFunction(requestReplacement)) {
-      const result = requestReplacement(requestParams, this._nodeInstance);
+      const result = requestReplacement(requestParams, this, this._nodeInstance);
 
       if (result && result.then) {
         // wait for promise
