@@ -50,41 +50,28 @@ module.exports = class Document extends NodeBase {
       },
       put: {
         method: 'put',
-        ...this._schema.actions && this._schema.actions.put,
-      },
-      patch: {
-        method: 'patch',
-        beforeRequest: (params, action, document) => {
+        beforeRequest: (params, action) => {
           if (!_.isUndefined(params.payload)) {
             // update default and path actions
             this.updateSilent(params.payload);
             action.setSolidLayer(params.payload);
           }
         },
-        afterRequest: (resp, document) => {
-          this.setSolidLayer(resp.body);
+        // set new data to default action
+        afterRequest: (resp) => this.actions.default.setSilent(resp.body),
+        ...this._schema.actions && this._schema.actions.put,
+      },
+      patch: {
+        method: 'patch',
+        beforeRequest: (params, action) => {
+          if (!_.isUndefined(params.payload)) {
+            // update default and path actions
+            this.updateSilent(params.payload);
+            action.setSolidLayer(params.payload);
+          }
         },
-
-        // request: (params, document) => {
-        //   // if we set new data - update default action
-        //
-        //   if (params.payload) {
-        //     // update path action
-        //     this.updateSilent(params.payload);
-        //
-        //     console.log(11111111, this.mold)
-        //
-        //   }
-        //
-        //   // return super.request(payload)
-        //   //   .then((resp) => {
-        //   //     //document.actions.default.clearStateLayer();
-        //   //     //document.actions.default.setSolidLayer(resp.body);
-        //   //     this.setSolidLayer(resp.body);
-        //   //
-        //   //     return resp;
-        //   //   });
-        // },
+        // set new data to default action
+        afterRequest: (resp) => this.actions.default.setSolidLayer(resp.body),
         ...this._schema.actions && this._schema.actions.patch,
       },
       remove: {

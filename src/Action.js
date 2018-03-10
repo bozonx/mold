@@ -51,6 +51,10 @@ module.exports = class Action {
     ]);
   }
 
+  // getMold() {
+  //   return this._mold;
+  // }
+
   setSilent(data) {
     return this._mold.setSilent(data);
   }
@@ -130,13 +134,15 @@ module.exports = class Action {
       resp = transform(resp, this, this._nodeInstance);
     }
 
-    const result = resp.body;
-
     // TODO: cast
     // TODO: validate
 
     // set data to solid layer
-    this.setSolidLayer(result);
+    this.setSolidLayer(resp.body);
+
+    if (this._actionParams.afterRequest) {
+      this._actionParams.afterRequest(resp, this, this._nodeInstance);
+    }
 
     return resp;
   }

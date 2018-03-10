@@ -110,8 +110,7 @@ describe.only 'Functional. Document node.', ->
       stringParam: 'overlay'
       numberParam: 5
     }
-    resp = { body: { param: 'value' } }
-    @document._main.request.sendRequest = sinon.stub().returns(Promise.resolve(resp))
+    @document._main.request.sendRequest = sinon.stub().returns(Promise.resolve({ body: resultData }))
 
     @testSchema.document.actions = {
       patch: {
@@ -128,18 +127,12 @@ describe.only 'Functional. Document node.', ->
     assert.deepEqual(@document.mold, updatedData)
     assert.isTrue(@document.isSaving)
 
-#    promise
-#      .then (response) =>
-#        assert.isFalse(@document.isSaving)
-#        assert.deepEqual(response.body, resultData)
-#
-#        assert.deepEqual(@document.actions.patch.mold, resultData)
-#        assert.deepEqual(@document._main.storage.getState(@document._moldPath, 'patch'), {})
-#        assert.deepEqual(@document._main.storage.getSolid(@document._moldPath, 'patch'), resultData)
-#
-#        assert.deepEqual(@document.mold, resultData)
-#        assert.deepEqual(@document._main.storage.getState(@document._moldPath, 'default'), {})
-#        assert.deepEqual(@document._main.storage.getSolid(@document._moldPath, 'default'), resultData)
+    promise
+      .then (resp) =>
+        assert.isFalse(@document.isSaving)
+        assert.deepEqual(resp.body, resultData)
+        assert.deepEqual(@document.actions.patch.mold, resultData)
+        assert.deepEqual(@document.mold, resultData)
 
   it 'custom action', ->
     resp = { body: { param: 'value' } }
