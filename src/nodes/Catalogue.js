@@ -7,15 +7,9 @@ const NodeBase = require('./_NodeBase');
 module.exports = class Catalogue extends NodeBase {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.item)) {
-      return `Schema definition of catalogue on "${schemaPath}" must has an "item" param!`;
+      return `The definition of "catalogue" node on "${schemaPath}" must has a "item" param!`;
     }
   }
-
-  // constructor(main) {
-  //   super(main);
-  //
-  //   this._defaultAction = 'default';
-  // }
 
   get type() {
     return 'catalogue';
@@ -35,8 +29,18 @@ module.exports = class Catalogue extends NodeBase {
     };
 
     const defaultActions = {
-      // TODO: review
-      //create: this._generateCreateAction(),
+      [this.$defaultAction]: {
+        method: 'filter',
+        ...this._schema.actions && this._schema.actions[this.$defaultAction],
+      },
+      create: {
+        method: 'create',
+        ...this._schema.actions && this._schema.actions.create,
+      },
+      remove: {
+        method: 'delete',
+        ...this._schema.actions && this._schema.actions.remove,
+      },
     };
 
     this.$initActions(defaultActions);
@@ -50,41 +54,41 @@ module.exports = class Catalogue extends NodeBase {
   //   return this.actions.create.request(payload);
   // }
 
-  _generateDefaultAction() {
-    return this.$createAction(this._defaultAction, (Action) => {
-      return class extends Action {
-        init() {
-          super.init();
-
-          this.setDriverParams({ method: 'filter' });
-          this.primaryName = getPrimaryName(this._schema);
-        }
-
-        // add $$key param to solid after data has loaded
-        responseTransformCb(resp) {
-          return {
-            ...resp,
-            body: _.map(resp.body, (item) => {
-              return {
-                ...item,
-                $$key: item[this.primaryName],
-              };
-            }),
-          };
-        }
-
-        request(payload) {
-          return super.request(payload)
-            .then((resp) => {
-              // set copy of server data to state
-              this.update(this.$storage.getSolid(this._moldPath, this._actionName));
-
-              return resp;
-            });
-        }
-      };
-    });
-  }
+  // _generateDefaultAction() {
+  //   return this.$createAction(this._defaultAction, (Action) => {
+  //     return class extends Action {
+  //       init() {
+  //         super.init();
+  //
+  //         this.setDriverParams({ method: 'filter' });
+  //         this.primaryName = getPrimaryName(this._schema);
+  //       }
+  //
+  //       // add $$key param to solid after data has loaded
+  //       responseTransformCb(resp) {
+  //         return {
+  //           ...resp,
+  //           body: _.map(resp.body, (item) => {
+  //             return {
+  //               ...item,
+  //               $$key: item[this.primaryName],
+  //             };
+  //           }),
+  //         };
+  //       }
+  //
+  //       request(payload) {
+  //         return super.request(payload)
+  //           .then((resp) => {
+  //             // set copy of server data to state
+  //             this.update(this.$storage.getSolid(this._moldPath, this._actionName));
+  //
+  //             return resp;
+  //           });
+  //       }
+  //     };
+  //   });
+  // }
 
   _generateCreateAction() {
     const catalogue = this;

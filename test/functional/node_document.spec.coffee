@@ -23,6 +23,7 @@ describe 'Functional. Document node.', ->
     @moldPath = 'document'
     @mold = index( @testSchema, {silent: true} )
     @document = @mold.get(@moldPath)
+    @document.$init(@moldPath, @testSchema.document)
 
   it "validate schema - node without schema", ->
     testSchema = {
@@ -138,7 +139,7 @@ describe 'Functional. Document node.', ->
         defaultDriverParam: 'value'
       }
     }
-    @document = @mold.get(@moldPath)
+    # reinit
     @document.$init(@moldPath, @testSchema.document)
     @document.params({ rootId: 1 }, { defaultDriverParam: 'value' })
 

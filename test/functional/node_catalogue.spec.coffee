@@ -1,65 +1,64 @@
-mold = require('../../src/index')
+index = require('../../src/index')
+Catalogue = require('../../src/nodes/Catalogue')
 
-describe.only 'Functional. Catalogue node.', ->
+
+describe 'Functional. Catalogue node.', ->
   beforeEach () ->
-    testSchema = () ->
+    @testSchema = {
       catalogue: {
         type: 'catalogue'
         item: {
-          $id: {type: 'number', primary: true}
-          name: {type: 'string'}
+          $id: { type: 'number', primary: true }
+          name: { type: 'string' }
         }
       }
-
+    }
     @testValues = [
       { $id: 1, name: 'value1' }
       { $id: 2, name: 'value2' }
     ]
-    @testSchema = testSchema()
+
     @moldPath = 'catalogue'
-    @mold = mold( @testSchema, {silent: true} )
+    @mold = index( @testSchema, {silent: true} )
     @catalogue = @mold.get(@moldPath)
     @catalogue.$init(@moldPath, @testSchema.catalogue)
 
   it "validate schema - node without schema param", ->
     testSchema = {
-      container: {
-        type: 'container'
+      catalogue: {
+        type: 'catalogue'
       }
     }
 
-    assert.throws(
-      () => mold( testSchema, {silent: true} ),
-      'Schema definition of container on "container" must has a "schema" param!'
+    assert.equal(
+      Catalogue.validateSchema(testSchema.catalogue, 'catalogue'),
+      'The definition of "catalogue" node on "catalogue" must has a "item" param!'
     )
 
-#  it 'load()', ->
-#    _.set(@mold.driverManager.$defaultMemoryDb, 'catalogue', @testValues)
-#
-#    assert.deepEqual(@catalogue.mold, [])
-#    assert.isFalse(@catalogue.loading)
-#
-#    promise = @catalogue.load()
-#
-#    assert.isTrue(@catalogue.loading)
-#
-#    result = [
-#      { $id: 1, $$key: 1, name: 'value1' }
-#      { $id: 2, $$key: 2, name: 'value2' }
-#    ]
-#
-#    promise
-#      .then (response) =>
-#        assert.deepEqual(response.body, result)
-#        assert.deepEqual(@catalogue.actions.default._main.storage.getState(
-#          @catalogue.actions.default._moldPath,
-#          @catalogue.actions.default._actionName
-#        ), result)
-#        assert.deepEqual(@catalogue.actions.default.mold, result)
-#        assert.deepEqual(@catalogue.mold, result)
-#        assert.isFalse(@catalogue.loading)
+  it.only 'load()', ->
+    result = [
+      { $id: 1, $index: 0, name: 'value1' }
+      { $id: 2, $index: 1, name: 'value2' }
+    ]
 
-  it 'load page', ->
+    # TODO: use memory db
+    #_.set(@mold.driverManager.$defaultMemoryDb, 'catalogue', @testValues)
+    @catalogue._main.request.sendRequest = sinon.stub().returns(Promise.resolve({ body: result }))
+
+    assert.deepEqual(@catalogue.mold, [])
+    assert.isFalse(@catalogue.loading)
+
+    promise = @catalogue.load()
+
+    assert.isTrue(@catalogue.loading)
+
+    promise
+      .then (response) =>
+        assert.isFalse(@catalogue.loading)
+        assert.deepEqual(response.body, result)
+        assert.deepEqual(@catalogue.mold, result)
+
+  #it 'load page', ->
     # TODO: !!!!
 
   it 'create', ->
