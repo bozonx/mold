@@ -51,8 +51,10 @@ describe.only 'Functional. Document node.', ->
       'Schema definition of "document" node on "document" must not to have a "type" param! It has to be just plain object.'
     )
 
-  it 'load()', ->
-    _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
+  it.only 'load()', ->
+    # TODO: use memory db
+    #_.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
+    @document._main.request.sendRequest = sinon.stub().returns(Promise.resolve({ body: @testValues }))
 
     assert.isFalse(@document.isLoading)
 
@@ -66,26 +68,17 @@ describe.only 'Functional. Document node.', ->
         assert.deepEqual(@document.mold, @testValues)
         assert.isFalse(@document.isLoading)
 
-  it.only 'put()', ->
-    _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
-
-    assert.isFalse(@document.isSaving)
-
+  it 'put()', ->
     newData = {
       boolParam: false,
       stringParam: 'overlay',
     }
 
+    # TODO: use memory db
+    #_.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
     @document._main.request.sendRequest = sinon.stub().returns(Promise.resolve({ body: newData }))
 
-    @testSchema.document.actions = {
-      put: {
-        url: '/path/${rootId}/to/${id}/'
-      }
-    }
-    @document = @mold.get(@moldPath)
-    @document.$init(@moldPath, @testSchema.document)
-    @document.params({ rootId: 1 })
+    assert.isFalse(@document.isSaving)
 
     promise = @document.put.request({ params: { id: 5 }, body: newData })
 
@@ -101,10 +94,6 @@ describe.only 'Functional. Document node.', ->
         assert.deepEqual(@document.mold, newData)
 
   it 'patch()', ->
-    _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
-
-    assert.isFalse(@document.isSaving)
-
     newData = {
       stringParam: 'overlay'
     }
@@ -118,16 +107,12 @@ describe.only 'Functional. Document node.', ->
       stringParam: 'overlay'
       numberParam: 5
     }
+
+    # TODO: use memory db
+    #_.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
     @document._main.request.sendRequest = sinon.stub().returns(Promise.resolve({ body: resultData }))
 
-    @testSchema.document.actions = {
-      patch: {
-        url: '/path/${rootId}/to/${id}/'
-      }
-    }
-    @document = @mold.get(@moldPath)
-    @document.$init(@moldPath, @testSchema.document)
-    @document.params({ rootId: 1 })
+    assert.isFalse(@document.isSaving)
 
     promise = @document.patch.request({ params: { id: 5 }, body: newData })
 

@@ -88,9 +88,9 @@ module.exports = class Document extends NodeBase {
     this._driverParams = _.cloneDeep(driverParams);
   }
 
-  // load() {
-  //   return this.actions.default.request();
-  // }
+  load() {
+    return this.actions.default.request();
+  }
   // put(payload) {
   //   return this.actions.put.request(payload);
   // }

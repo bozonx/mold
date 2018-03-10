@@ -171,7 +171,7 @@ module.exports = class Action {
 
     const urlParams = {
       ...this._defaultUrlParams,
-      ...requestParams.params,
+      ...requestParams && requestParams.params,
     };
 
     return {
@@ -179,7 +179,7 @@ module.exports = class Action {
       driverParams,
       // TODO: убрать несохраняемые данные
       // payload: omitUnsaveable(this._mold, this.schema),
-      payload: requestParams.body,
+      payload: requestParams && requestParams.body,
       //moldPath: this._moldPath,
     };
   }
