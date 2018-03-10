@@ -160,12 +160,12 @@ module.exports = class Action {
     const driverParams = {
       ...this._schemaDriverParams,
       ...this._defaultDriverParams,
-      ..._.omit(requestParams, [ 'url', 'body' ]),
+      ..._.omit(requestParams, [ 'params', 'body' ]),
     };
 
     const urlParams = {
       ...this._defaultUrlParams,
-      ...requestParams.url,
+      ...requestParams.params,
     };
 
     return {

@@ -94,10 +94,8 @@ describe.only 'Functional. Document node.', ->
         assert.deepEqual(@document._main.storage.getState(@document._moldPath, 'default'), {})
         assert.deepEqual(@document._main.storage.getSolid(@document._moldPath, 'default'), newData)
 
-  it 'patch()', ->
+  it.only 'patch()', ->
     _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
-
-    assert.isFalse(@document.isSaving)
 
     newData = {
       stringParam: 'overlay'
@@ -113,7 +111,16 @@ describe.only 'Functional. Document node.', ->
       numberParam: 5
     }
 
-    promise = @document.patch(newData)
+    @testSchema.document.actions = {
+      patch: {
+        url: '/path/${rootId}/to/${id}/'
+      }
+    }
+    @document = @mold.get(@moldPath)
+    @document.$init(@moldPath, @testSchema.document)
+    @document.params({ rootId: 1 })
+
+    promise = @document.patch({ params: { id: 5 }, body: newData })
 
     assert.deepEqual(@document.actions.patch.mold, updatedData)
     assert.deepEqual(@document.mold, updatedData)
@@ -150,7 +157,7 @@ describe.only 'Functional. Document node.', ->
     assert.isFalse(@document.myAction.pending)
 
     promise = this.document.myAction.request({
-      url: { id: 5 }
+      params: { id: 5 }
       body: { payloadParam: 'value' }
       newDriverParam: 'value '
     })

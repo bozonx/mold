@@ -56,7 +56,7 @@ describe 'Unit. Action.', ->
       assert.isFalse(@action.pending)
 
       @action.request({
-        url: { id: 5 }
+        params: { id: 5 }
         body: { payloadParam: 'value' }
         requestDriverParam: 'value'
       })
@@ -121,7 +121,7 @@ describe 'Unit. Action.', ->
 
         return Promise.resolve(newParams)
 
-      @action.request({ url: { id: 5 } })
+      @action.request({ params: { id: 5 } })
         .then =>
           sinon.assert.calledWith @main.request.sendRequest, {
             urlParams: {
@@ -148,7 +148,7 @@ describe 'Unit. Action.', ->
           }
         }
 
-      @action.request({ url: { id: 5 } })
+      @action.request({ params: { id: 5 } })
       sinon.assert.calledWith @main.request.sendRequest, {
         urlParams: {
           rootId: 1
@@ -166,7 +166,7 @@ describe 'Unit. Action.', ->
     it "replace request - returns undefined", ->
       @actionParams.request = (params) ->
 
-      @action.request({ url: { id: 5 } })
+      @action.request({ params: { id: 5 } })
       sinon.assert.calledWith @main.request.sendRequest, {
         urlParams: {
           rootId: 1

@@ -48,6 +48,24 @@ module.exports = class Document extends NodeBase {
       // put: this._generatePutAction(),
       // patch: this._generatePatchAction(),
       // remove: this._generateRemoveAction(),
+
+
+      'default': {
+        method: 'get',
+        ...this._schema.actions && this._schema.actions.default,
+      },
+      put: {
+        method: 'put',
+        ...this._schema.actions && this._schema.actions.put,
+      },
+      patch: {
+        method: 'patch',
+        ...this._schema.actions && this._schema.actions.patch,
+      },
+      remove: {
+        method: 'delete',
+        ...this._schema.actions && this._schema.actions.remove,
+      },
     };
 
     this._initActions();
@@ -58,29 +76,29 @@ module.exports = class Document extends NodeBase {
     this._driverParams = _.cloneDeep(driverParams);
   }
 
-  load() {
-    return this.actions.default.request();
-  }
-  put(payload) {
-    return this.actions.put.request(payload);
-  }
-  patch(payload) {
-    return this.actions.patch.request(payload);
-  }
-  remove() {
-    return this.actions.remove.request();
-  }
+  // load() {
+  //   return this.actions.default.request();
+  // }
+  // put(payload) {
+  //   return this.actions.put.request(payload);
+  // }
+  // patch(payload) {
+  //   return this.actions.patch.request(payload);
+  // }
+  // remove() {
+  //   return this.actions.remove.request();
+  // }
 
-  $generateDefaultAction() {
-    return this.$createAction(this.$defaultAction, (Action) => {
-      return class extends Action {
-        init() {
-          super.init();
-          this.setDriverParams({ method: 'get' });
-        }
-      };
-    });
-  }
+  // $generateDefaultAction() {
+  //   return this.$createAction(this.$defaultAction, (Action) => {
+  //     return class extends Action {
+  //       init() {
+  //         super.init();
+  //         this.setDriverParams({ method: 'get' });
+  //       }
+  //     };
+  //   });
+  // }
 
   _generatePutAction() {
     const document = this;
