@@ -66,7 +66,7 @@ describe.only 'Functional. Document node.', ->
         assert.deepEqual(@document.mold, @testValues)
         assert.isFalse(@document.isLoading)
 
-  it 'put()', ->
+  it.only 'put()', ->
     _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
 
     assert.isFalse(@document.isSaving)
@@ -75,7 +75,19 @@ describe.only 'Functional. Document node.', ->
       boolParam: false,
       stringParam: 'overlay',
     }
-    promise = @document.put(newData)
+
+    @document._main.request.sendRequest = sinon.stub().returns(Promise.resolve({ body: newData }))
+
+    @testSchema.document.actions = {
+      put: {
+        url: '/path/${rootId}/to/${id}/'
+      }
+    }
+    @document = @mold.get(@moldPath)
+    @document.$init(@moldPath, @testSchema.document)
+    @document.params({ rootId: 1 })
+
+    promise = @document.put.request({ params: { id: 5 }, body: newData })
 
     assert.deepEqual(@document.actions.put.mold, newData)
     assert.deepEqual(@document.mold, newData)
@@ -85,17 +97,13 @@ describe.only 'Functional. Document node.', ->
       .then (response) =>
         assert.isFalse(@document.isSaving)
         assert.deepEqual(response.body, newData)
-
         assert.deepEqual(@document.actions.put.mold, newData)
-        assert.deepEqual(@document._main.storage.getState(@document._moldPath, 'put'), {})
-        assert.deepEqual(@document._main.storage.getSolid(@document._moldPath, 'put'), newData)
-
         assert.deepEqual(@document.mold, newData)
-        assert.deepEqual(@document._main.storage.getState(@document._moldPath, 'default'), {})
-        assert.deepEqual(@document._main.storage.getSolid(@document._moldPath, 'default'), newData)
 
-  it.only 'patch()', ->
+  it 'patch()', ->
     _.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
+
+    assert.isFalse(@document.isSaving)
 
     newData = {
       stringParam: 'overlay'

@@ -53,12 +53,12 @@ module.exports = class Document extends NodeBase {
         beforeRequest: (params, action) => {
           if (!_.isUndefined(params.payload)) {
             // update default and path actions
-            this.updateSilent(params.payload);
-            action.setSolidLayer(params.payload);
+            this.actions.default.setSilent(params.payload);
+            action.setSilent(params.payload);
           }
         },
         // set new data to default action
-        afterRequest: (resp) => this.actions.default.setSilent(resp.body),
+        afterRequest: (resp) => this.actions.default.setSolidLayer(resp.body),
         ...this._schema.actions && this._schema.actions.put,
       },
       patch: {
@@ -67,7 +67,7 @@ module.exports = class Document extends NodeBase {
           if (!_.isUndefined(params.payload)) {
             // update default and path actions
             this.updateSilent(params.payload);
-            action.setSolidLayer(params.payload);
+            action.updateSilent(params.payload);
           }
         },
         // set new data to default action

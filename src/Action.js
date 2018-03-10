@@ -51,10 +51,6 @@ module.exports = class Action {
     ]);
   }
 
-  // getMold() {
-  //   return this._mold;
-  // }
-
   setSilent(data) {
     return this._mold.setSilent(data);
   }
