@@ -1,53 +1,54 @@
 const _ = require('lodash');
+
 const { concatPath, getPrimaryName } = require('../helpers/helpers');
-const State = require('./State');
+const NodeBase = require('./_NodeBase');
 
 
-module.exports = class Catalogue extends State {
+module.exports = class Catalogue extends NodeBase {
   static validateSchema(schema, schemaPath) {
     if (!_.isPlainObject(schema.item)) {
       return `Schema definition of catalogue on "${schemaPath}" must has an "item" param!`;
     }
   }
 
-  constructor(main) {
-    super(main);
-
-    this._defaultAction = 'default';
-  }
+  // constructor(main) {
+  //   super(main);
+  //
+  //   this._defaultAction = 'default';
+  // }
 
   get type() {
     return 'catalogue';
   }
 
   get isLoading() {
-    return this.actions.default.pending;
+    return this.actions[this.$defaultAction].pending;
   }
 
   $init(moldPath, schema) {
+    super.$init(moldPath, schema);
+
     // convert to simple schema type
     this.$primitiveSchema = {
       type: 'array',
       item: schema.item,
     };
 
-    super.$init(moldPath, schema);
-
-
-    this.actions = {
-      ...this.actions,
-      create: this._generateCreateAction(),
+    const defaultActions = {
+      // TODO: review
+      //create: this._generateCreateAction(),
     };
 
-    this._initCustomActions();
+    this.$initActions(defaultActions);
   }
 
-  load() {
-    return this.actions.default.request();
+  load(params) {
+    return this.actions.default.request(params);
   }
-  create(payload) {
-    return this.actions.create.request(payload);
-  }
+
+  // create(payload) {
+  //   return this.actions.create.request(payload);
+  // }
 
   _generateDefaultAction() {
     return this.$createAction(this._defaultAction, (Action) => {
@@ -231,21 +232,6 @@ module.exports = class Catalogue extends State {
 
         return Promise.reject(err);
       });
-  }
-
-
-  _initCustomActions() {
-    _.each(this.schema.actions, (item, name) => {
-      this.actions[name] = this.$createAction(name, item);
-      // if (_.isFunction(item)) {
-      //   // custom method or overwrote method
-      //   this.action[name] = (...params) => item.bind(this)(...params, this);
-      // }
-      // else if (_.isPlainObject(item)) {
-      //   // Default acton's params
-      //   this.actionDefaults[name] = item;
-      // }
-    });
   }
 
   //

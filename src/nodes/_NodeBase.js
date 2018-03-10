@@ -27,10 +27,26 @@ module.exports = class _NodeBase {
     return this._schema;
   }
 
+
   $init(moldPath, schema) {
     this._moldPath = moldPath;
     this._schema = schema;
     this.actions = {};
+  }
+
+  $initActions(defaultActions) {
+    const actions = _.defaultsDeep(_.cloneDeep(this.schema.actions), defaultActions);
+
+    _.each(actions, (actionParams, actionName) => {
+      this.actions[actionName] = this.$createAction(
+        actionName,
+        actionParams,
+        this._urlParams,
+        this._driverParams
+      );
+      // double to root of document for more convenience
+      this[actionName] = this.actions[actionName];
+    });
   }
 
   $createAction(actionName, actionParams, defaultUrlParams, defaultDriverParams) {
@@ -48,6 +64,11 @@ module.exports = class _NodeBase {
     instance.init();
 
     return instance;
+  }
+
+  params(urlParams, driverParams) {
+    this._urlParams = _.cloneDeep(urlParams);
+    this._driverParams = _.cloneDeep(driverParams);
   }
 
   /**

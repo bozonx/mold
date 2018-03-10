@@ -1,7 +1,6 @@
 const _ = require('lodash');
-const { Map } = require('immutable');
 
-//import { correctUpdatePayload, omitUnsaveable } from '../helpers/helpers';
+//import { omitUnsaveable } from '../helpers/helpers';
 const NodeBase = require('./_NodeBase');
 
 
@@ -44,21 +43,21 @@ module.exports = class Document extends NodeBase {
     this.actions = {};
 
     const defaultActions = {
-      'default': {
+      [this.$defaultAction]: {
         method: 'get',
-        ...this._schema.actions && this._schema.actions.default,
+        ...this._schema.actions && this._schema.actions[this.$defaultAction],
       },
       put: {
         method: 'put',
         beforeRequest: (params, action) => {
           if (!_.isUndefined(params.payload)) {
             // update default and path actions
-            this.actions.default.setSilent(params.payload);
+            this.actions[this.$defaultAction].setSilent(params.payload);
             action.setSilent(params.payload);
           }
         },
         // set new data to default action
-        afterRequest: (resp) => this.actions.default.setSolidLayer(resp.body),
+        afterRequest: (resp) => this.actions[this.$defaultAction].setSolidLayer(resp.body),
         ...this._schema.actions && this._schema.actions.put,
       },
       patch: {
@@ -71,7 +70,7 @@ module.exports = class Document extends NodeBase {
           }
         },
         // set new data to default action
-        afterRequest: (resp) => this.actions.default.setSolidLayer(resp.body),
+        afterRequest: (resp) => this.actions[this.$defaultAction].setSolidLayer(resp.body),
         ...this._schema.actions && this._schema.actions.patch,
       },
       remove: {
@@ -80,16 +79,11 @@ module.exports = class Document extends NodeBase {
       },
     };
 
-    this._initActions(defaultActions);
+    this.$initActions(defaultActions);
   }
 
-  params(urlParams, driverParams) {
-    this._urlParams = _.cloneDeep(urlParams);
-    this._driverParams = _.cloneDeep(driverParams);
-  }
-
-  load() {
-    return this.actions.default.request();
+  load(params) {
+    return this.actions[this.$defaultAction].request(params);
   }
   // put(payload) {
   //   return this.actions.put.request(payload);
@@ -101,20 +95,7 @@ module.exports = class Document extends NodeBase {
   //   return this.actions.remove.request();
   // }
 
-  _initActions(defaultActions) {
-    const actions = _.defaultsDeep(_.cloneDeep(this.schema.actions), defaultActions);
 
-    _.each(actions, (actionParams, actionName) => {
-      this.actions[actionName] = this.$createAction(
-        actionName,
-        actionParams,
-        this._urlParams,
-        this._driverParams
-      );
-      // double to root of document for more convenience
-      this[actionName] = this.actions[actionName];
-    });
-  }
 
   // /**
   //  * Delete a document via documentsCollection.
