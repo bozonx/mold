@@ -101,93 +101,6 @@ module.exports = class Document extends NodeBase {
   //   return this.actions.remove.request();
   // }
 
-  // $generateDefaultAction() {
-  //   return this.$createAction(this.$defaultAction, (Action) => {
-  //     return class extends Action {
-  //       init() {
-  //         super.init();
-  //         this.setDriverParams({ method: 'get' });
-  //       }
-  //     };
-  //   });
-  // }
-
-  _generatePutAction() {
-    const document = this;
-
-    return this.$createAction('put', (Action) => {
-      return class extends Action {
-        init() {
-          super.init();
-          this.setDriverParams({ method: 'put' });
-        }
-
-        request(payload) {
-          // if we set new data - update default action
-          if (payload) {
-            // set to put action
-            this.setSilent(payload);
-            // set to default action
-            document.actions.default.setSilent(payload);
-          }
-
-          return super.request(payload)
-            .then((resp) => {
-              // TODO: тут clear не правильно работает - нужно очистить только то что придетс с сервера
-              //document.actions.default.clearStateLayer();
-              document.actions.default.setSolidLayer(resp.body);
-
-              return resp;
-            });
-        }
-      };
-    });
-  }
-
-  _generatePatchAction() {
-    const document = this;
-
-    return this.$createAction('patch', (Action) => {
-      return class extends Action {
-        init() {
-          super.init();
-          this.setDriverParams({ method: 'patch' });
-        }
-
-        request(payload) {
-          // if we set new data - update default action
-          if (payload) {
-            // update path action
-            this.updateSilent(payload);
-            // update default action
-            document.actions.default.updateSilent(payload);
-          }
-
-          return super.request(payload)
-            .then((resp) => {
-              //document.actions.default.clearStateLayer();
-              document.actions.default.setSolidLayer(resp.body);
-
-              return resp;
-            });
-        }
-      };
-    });
-  }
-
-
-  _generateRemoveAction() {
-    // TODO: test it, доделать
-    return this.$createAction('delete', (Action) => {
-      return class extends Action {
-        init() {
-          super.init();
-          this.setDriverParams({ method: 'delete' });
-        }
-      };
-    });
-  }
-
   _initActions(defaultActions) {
     const actions = _.defaultsDeep(_.cloneDeep(this.schema.actions), defaultActions);
 
@@ -202,18 +115,6 @@ module.exports = class Document extends NodeBase {
       this[actionName] = this.actions[actionName];
     });
   }
-
-
-  // getUrlParams() {
-  //   // TODO: use storage meta
-  //   // TODO: по идее на каждый запрос надо сохранять свои url params
-  //   return this._main.$$state.getUrlParams(this._moldPath);
-  // }
-  //
-  // setUrlParams(params) {
-  //   // TODO: use storage meta
-  //   this._main.$$state.setUrlParams(this._moldPath, params);
-  // }
 
   // /**
   //  * Delete a document via documentsCollection.
@@ -231,12 +132,6 @@ module.exports = class Document extends NodeBase {
   //     this._main.log.fatal(`The parent of document isn't a DocumentsCollection. You can remove only from DocumentsCollection`);
   //
   //   return myDocumentsCollection.remove(this.mold, preRequest);
-  // }
-
-  // _applyDefaults(preRequest, actionName) {
-  //   if (!this.actionDefaults[actionName]) return preRequest;
-  //
-  //   return _.defaultsDeep(_.cloneDeep(preRequest), this.actionDefaults[actionName]);
   // }
 
 };

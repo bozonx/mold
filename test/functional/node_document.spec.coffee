@@ -2,7 +2,7 @@ index = require('../../src/index')
 Document = require('../../src/nodes/Document')
 
 
-describe.only 'Functional. Document node.', ->
+describe 'Functional. Document node.', ->
   beforeEach () ->
     @testSchema = {
       document: {
@@ -51,7 +51,7 @@ describe.only 'Functional. Document node.', ->
       'Schema definition of "document" node on "document" must not to have a "type" param! It has to be just plain object.'
     )
 
-  it.only 'load()', ->
+  it 'load()', ->
     # TODO: use memory db
     #_.set(@mold.$main.driverManager.$defaultMemoryDb, 'document', @testValues)
     @document._main.request.sendRequest = sinon.stub().returns(Promise.resolve({ body: @testValues }))
