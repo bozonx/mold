@@ -35,7 +35,7 @@ describe 'Functional. Catalogue node.', ->
       'The definition of "catalogue" node on "catalogue" must has a "item" param!'
     )
 
-  it.only 'load()', ->
+  it 'load()', ->
     result = [
       { $id: 1, $index: 0, name: 'value1' }
       { $id: 2, $index: 1, name: 'value2' }
@@ -46,22 +46,22 @@ describe 'Functional. Catalogue node.', ->
     @catalogue._main.request.sendRequest = sinon.stub().returns(Promise.resolve({ body: result }))
 
     assert.deepEqual(@catalogue.mold, [])
-    assert.isFalse(@catalogue.loading)
+    assert.isFalse(@catalogue.isLoading)
 
     promise = @catalogue.load()
 
-    assert.isTrue(@catalogue.loading)
+    assert.isTrue(@catalogue.isLoading)
 
     promise
-      .then (response) =>
-        assert.isFalse(@catalogue.loading)
-        assert.deepEqual(response.body, result)
+      .then (resp) =>
+        assert.isFalse(@catalogue.isLoading)
+        assert.deepEqual(resp.body, result)
         assert.deepEqual(@catalogue.mold, result)
 
-  #it 'load page', ->
+  #it.only 'load page', ->
     # TODO: !!!!
 
-  it 'create', ->
+  it.only 'create', ->
     itemToCreate = {
       #$id: 0
       name: 'new item'

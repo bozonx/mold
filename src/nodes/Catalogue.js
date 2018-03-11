@@ -54,42 +54,6 @@ module.exports = class Catalogue extends NodeBase {
   //   return this.actions.create.request(payload);
   // }
 
-  // _generateDefaultAction() {
-  //   return this.$createAction(this._defaultAction, (Action) => {
-  //     return class extends Action {
-  //       init() {
-  //         super.init();
-  //
-  //         this.setDriverParams({ method: 'filter' });
-  //         this.primaryName = getPrimaryName(this._schema);
-  //       }
-  //
-  //       // add $$key param to solid after data has loaded
-  //       responseTransformCb(resp) {
-  //         return {
-  //           ...resp,
-  //           body: _.map(resp.body, (item) => {
-  //             return {
-  //               ...item,
-  //               $$key: item[this.primaryName],
-  //             };
-  //           }),
-  //         };
-  //       }
-  //
-  //       request(payload) {
-  //         return super.request(payload)
-  //           .then((resp) => {
-  //             // set copy of server data to state
-  //             this.update(this.$storage.getSolid(this._moldPath, this._actionName));
-  //
-  //             return resp;
-  //           });
-  //       }
-  //     };
-  //   });
-  // }
-
   _generateCreateAction() {
     const catalogue = this;
 
