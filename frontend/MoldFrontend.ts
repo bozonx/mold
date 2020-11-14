@@ -6,15 +6,32 @@ import {
   GetItemProps,
   UpdateProps
 } from './interfaces/MethodsProps';
-import {FindChangeHandler} from './interfaces/MethodsResults';
+import {ItemsState} from './interfaces/MethodsResults';
 
 
 export default class MoldFrontend {
+  private onError: (msg: string) => void;
+
+
+  constructor(onError: (msg: string) => void) {
+    this.onError = onError;
+  }
+
+
   /**
    * Find several records
    */
-  find = async <T>(props: FindProps, cb: FindChangeHandler<T>): Promise<void> => {
-
+  find = async <T>(props: FindProps, cb: (state: ItemsState<T>) => void): Promise<void> => {
+    // cb({
+    //   loadedOnce: true,
+    //   items: [{ id: 0, name: 'aa' }],
+    // } as any);
+    //
+    // setTimeout(() => {
+    //   cb({
+    //     items: [{ id: 0, name: 'aabb' }, { id: 2, name: 'ggg' }],
+    //   } as any);
+    // }, 5000)
   }
 
   /**
