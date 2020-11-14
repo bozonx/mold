@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "noEmitOnError": false,
+    "noImplicitReturns": true,
+    "preserveSymlinks": true,
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
+    "target": "es2018",
+    "module": "commonjs",
+    "strict": true,
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "declaration": true,
+    "baseUrl": ".",
+    "types": [
+      "mocha",
+      "chai"
+    ],
+//    "paths": {
+//      "@/*": [
+//        "ui/*"
+//      ]
+//    },
+    "lib": [
+      "esnext",
+      //"dom",
+      //"dom.iterable",
+      "scripthost"
+    ],
+    "outDir": "./build",
+    "rootDir": "./"
+  },
+  "include": [
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "mold",
+  "version": "0.21.0",
+  "description": "Structure state management",
+  "repository": "git@github.com:bozonx/mold.git",
+  "license": "MIT",
+  "engines": {
+    "node": ">=9.7.0"
+  },
+  "author": "Ivan Kozyrin <ipkozyrin@gmail.com>",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha",
+    "cov": "./node_modules/.bin/istanbul cover --report none ./node_modules/.bin/_mocha -- --require coffee-coverage/register-istanbul test",
+    "cov-html": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require coffee-coverage/register-istanbul test && sensible-browser ./coverage/lcov-report/index.html",
+    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require coffee-coverage/register-istanbul test",
+    "doc-html": "esdoc -c esdoc.json && sensible-browser ./esdoc/index.html",
+    "doc": "esdoc -c esdoc.json",
+    "lint": "node_modules/.bin/eslint ./src",
+    "fix": "node_modules/.bin/eslint --fix ./src"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
