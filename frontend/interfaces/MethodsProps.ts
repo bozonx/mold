@@ -5,9 +5,9 @@ interface PropsBase {
   // name of entity which is queried
   entity: string,
   // data like in search part of url
-  query: {[index: string]: any},
+  query?: {[index: string]: any},
   // hidden specific data
-  meta: {[index: string]: any}
+  meta?: {[index: string]: any}
 }
 
 interface SavingBase extends PropsBase {

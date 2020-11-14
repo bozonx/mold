@@ -21,5 +21,5 @@ export interface ItemsState<T> extends RequestState {
 }
 
 export interface ItemState<T> extends RequestState {
-  item: T;
+  item: T | null;
 }

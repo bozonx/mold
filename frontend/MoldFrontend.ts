@@ -6,7 +6,7 @@ import {
   GetItemProps,
   UpdateProps
 } from './interfaces/MethodsProps';
-import {ItemsState} from './interfaces/MethodsState';
+import {ItemsState, ItemState} from './interfaces/MethodsState';
 
 
 export default class MoldFrontend {
@@ -37,50 +37,59 @@ export default class MoldFrontend {
   /**
    * Get certain record by id
    */
-  getItem = async (props: GetItemProps) => {
-
+  get = async <T>(props: GetItemProps, cb: (state: ItemState<T>) => void): Promise<void> => {
+    // cb({
+    //   loadedOnce: true,
+    //   item: { id: 0, name: 'tttt' },
+    // } as any);
+    //
+    // setTimeout(() => {
+    //   cb({
+    //     item: { id: 0, name: 'yyyyyy' },
+    //   } as any);
+    // }, 5000)
   }
 
   /**
    * Get the first result by query
    */
-  getFirst = async (props: GetFirstProps) => {
-
+  getFirst = async <T>(props: GetFirstProps, cb: (state: ItemState<T>) => void): Promise<void> => {
+    // TODO: add
   }
 
-  create(props: CreateProps): Promise<void> {
-
+  create = async (props: CreateProps): Promise<void> => {
+    // TODO: add
   }
 
-  update(props: UpdateProps): Promise<void> {
-
+  update = async (props: UpdateProps): Promise<void> => {
+    // TODO: add
   }
 
-  createOrUpdate(props: CreateOrUpdateProps): Promise<void> {
-
+  createOrUpdate = async (props: CreateOrUpdateProps): Promise<void> => {
+    // TODO: add
   }
 
 
-  deleteItem(props: DeleteProps): Promise<void> {
-
-  }
-
-  // TODO: add
-  butchUpdate(): Promise<void> {
-
+  deleteItem = async (props: DeleteProps): Promise<void> => {
+    // TODO: add
   }
 
   // TODO: add
-  butchDelete(): Promise<void> {
+  butchUpdate = async (): Promise<void> => {
+    // TODO: add
+  }
 
+  // TODO: add
+  butchDelete = async (): Promise<void> => {
+    // TODO: add
   }
 
   // TODO: add
   /**
    * Call some action at backend
    */
-  acton(): Promise<void> {
-
+  acton = async (): Promise<void> => {
+    // TODO: add
   }
 
 }
