@@ -6,13 +6,14 @@ import {
   GetItemProps,
   UpdateProps
 } from './interfaces/MethodsProps';
+import {FindChangeHandler} from './interfaces/MethodsResults';
 
 
 export default class MoldFrontend {
   /**
    * Find several records
    */
-  find = async (props: FindProps) => {
+  find = async <T>(props: FindProps, cb: FindChangeHandler<T>): Promise<void> => {
 
   }
 
@@ -30,30 +31,30 @@ export default class MoldFrontend {
 
   }
 
-  create(props: CreateProps) {
+  create(props: CreateProps): Promise<void> {
 
   }
 
-  update(props: UpdateProps) {
+  update(props: UpdateProps): Promise<void> {
 
   }
 
-  createOrUpdate(props: CreateOrUpdateProps) {
+  createOrUpdate(props: CreateOrUpdateProps): Promise<void> {
 
   }
 
 
-  deleteItem(props: DeleteProps) {
-
-  }
-
-  // TODO: add
-  butchUpdate() {
+  deleteItem(props: DeleteProps): Promise<void> {
 
   }
 
   // TODO: add
-  butchDelete() {
+  butchUpdate(): Promise<void> {
+
+  }
+
+  // TODO: add
+  butchDelete(): Promise<void> {
 
   }
 
@@ -61,7 +62,7 @@ export default class MoldFrontend {
   /**
    * Call some action at backend
    */
-  acton() {
+  acton(): Promise<void> {
 
   }
 
