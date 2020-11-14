@@ -1,4 +1,4 @@
-import MoldBackendEntity from './MoldBackendEntity';
+import MoldBackendEntityBase from './MoldBackendEntityBase';
 
 
 export default class MoldBackend {
@@ -6,7 +6,7 @@ export default class MoldBackend {
   }
 
 
-  getEntity(entityName: string): MoldBackendEntity {
+  getEntity(entityName: string): MoldBackendEntityBase {
 
   }
 
