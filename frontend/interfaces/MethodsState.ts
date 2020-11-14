@@ -23,3 +23,15 @@ export interface ItemsState<T> extends RequestState {
 export interface ItemState<T> extends RequestState {
   item: T | null;
 }
+
+export function makeItemsInitialState<T>(): ItemsState<T> {
+  return {
+    loading: false,
+    loadedOnce: false,
+    lastErrors: null,
+    count: -1,
+    hasNext: false,
+    hasPrev: false,
+    items: null,
+  };
+}

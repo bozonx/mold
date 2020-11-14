@@ -9,7 +9,7 @@ import {
   GetFirstProps, GetItemProps,
   UpdateProps
 } from '../frontend/interfaces/MethodsProps';
-import {ItemsState, ItemState} from '../frontend/interfaces/MethodsState';
+import {ItemsState, ItemState, makeItemsInitialState} from '../frontend/interfaces/MethodsState';
 
 
 // TODO: насколько оптимальное копировать стейт в цикле? maybe use customRef ???
@@ -27,15 +27,7 @@ export class VueMoldFrontend {
 
 
   find = <T>(props: FindProps): ItemsState<T> => {
-    const state: UnwrapRef<ItemsState<T>> = reactive<ItemsState<T>>({
-      loading: false,
-      loadedOnce: false,
-      lastErrors: null,
-      count: -1,
-      hasNext: false,
-      hasPrev: false,
-      items: null,
-    });
+    const state: UnwrapRef<ItemsState<T>> = reactive<ItemsState<T>>(makeItemsInitialState());
 
     this.mold.find(props, (newState: ItemsState<T>) => {
       for (let key of Object.keys(newState)) {
