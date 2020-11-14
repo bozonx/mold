@@ -6,7 +6,7 @@ import {
   GetItemProps,
   UpdateProps
 } from './interfaces/MethodsProps';
-import {ItemsState} from './interfaces/MethodsResults';
+import {ItemsState} from './interfaces/MethodsState';
 
 
 export default class MoldFrontend {

@@ -3,7 +3,7 @@ import {reactive, UnwrapRef} from '@vue/composition-api';
 
 import MoldFrontend from '../frontend/MoldFrontend';
 import {FindProps} from '../frontend/interfaces/MethodsProps';
-import {ItemsState} from '../frontend/interfaces/MethodsResults';
+import {ItemsState} from '../frontend/interfaces/MethodsState';
 
 
 export class VueMoldFrontend {
