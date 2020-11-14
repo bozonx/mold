@@ -14,10 +14,10 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'ban-ts-comment': 0,
-    'ban-ts-ignore': 0,
-    'no-var-requires': 0,
-    'no-explicit-any': 0,
+    'ban-ts-comment': 'off',
+    'ban-ts-ignore': 'off',
+    'no-var-requires': 'off',
+    'no-explicit-any': 'off',
   },
   overrides: [
     {
