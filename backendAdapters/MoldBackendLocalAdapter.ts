@@ -1,4 +1,4 @@
-import BackendAdapter from '../frontend/interfaces/BackendAdapter';
+import BackendAdapter from '../interfaces/BackendAdapter';
 import {CreateProps, DeleteProps, FindProps, GetItemProps, UpdateProps} from '../frontend/interfaces/MethodsProps';
 import {FindResult, GetResult} from '../frontend/interfaces/MethodsState';
 import MoldBackend from '../backend/MoldBackend';

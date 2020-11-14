@@ -1,5 +1,11 @@
-import {FindResult, GetResult} from './MethodsState';
-import {CreateProps, DeleteProps, FindProps, GetItemProps, UpdateProps} from './MethodsProps';
+import {FindResult, GetResult} from '../frontend/interfaces/MethodsState';
+import {
+  CreateProps,
+  DeleteProps,
+  FindProps,
+  GetItemProps,
+  UpdateProps
+} from '../frontend/interfaces/MethodsProps';
 
 
 export default interface BackendAdapter {
