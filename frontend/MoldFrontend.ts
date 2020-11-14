@@ -10,19 +10,20 @@ import {ListState, ItemState, makeItemsInitialState, FindResult} from './interfa
 import StateStorage from './StateStorage';
 import BackendManager from './BackendManager';
 import {makeRequestId} from '../helpers/common';
+import UpdateManager from './UpdateManager';
 
 
 export default class MoldFrontend {
   private onError: (msg: string) => void;
   private readonly backend: BackendManager;
-  private readonly push: PushManager;
+  private readonly push: UpdateManager;
   private readonly storage: StateStorage;
 
 
   constructor(onError: (msg: string) => void) {
     this.onError = onError;
     this.backend = new BackendManager();
-    this.push = new PushManager();
+    this.push = new UpdateManager();
     this.storage = new StateStorage();
   }
 

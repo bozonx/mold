@@ -128,7 +128,7 @@ export class VueMoldFrontend {
 }
 
 
-const VueMoldFrontendPlugin: PluginObject<void> = {
+const VueMold: PluginObject<void> = {
   install(vue: typeof Vue, options) {
     const mold = new VueMoldFrontend(
       // TODO: use from options too
@@ -142,4 +142,4 @@ const VueMoldFrontendPlugin: PluginObject<void> = {
   },
 };
 
-export default VueMoldFrontendPlugin;
+export default VueMold;
