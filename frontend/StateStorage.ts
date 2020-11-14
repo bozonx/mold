@@ -1,6 +1,7 @@
 import {FindProps} from './interfaces/MethodsProps';
 import {ListState, ItemState} from './interfaces/MethodsState';
 
+
 export default class StateStorage {
   setupList(props: FindProps, initialState: ListState<any>): string {
     // TODO: сгенерировать id запроса
