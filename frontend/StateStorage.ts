@@ -7,13 +7,7 @@ export default class StateStorage {
   private storage: {[index: string]: {[index: string]: any}} = {};
 
 
-  makeStateId(props: FindProps): string {
-    // TODO: use все виды props
-    // TODO: из параметров сделать уникальный id
-    // TODO: поля должны быть отсортированны
-  }
-
-  setupList(props: FindProps, initialState: ListState<any>): string {
+  setupList(requestId: string, props: FindProps, initialState: ListState<any>) {
     // TODO: сгенерировать id запроса
     // TODO: если нет стейта то создать новый на основе initialState
   }
@@ -22,17 +16,17 @@ export default class StateStorage {
 
   }
 
-  update(stateId: string, partialState: Partial<ListState<any>>) {
+  update(requestId: string, partialState: Partial<ListState<any>>) {
     // TODO: внести изменения
     // TODO: поднять события
   }
 
-  destroy(stateId: string) {
+  destroy(requestId: string) {
     // TODO: remove storage
     // TODO: remove event listeners of storage
   }
 
-  onChange(stateId, cb: (newState: any) => void): number {
+  onChange(requestId, cb: (newState: any) => void): number {
 
   }
 

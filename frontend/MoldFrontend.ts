@@ -9,6 +9,7 @@ import {
 import {ListState, ItemState, makeItemsInitialState, FindResult} from './interfaces/MethodsState';
 import StateStorage from './StateStorage';
 import BackendManager from './BackendManager';
+import {makeRequestId} from '../helpers/common';
 
 
 export default class MoldFrontend {
@@ -29,7 +30,9 @@ export default class MoldFrontend {
    * cb will be called on any state change - start loading, finish, error and data change.
    */
   find = async <T>(props: FindProps, cb: (state: ListState<T>) => void): Promise<void> => {
-    const stateId: string = this.storage.setupList(props, makeItemsInitialState());
+    const stateId: string = makeRequestId(props);
+
+    this.storage.setupList(stateId, props, makeItemsInitialState());
 
     // TODO: как потом удалить обработчики???
     this.storage.onChange(stateId, cb);
@@ -39,7 +42,7 @@ export default class MoldFrontend {
     let result: FindResult<T>;
 
     try {
-      result = this.backend.find<T>(props);
+      result = this.backend.find<T>(stateId, props);
     }
     catch (e) {
       // TODO: set error to storage
@@ -114,6 +117,14 @@ export default class MoldFrontend {
    * Call some action at backend
    */
   acton = async (): Promise<void> => {
+    // TODO: add
+  }
+
+  destroyState = (stateId: string) => {
+    // TODO: add
+  }
+
+  destroy = () => {
     // TODO: add
   }
 

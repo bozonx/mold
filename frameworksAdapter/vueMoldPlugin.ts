@@ -27,8 +27,13 @@ export class VueMoldFrontend {
 
 
   find = <T>(props: FindProps): ListState<T> => {
-    const state: UnwrapRef<ListState<T>> = reactive<ListState<T>>(makeItemsInitialState());
+    const state: UnwrapRef<ListState<T>> = reactive<ListState<T>>({
+      // TODO: как его установить ???
+      __stateId: null,
+      ...makeItemsInitialState(),
+    } as any);
 
+    // TODO: может он вовращает { stateId, promise }
     this.mold.find(props, (newState: ListState<T>) => {
       for (let key of Object.keys(newState)) {
         state[key] = newState[key];
@@ -40,11 +45,14 @@ export class VueMoldFrontend {
 
   get = <T>(props: GetItemProps): ItemState<T> => {
     const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({
+      // TODO: как его установить ???
+      __stateId: null,
+
       loading: false,
       loadedOnce: false,
       lastErrors: null,
       item: null,
-    });
+    } as any);
 
     this.mold.get(props, (newState: ItemState<T>) => {
       for (let key of Object.keys(newState)) {
@@ -105,6 +113,14 @@ export class VueMoldFrontend {
    */
   acton = (): Promise<void> => {
     return this.mold.acton();
+  }
+
+  destroyState = (state: ListState<any> | ItemState<any>) => {
+    this.mold.destroyState((state as any).__stateId);
+  }
+
+  destroy = () => {
+    this.mold.destroy();
   }
 
 }

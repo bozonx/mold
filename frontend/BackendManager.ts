@@ -4,6 +4,9 @@ import {FindProps} from './interfaces/MethodsProps';
 
 export default class BackendManager {
   find<T>(props: FindProps): FindResult<T> {
+
+    // TODO: сохранить запрос
+
     // cb({
     //   loadedOnce: true,
     //   items: [{ id: 0, name: 'aa' }],
