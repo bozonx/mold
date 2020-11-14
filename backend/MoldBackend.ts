@@ -1,3 +1,6 @@
+import MoldBackendEntity from './MoldBackendEntity';
+
+
 export default class MoldBackend {
   constructor() {
   }
