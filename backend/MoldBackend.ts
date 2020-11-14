@@ -3,4 +3,8 @@ export default class MoldBackend {
   }
 
 
+  getEntity(entityName: string): MoldBackendEntity {
+
+  }
+
 }
