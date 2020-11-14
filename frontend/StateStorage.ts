@@ -7,7 +7,7 @@ export default class StateStorage {
   private storage: {[index: string]: {[index: string]: any}} = {};
 
 
-  setupList(requestId: string, props: FindProps, initialState: ListState<any>) {
+  setupList(requestId: string, props: FindProps, initialState: ListState) {
     // TODO: сгенерировать id запроса
     // TODO: если нет стейта то создать новый на основе initialState
   }
@@ -16,7 +16,7 @@ export default class StateStorage {
 
   }
 
-  update(requestId: string, partialState: Partial<ListState<any>>) {
+  update(requestId: string, partialState: Partial<ListState>) {
     // TODO: внести изменения
     // TODO: поднять события
   }

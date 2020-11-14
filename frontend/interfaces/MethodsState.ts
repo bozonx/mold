@@ -12,7 +12,7 @@ interface RequestState {
   lastErrors: RequestError[] | null;
 }
 
-export interface FindResult<T> {
+export interface FindResult<T = any> {
   // count of all the items in the table. -1 means no error or not loaded.
   count: number;
   hasNext: boolean;
@@ -20,14 +20,14 @@ export interface FindResult<T> {
   items: T[] | null;
 }
 
-export interface GetResult<T> {
+export interface GetResult<T = any> {
   item: T | null;
 }
 
-export interface ListState<T> extends RequestState, FindResult<T> {
+export interface ListState<T = any> extends RequestState, FindResult<T> {
 }
 
-export interface ItemState<T> extends RequestState, GetResult<T> {
+export interface ItemState<T = any> extends RequestState, GetResult<T> {
   saving: boolean;
   deleting: boolean;
 }

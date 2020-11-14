@@ -117,7 +117,7 @@ export class VueMoldFrontend {
     return this.mold.acton();
   }
 
-  destroyState = (state: ListState<any> | ItemState<any>) => {
+  destroyState = (state: ListState | ItemState) => {
     this.mold.destroyState((state as any).$requestId);
   }
 
