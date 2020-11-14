@@ -1,13 +1,12 @@
-import MoldBackendEntityBase from './MoldBackendEntityBase';
-import {MoldHook} from '../interfaces/MoldHooks';
+import MoldSet from '../interfaces/MoldSet';
 
 
 export default class MoldBackend {
-  constructor(entitiesHooks: MoldHook[]) {
+  constructor(sets: {[index: string]: MoldSet}) {
   }
 
 
-  getEntity(entityName: string): MoldBackendEntityBase {
+  getEntity(entityName: string): MoldSet {
     // TODO: add
   }
 
