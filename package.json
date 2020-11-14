@@ -23,7 +23,7 @@
     "cuid": "^2.0.2",
     "eventemitter3": "^3.0.1",
     "immutable": "^3.8.2",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.19",
     "pouchdb-find": "^6.4.3"
   },
   "devDependencies": {
