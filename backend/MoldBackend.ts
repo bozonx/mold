@@ -1,8 +1,9 @@
 import MoldBackendEntityBase from './MoldBackendEntityBase';
+import {MoldHook} from '../interfaces/MoldHooks';
 
 
 export default class MoldBackend {
-  constructor() {
+  constructor(entitiesHooks: MoldHook[]) {
   }
 
 
