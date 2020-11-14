@@ -6,7 +6,7 @@ import {
   GetItemProps,
   UpdateProps
 } from './interfaces/MethodsProps';
-import {ItemsState, ItemState, makeItemsInitialState} from './interfaces/MethodsState';
+import {ListState, ItemState, makeItemsInitialState} from './interfaces/MethodsState';
 import StateStorage from './StateStorage';
 
 
@@ -25,10 +25,10 @@ export default class MoldFrontend {
    * Find several records
    * cb will be called on any state change - start loading, finish, error and data change.
    */
-  find = async <T>(props: FindProps, cb: (state: ItemsState<T>) => void): Promise<void> => {
+  find = async <T>(props: FindProps, cb: (state: ListState<T>) => void): Promise<void> => {
     const stateId: string = this.storage.setupList(props, makeItemsInitialState());
 
-    this.storage.onChange((newState: ItemsState<T>) => {
+    this.storage.onChange((newState: ListState<T>) => {
 
     });
 

@@ -12,7 +12,7 @@ interface RequestState {
   lastErrors: RequestError[] | null;
 }
 
-export interface ItemsState<T> extends RequestState {
+export interface ListState<T> extends RequestState {
   // count of all the items in the table. -1 means no error or not loaded.
   count: number;
   hasNext: boolean;
@@ -24,7 +24,7 @@ export interface ItemState<T> extends RequestState {
   item: T | null;
 }
 
-export function makeItemsInitialState<T>(): ItemsState<T> {
+export function makeItemsInitialState<T>(): ListState<T> {
   return {
     loading: false,
     loadedOnce: false,
