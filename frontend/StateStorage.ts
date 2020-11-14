@@ -16,7 +16,11 @@ export default class StateStorage {
     // TODO: поднять события
   }
 
-  onChange(cb: (newState: ListState<any> | ItemState<any>) => void) {
+  onChange(stateId, cb: (newState: any) => void): number {
+
+  }
+
+  removeListener(handlerIndex: number) {
 
   }
 

@@ -6,7 +6,7 @@ import {
   GetItemProps,
   UpdateProps
 } from './interfaces/MethodsProps';
-import {ListState, ItemState, makeItemsInitialState} from './interfaces/MethodsState';
+import {ListState, ItemState, makeItemsInitialState, FindResult} from './interfaces/MethodsState';
 import StateStorage from './StateStorage';
 
 
@@ -28,21 +28,32 @@ export default class MoldFrontend {
   find = async <T>(props: FindProps, cb: (state: ListState<T>) => void): Promise<void> => {
     const stateId: string = this.storage.setupList(props, makeItemsInitialState());
 
-    this.storage.onChange((newState: ListState<T>) => {
-
-    });
-
+    // TODO: как потом удалить обработчики???
+    this.storage.onChange(stateId, cb);
+    // set state of start loading
     this.storage.update(stateId, { loading: true });
 
+    let result: FindResult<T>;
+
     try {
-      this.backend.find(props);
+      result = this.backend.find(props);
     }
     catch (e) {
       // TODO: set error to storage
+
+      this.storage.update(stateId, {
+        loading: false,
+        loadedOnce: true,
+      });
+
+      return;
     }
 
-    // TODO: set result to storage
-
+    this.storage.update(stateId, {
+      loading: true,
+      loadedOnce: true,
+      ...result,
+    });
 
     // cb({
     //   loadedOnce: true,
