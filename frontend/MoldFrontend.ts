@@ -8,15 +8,18 @@ import {
 } from './interfaces/MethodsProps';
 import {ListState, ItemState, makeItemsInitialState, FindResult} from './interfaces/MethodsState';
 import StateStorage from './StateStorage';
+import BackendManager from './BackendManager';
 
 
 export default class MoldFrontend {
   private onError: (msg: string) => void;
+  private readonly backend: BackendManager;
   private readonly storage: StateStorage;
 
 
   constructor(onError: (msg: string) => void) {
     this.onError = onError;
+    this.backend = new BackendManager();
     this.storage = new StateStorage();
   }
 
@@ -36,7 +39,7 @@ export default class MoldFrontend {
     let result: FindResult<T>;
 
     try {
-      result = this.backend.find(props);
+      result = this.backend.find<T>(props);
     }
     catch (e) {
       // TODO: set error to storage
@@ -54,17 +57,6 @@ export default class MoldFrontend {
       loadedOnce: true,
       ...result,
     });
-
-    // cb({
-    //   loadedOnce: true,
-    //   items: [{ id: 0, name: 'aa' }],
-    // } as any);
-    //
-    // setTimeout(() => {
-    //   cb({
-    //     items: [{ id: 0, name: 'aabb' }, { id: 2, name: 'ggg' }],
-    //   } as any);
-    // }, 5000)
   }
 
   /**
