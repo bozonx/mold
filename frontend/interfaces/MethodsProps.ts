@@ -2,6 +2,8 @@
 
 
 interface PropsBase {
+  // backend to use. If it doesn't set it points to use the default backend.
+  backend?: string;
   // name of entity which is queried
   entity: string,
   // data like in search part of url

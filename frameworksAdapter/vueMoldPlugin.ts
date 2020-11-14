@@ -29,9 +29,11 @@ export class VueMoldFrontend {
   find = <T>(props: FindProps): ListState<T> => {
     const state: UnwrapRef<ListState<T>> = reactive<ListState<T>>({
       // TODO: как его установить ???
-      __stateId: null,
+      $requestId: null,
       ...makeItemsInitialState(),
     } as any);
+
+    // TODO: $requestId наверное можно установить во вне через state.$requestId
 
     // TODO: может он вовращает { stateId, promise }
     this.mold.find(props, (newState: ListState<T>) => {
@@ -46,7 +48,7 @@ export class VueMoldFrontend {
   get = <T>(props: GetItemProps): ItemState<T> => {
     const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({
       // TODO: как его установить ???
-      __stateId: null,
+      $requestId: null,
 
       loading: false,
       loadedOnce: false,
@@ -88,8 +90,8 @@ export class VueMoldFrontend {
     return this.mold.update(props);
   }
 
-  createOrUpdate = (props: CreateOrUpdateProps): Promise<void> => {
-    return this.mold.createOrUpdate(props);
+  save = (props: CreateOrUpdateProps): Promise<void> => {
+    return this.mold.save(props);
   }
 
 
@@ -116,7 +118,7 @@ export class VueMoldFrontend {
   }
 
   destroyState = (state: ListState<any> | ItemState<any>) => {
-    this.mold.destroyState((state as any).__stateId);
+    this.mold.destroyState((state as any).$requestId);
   }
 
   destroy = () => {

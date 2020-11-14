@@ -15,12 +15,14 @@ import {makeRequestId} from '../helpers/common';
 export default class MoldFrontend {
   private onError: (msg: string) => void;
   private readonly backend: BackendManager;
+  private readonly push: PushManager;
   private readonly storage: StateStorage;
 
 
   constructor(onError: (msg: string) => void) {
     this.onError = onError;
     this.backend = new BackendManager();
+    this.push = new PushManager();
     this.storage = new StateStorage();
   }
 
@@ -93,7 +95,10 @@ export default class MoldFrontend {
     // TODO: add
   }
 
-  createOrUpdate = async (props: CreateOrUpdateProps): Promise<void> => {
+  /**
+   * Create or update
+   */
+  save = async (props: CreateOrUpdateProps): Promise<void> => {
     // TODO: add
   }
 

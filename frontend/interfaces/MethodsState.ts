@@ -20,11 +20,16 @@ export interface FindResult<T> {
   items: T[] | null;
 }
 
+export interface GetResult<T> {
+  item: T | null;
+}
+
 export interface ListState<T> extends RequestState, FindResult<T> {
 }
 
-export interface ItemState<T> extends RequestState {
-  item: T | null;
+export interface ItemState<T> extends RequestState, GetResult<T> {
+  saving: boolean;
+  deleting: boolean;
 }
 
 export function makeItemsInitialState<T>(): ListState<T> {
