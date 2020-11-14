@@ -1,9 +1,11 @@
-import {CreateProps, DeleteProps, GetItemProps, UpdateProps} from '../frontend/interfaces/MethodsProps';
-import {GetResult} from '../frontend/interfaces/MethodsState';
+import {CreateProps, DeleteProps, FindProps, GetItemProps, UpdateProps} from '../frontend/interfaces/MethodsProps';
+import {FindResult, GetResult} from '../frontend/interfaces/MethodsState';
 
 export default interface DbAdapter {
 
+  // TODO: remove meta. Review props
   // TODO: review
+  find(props: Omit<Omit<FindProps, 'backend'>, 'entity'>): Promise<FindResult>;
 
   get(props: Omit<Omit<GetItemProps, 'backend'>, 'entity'>): Promise<GetResult>;
 

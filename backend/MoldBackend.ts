@@ -7,7 +7,11 @@ export default class MoldBackend {
 
 
   getEntity(entityName: string): MoldBackendEntityBase {
+    // TODO: add
+  }
 
+  makeEntity(entityName: string, params, hooks) {
+    // TODO: add
   }
 
 }

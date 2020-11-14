@@ -1,15 +1,18 @@
 // TODO: use JSON primitives
 
 
-interface PropsBase {
-  // backend to use. If it doesn't set it points to use the default backend.
-  backend?: string;
-  // name of entity which is queried
-  entity: string,
+export interface RequestBase {
   // data like in search part of url
   query?: {[index: string]: any},
   // hidden specific data
   meta?: {[index: string]: any}
+}
+
+interface PropsBase extends RequestBase {
+  // backend to use. If it doesn't set it points to use the default backend.
+  backend?: string;
+  // name of entity which is queried
+  entity: string,
 }
 
 interface SavingBase extends PropsBase {
