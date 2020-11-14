@@ -39,7 +39,8 @@ export default class VueMoldFrontend {
 
   constructor(props: FrontendProps) {
     this.props = props;
-    this.mold = new MoldFrontend(onError);
+    // TODO: review props to send
+    this.mold = new MoldFrontend(props.logger.error);
   }
 
 
