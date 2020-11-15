@@ -1,10 +1,9 @@
 import {
-  CreateOrUpdateProps,
-  CreateProps,
-  DeleteProps,
+  BatchDeleteMethodProps,
+  BatchPatchMethodProps,
+  CreateMethodProps, DeleteMethodProps,
   FindMethodProps,
-  GetMethodProps,
-  UpdateProps
+  GetMethodProps, PatchMethodProps, SaveMethodProps,
 } from './interfaces/MethodsProps';
 import {ListState, ItemState, makeItemsInitialState, FindResult} from './interfaces/MethodsState';
 import StateStorage from './StateStorage';
@@ -90,36 +89,33 @@ export default class MoldFrontend {
     // TODO: add
   }
 
-  create = async (props: CreateProps): Promise<void> => {
+  create = async (props: CreateMethodProps): Promise<void> => {
     // TODO: add
   }
 
-  patch = async (props: UpdateProps): Promise<void> => {
+  patch = async (props: PatchMethodProps): Promise<void> => {
     // TODO: add
   }
 
   /**
    * Create or update
    */
-  save = async (props: CreateOrUpdateProps): Promise<void> => {
+  save = async (props: SaveMethodProps): Promise<void> => {
     // TODO: add
   }
 
-  delete = async (props: DeleteProps): Promise<void> => {
+  delete = async (props: DeleteMethodProps): Promise<void> => {
     // TODO: add
   }
 
-  // TODO: add
-  batchPatch = async (): Promise<void> => {
+  batchPatch = async (props: BatchPatchMethodProps): Promise<void> => {
     // TODO: add
   }
 
-  // TODO: add
-  batchDelete = async (): Promise<void> => {
+  batchDelete = async (props: BatchDeleteMethodProps): Promise<void> => {
     // TODO: add
   }
 
-  // TODO: add
   /**
    * Call some action at backend
    */

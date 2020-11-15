@@ -2,10 +2,14 @@ import {JsonTypes} from '../../interfaces/Types';
 
 
 export interface RequestBase {
+  // for get, patch, delete.
+  id?: string | number;
   // data like in search part of url
   query?: {[index: string]: JsonTypes};
   // hidden specific data
   meta?: {[index: string]: JsonTypes};
+  // for create, patch, batchPatch, batchDelete
+  data?: {[index: string]: any} | {[index: string]: any}[] | (string | number)[];
 }
 
 interface MethodPropsBase extends RequestBase {
@@ -22,32 +26,35 @@ export interface FindBase {
   perPage?: number,
 }
 
-interface SavingBase extends MethodPropsBase {
-  // data to save
-  data: {[index: string]: any};
-}
-
 ////////////// METHODS
 
 export type FindMethodProps = MethodPropsBase & FindBase;
 
 export interface GetMethodProps extends MethodPropsBase {
-  id?: string | number,
+  //id?: string | number,
 }
 
-export interface CreateProps extends SavingBase {
+export interface SaveMethodProps extends MethodPropsBase {
+  // data to save. Id doesn't matter, it should be set into query
+  data: {[index: string]: any};
 }
 
-export interface UpdateProps extends SavingBase {
+export type CreateMethodProps = SaveMethodProps;
+
+export interface PatchMethodProps extends MethodPropsBase {
   id: string | number,
-  // data can include id or not - it doesn't matter
 }
 
-export interface CreateOrUpdateProps extends SavingBase {
-  id?: string | number,
-  // data can include id or not - it doesn't matter
-}
-
-export interface DeleteProps extends MethodPropsBase {
+export interface DeleteMethodProps extends MethodPropsBase {
   id: string | number,
+}
+
+export interface BatchPatchMethodProps extends MethodPropsBase {
+  // Partial data of items to patch. Items have to include an id
+  data: {[index: string]: any}[];
+}
+
+export interface BatchDeleteMethodProps extends MethodPropsBase {
+  // Ids of items to delete
+  data: (string | number)[];
 }

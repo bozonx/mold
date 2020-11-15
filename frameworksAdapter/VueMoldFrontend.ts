@@ -2,12 +2,11 @@ import {reactive, UnwrapRef} from '@vue/composition-api';
 
 import MoldFrontend from '../frontend/MoldFrontend';
 import {
-  CreateOrUpdateProps,
-  CreateProps,
-  DeleteProps,
+  BatchDeleteMethodProps,
+  BatchPatchMethodProps,
+  CreateMethodProps, DeleteMethodProps,
   FindMethodProps,
-  GetMethodProps,
-  UpdateProps
+  GetMethodProps, PatchMethodProps, SaveMethodProps,
 } from '../frontend/interfaces/MethodsProps';
 import {ListState, ItemState, makeItemsInitialState} from '../frontend/interfaces/MethodsState';
 import MoldFrontendProps from '../frontend/interfaces/MoldFrontendProps';
@@ -83,30 +82,29 @@ export default class VueMoldFrontend {
     return state as ItemState<T>;
   }
 
-  create = (props: CreateProps): Promise<void> => {
+  create = (props: CreateMethodProps): Promise<void> => {
     return this.mold.create(props);
   }
 
-  patch = (props: UpdateProps): Promise<void> => {
+  patch = (props: PatchMethodProps): Promise<void> => {
     return this.mold.patch(props);
   }
 
-  save = (props: CreateOrUpdateProps): Promise<void> => {
+  save = (props: SaveMethodProps): Promise<void> => {
     return this.mold.save(props);
   }
 
-  delete = (props: DeleteProps): Promise<void> => {
+  delete = (props: DeleteMethodProps): Promise<void> => {
     return this.mold.delete(props);
   }
 
-  // TODO: add
-  batchPatch = (): Promise<void> => {
-    return this.mold.batchPatch();
+  batchPatch = (props: BatchPatchMethodProps): Promise<void> => {
+    return this.mold.batchPatch(props);
   }
 
   // TODO: add
-  batchDelete = (): Promise<void> => {
-    return this.mold.batchDelete();
+  batchDelete = (props: BatchDeleteMethodProps): Promise<void> => {
+    return this.mold.batchDelete(props);
   }
 
   acton = (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
