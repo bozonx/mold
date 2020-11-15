@@ -117,7 +117,7 @@ export default class MoldFrontend {
   }
 
   /**
-   * Call some action at backend and return state
+   * Call some action at a backend and return its state
    */
   actonFetch = async (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
     // TODO: add

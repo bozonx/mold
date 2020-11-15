@@ -3,9 +3,9 @@ export type RequestKey = [
   string,
   // set
   string,
-  // action. find, get, getFirst, actionGet.
+  // action: find, get, getFirst, actionGet.
   string,
-  // request. This is a hash of serialized id, query and meta
+  // request hash. This is a hash of serialized id, query and meta
   string,
 ];
 
