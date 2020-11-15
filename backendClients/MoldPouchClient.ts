@@ -8,7 +8,7 @@ import {omitObj} from '../helpers/objects';
 /**
  * Adapter for Mold Backend which is used locally on a client(browser) side.
  */
-export default class MoldBackendLocalAdapter implements BackendAdapter {
+export default class MoldPouchClient implements BackendAdapter {
   private readonly backend: MoldBackend;
 
 
