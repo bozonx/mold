@@ -1,4 +1,4 @@
-import BackendAdapter from '../interfaces/BackendAdapter';
+import BackendClient from '../interfaces/BackendClient';
 import {CreateProps, DeleteProps, FindProps, GetItemProps, UpdateProps} from '../frontend/interfaces/MethodsProps';
 import {FindResponse, GetResponse} from '../frontend/interfaces/MethodsState';
 import MoldBackend from '../backend/MoldBackend';
@@ -8,7 +8,7 @@ import {omitObj} from '../helpers/objects';
 /**
  * Adapter for Mold Backend which is used locally on a client(browser) side.
  */
-export default class MoldPouchClient implements BackendAdapter {
+export default class MoldPouchClient implements BackendClient {
   private readonly backend: MoldBackend;
 
 
