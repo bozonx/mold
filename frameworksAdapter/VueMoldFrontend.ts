@@ -1,38 +1,20 @@
-import Vue, {PluginObject} from 'vue';
 import {reactive, UnwrapRef} from '@vue/composition-api';
 
 import MoldFrontend from '../frontend/MoldFrontend';
 import {
   CreateOrUpdateProps,
-  CreateProps, DeleteProps,
+  CreateProps,
+  DeleteProps,
   FindProps,
-  GetFirstProps, GetItemProps,
+  GetFirstProps,
+  GetItemProps,
   UpdateProps
 } from '../frontend/interfaces/MethodsProps';
 import {ListState, ItemState, makeItemsInitialState} from '../frontend/interfaces/MethodsState';
 import FrontendProps from '../frontend/interfaces/FrontendProps';
 
 
-// TODO: насколько оптимальное копировать стейт в цикле? maybe use customRef ???
-
-
 export default class VueMoldFrontend {
-  // static install(vue: typeof Vue, options) {
-  //
-  //   window.dd = vue
-  //
-  //   console.log(222222222, vue)
-  //   // const mold = new VueMoldFrontend(
-  //   //   // TODO: use from options too
-  //   //   console.error
-  //   // );
-  //   //
-  //   // // @ts-ignore
-  //   // vue.$mold = mold;
-  //   // // @ts-ignore
-  //   // vue.prototype.$mold = mold;
-  // }
-
   private props: FrontendProps;
   private readonly mold: MoldFrontend;
 
