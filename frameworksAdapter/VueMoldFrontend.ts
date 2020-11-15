@@ -6,23 +6,24 @@ import {
   CreateProps,
   DeleteProps,
   FindProps,
-  GetFirstProps,
   GetItemProps,
   UpdateProps
 } from '../frontend/interfaces/MethodsProps';
 import {ListState, ItemState, makeItemsInitialState} from '../frontend/interfaces/MethodsState';
-import FrontendProps from '../frontend/interfaces/FrontendProps';
+import MoldFrontendProps from '../frontend/interfaces/MoldFrontendProps';
 
 
+/**
+ * Wrapper of mold frontend for Vue composition api.
+ */
 export default class VueMoldFrontend {
-  private props: FrontendProps;
+  private props: MoldFrontendProps;
   private readonly mold: MoldFrontend;
 
 
-  constructor(props: FrontendProps) {
+  constructor(props: MoldFrontendProps) {
     this.props = props;
-    // TODO: review props to send
-    this.mold = new MoldFrontend(props.logger.error);
+    this.mold = new MoldFrontend(props);
   }
 
 
@@ -40,7 +41,7 @@ export default class VueMoldFrontend {
       for (let key of Object.keys(newState)) {
         state[key] = newState[key];
       }
-    }).catch(this.onError);
+    }).catch(this.props.logger.error);
 
     return state as ListState<T>;
   }
@@ -60,61 +61,56 @@ export default class VueMoldFrontend {
       for (let key of Object.keys(newState)) {
         state[key] = newState[key];
       }
-    }).catch(this.onError);
+    }).catch(this.props.logger.error);
 
     return state as ItemState<T>;
   }
 
-  getFirst = <T>(props: GetFirstProps): ItemState<T> => {
-    const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({
-      loading: false,
-      loadedOnce: false,
-      lastErrors: null,
-      item: null,
-    });
-
-    this.mold.getFirst(props, (newState: ItemState<T>) => {
-      for (let key of Object.keys(newState)) {
-        state[key] = newState[key];
-      }
-    }).catch(this.onError);
-
-    return state as ItemState<T>;
-  }
+  // getFirst = <T>(props: GetFirstProps): ItemState<T> => {
+  //   const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({
+  //     loading: false,
+  //     loadedOnce: false,
+  //     lastErrors: null,
+  //     item: null,
+  //   });
+  //
+  //   this.mold.getFirst(props, (newState: ItemState<T>) => {
+  //     for (let key of Object.keys(newState)) {
+  //       state[key] = newState[key];
+  //     }
+  //   }).catch(this.onError);
+  //
+  //   return state as ItemState<T>;
+  // }
 
   create = (props: CreateProps): Promise<void> => {
     return this.mold.create(props);
   }
 
-  update = (props: UpdateProps): Promise<void> => {
-    return this.mold.update(props);
+  patch = (props: UpdateProps): Promise<void> => {
+    return this.mold.patch(props);
   }
 
   save = (props: CreateOrUpdateProps): Promise<void> => {
     return this.mold.save(props);
   }
 
-
-  deleteItem = (props: DeleteProps): Promise<void> => {
-    return this.mold.deleteItem(props);
+  delete = (props: DeleteProps): Promise<void> => {
+    return this.mold.delete(props);
   }
 
   // TODO: add
-  butchUpdate = (): Promise<void> => {
-    return this.mold.butchUpdate();
+  batchPatch = (): Promise<void> => {
+    return this.mold.batchPatch();
   }
 
   // TODO: add
-  butchDelete = (): Promise<void> => {
-    return this.mold.butchDelete();
+  batchDelete = (): Promise<void> => {
+    return this.mold.batchDelete();
   }
 
-  // TODO: add
-  /**
-   * Call some action at backend
-   */
-  acton = (): Promise<void> => {
-    return this.mold.acton();
+  acton = (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
+    return this.mold.acton(actionName, actionProps);
   }
 
   destroyState = (state: ListState | ItemState) => {

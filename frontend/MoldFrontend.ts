@@ -11,6 +11,7 @@ import StateStorage from './StateStorage';
 import BackendManager from './BackendManager';
 import {makeRequestId} from '../helpers/common';
 import UpdateManager from './UpdateManager';
+import MoldFrontendProps from './interfaces/MoldFrontendProps';
 
 
 export default class MoldFrontend {
@@ -20,7 +21,7 @@ export default class MoldFrontend {
   private readonly storage: StateStorage;
 
 
-  constructor(onError: (msg: string) => void) {
+  constructor(props: MoldFrontendProps) {
     this.onError = onError;
     this.backend = new BackendManager();
     this.push = new UpdateManager();
@@ -81,18 +82,18 @@ export default class MoldFrontend {
     // }, 5000)
   }
 
-  /**
-   * Get the first result by query
-   */
-  getFirst = async <T>(props: GetFirstProps, cb: (state: ItemState<T>) => void): Promise<void> => {
-    // TODO: add
-  }
+  // /**
+  //  * Get the first result by query
+  //  */
+  // getFirst = async <T>(props: GetFirstProps, cb: (state: ItemState<T>) => void): Promise<void> => {
+  //   // TODO: add
+  // }
 
   create = async (props: CreateProps): Promise<void> => {
     // TODO: add
   }
 
-  update = async (props: UpdateProps): Promise<void> => {
+  patch = async (props: UpdateProps): Promise<void> => {
     // TODO: add
   }
 
@@ -103,18 +104,17 @@ export default class MoldFrontend {
     // TODO: add
   }
 
-
-  deleteItem = async (props: DeleteProps): Promise<void> => {
+  delete = async (props: DeleteProps): Promise<void> => {
     // TODO: add
   }
 
   // TODO: add
-  butchUpdate = async (): Promise<void> => {
+  batchPatch = async (): Promise<void> => {
     // TODO: add
   }
 
   // TODO: add
-  butchDelete = async (): Promise<void> => {
+  batchDelete = async (): Promise<void> => {
     // TODO: add
   }
 
@@ -122,12 +122,12 @@ export default class MoldFrontend {
   /**
    * Call some action at backend
    */
-  acton = async (): Promise<void> => {
+  acton = async (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
     // TODO: add
   }
 
   destroyState = (stateId: string) => {
-    // TODO: add
+    // TODO: add call storage, push, request
   }
 
   destroy = () => {
