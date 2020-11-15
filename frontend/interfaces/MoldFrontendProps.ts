@@ -1,7 +1,7 @@
 import {Logger} from './Logger';
 import MoldFrontendConfig from './MoldFrontendConfig';
 import BackendClient from '../../interfaces/BackendClient';
-import PushAdapter from '../../interfaces/PushAdapter';
+import PushClient from '../../interfaces/PushClient';
 
 
 export default interface MoldFrontendProps {
@@ -10,6 +10,6 @@ export default interface MoldFrontendProps {
   // "default" backend doesn't have to be specified in request.
   backends: {[index: string]: BackendClient};
   // pushes names have to correspond to backends names.
-  pushed: {[index: string]: PushAdapter};
+  pushed: {[index: string]: PushClient};
   logger: Logger;
 }

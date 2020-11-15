@@ -1,5 +1,4 @@
 import BackendClient from '../interfaces/BackendClient';
-import {CreateProps, DeleteProps, FindProps, GetItemProps, UpdateProps} from '../frontend/interfaces/MethodsProps';
 import {FindResponse, GetResponse} from '../frontend/interfaces/MethodsState';
 import MoldBackend from '../backend/MoldBackend';
 import {omitObj} from '../helpers/objects';

@@ -1,7 +1,8 @@
 import MoldBackend from '../backend/MoldBackend';
+import PushClient from '../interfaces/PushClient';
 
 
-export default class MoldPushBackendLocalAdapter {
+export default class MoldPouchPushClient implements PushClient {
   private readonly backend: MoldBackend;
 
 
