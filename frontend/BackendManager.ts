@@ -1,19 +1,59 @@
 import {FindResponse, GetResponse} from './interfaces/MethodsState';
-import {FindMethodProps, GetMethodProps} from './interfaces/MethodsProps';
+import {FindMethodProps, GetMethodProps, MethodPropsBase} from './interfaces/MethodsProps';
 import MoldFrontend from './MoldFrontend';
-import {RequestKey} from './interfaces/RequestKey';
+import {RequestKey, RequestKeyPositions} from './interfaces/RequestKey';
+import BackendClient from '../interfaces/BackendClient';
+import BackendRequest from '../interfaces/BackendRequest';
+import BackendResponse from '../interfaces/BackendResponse';
 
 
 export default class BackendManager {
+  private readonly mold: MoldFrontend;
+
+  // TODO: надо хранить иерархией
+  // object like { "backend|set|action|request": { ...props } }
+  private requests: {[index: string]: {[index: string]: FindMethodProps | MethodPropsBase}} = {};
+
+
   constructor(mold: MoldFrontend) {
+    this.mold = mold;
   }
 
 
-  // TODO: бэкэнд должен всегда возвращать resolved
+  // TODO: props можно без backend и set
+  async find<T = any>(requestKey: RequestKey, props: FindMethodProps): Promise<FindResponse<T>> {
+    this.saveRequest(requestKey, props);
 
-  find<T>(requestKey: RequestKey, props: FindMethodProps): FindResponse<T> {
+    const backendName: string = requestKey[RequestKeyPositions.backend];
 
-    // TODO: сохранить запрос
+    if (!this.mold.props.backends[backendName]) {
+      throw new Error(
+        `BackendManager.find: Backend "${backendName}" hasn't been defined ` +
+        `in the mold frontend config.`
+      );
+    }
+
+    const backendClient: BackendClient = this.mold.props.backends[backendName];
+    // TODO: add type
+    const request: BackendRequest = {
+      action: 'find',
+      // TODO: add
+    };
+    let response: BackendResponse;
+
+    try {
+      response = backendClient.request(request);
+    }
+    catch (e) {
+      // TODO: если это новый реквест то можно задестроить,
+      //  если нет то наверное добавить ошибку в стейт
+      // actually error shouldn't be real. Because request errors are in the result.
+      //this.destroyRequest(requestKey);
+
+      throw e;
+    }
+
+    // TODO: бэкэнд должен всегда возвращать resolved
 
     // cb({
     //   loadedOnce: true,
@@ -27,8 +67,13 @@ export default class BackendManager {
     // }, 5000)
   }
 
-  get<T>(requestKey: RequestKey, props: GetMethodProps): GetResponse<T> {
+  async get<T>(requestKey: RequestKey, props: GetMethodProps): Promise<GetResponse<T>> {
+    // TODO: add
+  }
 
+
+  private saveRequest(requestKey: RequestKey, props: FindMethodProps) {
+    // TODO: add
   }
 
 }

@@ -1,9 +1,8 @@
+import BackendRequest from './BackendRequest';
+import BackendResponse from './BackendResponse';
 
 
 export default interface BackendClient {
-  // find(props: Omit<FindProps, 'backend'>): Promise<FindResponse>;
-  // get(props: Omit<GetItemProps, 'backend'>): Promise<GetResponse>;
-  // create(props: Omit<CreateProps, 'backend'>): Promise<void>;
-  // update(props: Omit<UpdateProps, 'backend'>): Promise<void>;
-  // delete(props: Omit<DeleteProps, 'backend'>): Promise<void>;
+  // actually it shouldn't do reject of promise. On error it should set status and errors.
+  request(request: BackendRequest): Promise<BackendResponse>;
 }

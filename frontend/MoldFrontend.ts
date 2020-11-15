@@ -44,11 +44,13 @@ export default class MoldFrontend {
     let result: FindResponse<T>;
 
     try {
-      result = this.backend.find<T>(requestKey, props);
+      result = await this.backend.find<T>(requestKey, props);
     }
     catch (e) {
+      // TODO: если это новый реквест то можно задестроить,
+      //  если нет то наверное добавить ошибку в стейт
       // actually error shouldn't be real. Because request errors are in the result.
-      this.destroyRequest(requestKey);
+      //this.destroyRequest(requestKey);
 
       throw e;
     }

@@ -1,3 +1,11 @@
+export enum RequestKeyPositions {
+  backend,
+  set,
+  action,
+  request,
+}
+
+
 export type RequestKey = [
   // backend
   string,
