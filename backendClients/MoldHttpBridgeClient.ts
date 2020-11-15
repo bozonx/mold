@@ -1,6 +1,9 @@
+import BackendClient from '../interfaces/BackendClient';
+
+
 /**
- * Client for MoldHttpServer
+ * Client for MoldHttpBridgeServer
  */
-export default class MoldHttpBridgeClient {
+export default class MoldHttpBridgeClient implements BackendClient {
 
 }

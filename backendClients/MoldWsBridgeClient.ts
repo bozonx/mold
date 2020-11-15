@@ -1,6 +1,9 @@
+import BackendClient from '../interfaces/BackendClient';
+
+
 /**
- * Client for MoldWebSocketServer
+ * Client for MoldWsBridgeServer
  */
-export default class MoldWsBridgeClient {
+export default class MoldWsBridgeClient implements BackendClient {
 
 }
