@@ -1,7 +1,7 @@
 import MoldSet from '../interfaces/MoldSet';
 
 
-export default class MoldBackend {
+export default class MoldTransform {
   constructor(sets: {[index: string]: MoldSet}) {
   }
 

@@ -1,4 +1,3 @@
-import MoldBackend from '../backend/MoldBackend';
 import PushClient from '../interfaces/PushClient';
 
 

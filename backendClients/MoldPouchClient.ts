@@ -1,6 +1,5 @@
 import BackendClient from '../interfaces/BackendClient';
 import {FindResponse, GetResponse} from '../frontend/interfaces/MethodsState';
-import MoldBackend from '../backend/MoldBackend';
 import {omitObj} from '../helpers/objects';
 
 
