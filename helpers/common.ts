@@ -1,12 +1,20 @@
-import {RequestBase} from '../frontend/interfaces/MethodsProps';
+import {MethodPropsBase} from '../frontend/interfaces/MethodsProps';
 import {LOG_LEVELS, LogLevel} from '../frontend/interfaces/Logger';
 import {RequestKey} from '../frontend/interfaces/RequestKey';
 
 
-export function makeRequestId(props: RequestBase): RequestKey {
-  // TODO: use все виды props
-  // TODO: из параметров сделать уникальный id
-  // TODO: поля должны быть отсортированны
+export function makeRequestKey(action: string, props: MethodPropsBase): RequestKey {
+  return [
+    props.backend || 'default',
+    props.set,
+    action,
+    // TODO: отсортировать query и meta
+    JSON.stringify({
+      id: props.id,
+      query: props.query,
+      meta: props.meta,
+    })
+  ];
 }
 
 /**

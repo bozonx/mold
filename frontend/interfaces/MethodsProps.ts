@@ -12,7 +12,7 @@ export interface RequestBase {
   data?: {[index: string]: JsonTypes} | {[index: string]: JsonTypes}[] | (string | number)[];
 }
 
-interface MethodPropsBase extends RequestBase {
+export interface MethodPropsBase extends RequestBase {
   // Backend where set is placed. If it isn't set it points to the default backend.
   backend?: string;
   // name of entity which is queried. It is mandatory

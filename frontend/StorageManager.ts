@@ -1,18 +1,23 @@
-import {FindProps} from './interfaces/MethodsProps';
+import {FindMethodProps} from './interfaces/MethodsProps';
 import {ListState, ItemState} from './interfaces/MethodsState';
+import {RequestKey} from './interfaces/RequestKey';
 
 
-export default class StateStorage {
+export default class StorageManager {
   // storage like { stateId: { loading: true, ... } }
   private storage: {[index: string]: {[index: string]: any}} = {};
 
 
-  setupList(requestId: string, props: FindProps, initialState: ListState) {
+  /**
+   * Init list state in case it hasn't been initialized before.
+   */
+  initListIfNeed(requestKey: RequestKey) {
     // TODO: сгенерировать id запроса
     // TODO: если нет стейта то создать новый на основе initialState
+    // TODO: use makeItemsInitialState()
   }
 
-  setupItem() {
+  initItem() {
 
   }
 

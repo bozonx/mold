@@ -6,9 +6,9 @@ import {
   GetMethodProps, PatchMethodProps, SaveMethodProps,
 } from './interfaces/MethodsProps';
 import {ListState, ItemState, makeItemsInitialState, FindResult} from './interfaces/MethodsState';
-import StateStorage from './StateStorage';
+import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
-import {makeRequestId} from '../helpers/common';
+import {makeRequestKey} from '../helpers/common';
 import PushesManager from './PushesManager';
 import MoldFrontendProps from './interfaces/MoldFrontendProps';
 import {RequestKey} from './interfaces/RequestKey';
@@ -18,14 +18,14 @@ export default class MoldFrontend {
   private readonly props: MoldFrontendProps;
   private readonly backend: BackendManager;
   private readonly push: PushesManager;
-  private readonly storage: StateStorage;
+  private readonly storage: StorageManager;
 
 
   constructor(props: Partial<MoldFrontendProps>) {
     this.props = this.prepareProps(props);
     this.backend = new BackendManager();
     this.push = new PushesManager();
-    this.storage = new StateStorage();
+    this.storage = new StorageManager();
   }
 
 
@@ -34,9 +34,9 @@ export default class MoldFrontend {
    * cb will be called on any state change - start loading, finish, error and data change.
    */
   find = async <T>(props: FindMethodProps, cb: (state: ListState<T>) => void): Promise<void> => {
-    const requestKey: RequestKey = makeRequestId(props);
-    // init list if need
-    this.storage.initList(stateId, props, makeItemsInitialState());
+    const requestKey: RequestKey = makeRequestKey('find', props);
+
+    this.storage.initListIfNeed(requestKey);
 
     // TODO: как потом удалить обработчики???
     this.storage.onChange(stateId, cb);
