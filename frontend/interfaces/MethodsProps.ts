@@ -4,11 +4,11 @@ import {JsonTypes} from '../../interfaces/Types';
 export interface RequestBase {
   // for get, patch, delete.
   id?: string | number;
-  // data like in search part of url
+  // data like in search part of url. Structure is specific to backend.
   query?: {[index: string]: JsonTypes};
-  // hidden specific data
+  // hidden specific data for backend's set.
   meta?: {[index: string]: JsonTypes};
-  // for create, patch, batchPatch, batchDelete
+  // Data to save. For create, patch, batchPatch, batchDelete
   data?: {[index: string]: JsonTypes} | {[index: string]: JsonTypes}[] | (string | number)[];
 }
 
@@ -42,7 +42,8 @@ export interface SaveMethodProps extends MethodPropsBase {
 export type CreateMethodProps = SaveMethodProps;
 
 export interface PatchMethodProps extends MethodPropsBase {
-  id: string | number,
+  //id: string | number,
+  // You cat pass an id in a request top or inside data
 }
 
 export interface DeleteMethodProps extends MethodPropsBase {

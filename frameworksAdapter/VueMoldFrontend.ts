@@ -102,13 +102,17 @@ export default class VueMoldFrontend {
     return this.mold.batchPatch(props);
   }
 
-  // TODO: add
   batchDelete = (props: BatchDeleteMethodProps): Promise<void> => {
     return this.mold.batchDelete(props);
   }
 
-  acton = (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
-    return this.mold.acton(actionName, actionProps);
+  actonFetch = (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
+    // TODO: должно вернуть стейт
+    return this.mold.actonFetch(actionName, actionProps);
+  }
+
+  actonSave = (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
+    return this.mold.actonSave(actionName, actionProps);
   }
 
   destroyState = (state: ListState | ItemState) => {
