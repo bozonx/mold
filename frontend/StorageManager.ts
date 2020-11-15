@@ -1,10 +1,10 @@
-import {FindMethodProps} from './interfaces/MethodsProps';
 import {ListState, ItemState} from './interfaces/MethodsState';
 import {RequestKey} from './interfaces/RequestKey';
 
 
 export default class StorageManager {
-  // storage like { stateId: { loading: true, ... } }
+  // TODO: нужно ли делать иерархию для того чтобы делать апдейты, для поиска что обновлять?
+  // storage like { "backend|set|action|requestKey": {...} }
   private storage: {[index: string]: {[index: string]: any}} = {};
 
 

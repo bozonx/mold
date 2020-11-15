@@ -53,20 +53,10 @@ export default class MoldFrontend {
       throw e;
     }
 
-    // catch (e) {
-    //   this.storage.updateList(requestKey, {
-    //     loading: false,
-    //     loadedOnce: true,
-    //     // TODO: должен вовращаться уже готовый список ошибок !!!
-    //     lastErrors: [{code: 0, message: String(e)}],
-    //   });
-    //
-    //   return;
-    // }
-
     this.storage.updateList(requestKey, {
-      loading: true,
+      loading: false,
       loadedOnce: true,
+      // TODO: add errors
       ...result,
     });
   }
@@ -93,6 +83,13 @@ export default class MoldFrontend {
 
       throw e;
     }
+
+    this.storage.updateItem(requestKey, {
+      loading: false,
+      loadedOnce: true,
+      // TODO: add errors
+      ...result,
+    });
 
     // cb({
     //   loadedOnce: true,
