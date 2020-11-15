@@ -27,6 +27,7 @@ export interface GetResponse<T = any> {
 
   // TODO: add status, errors
 
+
   item: T | null;
 }
 
