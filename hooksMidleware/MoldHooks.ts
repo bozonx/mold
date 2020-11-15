@@ -1,8 +1,14 @@
 import MoldSet from '../interfaces/MoldSet';
+import {MoldMiddleware} from '../interfaces/MoldMiddleware';
 
 
-export default class MoldTransform {
+export default class MoldHooks {
   constructor(sets: {[index: string]: MoldSet}) {
+  }
+
+
+  middleware(): MoldMiddleware {
+
   }
 
 
