@@ -1,9 +1,17 @@
-import {FindResult} from './interfaces/MethodsState';
-import {FindProps} from './interfaces/MethodsProps';
+import {FindResponse, GetResponse} from './interfaces/MethodsState';
+import {FindMethodProps, GetMethodProps} from './interfaces/MethodsProps';
+import MoldFrontend from './MoldFrontend';
+import {RequestKey} from './interfaces/RequestKey';
 
 
 export default class BackendManager {
-  find<T>(props: FindProps): FindResult<T> {
+  constructor(mold: MoldFrontend) {
+  }
+
+
+  // TODO: бэкэнд должен всегда возвращать resolved
+
+  find<T>(requestKey: RequestKey, props: FindMethodProps): FindResponse<T> {
 
     // TODO: сохранить запрос
 
@@ -17,6 +25,10 @@ export default class BackendManager {
     //     items: [{ id: 0, name: 'aabb' }, { id: 2, name: 'ggg' }],
     //   } as any);
     // }, 5000)
+  }
+
+  get<T>(requestKey: RequestKey, props: GetMethodProps): GetResponse<T> {
+
   }
 
 }

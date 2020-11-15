@@ -12,7 +12,10 @@ interface RequestState {
   lastErrors: RequestError[] | null;
 }
 
-export interface FindResult<T = any> {
+export interface FindResponse<T = any> {
+
+  // TODO: add status, errors
+
   // count of all the items in the table. -1 means no error or not loaded.
   count: number;
   hasNext: boolean;
@@ -20,26 +23,17 @@ export interface FindResult<T = any> {
   items: T[] | null;
 }
 
-export interface GetResult<T = any> {
+export interface GetResponse<T = any> {
+
+  // TODO: add status, errors
+
   item: T | null;
 }
 
-export interface ListState<T = any> extends RequestState, FindResult<T> {
+export interface ListState<T = any> extends RequestState, FindResponse<T> {
 }
 
-export interface ItemState<T = any> extends RequestState, GetResult<T> {
+export interface ItemState<T = any> extends RequestState, GetResponse<T> {
   saving: boolean;
   deleting: boolean;
-}
-
-export function makeItemsInitialState<T>(): ListState<T> {
-  return {
-    loading: false,
-    loadedOnce: false,
-    lastErrors: null,
-    count: -1,
-    hasNext: false,
-    hasPrev: false,
-    items: null,
-  };
 }

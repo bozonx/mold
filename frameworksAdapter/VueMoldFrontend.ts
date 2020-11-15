@@ -8,7 +8,7 @@ import {
   FindMethodProps,
   GetMethodProps, PatchMethodProps, SaveMethodProps,
 } from '../frontend/interfaces/MethodsProps';
-import {ListState, ItemState, makeItemsInitialState} from '../frontend/interfaces/MethodsState';
+import {ListState, ItemState} from '../frontend/interfaces/MethodsState';
 import MoldFrontendProps from '../frontend/interfaces/MoldFrontendProps';
 
 
@@ -30,7 +30,7 @@ export default class VueMoldFrontend {
     const state: UnwrapRef<ListState<T>> = reactive<ListState<T>>({
       // TODO: как его установить ???
       $requestId: null,
-      ...makeItemsInitialState(),
+      ...makeListInitialState(),
     } as any);
 
     // TODO: $requestId наверное можно установить во вне через state.$requestId
@@ -115,8 +115,9 @@ export default class VueMoldFrontend {
     return this.mold.actonSave(actionName, actionProps);
   }
 
-  destroyState = (state: ListState | ItemState) => {
-    this.mold.destroyState((state as any).$requestId);
+  destroyRequest = (state: ListState | ItemState) => {
+    // TODO: review $requestId
+    this.mold.destroyRequest((state as any).$requestId);
   }
 
   destroy = () => {

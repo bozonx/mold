@@ -1,5 +1,5 @@
 import {CreateProps, DeleteProps, FindProps, GetItemProps, UpdateProps} from '../frontend/interfaces/MethodsProps';
-import {FindResult, GetResult} from '../frontend/interfaces/MethodsState';
+import {FindResponse, GetResponse} from '../frontend/interfaces/MethodsState';
 import {MoldHook} from '../interfaces/MoldHooks';
 import MoldSet from '../interfaces/MoldSet';
 
@@ -21,13 +21,13 @@ export default class MoldSetItem implements MoldSet {
   }
 
 
-  find(props: Omit<Omit<FindProps, 'backend'>, 'entity'>): Promise<FindResult> {
+  find(props: Omit<Omit<FindProps, 'backend'>, 'entity'>): Promise<FindResponse> {
     // TODO: выполнить хуки before
     // TODO: сделать запрос в db adapter
     // TODO: выполнить хуки after
   }
 
-  get(props: Omit<Omit<GetItemProps, 'backend'>, 'entity'>): Promise<GetResult> {
+  get(props: Omit<Omit<GetItemProps, 'backend'>, 'entity'>): Promise<GetResponse> {
 
   }
 

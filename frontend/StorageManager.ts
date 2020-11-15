@@ -12,31 +12,43 @@ export default class StorageManager {
    * Init list state in case it hasn't been initialized before.
    */
   initListIfNeed(requestKey: RequestKey) {
-    // TODO: сгенерировать id запроса
     // TODO: если нет стейта то создать новый на основе initialState
-    // TODO: use makeItemsInitialState()
+    // TODO: use makeListInitialState()
   }
 
-  initItem() {
-
+  initItemIfNeed(requestKey: RequestKey) {
+    // TODO: если нет стейта то создать новый на основе initialState
+    // TODO: use makeItemInitialState()
   }
 
-  update(requestId: string, partialState: Partial<ListState>) {
+  updateList(requestKey: RequestKey, partialState: Partial<ListState>) {
     // TODO: внести изменения
     // TODO: поднять события
   }
 
-  destroy(requestId: string) {
+  updateItem(requestKey: RequestKey, partialState: Partial<ItemState>) {
+    // TODO: внести изменения
+    // TODO: поднять события
+  }
+
+  destroyRequest(requestKey: RequestKey) {
     // TODO: remove storage
     // TODO: remove event listeners of storage
   }
 
-  onChange(requestId, cb: (newState: any) => void): number {
+  destroy() {
+    // TODO: add
+  }
 
+  /**
+   * Listen of changes of any part of state of request
+   */
+  onChange(requestKey: RequestKey, cb: (newState: any) => void): number {
+    // TODO: add
   }
 
   removeListener(handlerIndex: number) {
-
+    // TODO: add
   }
 
 }

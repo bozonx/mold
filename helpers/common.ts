@@ -1,6 +1,7 @@
 import {MethodPropsBase} from '../frontend/interfaces/MethodsProps';
 import {LOG_LEVELS, LogLevel} from '../frontend/interfaces/Logger';
 import {RequestKey} from '../frontend/interfaces/RequestKey';
+import {ListState} from '../frontend/interfaces/MethodsState';
 
 
 export function makeRequestKey(action: string, props: MethodPropsBase): RequestKey {
@@ -15,6 +16,18 @@ export function makeRequestKey(action: string, props: MethodPropsBase): RequestK
       meta: props.meta,
     })
   ];
+}
+
+export function makeListInitialState<T>(): ListState<T> {
+  return {
+    loading: false,
+    loadedOnce: false,
+    lastErrors: null,
+    count: -1,
+    hasNext: false,
+    hasPrev: false,
+    items: null,
+  };
 }
 
 /**

@@ -1,16 +1,16 @@
 import DbAdapter from '../interfaces/DbAdapter';
 import {CreateProps, DeleteProps, FindProps, GetItemProps, UpdateProps} from '../frontend/interfaces/MethodsProps';
-import {FindResult, GetResult} from '../frontend/interfaces/MethodsState';
+import {FindResponse, GetResponse} from '../frontend/interfaces/MethodsState';
 
 
 export default class PouchDbAdapter implements DbAdapter {
   // TODO: revuew interface
 
-  find(props: Omit<Omit<FindProps, 'backend'>, 'entity'>): Promise<FindResult> {
+  find(props: Omit<Omit<FindProps, 'backend'>, 'entity'>): Promise<FindResponse> {
     // TODO: add
   }
 
-  get(props: Omit<Omit<GetItemProps, 'backend'>, 'entity'>): Promise<GetResult> {
+  get(props: Omit<Omit<GetItemProps, 'backend'>, 'entity'>): Promise<GetResponse> {
     // TODO: add
   }
 

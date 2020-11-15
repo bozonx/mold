@@ -1,5 +1,8 @@
+import MoldFrontend from './MoldFrontend';
+
 export default class PushesManager {
-  constructor() {
+
+  constructor(mold: MoldFrontend) {
   }
 
 }

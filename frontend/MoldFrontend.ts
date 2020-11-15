@@ -5,7 +5,7 @@ import {
   FindMethodProps,
   GetMethodProps, PatchMethodProps, SaveMethodProps,
 } from './interfaces/MethodsProps';
-import {ListState, ItemState, makeItemsInitialState, FindResult} from './interfaces/MethodsState';
+import {ListState, ItemState, FindResponse, GetResponse} from './interfaces/MethodsState';
 import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
 import {makeRequestKey} from '../helpers/common';
@@ -15,16 +15,16 @@ import {RequestKey} from './interfaces/RequestKey';
 
 
 export default class MoldFrontend {
-  private readonly props: MoldFrontendProps;
-  private readonly backend: BackendManager;
-  private readonly push: PushesManager;
-  private readonly storage: StorageManager;
+  readonly props: MoldFrontendProps;
+  readonly backend: BackendManager;
+  readonly push: PushesManager;
+  readonly storage: StorageManager;
 
 
   constructor(props: Partial<MoldFrontendProps>) {
     this.props = this.prepareProps(props);
-    this.backend = new BackendManager();
-    this.push = new PushesManager();
+    this.backend = new BackendManager(this);
+    this.push = new PushesManager(this);
     this.storage = new StorageManager();
   }
 
@@ -37,29 +37,34 @@ export default class MoldFrontend {
     const requestKey: RequestKey = makeRequestKey('find', props);
 
     this.storage.initListIfNeed(requestKey);
-
-    // TODO: как потом удалить обработчики???
-    this.storage.onChange(stateId, cb);
+    this.storage.onChange(requestKey, cb);
     // set state of start loading
-    this.storage.update(stateId, { loading: true });
+    this.storage.updateList(requestKey, { loading: true });
 
-    let result: FindResult<T>;
+    let result: FindResponse<T>;
 
     try {
-      result = this.backend.find<T>(stateId, props);
+      result = this.backend.find<T>(requestKey, props);
     }
     catch (e) {
-      // TODO: set error to storage
+      // actually error shouldn't be real. Because request errors are in the result.
+      this.destroyRequest(requestKey);
 
-      this.storage.update(stateId, {
-        loading: false,
-        loadedOnce: true,
-      });
-
-      return;
+      throw e;
     }
 
-    this.storage.update(stateId, {
+    // catch (e) {
+    //   this.storage.updateList(requestKey, {
+    //     loading: false,
+    //     loadedOnce: true,
+    //     // TODO: должен вовращаться уже готовый список ошибок !!!
+    //     lastErrors: [{code: 0, message: String(e)}],
+    //   });
+    //
+    //   return;
+    // }
+
+    this.storage.updateList(requestKey, {
       loading: true,
       loadedOnce: true,
       ...result,
@@ -70,6 +75,25 @@ export default class MoldFrontend {
    * Get certain record by id
    */
   get = async <T>(props: GetMethodProps, cb: (state: ItemState<T>) => void): Promise<void> => {
+    const requestKey: RequestKey = makeRequestKey('get', props);
+
+    this.storage.initItemIfNeed(requestKey);
+    this.storage.onChange(requestKey, cb);
+    // set state of start loading
+    this.storage.updateItem(requestKey, { loading: true });
+
+    let result: GetResponse<T>;
+
+    try {
+      result = this.backend.get<T>(requestKey, props);
+    }
+    catch (e) {
+      // actually error shouldn't be real. Because request errors are in the result.
+      this.destroyRequest(requestKey);
+
+      throw e;
+    }
+
     // cb({
     //   loadedOnce: true,
     //   item: { id: 0, name: 'tttt' },
@@ -131,8 +155,10 @@ export default class MoldFrontend {
     // TODO: add
   }
 
-  destroyState = (stateId: string) => {
-    // TODO: add call storage, push, request
+  destroyRequest = (requestKey: RequestKey) => {
+    this.storage.destroyRequest(requestKey);
+
+    // TODO: add call push, request
   }
 
   destroy = () => {

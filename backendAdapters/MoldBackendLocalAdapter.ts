@@ -1,6 +1,6 @@
 import BackendAdapter from '../interfaces/BackendAdapter';
 import {CreateProps, DeleteProps, FindProps, GetItemProps, UpdateProps} from '../frontend/interfaces/MethodsProps';
-import {FindResult, GetResult} from '../frontend/interfaces/MethodsState';
+import {FindResponse, GetResponse} from '../frontend/interfaces/MethodsState';
 import MoldBackend from '../backend/MoldBackend';
 import {omitObj} from '../helpers/objects';
 
@@ -17,11 +17,11 @@ export default class MoldBackendLocalAdapter implements BackendAdapter {
   }
 
 
-  find(props: Omit<FindProps, 'backend'>): Promise<FindResult> {
+  find(props: Omit<FindProps, 'backend'>): Promise<FindResponse> {
     return this.backend.getEntity(props.entity).find(omitObj(props, 'entity') as any);
   }
 
-  get(props: Omit<GetItemProps, 'backend'>): Promise<GetResult> {
+  get(props: Omit<GetItemProps, 'backend'>): Promise<GetResponse> {
     return this.backend.getEntity(props.entity).get(omitObj(props, 'entity') as any);
   }
 
