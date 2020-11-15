@@ -9,21 +9,22 @@ import {ListState, ItemState, makeItemsInitialState, FindResult} from './interfa
 import StateStorage from './StateStorage';
 import BackendManager from './BackendManager';
 import {makeRequestId} from '../helpers/common';
-import UpdateManager from './UpdateManager';
+import PushesManager from './PushesManager';
 import MoldFrontendProps from './interfaces/MoldFrontendProps';
+import {RequestKey} from './interfaces/RequestKey';
 
 
 export default class MoldFrontend {
   private readonly props: MoldFrontendProps;
   private readonly backend: BackendManager;
-  private readonly push: UpdateManager;
+  private readonly push: PushesManager;
   private readonly storage: StateStorage;
 
 
   constructor(props: Partial<MoldFrontendProps>) {
     this.props = this.prepareProps(props);
     this.backend = new BackendManager();
-    this.push = new UpdateManager();
+    this.push = new PushesManager();
     this.storage = new StateStorage();
   }
 
@@ -33,9 +34,9 @@ export default class MoldFrontend {
    * cb will be called on any state change - start loading, finish, error and data change.
    */
   find = async <T>(props: FindMethodProps, cb: (state: ListState<T>) => void): Promise<void> => {
-    const stateId: string = makeRequestId(props);
-
-    this.storage.setupList(stateId, props, makeItemsInitialState());
+    const requestKey: RequestKey = makeRequestId(props);
+    // init list if need
+    this.storage.initList(stateId, props, makeItemsInitialState());
 
     // TODO: как потом удалить обработчики???
     this.storage.onChange(stateId, cb);

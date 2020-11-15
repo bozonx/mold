@@ -1,8 +1,9 @@
-import {FindProps} from '../frontend/interfaces/MethodsProps';
+import {RequestBase} from '../frontend/interfaces/MethodsProps';
 import {LOG_LEVELS, LogLevel} from '../frontend/interfaces/Logger';
+import {RequestKey} from '../frontend/interfaces/RequestKey';
 
 
-export function makeRequestId(props: FindProps): string {
+export function makeRequestId(props: RequestBase): RequestKey {
   // TODO: use все виды props
   // TODO: из параметров сделать уникальный id
   // TODO: поля должны быть отсортированны
