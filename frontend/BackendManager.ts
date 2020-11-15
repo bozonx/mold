@@ -1,6 +1,6 @@
 import {FindResponse, GetResponse} from './interfaces/MethodsState';
 import {FindMethodProps, GetMethodProps, MethodPropsBase} from './interfaces/MethodsProps';
-import MoldFrontend from './MoldFrontend';
+import Mold from './Mold';
 import {RequestKey, RequestKeyPositions} from './interfaces/RequestKey';
 import BackendClient from '../interfaces/BackendClient';
 import BackendRequest from '../interfaces/BackendRequest';
@@ -8,14 +8,14 @@ import BackendResponse from '../interfaces/BackendResponse';
 
 
 export default class BackendManager {
-  private readonly mold: MoldFrontend;
+  private readonly mold: Mold;
 
   // TODO: надо хранить иерархией
   // object like { "backend|set|action|request": { ...props } }
   private requests: {[index: string]: {[index: string]: FindMethodProps | MethodPropsBase}} = {};
 
 
-  constructor(mold: MoldFrontend) {
+  constructor(mold: Mold) {
     this.mold = mold;
   }
 

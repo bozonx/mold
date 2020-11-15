@@ -1,8 +1,8 @@
-import MoldFrontend from './MoldFrontend';
+import Mold from './Mold';
 
 export default class PushesManager {
 
-  constructor(mold: MoldFrontend) {
+  constructor(mold: Mold) {
   }
 
 }

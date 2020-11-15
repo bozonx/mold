@@ -12,6 +12,8 @@ interface RequestState {
   lastErrors: RequestError[] | null;
 }
 
+// TODO: review
+
 export interface FindResponse<T = any> {
 
   // TODO: add status, errors
@@ -23,6 +25,8 @@ export interface FindResponse<T = any> {
   items: T[] | null;
 }
 
+// TODO: review
+
 export interface GetResponse<T = any> {
 
   // TODO: add status, errors
@@ -31,10 +35,17 @@ export interface GetResponse<T = any> {
   item: T | null;
 }
 
-export interface ListState<T = any> extends RequestState, FindResponse<T> {
+export interface InstanceState {
+  // string like "backend|set|action|request|instanceNum"
+  __instanceId: string;
 }
 
-export interface ItemState<T = any> extends RequestState, GetResponse<T> {
+export interface ListState<T = any> extends RequestState, FindResponse<T>, InstanceState {
+}
+
+export interface ItemState<T = any> extends RequestState, GetResponse<T>, InstanceState {
+  // creating or updating
   saving: boolean;
+  // soft or hard deleting
   deleting: boolean;
 }

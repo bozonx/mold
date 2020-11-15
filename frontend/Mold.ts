@@ -14,7 +14,7 @@ import MoldFrontendProps from './interfaces/MoldFrontendProps';
 import {RequestKey} from './interfaces/RequestKey';
 
 
-export default class MoldFrontend {
+export default class Mold {
   readonly props: MoldFrontendProps;
   readonly backend: BackendManager;
   readonly push: PushesManager;

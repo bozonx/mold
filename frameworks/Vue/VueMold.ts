@@ -1,15 +1,15 @@
 import {reactive, UnwrapRef} from '@vue/composition-api';
 
-import MoldFrontend from '../frontend/MoldFrontend';
+import Mold from '../../frontend/Mold';
 import {
   BatchDeleteMethodProps,
   BatchPatchMethodProps,
   CreateMethodProps, DeleteMethodProps,
   FindMethodProps,
   GetMethodProps, PatchMethodProps, SaveMethodProps,
-} from '../frontend/interfaces/MethodsProps';
-import {ListState, ItemState} from '../frontend/interfaces/MethodsState';
-import MoldFrontendProps from '../frontend/interfaces/MoldFrontendProps';
+} from '../../frontend/interfaces/MethodsProps';
+import {ListState, ItemState} from '../../frontend/interfaces/MethodsState';
+import MoldFrontendProps from '../../frontend/interfaces/MoldFrontendProps';
 
 
 // TODO: надо самим задать Vue.$mold в плагине
@@ -20,12 +20,12 @@ import MoldFrontendProps from '../frontend/interfaces/MoldFrontendProps';
  */
 export default class VueMold {
   private props: Partial<MoldFrontendProps>;
-  private readonly mold: MoldFrontend;
+  private readonly mold: Mold;
 
 
   constructor(props: Partial<MoldFrontendProps>) {
     this.props = props;
-    this.mold = new MoldFrontend(props);
+    this.mold = new Mold(props);
   }
 
 
