@@ -21,8 +21,7 @@ export default class MoldFrontend {
 
 
   constructor(props: Partial<MoldFrontendProps>) {
-    // TODO: check props and merge with defaults
-    this.props = props;
+    this.props = this.prepareProps(props);
     this.backend = new BackendManager();
     this.push = new UpdateManager();
     this.storage = new StateStorage();
@@ -137,6 +136,11 @@ export default class MoldFrontend {
 
   destroy = () => {
     // TODO: add
+  }
+
+
+  private prepareProps(props: Partial<MoldFrontendProps>): MoldFrontendProps {
+    // TODO: check props and merge with defaults
   }
 
 }
