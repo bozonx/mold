@@ -1,9 +1,9 @@
 import {
   CreateOrUpdateProps,
-  CreateProps, DeleteProps,
-  FindProps,
-  GetFirstProps,
-  GetItemProps,
+  CreateProps,
+  DeleteProps,
+  FindMethodProps,
+  GetMethodProps,
   UpdateProps
 } from './interfaces/MethodsProps';
 import {ListState, ItemState, makeItemsInitialState, FindResult} from './interfaces/MethodsState';
@@ -15,14 +15,15 @@ import MoldFrontendProps from './interfaces/MoldFrontendProps';
 
 
 export default class MoldFrontend {
-  private onError: (msg: string) => void;
+  private readonly props: MoldFrontendProps;
   private readonly backend: BackendManager;
   private readonly push: UpdateManager;
   private readonly storage: StateStorage;
 
 
-  constructor(props: MoldFrontendProps) {
-    this.onError = onError;
+  constructor(props: Partial<MoldFrontendProps>) {
+    // TODO: check props and merge with defaults
+    this.props = props;
     this.backend = new BackendManager();
     this.push = new UpdateManager();
     this.storage = new StateStorage();
@@ -33,7 +34,7 @@ export default class MoldFrontend {
    * Find several records
    * cb will be called on any state change - start loading, finish, error and data change.
    */
-  find = async <T>(props: FindProps, cb: (state: ListState<T>) => void): Promise<void> => {
+  find = async <T>(props: FindMethodProps, cb: (state: ListState<T>) => void): Promise<void> => {
     const stateId: string = makeRequestId(props);
 
     this.storage.setupList(stateId, props, makeItemsInitialState());
@@ -69,7 +70,7 @@ export default class MoldFrontend {
   /**
    * Get certain record by id
    */
-  get = async <T>(props: GetItemProps, cb: (state: ItemState<T>) => void): Promise<void> => {
+  get = async <T>(props: GetMethodProps, cb: (state: ItemState<T>) => void): Promise<void> => {
     // cb({
     //   loadedOnce: true,
     //   item: { id: 0, name: 'tttt' },
@@ -82,12 +83,12 @@ export default class MoldFrontend {
     // }, 5000)
   }
 
-  // /**
-  //  * Get the first result by query
-  //  */
-  // getFirst = async <T>(props: GetFirstProps, cb: (state: ItemState<T>) => void): Promise<void> => {
-  //   // TODO: add
-  // }
+  /**
+   * Get the first result by query
+   */
+  getFirst = async <T>(props: GetMethodProps, cb: (state: ItemState<T>) => void): Promise<void> => {
+    // TODO: add
+  }
 
   create = async (props: CreateProps): Promise<void> => {
     // TODO: add

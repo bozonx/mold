@@ -1,36 +1,38 @@
-// TODO: use JSON primitives
+import {JsonTypes} from '../../interfaces/Types';
 
 
 export interface RequestBase {
   // data like in search part of url
-  query?: {[index: string]: any},
+  query?: {[index: string]: JsonTypes};
   // hidden specific data
-  meta?: {[index: string]: any}
+  meta?: {[index: string]: JsonTypes};
 }
 
-interface PropsBase extends RequestBase {
-  // backend to use. If it doesn't set it points to use the default backend.
+interface MethodPropsBase extends RequestBase {
+  // Backend where set is placed. If it isn't set it points to the default backend.
   backend?: string;
-  // name of entity which is queried
-  entity: string,
+  // name of entity which is queried. It is mandatory
+  set: string,
 }
 
-interface SavingBase extends PropsBase {
+export interface FindBase {
+  // Page number. The first is 1. By default is 1. Don't use it if perPage = -1.
+  pageNum?: number,
+  // Items per page. By default this is config.defaultPerPage. -1 means infinity list.
+  perPage?: number,
+}
+
+interface SavingBase extends MethodPropsBase {
   // data to save
   data: {[index: string]: any};
 }
 
+////////////// METHODS
 
-export interface FindProps extends PropsBase {
-  pageNum?: number,
-  perPage?: number,
-}
+export type FindMethodProps = MethodPropsBase & FindBase;
 
-export interface GetItemProps extends PropsBase {
-  id: string | number,
-}
-
-export interface GetFirstProps extends PropsBase {
+export interface GetMethodProps extends MethodPropsBase {
+  id?: string | number,
 }
 
 export interface CreateProps extends SavingBase {
@@ -46,6 +48,6 @@ export interface CreateOrUpdateProps extends SavingBase {
   // data can include id or not - it doesn't matter
 }
 
-export interface DeleteProps extends PropsBase {
+export interface DeleteProps extends MethodPropsBase {
   id: string | number,
 }

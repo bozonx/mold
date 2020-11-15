@@ -5,8 +5,8 @@ import {
   CreateOrUpdateProps,
   CreateProps,
   DeleteProps,
-  FindProps,
-  GetItemProps,
+  FindMethodProps,
+  GetMethodProps,
   UpdateProps
 } from '../frontend/interfaces/MethodsProps';
 import {ListState, ItemState, makeItemsInitialState} from '../frontend/interfaces/MethodsState';
@@ -17,17 +17,17 @@ import MoldFrontendProps from '../frontend/interfaces/MoldFrontendProps';
  * Wrapper of mold frontend for Vue composition api.
  */
 export default class VueMoldFrontend {
-  private props: MoldFrontendProps;
+  private props: Partial<MoldFrontendProps>;
   private readonly mold: MoldFrontend;
 
 
-  constructor(props: MoldFrontendProps) {
+  constructor(props: Partial<MoldFrontendProps>) {
     this.props = props;
     this.mold = new MoldFrontend(props);
   }
 
 
-  find = <T>(props: FindProps): ListState<T> => {
+  find = <T>(props: FindMethodProps): ListState<T> => {
     const state: UnwrapRef<ListState<T>> = reactive<ListState<T>>({
       // TODO: как его установить ???
       $requestId: null,
@@ -46,7 +46,7 @@ export default class VueMoldFrontend {
     return state as ListState<T>;
   }
 
-  get = <T>(props: GetItemProps): ItemState<T> => {
+  get = <T>(props: GetMethodProps): ItemState<T> => {
     const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({
       // TODO: как его установить ???
       $requestId: null,
@@ -66,22 +66,22 @@ export default class VueMoldFrontend {
     return state as ItemState<T>;
   }
 
-  // getFirst = <T>(props: GetFirstProps): ItemState<T> => {
-  //   const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({
-  //     loading: false,
-  //     loadedOnce: false,
-  //     lastErrors: null,
-  //     item: null,
-  //   });
-  //
-  //   this.mold.getFirst(props, (newState: ItemState<T>) => {
-  //     for (let key of Object.keys(newState)) {
-  //       state[key] = newState[key];
-  //     }
-  //   }).catch(this.onError);
-  //
-  //   return state as ItemState<T>;
-  // }
+  getFirst = <T>(props: GetMethodProps): ItemState<T> => {
+    const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({
+      loading: false,
+      loadedOnce: false,
+      lastErrors: null,
+      item: null,
+    });
+
+    this.mold.getFirst(props, (newState: ItemState<T>) => {
+      for (let key of Object.keys(newState)) {
+        state[key] = newState[key];
+      }
+    }).catch(this.onError);
+
+    return state as ItemState<T>;
+  }
 
   create = (props: CreateProps): Promise<void> => {
     return this.mold.create(props);
