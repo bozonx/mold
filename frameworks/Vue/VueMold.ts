@@ -12,10 +12,13 @@ import {ListState, ItemState} from '../frontend/interfaces/MethodsState';
 import MoldFrontendProps from '../frontend/interfaces/MoldFrontendProps';
 
 
+// TODO: надо самим задать Vue.$mold в плагине
+
+
 /**
  * Wrapper of mold frontend for Vue composition api.
  */
-export default class VueMoldFrontend {
+export default class VueMold {
   private props: Partial<MoldFrontendProps>;
   private readonly mold: MoldFrontend;
 
@@ -30,7 +33,7 @@ export default class VueMoldFrontend {
     const state: UnwrapRef<ListState<T>> = reactive<ListState<T>>({
       // TODO: как его установить ???
       $requestId: null,
-      ...makeListInitialState(),
+      //...makeListInitialState(),
     } as any);
 
     // TODO: $requestId наверное можно установить во вне через state.$requestId
@@ -115,7 +118,7 @@ export default class VueMoldFrontend {
     return this.mold.actonSave(actionName, actionProps);
   }
 
-  destroyRequest = (state: ListState | ItemState) => {
+  destroyInstance = (state: ListState | ItemState) => {
     // TODO: review $requestId
     this.mold.destroyRequest((state as any).$requestId);
   }
