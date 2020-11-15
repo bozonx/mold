@@ -9,7 +9,7 @@ export interface RequestBase {
   // hidden specific data
   meta?: {[index: string]: JsonTypes};
   // for create, patch, batchPatch, batchDelete
-  data?: {[index: string]: any} | {[index: string]: any}[] | (string | number)[];
+  data?: {[index: string]: JsonTypes} | {[index: string]: JsonTypes}[] | (string | number)[];
 }
 
 interface MethodPropsBase extends RequestBase {
@@ -36,7 +36,7 @@ export interface GetMethodProps extends MethodPropsBase {
 
 export interface SaveMethodProps extends MethodPropsBase {
   // data to save. Id doesn't matter, it should be set into query
-  data: {[index: string]: any};
+  data: {[index: string]: JsonTypes};
 }
 
 export type CreateMethodProps = SaveMethodProps;
@@ -51,7 +51,7 @@ export interface DeleteMethodProps extends MethodPropsBase {
 
 export interface BatchPatchMethodProps extends MethodPropsBase {
   // Partial data of items to patch. Items have to include an id
-  data: {[index: string]: any}[];
+  data: {[index: string]: JsonTypes}[];
 }
 
 export interface BatchDeleteMethodProps extends MethodPropsBase {
