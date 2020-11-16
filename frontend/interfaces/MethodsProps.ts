@@ -5,6 +5,7 @@ export interface RequestBase {
   // for get, patch, delete.
   id?: string | number;
   // data like in search part of url. Structure is specific to backend.
+  // id, pageNum, perPage
   query?: {[index: string]: JsonTypes};
   // hidden specific data for backend's set.
   meta?: {[index: string]: JsonTypes};
@@ -19,22 +20,23 @@ export interface MethodPropsBase extends RequestBase {
   set: string,
 }
 
+// TODO: review
 export type ActionProps = MethodPropsBase;
 
-export interface FindBase {
-  // Page number. The first is 1. By default is 1. Don't use it if perPage = -1.
-  pageNum?: number,
-  // Items per page. By default this is config.defaultPerPage. -1 means infinity list.
-  perPage?: number,
-}
+// export interface FindBase {
+//   // Page number. The first is 1. By default is 1. Don't use it if perPage = -1.
+//   pageNum?: number,
+//   // Items per page. By default this is config.defaultPerPage. -1 means infinity list.
+//   perPage?: number,
+// }
 
 ////////////// METHODS
 
-export type FindMethodProps = MethodPropsBase & FindBase;
-
-export interface GetMethodProps extends MethodPropsBase {
-  //id?: string | number,
-}
+// export type FindMethodProps = MethodPropsBase & FindBase;
+//
+// export interface GetMethodProps extends MethodPropsBase {
+//   //id?: string | number,
+// }
 
 export interface SaveMethodProps extends MethodPropsBase {
   // data to save. Id doesn't matter, it should be set into query

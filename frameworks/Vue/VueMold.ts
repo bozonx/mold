@@ -2,15 +2,15 @@ import {reactive} from '@vue/composition-api';
 
 import Mold from '../../frontend/Mold';
 import {
+  ActionProps,
   BatchDeleteMethodProps,
   BatchPatchMethodProps,
-  CreateMethodProps, DeleteMethodProps,
-  FindMethodProps,
-  GetMethodProps, PatchMethodProps, SaveMethodProps,
+  CreateMethodProps,
+  DeleteMethodProps,
+  PatchMethodProps,
+  SaveMethodProps,
 } from '../../frontend/interfaces/MethodsProps';
 import {
-  InstanceListState,
-  InstanceItemState,
   InstanceActionState,
   instanceIdPropName
 } from '../../frontend/interfaces/MethodsState';
@@ -30,41 +30,20 @@ export default class VueMold {
     this.mold = new Mold(props);
   }
 
-
-  find = <T>(props: FindMethodProps): InstanceListState<T> => {
-    const state: InstanceListState<T> = reactive({}) as any;
-    const instanceId: string = this.mold.find<T>(
-      props,
-      (newState) => this.updateReactive(state, newState)
-    );
-
-    state[instanceIdPropName] = instanceId;
-
-    return state;
+  // TODO: добавить тип для list
+  find = <T>(props: ActionProps): InstanceActionState<T> => {
+    return this.actionFetch('find', props);
   }
 
-  get = <T>(props: GetMethodProps): InstanceItemState<T> => {
-    const state: InstanceItemState<T> = reactive({}) as any;
-    const instanceId: string = this.mold.get<T>(
-      props,
-      (newState) => this.updateReactive(state, newState)
-    );
-
-    state[instanceIdPropName] = instanceId;
-
-    return state;
+  // TODO: добавить тип для item
+  get = <T>(props: ActionProps): InstanceActionState<T> => {
+    return this.actionFetch('get', props);
   }
 
-  getFirst = <T>(props: GetMethodProps): InstanceItemState<T> => {
-    const state: InstanceItemState<T> = reactive({}) as any;
-    const instanceId: string = this.mold.getFirst<T>(
-      props,
-      (newState) => this.updateReactive(state, newState)
-    );
+  // TODO: добавить тип для item
+  getFirst = <T>(props: ActionProps): InstanceActionState<T> => {
 
-    state[instanceIdPropName] = instanceId;
-
-    return state;
+    return this.actionFetch('getFirst', props);
   }
 
   create = (props: CreateMethodProps): Promise<void> => {
@@ -91,12 +70,12 @@ export default class VueMold {
     return this.mold.batchDelete(props);
   }
 
-  actonFetch = <T>(
+  actionFetch = <T>(
     actionName: string,
-    actionProps: {[index: string]: any}
+    actionProps: ActionProps
   ): InstanceActionState<T> => {
     const state: InstanceActionState<T> = reactive({}) as any;
-    const instanceId: string = this.mold.actonFetch<T>(
+    const instanceId: string = this.mold.fetch<T>(
       actionName,
       actionProps,
       (newState) => this.updateReactive(state, newState)
@@ -111,7 +90,7 @@ export default class VueMold {
     return this.mold.actonSave(actionName, actionProps);
   }
 
-  destroyInstance = (state: InstanceListState | InstanceItemState | InstanceActionState) => {
+  destroyInstance = (state: InstanceActionState) => {
     this.mold.destroyRequest(state[instanceIdPropName]);
   }
 

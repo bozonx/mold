@@ -1,4 +1,4 @@
-import {ListState, ItemState} from './interfaces/MethodsState';
+import {ListState, ItemState, ActionState} from './interfaces/MethodsState';
 import {RequestKey} from './interfaces/RequestKey';
 
 
@@ -9,27 +9,40 @@ export default class StorageManager {
 
 
   /**
-   * Init list state in case it hasn't been initialized before.
+   * Init state in case it hasn't been initialized before.
    */
-  initListIfNeed(requestKey: RequestKey) {
+  initStateIfNeed(requestKey: RequestKey) {
     // TODO: если нет стейта то создать новый на основе initialState
     // TODO: use makeListInitialState()
   }
 
-  initItemIfNeed(requestKey: RequestKey) {
-    // TODO: если нет стейта то создать новый на основе initialState
-    // TODO: use makeItemInitialState()
-  }
+  // /**
+  //  * Init list state in case it hasn't been initialized before.
+  //  */
+  // initListIfNeed(requestKey: RequestKey) {
+  //   // TODO: если нет стейта то создать новый на основе initialState
+  //   // TODO: use makeListInitialState()
+  // }
+  //
+  // initItemIfNeed(requestKey: RequestKey) {
+  //   // TODO: если нет стейта то создать новый на основе initialState
+  //   // TODO: use makeItemInitialState()
+  // }
 
-  updateList(requestKey: RequestKey, partialState: Partial<ListState>) {
+  update(requestKey: RequestKey, partialState: Partial<ActionState>) {
     // TODO: внести изменения
     // TODO: поднять события
   }
 
-  updateItem(requestKey: RequestKey, partialState: Partial<ItemState>) {
-    // TODO: внести изменения
-    // TODO: поднять события
-  }
+  // updateList(requestKey: RequestKey, partialState: Partial<ListState>) {
+  //   // TODO: внести изменения
+  //   // TODO: поднять события
+  // }
+  //
+  // updateItem(requestKey: RequestKey, partialState: Partial<ItemState>) {
+  //   // TODO: внести изменения
+  //   // TODO: поднять события
+  // }
 
   destroyRequest(requestKey: RequestKey) {
     // TODO: remove storage

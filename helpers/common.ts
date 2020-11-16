@@ -1,10 +1,10 @@
-import {MethodPropsBase} from '../frontend/interfaces/MethodsProps';
+import {ActionProps} from '../frontend/interfaces/MethodsProps';
 import {LOG_LEVELS, LogLevel} from '../frontend/interfaces/Logger';
 import {RequestKey} from '../frontend/interfaces/RequestKey';
-import {ItemState, ListState} from '../frontend/interfaces/MethodsState';
+import {ActionState, ItemState, ListState} from '../frontend/interfaces/MethodsState';
 
 
-export function makeRequestKey(action: string, props: MethodPropsBase): RequestKey {
+export function makeRequestKey(action: string, props: ActionProps): RequestKey {
   return [
     props.backend || 'default',
     props.set,
@@ -18,26 +18,26 @@ export function makeRequestKey(action: string, props: MethodPropsBase): RequestK
   ];
 }
 
-export function makeListInitialState<T>(): ListState<T> {
+export function makeListInitialState<T>(): ActionState<T> {
   return {
     loading: false,
     loadedOnce: false,
     lastErrors: null,
-    count: -1,
-    hasNext: false,
-    hasPrev: false,
-    items: null,
+    // count: -1,
+    // hasNext: false,
+    // hasPrev: false,
+    // items: null,
   };
 }
 
-export function makeItemInitialState<T>(): ItemState<T> {
-  return {
-    loading: false,
-    loadedOnce: false,
-    lastErrors: null,
-    item: null,
-  };
-}
+// export function makeItemInitialState<T>(): ItemState<T> {
+//   return {
+//     loading: false,
+//     loadedOnce: false,
+//     lastErrors: null,
+//     //item: null,
+//   };
+// }
 
 /**
  * Makes ['info', 'warn', 'error'] if log level is 'info'

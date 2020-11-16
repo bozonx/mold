@@ -1,4 +1,4 @@
-export enum RequestKeyPositions {
+export enum REQUEST_KEY_POSITOINS {
   backend,
   set,
   action,

@@ -1,7 +1,7 @@
 import {FindResponse, GetResponse} from './interfaces/MethodsState';
-import {FindMethodProps, GetMethodProps, MethodPropsBase} from './interfaces/MethodsProps';
+import {ActionProps, FindMethodProps, GetMethodProps, MethodPropsBase} from './interfaces/MethodsProps';
 import Mold from './Mold';
-import {RequestKey, RequestKeyPositions} from './interfaces/RequestKey';
+import {RequestKey, REQUEST_KEY_POSITOINS} from './interfaces/RequestKey';
 import BackendClient from '../interfaces/BackendClient';
 import BackendRequest from '../interfaces/BackendRequest';
 import BackendResponse from '../interfaces/BackendResponse';
@@ -19,12 +19,18 @@ export default class BackendManager {
     this.mold = mold;
   }
 
+  async fetch<T = any>(
+    requestKey: RequestKey,
+    props: ActionProps & {action: string}
+  ): Promise<BackendResponse> {
+
+  }
 
   // TODO: props можно без backend и set
   async find<T = any>(requestKey: RequestKey, props: FindMethodProps): Promise<FindResponse<T>> {
     this.saveRequest(requestKey, props);
 
-    const backendName: string = requestKey[RequestKeyPositions.backend];
+    const backendName: string = requestKey[REQUEST_KEY_POSITOINS.backend];
 
     if (!this.mold.props.backends[backendName]) {
       throw new Error(

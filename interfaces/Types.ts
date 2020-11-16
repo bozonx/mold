@@ -2,3 +2,4 @@
 export type Primitives = string | number | boolean | null | undefined;
 export type JsonTypes = Primitives | Primitives[] | {[index: string]: Primitives};
 export type Dictionary = {[index: string]: JsonTypes | undefined};
+export type JsonData = Primitives[] | Dictionary;
