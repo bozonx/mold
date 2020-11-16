@@ -23,15 +23,19 @@ export default class BackendManager {
     requestKey: RequestKey,
     props: ActionProps & {action: string}
   ): Promise<BackendResponse> {
-    return {
-      status: 200,
-      errors: null,
-      result: {
-        items: [
-          { name: 'fff' }
-        ]
-      }
-    }
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          status: 200,
+          errors: null,
+          result: {
+            items: [
+              { name: 'fff' }
+            ]
+          }
+        })
+      }, 1000)
+    });
   }
   //
   // // TODO: props можно без backend и set

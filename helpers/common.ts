@@ -22,6 +22,14 @@ export function requestKeyToString(requestKey: RequestKey): string {
   return requestKey.join(REQUEST_KEY_SEPARATOR);
 }
 
+export function instanceIdToRequestKey(instanceId: string): RequestKey {
+  const splat: string[] = instanceId.split(REQUEST_KEY_SEPARATOR);
+
+  splat.pop();
+
+  return splat as RequestKey;
+}
+
 export function makeInitialState(): ActionState {
   return {
     pending: false,

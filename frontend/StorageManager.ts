@@ -26,6 +26,12 @@ export default class StorageManager {
   }
 
 
+  getState(requestKey: RequestKey): ActionState | undefined {
+    const id: string = requestKeyToString(requestKey);
+
+    return this.storage.getState(id);
+  }
+
   /**
    * Init state in case it hasn't been initialized before.
    */

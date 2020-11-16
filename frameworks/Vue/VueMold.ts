@@ -15,6 +15,7 @@ import {
   instanceIdPropName
 } from '../../frontend/interfaces/MethodsState';
 import MoldFrontendProps from '../../frontend/interfaces/MoldFrontendProps';
+import {instanceIdToRequestKey} from '../../helpers/common';
 
 
 /**
@@ -74,12 +75,18 @@ export default class VueMold {
     actionName: string,
     actionProps: ActionProps
   ): InstanceActionState<T> => {
-    const state: InstanceActionState<T> = reactive({}) as any;
     const instanceId: string = this.mold.fetch<T>(
       actionName,
       actionProps,
       (newState) => this.updateReactive(state, newState)
     );
+    const storageState = this.mold.storage.getState(instanceIdToRequestKey(instanceId));
+
+    if (!storageState) {
+      throw new Error(`No state`);
+    }
+
+    const state: InstanceActionState<T> = reactive(storageState) as any;
 
     state[instanceIdPropName] = instanceId;
 

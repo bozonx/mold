@@ -35,6 +35,35 @@ export default class Mold {
   }
 
 
+  /**
+   * Call some action at the backend and return its state
+   */
+  fetch = <T>(
+    actionName: string,
+    actionProps: ActionProps,
+    changeCb: (state: ActionState<T>) => void
+  ): string => {
+    const requestKey: RequestKey = makeRequestKey(actionName, actionProps);
+    // init state if it doesn't exist
+    this.storage.initStateIfNeed(requestKey);
+    // listen of changes of just created state or existed
+    this.storage.onChange(requestKey, changeCb);
+    // make request to the backend at the next tick and update state
+    setTimeout(() => {
+      this.doRequest(requestKey, actionProps)
+        .catch(this.props.logger.error);
+    });
+
+    return this.instances.add(requestKey);
+  }
+
+  /**
+   * Save some data to backend. It doesn't return any state.
+   */
+  actonSave = async (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
+    // TODO: add
+  }
+
   create = async (props: CreateMethodProps): Promise<void> => {
     // TODO: add
   }
@@ -59,33 +88,6 @@ export default class Mold {
   }
 
   batchDelete = async (props: BatchDeleteMethodProps): Promise<void> => {
-    // TODO: add
-  }
-
-  /**
-   * Call some action at the backend and return its state
-   */
-  fetch = <T>(
-    actionName: string,
-    actionProps: ActionProps,
-    changeCb: (state: ActionState<T>) => void
-  ): string => {
-    const requestKey: RequestKey = makeRequestKey(actionName, actionProps);
-    // init state if it doesn't exist
-    this.storage.initStateIfNeed(requestKey);
-    // listen of changes of just created state or existed
-    this.storage.onChange(requestKey, changeCb);
-    // make request to the backend and update state
-    this.doRequest(requestKey, actionProps)
-      .catch(this.props.logger.error);
-
-    return this.instances.add(requestKey);
-  }
-
-  /**
-   * Save some data to backend. It doesn't return any state.
-   */
-  actonSave = async (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
     // TODO: add
   }
 
