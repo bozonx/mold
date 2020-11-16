@@ -22,11 +22,23 @@ export default class VuexMoldStorage implements StorageAdapter {
 
   }
 
-  patch(id: string, newPartialState: ActionState) {
+  patch(id: string, newPartialState: Partial<ActionState>) {
 
   }
 
-  onChange(cb: (id: string) => void) {
+  delete(id: string) {
+
+  }
+
+  onChange(cb: (id: string) => void): number {
+
+  }
+
+  removeListener(handlerIndex: number) {
+
+  }
+
+  destroy() {
 
   }
 

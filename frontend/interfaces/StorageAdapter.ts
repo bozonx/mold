@@ -2,7 +2,6 @@ import {ActionState} from './MethodsState';
 
 
 export default interface StorageAdapter {
-
   getState(id: string): ActionState;
 
   /**
@@ -13,12 +12,22 @@ export default interface StorageAdapter {
   /**
    * Create or replace state
    */
-  put(id: string, newState: ActionState): void;
+  put(id: string, newState: ActionState);
 
   /**
    * Update state partly
    */
-  patch(id: string, newPartialState: ActionState): void;
+  patch(id: string, newPartialState: Partial<ActionState>);
 
-  onChange(cb: (id: string) => void): void;
+  /**
+   * Delete state and don't rise events on delete.
+   * It shouldn't rise any events after deleting
+   */
+  delete(id: string);
+
+  onChange(cb: (id: string) => void): number;
+
+  removeListener(handlerIndex: number);
+
+  destroy();
 }

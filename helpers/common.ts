@@ -40,3 +40,10 @@ export function calcAllowedLogLevels(logLevel: LogLevel): LogLevel[] {
 
   return LOG_LEVELS.slice(currentLevelIndex) as LogLevel[];
 }
+
+export function isPromise(toCheck: any): boolean {
+  return toCheck
+    && typeof toCheck === 'object'
+    && typeof toCheck.then === 'function'
+    || false;
+}

@@ -1,13 +1,15 @@
-import {ListState, ItemState, ActionState} from './interfaces/MethodsState';
+import {ActionState} from './interfaces/MethodsState';
 import {RequestKey} from './interfaces/RequestKey';
 import Mold from './Mold';
 import StorageAdapter from './interfaces/StorageAdapter';
 import StorageDefault from './StorageDefault';
 import {makeInitialState, requestKeyToString} from '../helpers/common';
+import IndexedEventEmitter from '../helpers/IndexedEventEmitter';
 
 
 export default class StorageManager {
   private readonly storage: StorageAdapter;
+  private readonly events = new IndexedEventEmitter();
 
 
   constructor(mold: Mold) {
@@ -17,6 +19,8 @@ export default class StorageManager {
     else {
       this.storage = new StorageDefault();
     }
+
+    this.storage.onChange(this.handleChange);
   }
 
 
@@ -29,57 +33,42 @@ export default class StorageManager {
     if (this.storage.hasState(id)) return;
 
     this.storage.put(id, makeInitialState());
-
-    // TODO: если нет стейта то создать новый на основе initialState
-    // TODO: use makeListInitialState()
   }
 
-  // /**
-  //  * Init list state in case it hasn't been initialized before.
-  //  */
-  // initListIfNeed(requestKey: RequestKey) {
-  //   // TODO: если нет стейта то создать новый на основе initialState
-  //   // TODO: use makeListInitialState()
-  // }
-  //
-  // initItemIfNeed(requestKey: RequestKey) {
-  //   // TODO: если нет стейта то создать новый на основе initialState
-  //   // TODO: use makeItemInitialState()
-  // }
+  patch(requestKey: RequestKey, partialState: Partial<ActionState>) {
+    const id: string = requestKeyToString(requestKey);
 
-  update(requestKey: RequestKey, partialState: Partial<ActionState>) {
-    // TODO: внести изменения
-    // TODO: поднять события
+    this.storage.patch(id, partialState);
   }
 
-  // updateList(requestKey: RequestKey, partialState: Partial<ListState>) {
-  //   // TODO: внести изменения
-  //   // TODO: поднять события
-  // }
-  //
-  // updateItem(requestKey: RequestKey, partialState: Partial<ItemState>) {
-  //   // TODO: внести изменения
-  //   // TODO: поднять события
-  // }
+  delete(requestKey: RequestKey) {
+    const id: string = requestKeyToString(requestKey);
 
-  destroyRequest(requestKey: RequestKey) {
-    // TODO: remove storage
-    // TODO: remove event listeners of storage
+    this.storage.delete(id);
   }
 
   destroy() {
-    // TODO: add
+    this.storage.destroy();
   }
 
   /**
    * Listen of changes of any part of state of request
    */
   onChange(requestKey: RequestKey, cb: (newState: any) => void): number {
-    // TODO: add
+    const id: string = requestKeyToString(requestKey);
+
+    return this.events.addListener(id, cb);
   }
 
   removeListener(handlerIndex: number) {
-    // TODO: add
+    this.events.removeListener(handlerIndex);
+  }
+
+
+  private handleChange = (id: string) => {
+    if (!this.storage.hasState(id)) return;
+
+    this.events.emit(id, this.storage.getState(id));
   }
 
 }
