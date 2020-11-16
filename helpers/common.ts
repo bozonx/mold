@@ -4,11 +4,11 @@ import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestK
 import {ActionState,} from '../frontend/interfaces/MethodsState';
 
 
-export function makeRequestKey(action: string, props: ActionProps): RequestKey {
+export function makeRequestKey(props: ActionProps): RequestKey {
   return [
     props.backend || 'default',
     props.set,
-    action,
+    props.action,
     // TODO: отсортировать query и meta
     JSON.stringify({
       id: props.id,

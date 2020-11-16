@@ -23,7 +23,7 @@ import {instanceIdToRequestKey} from '../../helpers/common';
  */
 export default class VueMold {
   private props: Partial<MoldFrontendProps>;
-  private readonly mold: Mold;
+  readonly mold: Mold;
 
 
   constructor(props: Partial<MoldFrontendProps>) {

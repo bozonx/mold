@@ -1,22 +1,43 @@
-import {onUnmounted, SetupContext} from '@vue/composition-api';
-import VueMold from './VueMold';
-import {ActionState, ListResponse} from '../../frontend/interfaces/MethodsState';
-import {ActionProps} from '../../frontend/interfaces/MethodsProps';
+import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
+import {
+  ActionState,
+  InstanceActionState,
+  ListResponse
+} from '../../frontend/interfaces/MethodsState';
+import {ActionProps, ActionPropsBase} from '../../frontend/interfaces/MethodsProps';
+import Mold from '../../frontend/Mold';
+import {instanceIdToRequestKey} from '../../helpers/common';
+import {INSTANCE_ID_PROP_NAME} from '../../frontend/constants';
 
 
 export default function moldFind<T>(
   context: SetupContext,
-  methodProps: ActionProps
+  actionProps: ActionPropsBase
 ): ActionState<ListResponse<T>> {
+  // TODO: review
   // @ts-ignore
-  const mold: VueMold = context.root.$mold;
+  const mold: Mold = context.root.$mold.mold;
+  // init request but don't make a request it self
+  const instanceId: string = mold.initRequest({
+    action: 'find',
+    isGetting: true,
+    ...actionProps
+  });
+  const state: InstanceActionState<ListResponse<T>> = reactive({
+    ...mold.getState(instanceId),
+    [INSTANCE_ID_PROP_NAME]: instanceId,
+  });
+  // update reactive at any change
+  mold.onChange(instanceId, (newState: ActionState) => {
+    for (let key of Object.keys(newState)) state[key] = newState[key];
+  });
 
-  // TODO: set action name
-  // TODO: set isGetting
-  const state = mold.find<T>(methodProps);
+  mold.start(instanceId);
+
+  // TODO: start request
 
   onUnmounted(() => {
-    mold.destroyInstance(state);
+    mold.destroyInstance(state[INSTANCE_ID_PROP_NAME]);
   });
 
   return state;

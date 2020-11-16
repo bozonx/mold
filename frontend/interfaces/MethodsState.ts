@@ -1,8 +1,6 @@
 import {JsonData} from '../../interfaces/Types';
 import {ResponseError} from '../../interfaces/BackendResponse';
 
-export const instanceIdPropName = '__instanceId';
-
 
 export interface ActionState<T = JsonData> {
   // it is loading or saving first time or further at the moment

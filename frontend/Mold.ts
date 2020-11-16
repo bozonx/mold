@@ -28,84 +28,22 @@ export default class Mold {
 
 
   /**
-   * Call some action at the backend and return its state
+   * Init request if need and make a new request instance id
    */
-  fetch = <T>(
-    // TODO: перенести в props
-    actionName: string,
-    actionProps: ActionProps,
-    changeCb: (state: ActionState<T>) => void
-  ): string => {
-    const requestKey: RequestKey = makeRequestKey(actionName, actionProps);
+  initRequest(actionProps: ActionProps): string {
+    const requestKey: RequestKey = makeRequestKey(actionProps);
     // init state if it doesn't exist
     this.storage.initStateIfNeed(requestKey);
-    // listen of changes of just created state or existed
-    this.storage.onChange(requestKey, changeCb);
-    // make request to the backend at the next tick and update state
-    setTimeout(() => {
-      this.doRequest(requestKey, actionProps)
-        .catch(this.props.logger.error);
-    });
 
     return this.instances.add(requestKey);
   }
 
-  // /**
-  //  * Save some data to backend. It doesn't return any state.
-  //  */
-  // actonSave = async (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
-  //   // TODO: add
-  // }
-  //
-  // create = async (props: CreateMethodProps): Promise<void> => {
-  //   // TODO: add
-  // }
-  //
-  // patch = async (props: PatchMethodProps): Promise<void> => {
-  //   // TODO: add
-  // }
-  //
-  // /**
-  //  * Create or update
-  //  */
-  // save = async (props: SaveMethodProps): Promise<void> => {
-  //   // TODO: add
-  // }
-  //
-  // delete = async (props: DeleteMethodProps): Promise<void> => {
-  //   // TODO: add
-  // }
-  //
-  // batchPatch = async (props: BatchPatchMethodProps): Promise<void> => {
-  //   // TODO: add
-  // }
-  //
-  // batchDelete = async (props: BatchDeleteMethodProps): Promise<void> => {
-  //   // TODO: add
-  // }
-
-  destroyRequest = (instanceId: string) => {
-    //this.storage.destroyRequest(requestKey);
-    //this.backend.destroyRequest(requestKey);
-
-    // TODO: удалять только если нет больше инстансов
-    // TODO: push тоже ???
+  onChange(instanceId: string, changeCb: (state: ActionState) => void) {
+    // listen of changes of just created state or existed
+    this.storage.onChange(requestKey, changeCb);
   }
 
-  destroy = () => {
-    //this.push.destroy();
-    this.backend.destroy();
-    this.storage.destroy();
-    //this.instances.destroy();
-  }
-
-
-  private prepareProps(props: Partial<MoldFrontendProps>): MoldFrontendProps {
-    // TODO: check props and merge with defaults
-    return props as any;
-  }
-
-  private async doRequest(requestKey: RequestKey, props: ActionProps) {
+  async start(instanceId: string) {
     let response: BackendResponse;
     // set state of start loading
     this.storage.patch(requestKey, { pending: true });
@@ -135,7 +73,84 @@ export default class Mold {
     });
   }
 
+  // /**
+  //  * Call some action at the backend and return its state
+  //  */
+  // fetch = <T>(
+  //   actionProps: ActionProps,
+  //   changeCb: (state: ActionState<T>) => void
+  // ): string => {
+  //   const requestKey: RequestKey = makeRequestKey(actionName, actionProps);
+  //   // init state if it doesn't exist
+  //   this.storage.initStateIfNeed(requestKey);
+  //   // listen of changes of just created state or existed
+  //   this.storage.onChange(requestKey, changeCb);
+  //   // make request to the backend at the next tick and update state
+  //   setTimeout(() => {
+  //     this.doRequest(requestKey, actionProps)
+  //       .catch(this.props.logger.error);
+  //   });
+  //
+  //   return this.instances.add(requestKey);
+  // }
+
+  destroyRequest = (instanceId: string) => {
+    //this.storage.destroyRequest(requestKey);
+    //this.backend.destroyRequest(requestKey);
+
+    // TODO: удалять только если нет больше инстансов
+    // TODO: push тоже ???
+  }
+
+  destroy = () => {
+    //this.push.destroy();
+    this.backend.destroy();
+    this.storage.destroy();
+    //this.instances.destroy();
+  }
+
+
+  private prepareProps(props: Partial<MoldFrontendProps>): MoldFrontendProps {
+    // TODO: check props and merge with defaults
+    return props as any;
+  }
+
 }
+
+
+// /**
+//  * Save some data to backend. It doesn't return any state.
+//  */
+// actonSave = async (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
+//   // TODO: add
+// }
+//
+// create = async (props: CreateMethodProps): Promise<void> => {
+//   // TODO: add
+// }
+//
+// patch = async (props: PatchMethodProps): Promise<void> => {
+//   // TODO: add
+// }
+//
+// /**
+//  * Create or update
+//  */
+// save = async (props: SaveMethodProps): Promise<void> => {
+//   // TODO: add
+// }
+//
+// delete = async (props: DeleteMethodProps): Promise<void> => {
+//   // TODO: add
+// }
+//
+// batchPatch = async (props: BatchPatchMethodProps): Promise<void> => {
+//   // TODO: add
+// }
+//
+// batchDelete = async (props: BatchDeleteMethodProps): Promise<void> => {
+//   // TODO: add
+// }
 
 // /**
 //  * Find several records.
