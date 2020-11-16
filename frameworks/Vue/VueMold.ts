@@ -8,7 +8,7 @@ import {
   FindMethodProps,
   GetMethodProps, PatchMethodProps, SaveMethodProps,
 } from '../../frontend/interfaces/MethodsProps';
-import {ListState, ItemState} from '../../frontend/interfaces/MethodsState';
+import {ListState, ItemState, ActionState} from '../../frontend/interfaces/MethodsState';
 import MoldFrontendProps from '../../frontend/interfaces/MoldFrontendProps';
 
 
@@ -30,57 +30,40 @@ export default class VueMold {
 
 
   find = <T>(props: FindMethodProps): ListState<T> => {
-    const state: UnwrapRef<ListState<T>> = reactive<ListState<T>>({
-      // TODO: как его установить ???
-      $requestId: null,
-      //...makeListInitialState(),
-    } as any);
-
-    // TODO: $requestId наверное можно установить во вне через state.$requestId
-
-    // TODO: может он вовращает { stateId, promise }
-    this.mold.find(props, (newState: ListState<T>) => {
+    const state: UnwrapRef<ListState<T>> = reactive<ListState<T>>({} as any);
+    const instanceId: string = this.mold.find<T>(props, (newState: ListState<T>) => {
       for (let key of Object.keys(newState)) {
         state[key] = newState[key];
       }
-    }).catch(this.props.logger.error);
+    });
+
+    state.__instanceId = instanceId;
 
     return state as ListState<T>;
   }
 
   get = <T>(props: GetMethodProps): ItemState<T> => {
-    const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({
-      // TODO: как его установить ???
-      $requestId: null,
-
-      loading: false,
-      loadedOnce: false,
-      lastErrors: null,
-      item: null,
-    } as any);
-
-    this.mold.get(props, (newState: ItemState<T>) => {
+    const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({} as any);
+    const instanceId: string = this.mold.get<T>(props, (newState: ItemState<T>) => {
       for (let key of Object.keys(newState)) {
         state[key] = newState[key];
       }
-    }).catch(this.props.logger.error);
+    });
+
+    state.__instanceId = instanceId;
 
     return state as ItemState<T>;
   }
 
   getFirst = <T>(props: GetMethodProps): ItemState<T> => {
-    const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({
-      loading: false,
-      loadedOnce: false,
-      lastErrors: null,
-      item: null,
-    });
-
-    this.mold.getFirst(props, (newState: ItemState<T>) => {
+    const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({} as any);
+    const instanceId: string = this.mold.getFirst<T>(props, (newState: ItemState<T>) => {
       for (let key of Object.keys(newState)) {
         state[key] = newState[key];
       }
-    }).catch(this.onError);
+    });
+
+    state.__instanceId = instanceId;
 
     return state as ItemState<T>;
   }
@@ -109,9 +92,24 @@ export default class VueMold {
     return this.mold.batchDelete(props);
   }
 
-  actonFetch = (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
-    // TODO: должно вернуть стейт
-    return this.mold.actonFetch(actionName, actionProps);
+  actonFetch = <T>(
+    actionName: string,
+    actionProps: {[index: string]: any}
+  ): ActionState<T> => {
+    const state: UnwrapRef<ActionState<T>> = reactive<ActionState<T>>({} as any);
+    const instanceId: string = this.mold.actonFetch<T>(
+      actionName,
+      actionProps,
+      (newState: ActionState<T>) => {
+        for (let key of Object.keys(newState)) {
+          state[key] = newState[key];
+        }
+      }
+    );
+
+    state.__instanceId = instanceId;
+
+    return state as ActionState<T>;
   }
 
   actonSave = (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {

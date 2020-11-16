@@ -1,3 +1,5 @@
+import {JsonTypes} from '../../interfaces/Types';
+
 interface RequestError {
   code: number;
   message: string;
@@ -48,4 +50,8 @@ export interface ItemState<T = any> extends RequestState, GetResponse<T>, Instan
   saving: boolean;
   // soft or hard deleting
   deleting: boolean;
+}
+
+export interface ActionState<T> extends RequestState {
+  data: T | null;
 }

@@ -5,13 +5,14 @@ import {
   FindMethodProps,
   GetMethodProps, PatchMethodProps, SaveMethodProps,
 } from './interfaces/MethodsProps';
-import {ListState, ItemState, FindResponse, GetResponse} from './interfaces/MethodsState';
+import {ListState, ItemState, FindResponse, GetResponse, ActionState} from './interfaces/MethodsState';
 import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
 import {makeRequestKey} from '../helpers/common';
 import PushesManager from './PushesManager';
 import MoldFrontendProps from './interfaces/MoldFrontendProps';
 import {RequestKey} from './interfaces/RequestKey';
+import RequestInstances from './RequestInstances';
 
 
 export default class Mold {
@@ -19,6 +20,7 @@ export default class Mold {
   readonly backend: BackendManager;
   readonly push: PushesManager;
   readonly storage: StorageManager;
+  readonly instances: RequestInstances;
 
 
   constructor(props: Partial<MoldFrontendProps>) {
@@ -26,41 +28,26 @@ export default class Mold {
     this.backend = new BackendManager(this);
     this.push = new PushesManager(this);
     this.storage = new StorageManager();
+    this.instances = new RequestInstances();
   }
 
 
   /**
-   * Find several records
-   * cb will be called on any state change - start loading, finish, error and data change.
+   * Find several records.
+   * changeCb will be called on any state change - start loading, finish, error and data change.
+   * @return instance id.
    */
-  find = async <T>(props: FindMethodProps, cb: (state: ListState<T>) => void): Promise<void> => {
+  find = <T>(props: FindMethodProps, changeCb: (state: ListState<T>) => void): string => {
     const requestKey: RequestKey = makeRequestKey('find', props);
-
+    // init list state if it doesn't exist
     this.storage.initListIfNeed(requestKey);
-    this.storage.onChange(requestKey, cb);
-    // set state of start loading
-    this.storage.updateList(requestKey, { loading: true });
+    // listen of change of just created state or existed
+    this.storage.onChange(requestKey, changeCb);
+    // make request to the backend and update state
+    this.doFindRequest(requestKey, props)
+      .catch(this.props.logger.error);
 
-    let result: FindResponse<T>;
-
-    try {
-      result = await this.backend.find<T>(requestKey, props);
-    }
-    catch (e) {
-      // TODO: если это новый реквест то можно задестроить,
-      //  если нет то наверное добавить ошибку в стейт
-      // actually error shouldn't be real. Because request errors are in the result.
-      //this.destroyRequest(requestKey);
-
-      throw e;
-    }
-
-    this.storage.updateList(requestKey, {
-      loading: false,
-      loadedOnce: true,
-      // TODO: add errors
-      ...result,
-    });
+    return this.instances.add(requestKey);
   }
 
   /**
@@ -68,16 +55,20 @@ export default class Mold {
    */
   get = async <T>(props: GetMethodProps, cb: (state: ItemState<T>) => void): Promise<void> => {
     const requestKey: RequestKey = makeRequestKey('get', props);
+    const instanceId: string = this.instances.add(requestKey);
 
     this.storage.initItemIfNeed(requestKey);
     this.storage.onChange(requestKey, cb);
     // set state of start loading
     this.storage.updateItem(requestKey, { loading: true });
 
+    // TODO: move to doGetRequest
+
+    // TODO: review type
     let result: GetResponse<T>;
 
     try {
-      result = this.backend.get<T>(requestKey, props);
+      result = await this.backend.get<T>(requestKey, props);
     }
     catch (e) {
       // actually error shouldn't be real. Because request errors are in the result.
@@ -142,7 +133,14 @@ export default class Mold {
   /**
    * Call some action at a backend and return its state
    */
-  actonFetch = async (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
+  actonFetch = async <T>(
+    actionName: string,
+    actionProps: {[index: string]: any},
+    changeCb: (state: ActionState<T>) => void
+  ): string => {
+
+    // TODO: наверное возвращать instanceId лучше
+
     // TODO: add
     // TODO: должно вернуть стейт
   }
@@ -167,6 +165,32 @@ export default class Mold {
 
   private prepareProps(props: Partial<MoldFrontendProps>): MoldFrontendProps {
     // TODO: check props and merge with defaults
+  }
+
+  private async doFindRequest(requestKey: RequestKey, props: FindMethodProps) {
+    // TODO: review type
+    let result: FindResponse;
+    // set state of start loading
+    this.storage.updateList(requestKey, { loading: true });
+
+    try {
+      result = await this.backend.find(requestKey, props);
+    }
+    catch (e) {
+      // TODO: если это новый реквест то можно задестроить,
+      //  если нет то наверное добавить ошибку в стейт
+      // actually error shouldn't be real. Because request errors are in the result.
+      //this.destroyRequest(requestKey);
+
+      throw e;
+    }
+
+    this.storage.updateList(requestKey, {
+      loading: false,
+      loadedOnce: true,
+      // TODO: add errors
+      ...result,
+    });
   }
 
 }
