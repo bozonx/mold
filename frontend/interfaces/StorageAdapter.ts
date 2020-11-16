@@ -1,8 +1,11 @@
 import {ActionState} from './MethodsState';
+import Mold from '../Mold';
 
 
 export default interface StorageAdapter {
-  getState(id: string): ActionState;
+  $init?(mold: Mold);
+
+  getState(id: string): ActionState | undefined;
 
   /**
    * Checks is state exists

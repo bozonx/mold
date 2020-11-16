@@ -14,7 +14,7 @@ export default class StorageDefault implements StorageAdapter {
   // }
 
 
-  getState(id: string): ActionState {
+  getState(id: string): ActionState | undefined {
 
   }
 

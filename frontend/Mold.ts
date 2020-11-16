@@ -102,6 +102,7 @@ export default class Mold {
 
   private prepareProps(props: Partial<MoldFrontendProps>): MoldFrontendProps {
     // TODO: check props and merge with defaults
+    return props as any;
   }
 
   private async doRequest(requestKey: RequestKey, props: ActionProps) {

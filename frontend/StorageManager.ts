@@ -20,6 +20,8 @@ export default class StorageManager {
       this.storage = new StorageDefault();
     }
 
+    if (this.storage.$init) this.storage.$init(mold);
+
     this.storage.onChange(this.handleChange);
   }
 
@@ -41,14 +43,19 @@ export default class StorageManager {
     this.storage.patch(id, partialState);
   }
 
+  /**
+   * Delete state and event handlers
+   */
   delete(requestKey: RequestKey) {
     const id: string = requestKeyToString(requestKey);
 
     this.storage.delete(id);
+    this.events.removeAllListeners(id);
   }
 
   destroy() {
     this.storage.destroy();
+    this.events.destroy();
   }
 
   /**
