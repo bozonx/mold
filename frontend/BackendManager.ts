@@ -4,6 +4,7 @@ import {RequestKey, REQUEST_KEY_POSITIONS} from './interfaces/RequestKey';
 import BackendClient from '../interfaces/BackendClient';
 import BackendRequest from '../interfaces/BackendRequest';
 import BackendResponse from '../interfaces/BackendResponse';
+import {isEmptyObject} from '../helpers/objects';
 
 
 export default class BackendManager {
@@ -51,6 +52,35 @@ export default class BackendManager {
     // TODO: бэкэнд должен всегда возвращать resolved
 
     return response;
+  }
+
+  destroyRequest(requestKey: RequestKey) {
+    const {backend, set, action, request} = REQUEST_KEY_POSITIONS;
+
+    if (
+      this.requests[backend]
+      && this.requests[backend][set]
+      && this.requests[backend][set][action]
+      && this.requests[backend][set][action][request]
+    ) {
+      delete this.requests[backend][set][action][request];
+    }
+
+    if (isEmptyObject(this.requests[backend][set][action])) {
+      delete this.requests[backend][set][action];
+    }
+
+    if (isEmptyObject(this.requests[backend][set])) {
+      delete this.requests[backend][set];
+    }
+
+    if (isEmptyObject(this.requests[backend])) {
+      delete this.requests[backend];
+    }
+  }
+
+  destroy() {
+    // TODO: add!!!
   }
 
 

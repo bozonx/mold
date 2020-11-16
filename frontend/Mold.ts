@@ -86,12 +86,17 @@ export default class Mold {
 
   destroyRequest = (instanceId: string) => {
     //this.storage.destroyRequest(requestKey);
+    //this.backend.destroyRequest(requestKey);
 
+    // TODO: удалять только если нет больше инстансов
     // TODO: add call push, request
   }
 
   destroy = () => {
-    // TODO: add
+    //this.push.destroy();
+    this.backend.destroy();
+    this.storage.destroy();
+    //this.instances.destroy();
   }
 
 

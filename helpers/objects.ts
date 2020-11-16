@@ -31,3 +31,16 @@ export function omitUndefined(obj: {[index: string]: any} | undefined): {[index:
 
   return result;
 }
+
+/**
+ * Check is object is empty.
+ * For other types it will return true.
+ * Null means an empty object too. Better is not to use null.
+ */
+export function isEmptyObject(toCheck: {[index: string]: any} = {}): boolean {
+  if (typeof toCheck !== 'object' || Array.isArray(toCheck)) {
+    return true;
+  }
+
+  return !Object.keys(toCheck || {}).length;
+}
