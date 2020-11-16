@@ -13,7 +13,7 @@ import BackendManager from './BackendManager';
 import {makeRequestKey} from '../helpers/common';
 import PushesManager from './PushesManager';
 import MoldFrontendProps from './interfaces/MoldFrontendProps';
-import {REQUEST_KEY_POSITOINS, RequestKey} from './interfaces/RequestKey';
+import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import RequestInstances from './RequestInstances';
 import BackendResponse from '../interfaces/BackendResponse';
 
@@ -57,39 +57,39 @@ export default class Mold {
     return this.instances.add(requestKey);
   }
 
-  /**
-   * Save some data to backend. It doesn't return any state.
-   */
-  actonSave = async (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
-    // TODO: add
-  }
-
-  create = async (props: CreateMethodProps): Promise<void> => {
-    // TODO: add
-  }
-
-  patch = async (props: PatchMethodProps): Promise<void> => {
-    // TODO: add
-  }
-
-  /**
-   * Create or update
-   */
-  save = async (props: SaveMethodProps): Promise<void> => {
-    // TODO: add
-  }
-
-  delete = async (props: DeleteMethodProps): Promise<void> => {
-    // TODO: add
-  }
-
-  batchPatch = async (props: BatchPatchMethodProps): Promise<void> => {
-    // TODO: add
-  }
-
-  batchDelete = async (props: BatchDeleteMethodProps): Promise<void> => {
-    // TODO: add
-  }
+  // /**
+  //  * Save some data to backend. It doesn't return any state.
+  //  */
+  // actonSave = async (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
+  //   // TODO: add
+  // }
+  //
+  // create = async (props: CreateMethodProps): Promise<void> => {
+  //   // TODO: add
+  // }
+  //
+  // patch = async (props: PatchMethodProps): Promise<void> => {
+  //   // TODO: add
+  // }
+  //
+  // /**
+  //  * Create or update
+  //  */
+  // save = async (props: SaveMethodProps): Promise<void> => {
+  //   // TODO: add
+  // }
+  //
+  // delete = async (props: DeleteMethodProps): Promise<void> => {
+  //   // TODO: add
+  // }
+  //
+  // batchPatch = async (props: BatchPatchMethodProps): Promise<void> => {
+  //   // TODO: add
+  // }
+  //
+  // batchDelete = async (props: BatchDeleteMethodProps): Promise<void> => {
+  //   // TODO: add
+  // }
 
   destroyRequest = (instanceId: string) => {
     //this.storage.destroyRequest(requestKey);
@@ -112,9 +112,10 @@ export default class Mold {
     // set state of start loading
     this.storage.patch(requestKey, { pending: true });
 
+    // TODO: поидее можно не делать try
     try {
       response = await this.backend.fetch(requestKey, {
-        action: requestKey[REQUEST_KEY_POSITOINS.action],
+        action: requestKey[REQUEST_KEY_POSITIONS.action],
         ...props,
       });
     }
