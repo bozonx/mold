@@ -89,7 +89,7 @@ export default class Mold {
     //this.backend.destroyRequest(requestKey);
 
     // TODO: удалять только если нет больше инстансов
-    // TODO: add call push, request
+    // TODO: push тоже ???
   }
 
   destroy = () => {
