@@ -108,7 +108,7 @@ export default class Mold {
   private async doRequest(requestKey: RequestKey, props: ActionProps) {
     let response: BackendResponse;
     // set state of start loading
-    this.storage.update(requestKey, { loading: true });
+    this.storage.patch(requestKey, { pending: true });
 
     try {
       response = await this.backend.fetch(requestKey, {
@@ -125,9 +125,9 @@ export default class Mold {
       throw e;
     }
 
-    this.storage.update(requestKey, {
-      loading: false,
-      loadedOnce: true,
+    this.storage.patch(requestKey, {
+      pending: false,
+      finishedOnce: true,
       responseStatus: response.status,
       responseErrors: response.errors,
       data: response.result,

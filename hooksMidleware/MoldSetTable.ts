@@ -11,6 +11,8 @@ interface MoldSetTableProps {
 }
 
 
+// TODO: rename to MoldSetCrud
+
 export default class MoldSetTable implements MoldSet {
   constructor(props: MoldSetTableProps, hooks: MoldHook[]) {
   }

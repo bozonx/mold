@@ -1,13 +1,15 @@
-import {ItemState} from '../../frontend/interfaces/MethodsState';
 import {onUnmounted, SetupContext} from '@vue/composition-api';
 import VueMold from './VueMold';
-import {GetMethodProps} from '../../frontend/interfaces/MethodsProps';
+import {ActionProps} from '../../frontend/interfaces/MethodsProps';
+import {ActionState} from '../../frontend/interfaces/MethodsState';
 
+
+// TODO: задать специфический тип для item
 
 export default function moldItem<T>(
   context: SetupContext,
-  methodProps: GetMethodProps
-): ItemState<T> {
+  methodProps: ActionProps
+): ActionState<T> {
   // @ts-ignore
   const mold: VueMold = context.root.$mold;
 
