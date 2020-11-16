@@ -29,7 +29,7 @@ export default function moldFind<T>(
   mold.onChange(instanceId, (newState: ActionState) => {
     for (let key of Object.keys(newState)) state[key] = newState[key];
   });
-  // start request
+  // start request immediately
   mold.start(instanceId);
 
   onUnmounted(() => {

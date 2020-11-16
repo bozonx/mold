@@ -35,17 +35,13 @@ export default class Mold {
     // init state if it doesn't exist
     this.storage.initStateIfNeed(requestKey);
 
+    // TODO: зарегистрировать запрос
+
     return this.instances.add(requestKey);
   }
 
   getState(instanceId: string): ActionState {
 
-  }
-
-  onChange(instanceId: string, changeCb: (state: ActionState) => void) {
-    const requestKey = instanceIdToRequestKey(instanceId);
-    // listen of changes of just created state or existed
-    this.storage.onChange(requestKey, changeCb);
   }
 
   start(instanceId: string) {
@@ -76,6 +72,16 @@ export default class Mold {
       responseErrors: response.errors,
       result: response.result,
     });
+  }
+
+  onChange(instanceId: string, changeCb: (state: ActionState) => void): number {
+    const requestKey = instanceIdToRequestKey(instanceId);
+    // listen of changes of just created state or existed
+    this.storage.onChange(requestKey, changeCb);
+  }
+
+  removeListener(handleIndex: number) {
+
   }
 
   // /**
