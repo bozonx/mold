@@ -2,7 +2,7 @@ import {ActionProps} from './interfaces/MethodsProps';
 import {ActionState} from './interfaces/MethodsState';
 import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
-import {makeRequestKey} from '../helpers/common';
+import {instanceIdToRequestKey, makeRequestKey} from '../helpers/common';
 import PushesManager from './PushesManager';
 import MoldFrontendProps from './interfaces/MoldFrontendProps';
 import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
@@ -38,12 +38,17 @@ export default class Mold {
     return this.instances.add(requestKey);
   }
 
+  getState(instanceId: string): ActionState {
+
+  }
+
   onChange(instanceId: string, changeCb: (state: ActionState) => void) {
+    const requestKey = instanceIdToRequestKey(instanceId);
     // listen of changes of just created state or existed
     this.storage.onChange(requestKey, changeCb);
   }
 
-  async start(instanceId: string) {
+  start(instanceId: string) {
     let response: BackendResponse;
     // set state of start loading
     this.storage.patch(requestKey, { pending: true });
@@ -94,7 +99,7 @@ export default class Mold {
   //   return this.instances.add(requestKey);
   // }
 
-  destroyRequest = (instanceId: string) => {
+  destroyInstance = (instanceId: string) => {
     //this.storage.destroyRequest(requestKey);
     //this.backend.destroyRequest(requestKey);
 
