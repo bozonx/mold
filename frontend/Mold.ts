@@ -1,12 +1,4 @@
-import {
-  ActionProps,
-  BatchDeleteMethodProps,
-  BatchPatchMethodProps,
-  CreateMethodProps,
-  DeleteMethodProps,
-  PatchMethodProps,
-  SaveMethodProps,
-} from './interfaces/MethodsProps';
+import {ActionProps} from './interfaces/MethodsProps';
 import {ActionState} from './interfaces/MethodsState';
 import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
@@ -39,6 +31,7 @@ export default class Mold {
    * Call some action at the backend and return its state
    */
   fetch = <T>(
+    // TODO: перенести в props
     actionName: string,
     actionProps: ActionProps,
     changeCb: (state: ActionState<T>) => void
@@ -114,7 +107,7 @@ export default class Mold {
 
     // TODO: поидее можно не делать try
     try {
-      response = await this.backend.fetch(requestKey, {
+      response = await this.backend.request(requestKey, {
         action: requestKey[REQUEST_KEY_POSITIONS.action],
         ...props,
       });

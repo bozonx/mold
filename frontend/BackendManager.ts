@@ -1,10 +1,9 @@
-import {ActionProps, MethodPropsBase} from './interfaces/MethodsProps';
+import {ActionProps} from './interfaces/MethodsProps';
 import Mold from './Mold';
 import {RequestKey, REQUEST_KEY_POSITIONS} from './interfaces/RequestKey';
 import BackendClient from '../interfaces/BackendClient';
 import BackendRequest from '../interfaces/BackendRequest';
-import BackendResponse, {ResponseError} from '../interfaces/BackendResponse';
-import {JsonData} from '../interfaces/Types';
+import BackendResponse from '../interfaces/BackendResponse';
 
 
 export default class BackendManager {
@@ -25,7 +24,7 @@ export default class BackendManager {
     return this.mold.props.backends[backendName];
   }
 
-  async fetch<T = any>(
+  async request<T = any>(
     requestKey: RequestKey,
     // TODO: backend и set не нужны, так как есть requestKey
     props: ActionProps & {action: string}
@@ -51,22 +50,9 @@ export default class BackendManager {
 
     // TODO: бэкэнд должен всегда возвращать resolved
 
-    return new Promise((resolve) => {
-
-
-      setTimeout(() => {
-        resolve({
-          status: 200,
-          errors: null,
-          result: {
-            items: [
-              { name: 'fff' }
-            ]
-          }
-        })
-      }, 1000)
-    });
+    return response;
   }
+
 
   private makeRequest(requestKey: RequestKey, props: ActionProps): BackendRequest {
     return {

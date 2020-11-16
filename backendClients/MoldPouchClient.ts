@@ -1,5 +1,7 @@
 import BackendClient from '../interfaces/BackendClient';
 import {MoldMiddleware} from '../interfaces/MoldMiddleware';
+import BackendRequest from '../interfaces/BackendRequest';
+import BackendResponse from '../interfaces/BackendResponse';
 
 
 interface MoldPouchClientProps {
@@ -21,24 +23,19 @@ export default class MoldPouchClient implements BackendClient {
   }
 
 
-  // find(props: Omit<FindProps, 'backend'>): Promise<FindResponse> {
-  //   return this.backend.getEntity(props.entity).find(omitObj(props, 'entity') as any);
-  // }
-  //
-  // get(props: Omit<GetItemProps, 'backend'>): Promise<GetResponse> {
-  //   return this.backend.getEntity(props.entity).get(omitObj(props, 'entity') as any);
-  // }
-  //
-  // create(props: Omit<CreateProps, 'backend'>): Promise<void> {
-  //   return this.backend.getEntity(props.entity).create(omitObj(props, 'entity') as any);
-  // }
-  //
-  // update(props: Omit<UpdateProps, 'backend'>): Promise<void> {
-  //   return this.backend.getEntity(props.entity).update(omitObj(props, 'entity') as any);
-  // }
-  //
-  // delete(props: Omit<DeleteProps, 'backend'>): Promise<void> {
-  //   return this.backend.getEntity(props.entity).delete(omitObj(props, 'entity') as any);
-  // }
-
+  async request(request: BackendRequest): Promise<BackendResponse> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          status: 200,
+          errors: null,
+          result: {
+            items: [
+              { name: 'fff' }
+            ]
+          }
+        })
+      }, 3000)
+    });
+  }
 }
