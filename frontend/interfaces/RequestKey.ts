@@ -1,3 +1,5 @@
+export const REQUEST_KEY_SEPARATOR = '|';
+
 export enum REQUEST_KEY_POSITOINS {
   backend,
   set,

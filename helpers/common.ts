@@ -1,7 +1,7 @@
 import {ActionProps} from '../frontend/interfaces/MethodsProps';
 import {LOG_LEVELS, LogLevel} from '../frontend/interfaces/Logger';
-import {RequestKey} from '../frontend/interfaces/RequestKey';
-import {ActionState, ItemState, ListState} from '../frontend/interfaces/MethodsState';
+import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestKey';
+import {ActionState,} from '../frontend/interfaces/MethodsState';
 
 
 export function makeRequestKey(action: string, props: ActionProps): RequestKey {
@@ -18,26 +18,19 @@ export function makeRequestKey(action: string, props: ActionProps): RequestKey {
   ];
 }
 
-export function makeListInitialState<T>(): ActionState<T> {
-  return {
-    loading: false,
-    loadedOnce: false,
-    lastErrors: null,
-    // count: -1,
-    // hasNext: false,
-    // hasPrev: false,
-    // items: null,
-  };
+export function requestKeyToString(requestKey: RequestKey): string {
+  return requestKey.join(REQUEST_KEY_SEPARATOR);
 }
 
-// export function makeItemInitialState<T>(): ItemState<T> {
-//   return {
-//     loading: false,
-//     loadedOnce: false,
-//     lastErrors: null,
-//     //item: null,
-//   };
-// }
+export function makeInitialState(): ActionState {
+  return {
+    pending: false,
+    finishedOnce: false,
+    responseStatus: null,
+    responseErrors: null,
+    data: null,
+  };
+}
 
 /**
  * Makes ['info', 'warn', 'error'] if log level is 'info'

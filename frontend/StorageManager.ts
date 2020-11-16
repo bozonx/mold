@@ -1,17 +1,35 @@
 import {ListState, ItemState, ActionState} from './interfaces/MethodsState';
 import {RequestKey} from './interfaces/RequestKey';
+import Mold from './Mold';
+import StorageAdapter from './interfaces/StorageAdapter';
+import StorageDefault from './StorageDefault';
+import {makeInitialState, requestKeyToString} from '../helpers/common';
 
 
 export default class StorageManager {
-  // TODO: нужно ли делать иерархию для того чтобы делать апдейты, для поиска что обновлять?
-  // storage like { "backend|set|action|requestKey": {...} }
-  private storage: {[index: string]: {[index: string]: any}} = {};
+  private readonly storage: StorageAdapter;
+
+
+  constructor(mold: Mold) {
+    if (mold.props.storage) {
+      this.storage = mold.props.storage;
+    }
+    else {
+      this.storage = new StorageDefault();
+    }
+  }
 
 
   /**
    * Init state in case it hasn't been initialized before.
    */
   initStateIfNeed(requestKey: RequestKey) {
+    const id: string = requestKeyToString(requestKey);
+    // do nothing if there is previously defined state
+    if (this.storage.hasState(id)) return;
+
+    this.storage.put(id, makeInitialState());
+
     // TODO: если нет стейта то создать новый на основе initialState
     // TODO: use makeListInitialState()
   }

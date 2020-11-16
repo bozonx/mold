@@ -5,12 +5,12 @@ export const instanceIdPropName = '__instanceId';
 
 
 export interface ActionState<T = JsonData> {
-  // it it is loading first time or further
-  loading: boolean;
-  // loaded almost once or it is in a cache
-  loadedOnce: boolean;
-  // last response status
-  responseStatus: number;
+  // it is loading or saving first time or further at the moment
+  pending: boolean;
+  // loaded or saved at least once or it is in a cache
+  finishedOnce: boolean;
+  // last response status. Null while loading or saving
+  responseStatus: number | null;
   // last response backend errors
   responseErrors: ResponseError[] | null;
   data: T | null;

@@ -30,7 +30,7 @@ export default class Mold {
     this.props = this.prepareProps(props);
     this.backend = new BackendManager(this);
     this.push = new PushesManager(this);
-    this.storage = new StorageManager();
+    this.storage = new StorageManager(this);
     this.instances = new RequestInstances();
   }
 
@@ -90,7 +90,7 @@ export default class Mold {
   }
 
   destroyRequest = (instanceId: string) => {
-    this.storage.destroyRequest(requestKey);
+    //this.storage.destroyRequest(requestKey);
 
     // TODO: add call push, request
   }
