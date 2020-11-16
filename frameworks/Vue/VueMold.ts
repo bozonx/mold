@@ -1,4 +1,4 @@
-import {reactive, UnwrapRef} from '@vue/composition-api';
+import {reactive} from '@vue/composition-api';
 
 import Mold from '../../frontend/Mold';
 import {
@@ -8,11 +8,13 @@ import {
   FindMethodProps,
   GetMethodProps, PatchMethodProps, SaveMethodProps,
 } from '../../frontend/interfaces/MethodsProps';
-import {ListState, ItemState, ActionState} from '../../frontend/interfaces/MethodsState';
+import {
+  InstanceListState,
+  InstanceItemState,
+  InstanceActionState,
+  instanceIdPropName
+} from '../../frontend/interfaces/MethodsState';
 import MoldFrontendProps from '../../frontend/interfaces/MoldFrontendProps';
-
-
-// TODO: надо самим задать Vue.$mold в плагине
 
 
 /**
@@ -29,43 +31,40 @@ export default class VueMold {
   }
 
 
-  find = <T>(props: FindMethodProps): ListState<T> => {
-    const state: UnwrapRef<ListState<T>> = reactive<ListState<T>>({} as any);
-    const instanceId: string = this.mold.find<T>(props, (newState: ListState<T>) => {
-      for (let key of Object.keys(newState)) {
-        state[key] = newState[key];
-      }
-    });
+  find = <T>(props: FindMethodProps): InstanceListState<T> => {
+    const state: InstanceListState<T> = reactive({}) as any;
+    const instanceId: string = this.mold.find<T>(
+      props,
+      (newState) => this.updateReactive(state, newState)
+    );
 
-    state.__instanceId = instanceId;
+    state[instanceIdPropName] = instanceId;
 
-    return state as ListState<T>;
+    return state;
   }
 
-  get = <T>(props: GetMethodProps): ItemState<T> => {
-    const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({} as any);
-    const instanceId: string = this.mold.get<T>(props, (newState: ItemState<T>) => {
-      for (let key of Object.keys(newState)) {
-        state[key] = newState[key];
-      }
-    });
+  get = <T>(props: GetMethodProps): InstanceItemState<T> => {
+    const state: InstanceItemState<T> = reactive({}) as any;
+    const instanceId: string = this.mold.get<T>(
+      props,
+      (newState) => this.updateReactive(state, newState)
+    );
 
-    state.__instanceId = instanceId;
+    state[instanceIdPropName] = instanceId;
 
-    return state as ItemState<T>;
+    return state;
   }
 
-  getFirst = <T>(props: GetMethodProps): ItemState<T> => {
-    const state: UnwrapRef<ItemState<T>> = reactive<ItemState<T>>({} as any);
-    const instanceId: string = this.mold.getFirst<T>(props, (newState: ItemState<T>) => {
-      for (let key of Object.keys(newState)) {
-        state[key] = newState[key];
-      }
-    });
+  getFirst = <T>(props: GetMethodProps): InstanceItemState<T> => {
+    const state: InstanceItemState<T> = reactive({}) as any;
+    const instanceId: string = this.mold.getFirst<T>(
+      props,
+      (newState) => this.updateReactive(state, newState)
+    );
 
-    state.__instanceId = instanceId;
+    state[instanceIdPropName] = instanceId;
 
-    return state as ItemState<T>;
+    return state;
   }
 
   create = (props: CreateMethodProps): Promise<void> => {
@@ -95,34 +94,36 @@ export default class VueMold {
   actonFetch = <T>(
     actionName: string,
     actionProps: {[index: string]: any}
-  ): ActionState<T> => {
-    const state: UnwrapRef<ActionState<T>> = reactive<ActionState<T>>({} as any);
+  ): InstanceActionState<T> => {
+    const state: InstanceActionState<T> = reactive({}) as any;
     const instanceId: string = this.mold.actonFetch<T>(
       actionName,
       actionProps,
-      (newState: ActionState<T>) => {
-        for (let key of Object.keys(newState)) {
-          state[key] = newState[key];
-        }
-      }
+      (newState) => this.updateReactive(state, newState)
     );
 
-    state.__instanceId = instanceId;
+    state[instanceIdPropName] = instanceId;
 
-    return state as ActionState<T>;
+    return state;
   }
 
   actonSave = (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
     return this.mold.actonSave(actionName, actionProps);
   }
 
-  destroyInstance = (state: ListState | ItemState) => {
-    // TODO: review $requestId
-    this.mold.destroyRequest((state as any).$requestId);
+  destroyInstance = (state: InstanceListState | InstanceItemState | InstanceActionState) => {
+    this.mold.destroyRequest(state[instanceIdPropName]);
   }
 
   destroy = () => {
     this.mold.destroy();
+  }
+
+
+  private updateReactive(state: any, newState: any) {
+    for (let key of Object.keys(newState)) {
+      state[key] = newState[key];
+    }
   }
 
 }

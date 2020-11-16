@@ -53,7 +53,7 @@ export default class Mold {
   /**
    * Get certain record by id
    */
-  get = async <T>(props: GetMethodProps, cb: (state: ItemState<T>) => void): Promise<void> => {
+  get = async <T>(props: GetMethodProps, cb: (state: ItemState<T>) => void): string => {
     const requestKey: RequestKey = makeRequestKey('get', props);
     const instanceId: string = this.instances.add(requestKey);
 
@@ -99,7 +99,7 @@ export default class Mold {
   /**
    * Get the first result by query
    */
-  getFirst = async <T>(props: GetMethodProps, cb: (state: ItemState<T>) => void): Promise<void> => {
+  getFirst = async <T>(props: GetMethodProps, cb: (state: ItemState<T>) => void): string => {
     // TODO: add
   }
 
@@ -152,7 +152,7 @@ export default class Mold {
     // TODO: add
   }
 
-  destroyRequest = (requestKey: RequestKey) => {
+  destroyRequest = (instanceId: string) => {
     this.storage.destroyRequest(requestKey);
 
     // TODO: add call push, request

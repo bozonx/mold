@@ -1,4 +1,5 @@
-import {JsonTypes} from '../../interfaces/Types';
+export const instanceIdPropName = '__instanceId';
+
 
 interface RequestError {
   code: number;
@@ -42,16 +43,20 @@ export interface InstanceState {
   __instanceId: string;
 }
 
-export interface ListState<T = any> extends RequestState, FindResponse<T>, InstanceState {
+export interface ListState<T = any> extends RequestState, FindResponse<T> {
 }
 
-export interface ItemState<T = any> extends RequestState, GetResponse<T>, InstanceState {
+export interface ItemState<T = any> extends RequestState, GetResponse<T> {
   // creating or updating
   saving: boolean;
   // soft or hard deleting
   deleting: boolean;
 }
 
-export interface ActionState<T> extends RequestState {
+export interface ActionState<T = any> extends RequestState {
   data: T | null;
 }
+
+export type InstanceListState<T = any> = ListState<T> & InstanceState;
+export type InstanceItemState<T = any> = ItemState<T> & InstanceState;
+export type InstanceActionState<T = any> = ActionState<T> & InstanceState;
