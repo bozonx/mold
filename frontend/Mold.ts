@@ -1,4 +1,5 @@
 import {
+  ActionProps,
   BatchDeleteMethodProps,
   BatchPatchMethodProps,
   CreateMethodProps, DeleteMethodProps,
@@ -38,6 +39,9 @@ export default class Mold {
    * @return instance id.
    */
   find = <T>(props: FindMethodProps, changeCb: (state: ListState<T>) => void): string => {
+
+    // TODO: может нет смысла все разделять на отдельные ф-и а просто дерагать action
+
     const requestKey: RequestKey = makeRequestKey('find', props);
     // init list state if it doesn't exist
     this.storage.initListIfNeed(requestKey);
@@ -133,9 +137,9 @@ export default class Mold {
   /**
    * Call some action at a backend and return its state
    */
-  actonFetch = async <T>(
+  actionFetch = async <T>(
     actionName: string,
-    actionProps: {[index: string]: any},
+    actionProps: ActionProps,
     changeCb: (state: ActionState<T>) => void
   ): string => {
 

@@ -19,6 +19,8 @@ export interface MethodPropsBase extends RequestBase {
   set: string,
 }
 
+export type ActionProps = MethodPropsBase;
+
 export interface FindBase {
   // Page number. The first is 1. By default is 1. Don't use it if perPage = -1.
   pageNum?: number,
