@@ -1,21 +1,19 @@
 import {onUnmounted, SetupContext} from '@vue/composition-api';
 import VueMold from './VueMold';
+import {ActionState, ListResponse} from '../../frontend/interfaces/MethodsState';
 import {ActionProps} from '../../frontend/interfaces/MethodsProps';
-import {ActionState} from '../../frontend/interfaces/MethodsState';
 
 
-// TODO: задать специфический тип для item
-
-export default function moldItem<T>(
+export default function moldFind<T>(
   context: SetupContext,
   methodProps: ActionProps
-): ActionState<T> {
+): ActionState<ListResponse<T>> {
   // @ts-ignore
   const mold: VueMold = context.root.$mold;
 
-  // TODO: add getFirst
-
-  const state = mold.get<T>(methodProps);
+  // TODO: set action name
+  // TODO: set isGetting
+  const state = mold.find<T>(methodProps);
 
   onUnmounted(() => {
     mold.destroyInstance(state);

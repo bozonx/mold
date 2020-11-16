@@ -30,7 +30,7 @@ export default class MoldPouchClient implements BackendClient {
           status: 200,
           errors: null,
           result: {
-            items: [
+            data: [
               { name: 'fff' }
             ]
           }

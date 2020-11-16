@@ -131,7 +131,7 @@ export default class Mold {
       finishedOnce: true,
       responseStatus: response.status,
       responseErrors: response.errors,
-      data: response.result,
+      result: response.result,
     });
   }
 

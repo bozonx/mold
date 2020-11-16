@@ -13,31 +13,24 @@ export interface ActionState<T = JsonData> {
   responseStatus: number | null;
   // last response backend errors
   responseErrors: ResponseError[] | null;
-  data: T | null;
+  result: T | null;
 }
 
 // TODO: review
 
-// export interface FindResponse<T = any> {
-//
-//   // TODO: add status, errors
-//
-//   // count of all the items in the table. -1 means no error or not loaded.
-//   count: number;
-//   hasNext: boolean;
-//   hasPrev: boolean;
-//   items: T[] | null;
-// }
-//
-// // TODO: review
-//
-// export interface GetResponse<T = any> {
-//
-//   // TODO: add status, errors
-//
-//
-//   item: T | null;
-// }
+export interface ListResponse<T = any> {
+  // count of all the items in the table. -1 means no error or not loaded.
+  count: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+  data: T[] | null;
+}
+
+// TODO: review
+
+export interface ItemResponse<T = any> {
+  data: T | null;
+}
 
 export interface InstanceState {
   // string like "backend|set|action|request|instanceNum"
