@@ -2,7 +2,7 @@ import MoldRequest from '../../interfaces/MoldRequest';
 import BackendResponse from '../../interfaces/BackendResponse';
 import HooksApp from '../HooksApp';
 import {HookType} from './HookType';
-import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
+import {MoldError} from '../MoldError';
 
 
 export interface HookContext {
@@ -14,12 +14,12 @@ export interface HookContext {
   // or special middleware such as beforeRequest, afterHooks, error etc.
   readonly set: string;
   // in before hooks you can modify the request
-  readonly request: MoldRequest;
+  request: MoldRequest;
   // there is a result of request. It is available only with "after" hooks.
   // You can modify it in after hooks
   response?: BackendResponse;
-  // put error here to prevent other hooks and stop processing
-  //error?: MoldErrorDefinition;
+  // it is only used in hooks of error set.
+  error?: MoldError;
   // use it for shared data between hooks in during whole request life.
-  readonly shared: {[index: string]: any};
+  shared: {[index: string]: any};
 }

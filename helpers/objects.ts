@@ -1,6 +1,8 @@
 /**
  * Make a new object which doesn't include specified keys
  */
+import {cloneDeepArray} from './arrays';
+
 export function omitObj(obj: {[index: string]: any} | undefined, ...keysToExclude: string[]): {[index: string]: any} {
   if (!obj) return {};
 
@@ -43,4 +45,73 @@ export function isEmptyObject(toCheck: {[index: string]: any} = {}): boolean {
   }
 
   return !Object.keys(toCheck || {}).length;
+}
+
+export function isPlainObject(obj: any): boolean {
+  return obj // not null
+    && typeof obj === 'object' // separate from primitives
+    && obj.constructor === Object // separate instances (Array, DOM, ...)
+    && Object.prototype.toString.call(obj) === '[object Object]' // separate build-in like Math
+    || false;
+}
+
+/**
+ * Merges two objects deeply.
+ * It doesn't mutate any object.
+ * If you obviously set undefined to one of top's param - it will removes this key from the result object.
+ * Arrays will be cloned.
+ */
+export function mergeDeepObjects(
+  top: {[index: string]: any} = {},
+  bottom: {[index: string]: any} = {}
+): {[index: string]: any} {
+  const result: {[index: string]: any} = {};
+  const topUndefinedKeys: string[] = [];
+
+  if (typeof top !== 'object' || typeof bottom !== 'object') {
+    throw new Error(`mergeDeepObjects: top and bottom has to be objects`);
+  }
+
+  // Sort undefined keys.
+  // Get only not undefined values to result and collect keys which has a undefined values.
+  for (let key of Object.keys(top)) {
+    if (typeof top[key] === 'undefined') {
+      topUndefinedKeys.push(key);
+    }
+    else {
+      if (Array.isArray(top[key])) {
+        result[key] = cloneDeepArray(top[key]);
+      }
+      else {
+        result[key] = top[key];
+      }
+    }
+  }
+
+  for (let key of Object.keys(bottom)) {
+    if (!(key in result) && !topUndefinedKeys.includes(key)) {
+      // set value which is absent on top but exist on the bottom.
+      // only if it obviously doesn't mark as undefined
+      if (Array.isArray(bottom[key])) {
+        result[key] = cloneDeepArray(bottom[key]);
+      }
+      else {
+        result[key] = bottom[key];
+      }
+    }
+    // go deeper if bottom and top are objects
+    else if (isPlainObject(result[key]) && isPlainObject(bottom[key])) {
+      result[key] = mergeDeepObjects(result[key], bottom[key]);
+    }
+    // else - skip
+  }
+
+  return result;
+}
+
+/**
+ * Clone object deeply.
+ */
+export function cloneDeepObject(obj?: {[index: string]: any}): {[index: string]: any} {
+  return mergeDeepObjects({}, obj);
 }
