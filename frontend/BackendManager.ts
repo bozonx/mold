@@ -9,7 +9,6 @@ import {isEmptyObject} from '../helpers/objects';
 
 export default class BackendManager {
   private readonly mold: Mold;
-  private requests: {[index: string]: {[index: string]: {[index: string]: {[index: string]: ActionProps}}}} = {};
 
 
   constructor(mold: Mold) {
@@ -30,7 +29,7 @@ export default class BackendManager {
     // TODO: backend и set не нужны, так как есть requestKey
     props: ActionProps & {action: string}
   ): Promise<BackendResponse> {
-    this.storeRequest(requestKey, props);
+//    this.storeRequest(requestKey, props);
 
     const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
     const backend = this.getBackend(backendName);
@@ -54,30 +53,7 @@ export default class BackendManager {
     return response;
   }
 
-  destroyRequest(requestKey: RequestKey) {
-    const {backend, set, action, request} = REQUEST_KEY_POSITIONS;
 
-    if (
-      this.requests[backend]
-      && this.requests[backend][set]
-      && this.requests[backend][set][action]
-      && this.requests[backend][set][action][request]
-    ) {
-      delete this.requests[backend][set][action][request];
-    }
-
-    if (isEmptyObject(this.requests[backend][set][action])) {
-      delete this.requests[backend][set][action];
-    }
-
-    if (isEmptyObject(this.requests[backend][set])) {
-      delete this.requests[backend][set];
-    }
-
-    if (isEmptyObject(this.requests[backend])) {
-      delete this.requests[backend];
-    }
-  }
 
   destroy() {
     // TODO: add!!!
@@ -88,24 +64,6 @@ export default class BackendManager {
     return {
       // TODO: what to add ????
     };
-  }
-
-  private storeRequest(requestKey: RequestKey, props: ActionProps) {
-    const {backend, set, action, request} = REQUEST_KEY_POSITIONS;
-
-    if (!this.requests[requestKey[backend]]) {
-      this.requests[requestKey[backend]] = {};
-    }
-
-    if (!this.requests[requestKey[backend]][set]) {
-      this.requests[requestKey[backend]][set] = {};
-    }
-
-    if (!this.requests[requestKey[backend]][set][action]) {
-      this.requests[requestKey[backend]][set][action] = {};
-    }
-
-    this.requests[requestKey[backend]][set][action][request] = props;
   }
 
 }

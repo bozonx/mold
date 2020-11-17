@@ -39,7 +39,7 @@ export function makeInitialState(): ActionState {
     finishedOnce: false,
     responseStatus: null,
     responseErrors: null,
-    data: null,
+    result: null,
   };
 }
 
