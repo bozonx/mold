@@ -1,5 +1,5 @@
 import {JsonTypes} from '../../interfaces/Types';
-import {RequestBase} from '../../interfaces/BackendRequest';
+import {RequestBase} from '../../interfaces/RequestBase';
 
 
 // This is Mold's action props
@@ -8,8 +8,6 @@ export interface ActionProps extends RequestBase {
   backend?: string;
   // name of entity which is queried. It is mandatory
   set: string;
-  // find, get, create, patch, delete or some custom action
-  action: string;
   // means that this is find or get action or some custom action that works as find or get.
   isGetting?: boolean;
 }

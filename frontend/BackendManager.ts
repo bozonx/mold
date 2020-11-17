@@ -1,8 +1,9 @@
 import {ActionProps} from './interfaces/MethodsProps';
 import Mold from './Mold';
 import BackendClient from '../interfaces/BackendClient';
-import BackendRequest from '../interfaces/BackendRequest';
+import {RequestBase} from '../interfaces/RequestBase';
 import BackendResponse from '../interfaces/BackendResponse';
+import {omitObj} from '../helpers/objects';
 
 
 /**
@@ -33,17 +34,20 @@ export default class BackendManager {
    * It doesn't care about are there any other similar requests.
    */
   request<T = any>(backendName: string, props: ActionProps): Promise<BackendResponse> {
-    const request: BackendRequest = this.makeRequest(backendName, props);
+    const request: RequestBase = this.makeRequest(props);
     const backendClient: BackendClient = this.getBackendClient(backendName);
 
-    return backendClient.request(request);
+    return backendClient.request(props.set, request);
   }
 
 
-  private makeRequest(backend: string, props: ActionProps): BackendRequest {
-    return {
-      // TODO: what to add ????
-    };
+  private makeRequest(props: ActionProps): RequestBase {
+    return omitObj(
+      props,
+      'backend',
+      'set',
+      'isGetting'
+    ) as RequestBase;;
   }
 
 }

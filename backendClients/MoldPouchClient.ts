@@ -1,6 +1,6 @@
 import BackendClient from '../interfaces/BackendClient';
 import {MoldMiddleware} from '../interfaces/MoldMiddleware';
-import BackendRequest from '../interfaces/BackendRequest';
+import BackendRequest from '../interfaces/RequestBase';
 import BackendResponse from '../interfaces/BackendResponse';
 
 
