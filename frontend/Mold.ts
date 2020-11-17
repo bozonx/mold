@@ -2,12 +2,14 @@ import {ActionProps} from './interfaces/MethodsProps';
 import {ActionState} from './interfaces/MethodsState';
 import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
-import {instanceIdToRequestKey, makeRequestKey} from '../helpers/common';
+import {makeRequestKey, splitInstanceId} from '../helpers/common';
 import PushesManager from './PushesManager';
 import MoldFrontendProps from './interfaces/MoldFrontendProps';
 import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import RequestInstances from './RequestInstances';
 import BackendResponse from '../interfaces/BackendResponse';
+import RequestsCollection from './RequestsCollection';
+import {omitObj} from '../helpers/objects';
 
 
 export default class Mold {
@@ -16,6 +18,7 @@ export default class Mold {
   readonly push: PushesManager;
   readonly storage: StorageManager;
   readonly instances: RequestInstances;
+  readonly requests: RequestsCollection;
 
 
   constructor(props: Partial<MoldFrontendProps>) {
@@ -24,6 +27,7 @@ export default class Mold {
     this.push = new PushesManager(this);
     this.storage = new StorageManager(this);
     this.instances = new RequestInstances();
+    this.requests = new RequestsCollection();
   }
 
 
@@ -35,13 +39,16 @@ export default class Mold {
     // init state if it doesn't exist
     this.storage.initStateIfNeed(requestKey);
 
+    this.requests.register(requestKey, omitObj(actionProps, 'backend', 'set', 'action'));
     // TODO: зарегистрировать запрос
 
     return this.instances.add(requestKey);
   }
 
-  getState(instanceId: string): ActionState {
+  getState(instanceId: string): ActionState | undefined {
+    const {requestKey} = splitInstanceId(instanceId);
 
+    return this.storage.getState(requestKey);
   }
 
   start(instanceId: string) {
@@ -75,13 +82,13 @@ export default class Mold {
   }
 
   onChange(instanceId: string, changeCb: (state: ActionState) => void): number {
-    const requestKey = instanceIdToRequestKey(instanceId);
+    const {requestKey} = splitInstanceId(instanceId);
     // listen of changes of just created state or existed
-    this.storage.onChange(requestKey, changeCb);
+    return this.storage.onChange(requestKey, changeCb);
   }
 
   removeListener(handleIndex: number) {
-
+    this.storage.removeListener(handleIndex);
   }
 
   // /**

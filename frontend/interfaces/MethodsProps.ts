@@ -1,30 +1,21 @@
 import {JsonTypes} from '../../interfaces/Types';
+import {RequestBase} from '../../interfaces/BackendRequest';
 
 
-export interface RequestBase {
-  // for get, patch, delete.
-  id?: string | number;
-  // data like in search part of url. Structure is specific to backend.
-  // id, pageNum, perPage
-  query?: {[index: string]: JsonTypes};
-  // hidden specific data for backend's set.
-  meta?: {[index: string]: JsonTypes};
-  // Data to save. For create, patch, batchPatch, batchDelete
-  data?: {[index: string]: JsonTypes} | {[index: string]: JsonTypes}[] | (string | number)[];
+// This is for RequestsCollection's items
+export interface RequestCollectionItem extends RequestBase {
+  // means that this is find or get action or some custom action that works as find or get.
+  isGetting?: boolean;
 }
 
-export interface ActionPropsBase extends RequestBase {
+// This is Mold's action props
+export interface ActionProps extends RequestCollectionItem {
   // Backend where set is placed. If it isn't set it points to the default backend.
   backend?: string;
   // name of entity which is queried. It is mandatory
   set: string;
-}
-
-export interface ActionProps extends ActionPropsBase {
   // find, get, create, patch, delete or some custom action
   action: string;
-  // means that this is find or get action or some custom action that works as find or get.
-  isGetting?: boolean;
 }
 
 // export interface FindBase {
