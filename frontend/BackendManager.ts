@@ -1,18 +1,22 @@
 import {ActionProps} from './interfaces/MethodsProps';
 import Mold from './Mold';
-import {RequestKey, REQUEST_KEY_POSITIONS} from './interfaces/RequestKey';
 import BackendClient from '../interfaces/BackendClient';
 import BackendRequest from '../interfaces/BackendRequest';
 import BackendResponse from '../interfaces/BackendResponse';
-import {isEmptyObject} from '../helpers/objects';
 
 
+/**
+ * It makes a requests to corresponding backend specified in Mold config.
+ */
 export default class BackendManager {
   private readonly mold: Mold;
 
 
   constructor(mold: Mold) {
     this.mold = mold;
+  }
+
+  destroy() {
   }
 
 
@@ -51,12 +55,6 @@ export default class BackendManager {
     // TODO: бэкэнд должен всегда возвращать resolved
 
     return response;
-  }
-
-
-
-  destroy() {
-    // TODO: add!!!
   }
 
 

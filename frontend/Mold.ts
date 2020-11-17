@@ -32,6 +32,13 @@ export default class Mold {
     this.requests = new Requests(this);
   }
 
+  destroy = () => {
+    this.push.destroy();
+    this.backend.destroy();
+    this.storage.destroy();
+    this.requests.destroy();
+  }
+
 
   /**
    * Handle income push message. It can be json string or object or array of messages.
@@ -84,13 +91,6 @@ export default class Mold {
    */
   destroyInstance = (instanceId: string) => {
     this.requests.destroyInstance(instanceId);
-  }
-
-  destroy = () => {
-    this.push.destroy();
-    this.backend.destroy();
-    this.storage.destroy();
-    this.requests.destroy();
   }
 
 

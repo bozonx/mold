@@ -3,7 +3,7 @@ import {ActionProps} from './interfaces/MethodsProps';
 import Mold from './Mold';
 import BackendResponse from '../interfaces/BackendResponse';
 import {isEmptyObject} from '../helpers/objects';
-import {requestKeyToString} from '../helpers/common';
+import {requestKeyToString, splitInstanceId} from '../helpers/common';
 import {REQUEST_STATUSES} from './constants';
 
 
@@ -17,6 +17,11 @@ export default class Requests {
 
   constructor(mold: Mold) {
     this.mold = mold;
+  }
+
+  destroy() {
+    this.instances = {};
+    this.requests = {};
   }
 
 
@@ -99,19 +104,23 @@ export default class Requests {
     });
   }
 
-  destroy() {
-    // TODO: add
-  }
-
-
   destroyInstance(instanceId: string) {
-    // TODO: удалить хранилище только если не осталось инстансов
-
-    //this.storage.destroyRequest(requestKey);
-    //this.backend.destroyRequest(requestKey);
-
-    // TODO: удалять только если нет больше инстансов
-    // TODO: push тоже ???
+    const {requestKey, instanceNum} = splitInstanceId(instanceId);
+    const requestKeyStr: string = requestKeyToString(requestKey);
+    const requestInstances: string[] | undefined = this.instances[requestKeyStr];
+    // do nothing if there isn't a request
+    if (!requestInstances) return;
+    // TODO: test
+    const index: number = requestInstances.indexOf(instanceNum);
+    // TODO: test
+    requestInstances.splice(index, 1);
+    // if it has some other instances then do nothing
+    if (requestInstances.length) return;
+    // else remove the request and state
+    // remove request props
+    this.removeProps(requestKey);
+    // remove state
+    this.mold.storage.delete(requestKey);
   }
 
 
@@ -180,13 +189,3 @@ export default class Requests {
   }
 
 }
-
-// /**
-//  * Get list of instances nums of request
-//  * @private
-//  */
-// private getInstanceNums(requestKey: RequestKey): string[] | undefined {
-//   const requestKeyStr: string = requestKeyToString(requestKey);
-//
-//   return this.instances[requestKeyStr];
-// }
