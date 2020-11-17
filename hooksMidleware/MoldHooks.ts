@@ -1,5 +1,5 @@
-import MoldSet from '../interfaces/MoldSet';
-import {MoldMiddleware} from '../interfaces/MoldMiddleware';
+import MoldSet from './interfaces/MoldSet';
+import {MoldMiddleware} from './interfaces/MoldMiddleware';
 
 
 export default class MoldHooks {
