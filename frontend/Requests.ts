@@ -7,7 +7,7 @@ import {ActionProps} from './interfaces/MethodsProps';
 //export type RequestCollectionItem = Omit<Omit<Omit<ActionProps, 'backend'>, 'set'>, 'action'>;
 
 
-export default class RequestsCollection {
+export default class Requests {
   constructor() {
   }
 

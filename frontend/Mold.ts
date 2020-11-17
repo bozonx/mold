@@ -8,7 +8,7 @@ import MoldFrontendProps from './interfaces/MoldFrontendProps';
 import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import RequestInstances from './RequestInstances';
 import BackendResponse from '../interfaces/BackendResponse';
-import RequestsCollection from './RequestsCollection';
+import Requests from './Requests';
 
 
 export default class Mold {
@@ -17,7 +17,7 @@ export default class Mold {
   readonly push: PushesManager;
   readonly storage: StorageManager;
   readonly instances: RequestInstances;
-  readonly requests: RequestsCollection;
+  readonly requests: Requests;
 
 
   constructor(props: Partial<MoldFrontendProps>) {
@@ -26,7 +26,7 @@ export default class Mold {
     this.push = new PushesManager(this);
     this.storage = new StorageManager(this);
     this.instances = new RequestInstances();
-    this.requests = new RequestsCollection();
+    this.requests = new Requests();
   }
 
 
