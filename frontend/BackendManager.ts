@@ -20,7 +20,7 @@ export default class BackendManager {
   }
 
 
-  getBackend(backendName: string): BackendClient {
+  getBackendClient(backendName: string): BackendClient {
     if (!this.mold.props.backends[backendName]) {
       throw new Error(`Can't find backend client "${backendName}"`);
     }
@@ -28,33 +28,15 @@ export default class BackendManager {
     return this.mold.props.backends[backendName];
   }
 
-  async request<T = any>(
-    // TODO: зачем он нужен тут ??? на этом уровне он не нужен
-    //requestKey: RequestKey,
-    backendName: string,
-    props: ActionProps
-  ): Promise<BackendResponse> {
-//    this.storeRequest(requestKey, props);
-
+  /**
+   * It just makes the request to the specified backend client.
+   * It doesn't care about are there any other similar requests.
+   */
+  request<T = any>(backendName: string, props: ActionProps): Promise<BackendResponse> {
     const request: BackendRequest = this.makeRequest(backendName, props);
-    const backend = this.getBackend(backendName);
-    let response: BackendResponse;
+    const backendClient: BackendClient = this.getBackendClient(backendName);
 
-    try {
-      response = await backend.request(request);
-    }
-    catch (e) {
-      // TODO: если это новый реквест то можно задестроить,
-      //  если нет то наверное добавить ошибку в стейт
-      // actually error shouldn't be real. Because request errors are in the result.
-      //this.destroyRequest(requestKey);
-
-      throw e;
-    }
-
-    // TODO: бэкэнд должен всегда возвращать resolved
-
-    return response;
+    return backendClient.request(request);
   }
 
 

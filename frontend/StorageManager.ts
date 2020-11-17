@@ -2,12 +2,13 @@ import {ActionState} from './interfaces/MethodsState';
 import {RequestKey} from './interfaces/RequestKey';
 import Mold from './Mold';
 import StorageAdapter from './interfaces/StorageAdapter';
-import StorageDefault from './StorageDefault';
+import DefaultStore from './DefaultStore';
 import {makeInitialState, requestKeyToString} from '../helpers/common';
 import IndexedEventEmitter from '../helpers/IndexedEventEmitter';
 
 
 export default class StorageManager {
+  // TODO: rename to store ???
   private readonly storage: StorageAdapter;
   private readonly events = new IndexedEventEmitter();
 
@@ -17,7 +18,7 @@ export default class StorageManager {
       this.storage = mold.props.storage;
     }
     else {
-      this.storage = new StorageDefault();
+      this.storage = new DefaultStore();
     }
 
     if (this.storage.$init) this.storage.$init(mold);
