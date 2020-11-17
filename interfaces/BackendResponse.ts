@@ -1,5 +1,5 @@
 import {JsonData} from './Types';
-import {MoldError} from './MoldError';
+import {MoldErrorDefinition} from './MoldErrorDefinition';
 
 
 export default interface BackendResponse {
@@ -8,7 +8,7 @@ export default interface BackendResponse {
   // true if request was success and false if wasn't - an error
   success: boolean;
   // some errors which the backend sent instead result.
-  errors: MoldError[] | null;
+  errors: MoldErrorDefinition[] | null;
   // null if no body or error occurred
   result: JsonData | null;
 }

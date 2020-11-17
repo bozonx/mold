@@ -1,5 +1,5 @@
 import {JsonData} from '../../interfaces/Types';
-import {MoldError} from '../../interfaces/BackendResponse';
+import {MoldErrorDefinition} from '../../interfaces/BackendResponse';
 
 
 export interface ActionState<T = JsonData> {

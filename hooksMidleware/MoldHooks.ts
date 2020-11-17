@@ -1,5 +1,5 @@
 import {SpecialSet} from './interfaces/SpecialSet';
-import {MoldError} from '../interfaces/MoldError';
+import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 import {HookContext} from './interfaces/HookContext';
 import {HookDefinition} from './interfaces/HookDefinition';
 import BackendResponse from '../interfaces/BackendResponse';
@@ -47,7 +47,7 @@ export default class MoldHooks {
       await this.startSpecialHooks('afterHooks', context);
     }
     catch (e) {
-      const error: MoldError = e;
+      const error: MoldErrorDefinition = e;
 
       // TODO: pass error. Может в context добавить
       await this.startSpecialHooks('error', context);

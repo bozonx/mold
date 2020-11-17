@@ -2,7 +2,7 @@ import MoldRequest from '../../interfaces/MoldRequest';
 import BackendResponse from '../../interfaces/BackendResponse';
 import HooksApp from '../HooksApp';
 import {HookType} from './HookType';
-import {MoldError} from '../../interfaces/MoldError';
+import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
 
 
 export interface HookContext {
@@ -19,7 +19,7 @@ export interface HookContext {
   // You can modify it in after hooks
   response?: BackendResponse;
   // put error here to prevent other hooks and stop processing
-  //error?: MoldError;
+  //error?: MoldErrorDefinition;
   // use it for shared data between hooks in during whole request life.
   readonly shared: {[index: string]: any};
 }
