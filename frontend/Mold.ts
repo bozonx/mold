@@ -3,7 +3,7 @@ import {ActionState} from './interfaces/MethodsState';
 import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
 import {makeRequestKey, splitInstanceId} from '../helpers/common';
-import PushesManager from './PushesManager';
+import PushesManager, {PushIncomeMessage} from './PushesManager';
 import MoldFrontendProps from './interfaces/MoldFrontendProps';
 import {RequestKey} from './interfaces/RequestKey';
 import Requests from './Requests';
@@ -43,7 +43,7 @@ export default class Mold {
   /**
    * Handle income push message. It can be json string or object or array of messages.
    */
-  incomePush(backend: string, message: string | PushMessage | PushMessage[]) {
+  incomePush(backend: string, message: PushIncomeMessage) {
     this.push.incomePush(backend, message);
   }
 
