@@ -1,11 +1,5 @@
 import {JsonData} from './Types';
-
-
-export interface ResponseError {
-  code: number;
-  // it isn't required for standard messages which will be translated.
-  message?: string;
-}
+import {MoldError} from './MoldError';
 
 
 export default interface BackendResponse {
@@ -14,7 +8,7 @@ export default interface BackendResponse {
   // true if request was success and false if wasn't - an error
   success: boolean;
   // some errors which the backend sent instead result.
-  errors: ResponseError[] | null;
+  errors: MoldError[] | null;
   // null if no body or error occurred
   result: JsonData | null;
 }
