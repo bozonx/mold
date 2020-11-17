@@ -16,7 +16,7 @@ export default function moldFind<T>(
   // @ts-ignore
   const mold: Mold = context.root.$mold;
   // init request but don't make a request it self
-  const instanceId: string = mold.initRequest({
+  const instanceId: string = mold.newRequest({
     action: 'find',
     isGetting: true,
     ...actionProps

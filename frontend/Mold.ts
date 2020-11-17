@@ -35,9 +35,11 @@ export default class Mold {
   }
 
   /**
-   * Init request if need and make a new request instance id
+   * Init request if need and make a new request instance id.
+   * It doesn't start the request
+   * @return An instance id
    */
-  initRequest(actionProps: ActionProps): string {
+  newRequest(actionProps: ActionProps): string {
     const requestKey: RequestKey = makeRequestKey(actionProps);
     // create storage and register request to further call. It returns an instance id;
     return this.requests.register(requestKey, actionProps);
@@ -64,6 +66,10 @@ export default class Mold {
     this.storage.removeListener(handleIndex);
   }
 
+  /**
+   * Destroy instance of request.
+   * And destroy request and state themself if not one instance left.
+   */
   destroyInstance = (instanceId: string) => {
     this.requests.destroyInstance(instanceId);
   }
@@ -82,133 +88,3 @@ export default class Mold {
   }
 
 }
-
-
-// /**
-//  * Call some action at the backend and return its state
-//  */
-// fetch = <T>(
-//   actionProps: ActionProps,
-//   changeCb: (state: ActionState<T>) => void
-// ): string => {
-//   const requestKey: RequestKey = makeRequestKey(actionName, actionProps);
-//   // init state if it doesn't exist
-//   this.storage.initStateIfNeed(requestKey);
-//   // listen of changes of just created state or existed
-//   this.storage.onChange(requestKey, changeCb);
-//   // make request to the backend at the next tick and update state
-//   setTimeout(() => {
-//     this.doRequest(requestKey, actionProps)
-//       .catch(this.props.logger.error);
-//   });
-//
-//   return this.instances.add(requestKey);
-// }
-
-// /**
-//  * Save some data to backend. It doesn't return any state.
-//  */
-// actonSave = async (actionName: string, actionProps: {[index: string]: any}): Promise<void> => {
-//   // TODO: add
-// }
-//
-// create = async (props: CreateMethodProps): Promise<void> => {
-//   // TODO: add
-// }
-//
-// patch = async (props: PatchMethodProps): Promise<void> => {
-//   // TODO: add
-// }
-//
-// /**
-//  * Create or update
-//  */
-// save = async (props: SaveMethodProps): Promise<void> => {
-//   // TODO: add
-// }
-//
-// delete = async (props: DeleteMethodProps): Promise<void> => {
-//   // TODO: add
-// }
-//
-// batchPatch = async (props: BatchPatchMethodProps): Promise<void> => {
-//   // TODO: add
-// }
-//
-// batchDelete = async (props: BatchDeleteMethodProps): Promise<void> => {
-//   // TODO: add
-// }
-
-// /**
-//  * Find several records.
-//  * changeCb will be called on any state change - start loading, finish, error and data change.
-//  * @return instance id.
-//  */
-// find = <T>(props: FindMethodProps, changeCb: (state: ListState<T>) => void): string => {
-//
-//   // TODO: может нет смысла все разделять на отдельные ф-и а просто дерагать action
-//
-//   const requestKey: RequestKey = makeRequestKey('find', props);
-//   // init list state if it doesn't exist
-//   this.storage.initListIfNeed(requestKey);
-//   // listen of change of just created state or existed
-//   this.storage.onChange(requestKey, changeCb);
-//   // make request to the backend and update state
-//   this.doFindRequest(requestKey, props)
-//     .catch(this.props.logger.error);
-//
-//   return this.instances.add(requestKey);
-// }
-//
-// /**
-//  * Get certain record by id
-//  */
-// get = async <T>(props: GetMethodProps, cb: (state: ItemState<T>) => void): string => {
-//   const requestKey: RequestKey = makeRequestKey('get', props);
-//   const instanceId: string = this.instances.add(requestKey);
-//
-//   this.storage.initItemIfNeed(requestKey);
-//   this.storage.onChange(requestKey, cb);
-//   // set state of start loading
-//   this.storage.updateItem(requestKey, { loading: true });
-//
-//   // TODO: move to doGetRequest
-//
-//   // TODO: review type
-//   let result: GetResponse<T>;
-//
-//   try {
-//     result = await this.backend.get<T>(requestKey, props);
-//   }
-//   catch (e) {
-//     // actually error shouldn't be real. Because request errors are in the result.
-//     this.destroyRequest(requestKey);
-//
-//     throw e;
-//   }
-//
-//   this.storage.updateItem(requestKey, {
-//     loading: false,
-//     loadedOnce: true,
-//     // TODO: add errors
-//     ...result,
-//   });
-//
-//   // cb({
-//   //   loadedOnce: true,
-//   //   item: { id: 0, name: 'tttt' },
-//   // } as any);
-//   //
-//   // setTimeout(() => {
-//   //   cb({
-//   //     item: { id: 0, name: 'yyyyyy' },
-//   //   } as any);
-//   // }, 5000)
-// }
-
-// /**
-//  * Get the first result by query
-//  */
-// getFirst = async <T>(props: GetMethodProps, cb: (state: ItemState<T>) => void): string => {
-//   // TODO: add
-// }
