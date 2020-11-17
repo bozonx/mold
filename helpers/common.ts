@@ -3,7 +3,7 @@ import {LOG_LEVELS, LogLevel} from '../frontend/interfaces/Logger';
 import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestKey';
 import {ActionState,} from '../frontend/interfaces/MethodsState';
 import {DEFAULT_BACKEND} from '../frontend/constants';
-import {RequestBase} from '../interfaces/RequestBase';
+import MoldRequest from '../interfaces/MoldRequest';
 import {omitObj} from './objects';
 
 
@@ -47,13 +47,13 @@ export function makeInitialState(): ActionState {
   };
 }
 
-export function makeRequest(props: ActionProps): RequestBase {
+export function makeRequest(props: ActionProps): MoldRequest {
   return omitObj(
     props,
     'backend',
     'set',
     'isGetting'
-  ) as RequestBase;
+  ) as MoldRequest;
 }
 
 /**

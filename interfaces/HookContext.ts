@@ -1,8 +1,8 @@
-import {RequestBase} from '../frontend/interfaces/MethodsProps';
+import MoldRequest from './MoldRequest';
 
 
-export default interface HookContext extends RequestBase {
-
+export default interface HookContext {
+  request: MoldRequest;
   // TODO: add: app, error, method, path, statusCode
 
   // use it for shared data between hooks

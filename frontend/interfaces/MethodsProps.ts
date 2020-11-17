@@ -1,9 +1,9 @@
 import {JsonTypes} from '../../interfaces/Types';
-import {RequestBase} from '../../interfaces/RequestBase';
+import MoldRequest from '../../interfaces/MoldRequest';
 
 
 // This is Mold's action props
-export interface ActionProps extends RequestBase {
+export interface ActionProps extends MoldRequest {
   // Backend where set is placed. If it isn't set it points to the default backend.
   backend?: string;
   // name of entity which is queried. It is mandatory

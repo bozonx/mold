@@ -1,7 +1,7 @@
 import {ActionProps} from './interfaces/MethodsProps';
 import Mold from './Mold';
 import BackendClient from '../interfaces/BackendClient';
-import {RequestBase} from '../interfaces/RequestBase';
+import MoldRequest from '../interfaces/MoldRequest';
 import BackendResponse from '../interfaces/BackendResponse';
 import {makeRequest} from '../helpers/common';
 
@@ -34,7 +34,7 @@ export default class BackendManager {
    * It doesn't care about are there any other similar requests.
    */
   request<T = any>(backendName: string, props: ActionProps): Promise<BackendResponse> {
-    const request: RequestBase = makeRequest(props);
+    const request: MoldRequest = makeRequest(props);
     const backendClient: BackendClient = this.getBackendClient(backendName);
 
     return backendClient.request(props.set, request);
