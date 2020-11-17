@@ -5,10 +5,9 @@ import BackendManager from './BackendManager';
 import {makeRequestKey, splitInstanceId} from '../helpers/common';
 import PushesManager from './PushesManager';
 import MoldFrontendProps from './interfaces/MoldFrontendProps';
-import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
-import RequestInstances from './RequestInstances';
-import BackendResponse from '../interfaces/BackendResponse';
+import {RequestKey} from './interfaces/RequestKey';
 import Requests from './Requests';
+import PushMessage from '../interfaces/PushMessage';
 
 
 export default class Mold {
@@ -16,7 +15,6 @@ export default class Mold {
   readonly backend: BackendManager;
   readonly push: PushesManager;
   readonly storage: StorageManager;
-  readonly instances: RequestInstances;
   readonly requests: Requests;
 
 
@@ -25,18 +23,23 @@ export default class Mold {
     this.backend = new BackendManager(this);
     this.push = new PushesManager(this);
     this.storage = new StorageManager(this);
-    this.instances = new RequestInstances();
-    this.requests = new Requests();
+    this.requests = new Requests(this);
   }
 
+
+  /**
+   * Handle income push message. It can be json string or object or array of messages.
+   */
+  incomePush(backend: string, message: string | PushMessage | PushMessage[]) {
+    this.push.incomePush(backend, message);
+  }
 
   /**
    * Init request if need and make a new request instance id
    */
   initRequest(actionProps: ActionProps): string {
     const requestKey: RequestKey = makeRequestKey(actionProps);
-    // create storage and register request to further call
-    // and return instance id
+    // create storage and register request to further call. It returns an instance id;
     return this.requests.register(requestKey, actionProps);
   }
 
@@ -47,33 +50,8 @@ export default class Mold {
   }
 
   start(instanceId: string) {
-    let response: BackendResponse;
-    // set state of start loading
-    this.storage.patch(requestKey, { pending: true });
-
-    // TODO: поидее можно не делать try
-    try {
-      response = await this.backend.request(requestKey, {
-        action: requestKey[REQUEST_KEY_POSITIONS.action],
-        ...props,
-      });
-    }
-    catch (e) {
-      // TODO: если это новый реквест то можно задестроить,
-      //  если нет то наверное добавить ошибку в стейт
-      // actually error shouldn't be real. Because request errors are in the result.
-      //this.destroyRequest(requestKey);
-
-      throw e;
-    }
-
-    this.storage.patch(requestKey, {
-      pending: false,
-      finishedOnce: true,
-      responseStatus: response.status,
-      responseErrors: response.errors,
-      result: response.result,
-    });
+    this.requests.start(instanceId)
+      .catch(this.props.logger.error);
   }
 
   onChange(instanceId: string, changeCb: (state: ActionState) => void): number {
@@ -87,22 +65,14 @@ export default class Mold {
   }
 
   destroyInstance = (instanceId: string) => {
-    //this.storage.destroyRequest(requestKey);
-    //this.backend.destroyRequest(requestKey);
-
-    // TODO: удалять только если нет больше инстансов
-    // TODO: push тоже ???
+    this.requests.destroyInstance(instanceId);
   }
 
   destroy = () => {
-
-    // TODO: update
-
-    //this.push.destroy();
+    this.push.destroy();
     this.backend.destroy();
     this.storage.destroy();
     this.requests.destroy();
-    //this.instances.destroy();
   }
 
 
