@@ -4,6 +4,7 @@ import Mold from './Mold';
 import BackendResponse from '../interfaces/BackendResponse';
 import {isEmptyObject} from '../helpers/objects';
 import {requestKeyToString} from '../helpers/common';
+import {REQUEST_STATUSES} from './constants';
 
 
 export default class Requests {
@@ -18,6 +19,18 @@ export default class Requests {
     this.mold = mold;
   }
 
+
+  doesInstanceNumExist(requestKey: RequestKey, instanceNum: string): boolean {
+    const requestKeyStr: string = requestKeyToString(requestKey);
+    const requestInstances: string[] | undefined = this.instances[requestKeyStr];
+
+    // TODO: check storage exists
+    // TODO: check props exists
+
+    if (!requestInstances) return false;
+    // TODO: test
+    return requestInstances.indexOf(instanceNum) >= 0;
+  }
 
   getProps(requestKey: RequestKey): ActionProps | undefined {
     const [backend, set, action, request] = requestKey;
@@ -37,31 +50,49 @@ export default class Requests {
     return this.addInstance(requestKey);
   }
 
-  async start(instanceId: string) {
+  async start(requestKey: RequestKey) {
+
+    // TODO: првоерить идет ли уже запрос
+    //       если это сохранение то поставить в очередь после текущего
+    //       если это get (isGetting) то отменить запрос
+
+    // set state of start loading
+    this.mold.storage.patch(requestKey, { pending: true });
+
+    const requestProps: ActionProps | undefined = this.getProps(requestKey);
+
+    if (!requestProps) {
+      throw new Error(`Can't find request props of "${JSON.stringify(requestKey)}"`);
+    }
 
     let response: BackendResponse;
-    // set state of start loading
-    this.storage.patch(requestKey, { pending: true });
 
-    // TODO: поидее можно не делать try
     try {
-      response = await this.backend.request(requestKey, {
-        action: requestKey[REQUEST_KEY_POSITIONS.action],
-        ...props,
-      });
+      response = await this.mold.backend.request(
+        requestKey[REQUEST_KEY_POSITIONS.backend],
+        requestProps
+      );
     }
     catch (e) {
-      // TODO: если это новый реквест то можно задестроить,
-      //  если нет то наверное добавить ошибку в стейт
-      // actually error shouldn't be real. Because request errors are in the result.
-      //this.destroyRequest(requestKey);
-
-      throw e;
+      // actually this is for error in the code not network or backend's error
+      this.mold.storage.patch(requestKey, {
+        pending: false,
+        finishedOnce: true,
+        responseSuccess: false,
+        responseStatus: REQUEST_STATUSES.fatalError,
+        responseErrors: [{code: REQUEST_STATUSES.fatalError, message: "Fatal error"}],
+        // it doesn't clear previous result
+      });
+      // log error because it isn't a network or backend's error
+      this.mold.log.error(e);
+      // do nothing else actually
+      return;
     }
-
-    this.storage.patch(requestKey, {
+    // success
+    this.mold.storage.patch(requestKey, {
       pending: false,
       finishedOnce: true,
+      responseSuccess: true,
       responseStatus: response.status,
       responseErrors: response.errors,
       result: response.result,
@@ -101,16 +132,6 @@ export default class Requests {
 
     return requestKeyStr + REQUEST_KEY_SEPARATOR + newInstanceNum;
   }
-
-  // /**
-  //  * Get list of instances nums of request
-  //  * @private
-  //  */
-  // private getInstanceNums(requestKey: RequestKey): string[] | undefined {
-  //   const requestKeyStr: string = requestKeyToString(requestKey);
-  //
-  //   return this.instances[requestKeyStr];
-  // }
 
   private removeProps(requestKey: RequestKey) {
     const {backend, set, action, request} = REQUEST_KEY_POSITIONS;
@@ -159,3 +180,13 @@ export default class Requests {
   }
 
 }
+
+// /**
+//  * Get list of instances nums of request
+//  * @private
+//  */
+// private getInstanceNums(requestKey: RequestKey): string[] | undefined {
+//   const requestKeyStr: string = requestKeyToString(requestKey);
+//
+//   return this.instances[requestKeyStr];
+// }

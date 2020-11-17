@@ -8,6 +8,7 @@ import MoldFrontendProps from './interfaces/MoldFrontendProps';
 import {RequestKey} from './interfaces/RequestKey';
 import Requests from './Requests';
 import PushMessage from '../interfaces/PushMessage';
+import {Logger} from './interfaces/Logger';
 
 
 export default class Mold {
@@ -16,6 +17,11 @@ export default class Mold {
   readonly push: PushesManager;
   readonly storage: StorageManager;
   readonly requests: Requests;
+
+
+  get log(): Logger {
+    return this.props.logger;
+  }
 
 
   constructor(props: Partial<MoldFrontendProps>) {
@@ -52,8 +58,14 @@ export default class Mold {
   }
 
   start(instanceId: string) {
-    this.requests.start(instanceId)
-      .catch(this.props.logger.error);
+    const {requestKey, instanceNum} = splitInstanceId(instanceId);
+
+    if (!this.requests.doesInstanceNumExist(requestKey, instanceNum)) {
+      throw new Error(`Instance "${instanceId}" doesn't exists`);
+    }
+
+    this.requests.start(requestKey)
+      .catch(this.log.error);
   }
 
   onChange(instanceId: string, changeCb: (state: ActionState) => void): number {

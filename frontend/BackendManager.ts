@@ -25,15 +25,15 @@ export default class BackendManager {
   }
 
   async request<T = any>(
-    requestKey: RequestKey,
-    // TODO: backend и set не нужны, так как есть requestKey
-    props: ActionProps & {action: string}
+    // TODO: зачем он нужен тут ??? на этом уровне он не нужен
+    //requestKey: RequestKey,
+    backendName: string,
+    props: ActionProps
   ): Promise<BackendResponse> {
 //    this.storeRequest(requestKey, props);
 
-    const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
+    const request: BackendRequest = this.makeRequest(backendName, props);
     const backend = this.getBackend(backendName);
-    const request: BackendRequest = this.makeRequest(requestKey, props);
     let response: BackendResponse;
 
     try {
@@ -60,7 +60,7 @@ export default class BackendManager {
   }
 
 
-  private makeRequest(requestKey: RequestKey, props: ActionProps): BackendRequest {
+  private makeRequest(backend: string, props: ActionProps): BackendRequest {
     return {
       // TODO: what to add ????
     };

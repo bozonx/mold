@@ -7,6 +7,8 @@ export interface ActionState<T = JsonData> {
   pending: boolean;
   // loaded or saved at least once or it is in a cache
   finishedOnce: boolean;
+  // was the last response success or not
+  responseSuccess: boolean;
   // last response status. Null while loading or saving
   responseStatus: number | null;
   // last response backend errors
