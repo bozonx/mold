@@ -1,16 +1,26 @@
-import MoldSet from './interfaces/MoldSet';
-import {MoldMiddleware} from './interfaces/MoldMiddleware';
 import {SpecialSet} from './interfaces/SpecialSet';
 import {MoldError} from '../interfaces/MoldError';
-import HookContext from './interfaces/HookContext';
+import {HookContext} from './interfaces/HookContext';
+import {HookDefinition} from './interfaces/HookDefinition';
+
+
+interface Sets {
+  beforeHooks: HookDefinition[];
+  beforeRequest: HookDefinition[];
+  afterRequest: HookDefinition[];
+  afterHooks: HookDefinition[];
+  error: HookDefinition[];
+  // all other sets
+  [index: string]: HookDefinition[];
+}
 
 
 export default class MoldHooks {
-  private sets: {[index: string]: MoldSet};
+  private readonly sets: Sets;
 
 
-  constructor(sets: {[index: string]: MoldSet}) {
-    this.sets = sets;
+  constructor(rawSets: {[index: string]: HookDefinition}) {
+    this.sets = this.sortHooks(rawSets);
   }
 
   destroy() {
@@ -41,6 +51,9 @@ export default class MoldHooks {
 
   private async startBeforeHooks(context: HookContext) {
     // TODO: add
+    for (let hook of this.sets[context.set]) {
+      await hook.hook(context);
+    }
   }
 
   private async startRequest(context: HookContext) {
@@ -59,7 +72,9 @@ export default class MoldHooks {
     // TODO: add
   }
 
-
+  private sortHooks(rawSets: {[index: string]: HookDefinition}): Sets {
+    // TODO: рассортировать хуки по порядку вызова
+  }
 
 
 
