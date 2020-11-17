@@ -134,7 +134,7 @@ export default class Requests {
   }
 
   private removeProps(requestKey: RequestKey) {
-    const {backend, set, action, request} = REQUEST_KEY_POSITIONS;
+    const [backend, set, action, request] = requestKey;
 
     if (
       this.requests[backend]
@@ -162,21 +162,21 @@ export default class Requests {
    * Put or replace the latest request props.
    */
   private storeProps(requestKey: RequestKey, props: ActionProps) {
-    const {backend, set, action, request} = REQUEST_KEY_POSITIONS;
+    const [backend, set, action, request] = requestKey;
 
-    if (!this.requests[requestKey[backend]]) {
-      this.requests[requestKey[backend]] = {};
+    if (!this.requests[backend]) {
+      this.requests[backend] = {};
     }
 
-    if (!this.requests[requestKey[backend]][set]) {
-      this.requests[requestKey[backend]][set] = {};
+    if (!this.requests[backend][set]) {
+      this.requests[backend][set] = {};
     }
 
-    if (!this.requests[requestKey[backend]][set][action]) {
-      this.requests[requestKey[backend]][set][action] = {};
+    if (!this.requests[backend][set][action]) {
+      this.requests[backend][set][action] = {};
     }
 
-    this.requests[requestKey[backend]][set][action][request] = props;
+    this.requests[backend][set][action][request] = props;
   }
 
 }

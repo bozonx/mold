@@ -2,11 +2,12 @@ import {ActionProps} from '../frontend/interfaces/MethodsProps';
 import {LOG_LEVELS, LogLevel} from '../frontend/interfaces/Logger';
 import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestKey';
 import {ActionState,} from '../frontend/interfaces/MethodsState';
+import {DEFAULT_BACKEND} from '../frontend/constants';
 
 
 export function makeRequestKey(props: ActionProps): RequestKey {
   return [
-    props.backend || 'default',
+    props.backend || DEFAULT_BACKEND,
     props.set,
     props.action,
     // TODO: отсортировать query и meta
@@ -37,6 +38,7 @@ export function makeInitialState(): ActionState {
   return {
     pending: false,
     finishedOnce: false,
+    responseSuccess: null,
     responseStatus: null,
     responseErrors: null,
     result: null,

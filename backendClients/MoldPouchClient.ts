@@ -29,13 +29,14 @@ export default class MoldPouchClient implements BackendClient {
         resolve({
           status: 200,
           errors: null,
+          success: true,
           result: {
             data: [
               { name: 'fff' }
             ]
-          }
+          },
         })
-      }, 3000)
+      }, 2000)
     });
   }
 }
