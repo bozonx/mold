@@ -2,6 +2,8 @@ import {SpecialSet} from './interfaces/SpecialSet';
 import {MoldError} from '../interfaces/MoldError';
 import {HookContext} from './interfaces/HookContext';
 import {HookDefinition} from './interfaces/HookDefinition';
+import BackendResponse from '../interfaces/BackendResponse';
+import MoldRequest from '../interfaces/MoldRequest';
 
 
 interface Sets {
@@ -10,17 +12,21 @@ interface Sets {
   afterRequest: HookDefinition[];
   afterHooks: HookDefinition[];
   error: HookDefinition[];
-  // all other sets
-  [index: string]: HookDefinition[];
+  after: {[index: string]: HookDefinition[]};
+  before: {[index: string]: HookDefinition[]};
 }
+
+export type HooksRequestFunc = (request: MoldRequest) => Promise<BackendResponse>;
 
 
 export default class MoldHooks {
   private readonly sets: Sets;
+  private readonly requestFunc: HooksRequestFunc;
 
 
-  constructor(rawSets: {[index: string]: HookDefinition}) {
+  constructor(rawSets: {[index: string]: HookDefinition}, requestFunc: HooksRequestFunc) {
     this.sets = this.sortHooks(rawSets);
+    this.requestFunc = requestFunc;
   }
 
   destroy() {
@@ -50,21 +56,27 @@ export default class MoldHooks {
 
 
   private async startBeforeHooks(context: HookContext) {
-    // TODO: add
-    for (let hook of this.sets[context.set]) {
+    for (let hook of this.sets.before[context.set]) {
+      // TODO: поидее нужно обновлять контекст чтобы его не перезаписывали случайно
       await hook.hook(context);
     }
   }
 
   private async startRequest(context: HookContext) {
-    // TODO: add
+    const response = await this.requestFunc(context.request);
+
+    context.response = response;
   }
 
   private async startAfterHooks(context: HookContext) {
-    // TODO: add
+    for (let hook of this.sets.after[context.set]) {
+      // TODO: поидее нужно обновлять контекст чтобы его не перезаписывали случайно
+      await hook.hook(context);
+    }
   }
 
   private async startSpecialHooks(specialSet: SpecialSet, context: HookContext) {
+    // TODO: поидее нужно обновлять контекст чтобы его не перезаписывали случайно
     // TODO: add
   }
 

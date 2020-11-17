@@ -19,7 +19,7 @@ export interface HookContext {
   // You can modify it in after hooks
   response?: BackendResponse;
   // put error here to prevent other hooks and stop processing
-  error?: MoldError;
+  //error?: MoldError;
   // use it for shared data between hooks in during whole request life.
   readonly shared: {[index: string]: any};
 }
