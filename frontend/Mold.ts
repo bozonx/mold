@@ -9,7 +9,6 @@ import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import RequestInstances from './RequestInstances';
 import BackendResponse from '../interfaces/BackendResponse';
 import RequestsCollection from './RequestsCollection';
-import {omitObj} from '../helpers/objects';
 
 
 export default class Mold {
@@ -36,13 +35,9 @@ export default class Mold {
    */
   initRequest(actionProps: ActionProps): string {
     const requestKey: RequestKey = makeRequestKey(actionProps);
-    // init state if it doesn't exist
-    this.storage.initStateIfNeed(requestKey);
-
-    this.requests.register(requestKey, omitObj(actionProps, 'backend', 'set', 'action'));
-    // TODO: зарегистрировать запрос
-
-    return this.instances.add(requestKey);
+    // create storage and register request to further call
+    // and return instance id
+    return this.requests.register(requestKey, actionProps);
   }
 
   getState(instanceId: string): ActionState | undefined {
@@ -91,27 +86,6 @@ export default class Mold {
     this.storage.removeListener(handleIndex);
   }
 
-  // /**
-  //  * Call some action at the backend and return its state
-  //  */
-  // fetch = <T>(
-  //   actionProps: ActionProps,
-  //   changeCb: (state: ActionState<T>) => void
-  // ): string => {
-  //   const requestKey: RequestKey = makeRequestKey(actionName, actionProps);
-  //   // init state if it doesn't exist
-  //   this.storage.initStateIfNeed(requestKey);
-  //   // listen of changes of just created state or existed
-  //   this.storage.onChange(requestKey, changeCb);
-  //   // make request to the backend at the next tick and update state
-  //   setTimeout(() => {
-  //     this.doRequest(requestKey, actionProps)
-  //       .catch(this.props.logger.error);
-  //   });
-  //
-  //   return this.instances.add(requestKey);
-  // }
-
   destroyInstance = (instanceId: string) => {
     //this.storage.destroyRequest(requestKey);
     //this.backend.destroyRequest(requestKey);
@@ -121,9 +95,13 @@ export default class Mold {
   }
 
   destroy = () => {
+
+    // TODO: update
+
     //this.push.destroy();
     this.backend.destroy();
     this.storage.destroy();
+    this.requests.destroy();
     //this.instances.destroy();
   }
 
@@ -135,6 +113,27 @@ export default class Mold {
 
 }
 
+
+// /**
+//  * Call some action at the backend and return its state
+//  */
+// fetch = <T>(
+//   actionProps: ActionProps,
+//   changeCb: (state: ActionState<T>) => void
+// ): string => {
+//   const requestKey: RequestKey = makeRequestKey(actionName, actionProps);
+//   // init state if it doesn't exist
+//   this.storage.initStateIfNeed(requestKey);
+//   // listen of changes of just created state or existed
+//   this.storage.onChange(requestKey, changeCb);
+//   // make request to the backend at the next tick and update state
+//   setTimeout(() => {
+//     this.doRequest(requestKey, actionProps)
+//       .catch(this.props.logger.error);
+//   });
+//
+//   return this.instances.add(requestKey);
+// }
 
 // /**
 //  * Save some data to backend. It doesn't return any state.

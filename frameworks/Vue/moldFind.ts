@@ -4,14 +4,14 @@ import {
   InstanceActionState,
   ListResponse
 } from '../../frontend/interfaces/MethodsState';
-import {ActionProps} from '../../frontend/interfaces/MethodsProps';
+import {HighLevelProps} from '../../frontend/interfaces/MethodsProps';
 import Mold from '../../frontend/Mold';
 import {INSTANCE_ID_PROP_NAME} from '../../frontend/constants';
 
 
 export default function moldFind<T>(
   context: SetupContext,
-  actionProps: Omit<ActionProps, 'action'>
+  actionProps: HighLevelProps
 ): ActionState<ListResponse<T>> {
   // @ts-ignore
   const mold: Mold = context.root.$mold;
