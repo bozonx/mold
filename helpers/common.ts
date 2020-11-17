@@ -3,6 +3,8 @@ import {LOG_LEVELS, LogLevel} from '../frontend/interfaces/Logger';
 import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestKey';
 import {ActionState,} from '../frontend/interfaces/MethodsState';
 import {DEFAULT_BACKEND} from '../frontend/constants';
+import {RequestBase} from '../interfaces/RequestBase';
+import {omitObj} from './objects';
 
 
 export function makeRequestKey(props: ActionProps): RequestKey {
@@ -43,6 +45,15 @@ export function makeInitialState(): ActionState {
     responseErrors: null,
     result: null,
   };
+}
+
+export function makeRequest(props: ActionProps): RequestBase {
+  return omitObj(
+    props,
+    'backend',
+    'set',
+    'isGetting'
+  ) as RequestBase;
 }
 
 /**

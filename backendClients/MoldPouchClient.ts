@@ -1,7 +1,8 @@
 import BackendClient from '../interfaces/BackendClient';
 import {MoldMiddleware} from '../interfaces/MoldMiddleware';
-import BackendRequest from '../interfaces/RequestBase';
 import BackendResponse from '../interfaces/BackendResponse';
+import Mold from '../frontend/Mold';
+import {RequestBase} from '../interfaces/RequestBase';
 
 
 interface MoldPouchClientProps {
@@ -16,14 +17,21 @@ interface MoldPouchClientProps {
  */
 export default class MoldPouchClient implements BackendClient {
   private readonly props: MoldPouchClientProps;
+  private mold!: Mold;
 
 
   constructor(props: MoldPouchClientProps) {
     this.props = props;
+
+    // TODO: слушать события pouch и выполнять mold.incomePush
+  }
+
+  $init(mold: Mold) {
+    this.mold = mold;
   }
 
 
-  async request(request: BackendRequest): Promise<BackendResponse> {
+  async request(set: string, request: RequestBase): Promise<BackendResponse> {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
