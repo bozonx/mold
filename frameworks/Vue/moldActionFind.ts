@@ -1,7 +1,7 @@
 import {SetupContext} from '@vue/composition-api';
 import {HighLevelProps} from '../../frontend/interfaces/MethodsProps';
 import {InstanceActionState, ListResponse} from '../../frontend/interfaces/MethodsState';
-import {retrieveComposition} from './moldActionGet';
+import {retrieveComposition} from './composition/retrieveComposition';
 
 
 export default function moldActionFind<T>(
