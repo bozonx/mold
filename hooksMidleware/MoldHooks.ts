@@ -1,6 +1,6 @@
 import {SpecialSet} from './interfaces/SpecialSet';
 import {HookContext} from './interfaces/HookContext';
-import {HookDefinition} from './interfaces/HookDefinition';
+import {HookDefinition, PreHookDefinition} from './interfaces/HookDefinition';
 import BackendResponse from '../interfaces/BackendResponse';
 import MoldRequest from '../interfaces/MoldRequest';
 import {MoldError} from './MoldError';
@@ -26,8 +26,8 @@ export default class MoldHooks {
   private readonly requestFunc: HooksRequestFunc;
 
 
-  constructor(rawSets: {[index: string]: HookDefinition}, requestFunc: HooksRequestFunc) {
-    this.sets = this.sortHooks(rawSets);
+  constructor(rawSets: {[index: string]: PreHookDefinition[]}, requestFunc: HooksRequestFunc) {
+    this.sets = this.prepareHooks(rawSets);
     this.requestFunc = requestFunc;
   }
 
@@ -68,6 +68,9 @@ export default class MoldHooks {
 
   private async startBeforeHooks(globalContext: HookContext) {
     for (let hook of this.sets.before[globalContext.set]) {
+
+      // TODO: выполнять конкретный action!!!!
+
       const localContext = cloneDeepObject(globalContext) as HookContext;
 
       await hook.hook(localContext);
@@ -113,7 +116,12 @@ export default class MoldHooks {
     }) as HookContext;
   }
 
-  private sortHooks(rawSets: {[index: string]: HookDefinition}): Sets {
+  /**
+   * Sort and normalize hooks
+   * @param rawSets is { setName: [[type, hookCb]] } or { specialSet: [...] }
+   * @private
+   */
+  private prepareHooks(rawSets: {[index: string]: PreHookDefinition[]}): Sets {
     // TODO: рассортировать хуки по порядку вызова
   }
 

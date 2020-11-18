@@ -20,6 +20,6 @@ export interface HookContext {
   response?: BackendResponse;
   // it is only used in hooks of error set.
   error?: MoldError;
-  // use it for shared data between hooks in during whole request life.
+  // use it for shared data between hooks during whole request life.
   shared: {[index: string]: any};
 }
