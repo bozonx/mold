@@ -4,7 +4,10 @@ import {InstanceActionState, ItemResponse} from '../../frontend/interfaces/Metho
 import {retrieveComposition} from './composition/retrieveComposition';
 
 
-export default function moldGet<T>(
+// TODO: add getFirst
+
+
+export default function moldGetFirst<T>(
   context: SetupContext,
   actionProps: HighLevelProps & { dontLoadImmediately: boolean }
 ): InstanceActionState<ItemResponse<T>> & {load: () => void} {

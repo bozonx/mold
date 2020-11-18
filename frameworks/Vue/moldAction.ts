@@ -4,7 +4,7 @@ import {InstanceActionState} from '../../frontend/interfaces/MethodsState';
 import {saveComposition, SaveCompositionAdditionalProps} from './composition/saveComposition';
 
 
-export default function moldActionGet<T>(
+export default function moldAction<T>(
   context: SetupContext,
   actionName: string,
   actionProps: HighLevelProps & { dontLoadImmediately: boolean }
