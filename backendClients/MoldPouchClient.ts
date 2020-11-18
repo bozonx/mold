@@ -3,12 +3,11 @@ import {MoldMiddleware} from '../hooksMidleware/interfaces/MoldMiddleware';
 import BackendResponse from '../interfaces/BackendResponse';
 import Mold from '../frontend/Mold';
 import MoldRequest from '../interfaces/MoldRequest';
+import {SetsDefinition} from '../hooksMidleware/interfaces/PreHookDefinition';
 
 
 interface MoldPouchClientProps {
-  middlewares: MoldMiddleware[];
-
-  // TODO: add
+  sets: SetsDefinition;
 }
 
 

@@ -16,7 +16,7 @@ interface RetrieveResult<T> {
 export function retrieveComposition<T>(
   context: SetupContext,
   actionName: string,
-  actionProps: HighLevelProps & { dontLoadImmediately: boolean }
+  actionProps: HighLevelProps & { dontLoadImmediately?: boolean }
 ): RetrieveResult<T> {
   // @ts-ignore
   const mold: Mold = context.root.$mold;

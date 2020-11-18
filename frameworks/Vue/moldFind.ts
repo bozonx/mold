@@ -9,7 +9,7 @@ import {retrieveComposition} from './composition/retrieveComposition';
 
 export default function moldFind<T>(
   context: SetupContext,
-  actionProps: HighLevelProps & { dontLoadImmediately: boolean }
+  actionProps: HighLevelProps & { dontLoadImmediately?: boolean }
 ): InstanceActionState<ListResponse<T>> & {load: () => void} {
   const {state} = retrieveComposition<ListResponse<T>>(context, 'find', actionProps);
 

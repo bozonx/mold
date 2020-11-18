@@ -9,7 +9,7 @@ import {retrieveComposition} from './composition/retrieveComposition';
 
 export default function moldGetFirst<T>(
   context: SetupContext,
-  actionProps: HighLevelProps & { dontLoadImmediately: boolean }
+  actionProps: HighLevelProps & { dontLoadImmediately?: boolean }
 ): InstanceActionState<ItemResponse<T>> & {load: () => void} {
   const {state} = retrieveComposition<ItemResponse<T>>(context, 'find', actionProps);
 

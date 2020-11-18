@@ -7,7 +7,7 @@ import {retrieveComposition} from './composition/retrieveComposition';
 export default function moldActionGet<T>(
   context: SetupContext,
   actionName: string,
-  actionProps: HighLevelProps & { dontLoadImmediately: boolean }
+  actionProps: HighLevelProps & { dontLoadImmediately?: boolean }
 ): InstanceActionState<ItemResponse<T>> & {load: () => void} {
   const {state} = retrieveComposition<ItemResponse<T>>(context, actionName, actionProps);
 

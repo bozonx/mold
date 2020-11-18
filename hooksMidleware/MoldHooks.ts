@@ -1,6 +1,6 @@
 import {SpecialSet} from './interfaces/SpecialSet';
 import {GlobalContext, HookContext} from './interfaces/HookContext';
-import {PreHookDefinition} from './interfaces/PreHookDefinition';
+import {SetsDefinition} from './interfaces/PreHookDefinition';
 import BackendResponse from '../interfaces/BackendResponse';
 import MoldRequest from '../interfaces/MoldRequest';
 import {MoldError} from './MoldError';
@@ -34,7 +34,7 @@ export default class MoldHooks {
   private readonly app: HooksApp;
 
 
-  constructor(rawSets: {[index: string]: PreHookDefinition[]}, requestFunc: HooksRequestFunc) {
+  constructor(rawSets: SetsDefinition, requestFunc: HooksRequestFunc) {
     this.sets = this.prepareSets(rawSets);
     this.requestFunc = requestFunc;
     this.app = new HooksApp(this);
@@ -168,7 +168,7 @@ export default class MoldHooks {
    * @param rawSets is { setName: [[type, hookCb]] } or { specialSet: [...] }
    * @private
    */
-  private prepareSets(rawSets: {[index: string]: PreHookDefinition[]}): Sets {
+  private prepareSets(rawSets: SetsDefinition): Sets {
     const sets: Sets = {
       beforeHooks: [],
       beforeRequest: [],
