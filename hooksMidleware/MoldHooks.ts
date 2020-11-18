@@ -1,6 +1,6 @@
 import {SpecialSet} from './interfaces/SpecialSet';
 import {GlobalContext, HookContext} from './interfaces/HookContext';
-import {HookDefinition, PreHookDefinition} from './interfaces/PreHookDefinition';
+import {PreHookDefinition} from './interfaces/PreHookDefinition';
 import BackendResponse from '../interfaces/BackendResponse';
 import MoldRequest from '../interfaces/MoldRequest';
 import {MoldError} from './MoldError';
@@ -11,16 +11,18 @@ import {MoldHook} from './interfaces/MoldHooks';
 
 
 interface Sets {
-  beforeHooks: HookDefinition[];
-  beforeRequest: HookDefinition[];
-  afterRequest: HookDefinition[];
-  afterHooks: HookDefinition[];
-  error: HookDefinition[];
+  beforeHooks: MoldHook[];
+  beforeRequest: MoldHook[];
+  afterRequest: MoldHook[];
+  afterHooks: MoldHook[];
+  error: MoldHook[];
+  // set which will be called before request
   // like { setName: { actionName: [ ...hookCb() ] } }
-  after: {[index: string]: {[index: string]: MoldHook[]}};
-  before: {[index: string]: {[index: string]: MoldHook[]}};
+  setsAfter: {[index: string]: {[index: string]: MoldHook[]}};
+  // set which will be called after request
+  setsBefore: {[index: string]: {[index: string]: MoldHook[]}};
 }
-// on error it has to throw a MoldError
+// on error it has to throw a new MoldError(code, message)
 export type HooksRequestFunc = (request: MoldRequest) => Promise<BackendResponse>;
 
 
@@ -72,7 +74,22 @@ export default class MoldHooks {
 
 
   private async startBeforeHooks(globalContext: GlobalContext) {
-    for (let hook of this.sets.before[globalContext.set]) {
+    if (!this.sets.setsBefore[globalContext.request.set]) {
+      throw new MoldError(
+        REQUEST_STATUSES.fatalError,
+        `Can't find hooks of set "${globalContext.request.set}"`
+      );
+    }
+    else if (!this.sets.setsBefore[globalContext.request.set][globalContext.request.action]) {
+      throw new MoldError(
+        REQUEST_STATUSES.fatalError,
+        `Can't find hooks of action "${globalContext.request.action}"`
+      );
+    }
+
+    const actionHooks = this.sets.setsBefore[globalContext.request.set][globalContext.request.action];
+
+    for (let hook of this.sets.setsBefore[globalContext.set]) {
 
       // TODO: выполнять конкретный action!!!!
       // TODO: app не надо клонировать
