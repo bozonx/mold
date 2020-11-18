@@ -9,10 +9,3 @@ export interface PreHookDefinition {
   readonly action: string | string[];
   readonly hook: MoldHook | MoldHook[];
 }
-
-
-export interface HookDefinition {
-  readonly type: HookType;
-  readonly set: string;
-  readonly hook: MoldHook;
-}

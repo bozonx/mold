@@ -1,4 +1,4 @@
-import {PreHookDefinition} from '../hooksMidleware/interfaces/HookDefinition';
+import {PreHookDefinition} from '../hooksMidleware/interfaces/PreHookDefinition';
 import {MoldHook} from '../hooksMidleware/interfaces/MoldHooks';
 import {ALL_ACTIONS} from '../hooksMidleware/constants';
 

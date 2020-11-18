@@ -1,12 +1,13 @@
 import {SpecialSet} from './interfaces/SpecialSet';
 import {GlobalContext, HookContext} from './interfaces/HookContext';
-import {HookDefinition, PreHookDefinition} from './interfaces/HookDefinition';
+import {HookDefinition, PreHookDefinition} from './interfaces/PreHookDefinition';
 import BackendResponse from '../interfaces/BackendResponse';
 import MoldRequest from '../interfaces/MoldRequest';
 import {MoldError} from './MoldError';
 import {REQUEST_STATUSES} from '../frontend/constants';
 import {cloneDeepObject} from '../helpers/objects';
 import HooksApp from './HooksApp';
+import {MoldHook} from './interfaces/MoldHooks';
 
 
 interface Sets {
@@ -15,8 +16,9 @@ interface Sets {
   afterRequest: HookDefinition[];
   afterHooks: HookDefinition[];
   error: HookDefinition[];
-  after: {[index: string]: HookDefinition[]};
-  before: {[index: string]: HookDefinition[]};
+  // like { setName: { actionName: [ ...hookCb() ] } }
+  after: {[index: string]: {[index: string]: MoldHook[]}};
+  before: {[index: string]: {[index: string]: MoldHook[]}};
 }
 // on error it has to throw a MoldError
 export type HooksRequestFunc = (request: MoldRequest) => Promise<BackendResponse>;
@@ -73,6 +75,7 @@ export default class MoldHooks {
     for (let hook of this.sets.before[globalContext.set]) {
 
       // TODO: выполнять конкретный action!!!!
+      // TODO: app не надо клонировать
 
       const localContext = cloneDeepObject(globalContext) as HookContext;
 
@@ -113,6 +116,10 @@ export default class MoldHooks {
       error: undefined,
       shared: {},
     }
+  }
+
+  private makeActionContext(globalContext: GlobalContext): HookContext {
+
   }
 
   /**

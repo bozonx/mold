@@ -19,7 +19,6 @@ export interface GlobalContext {
   shared: {[index: string]: any};
 }
 
-
 export interface HookContext {
   // before request, after request and special hooks such as beforeRequest, error etc.
   readonly type: HookType;
