@@ -55,7 +55,7 @@ export default class Requests {
     return this.addInstance(requestKey);
   }
 
-  async start(requestKey: RequestKey) {
+  async start(requestKey: RequestKey, data?: Record<string, any>) {
 
     // TODO: првоерить идет ли уже запрос
     //       если это сохранение то поставить в очередь после текущего
@@ -63,6 +63,8 @@ export default class Requests {
 
     // set state of start loading
     this.mold.storage.patch(requestKey, { pending: true });
+
+    // TODO: use "data" of request
 
     const requestProps: ActionProps | undefined = this.getProps(requestKey);
 

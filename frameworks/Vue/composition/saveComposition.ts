@@ -34,10 +34,7 @@ export function saveComposition<T>(
   const state: InstanceActionState<T> & SaveCompositionAdditionalProps = reactive({
     ...mold.getState(instanceId),
     [INSTANCE_ID_PROP_NAME]: instanceId,
-    save: (data: Record<string, any>) => {
-      // TODO: куда передать data ???
-      mold.start(instanceId);
-    },
+    save: (data: Record<string, any>) => mold.start(instanceId, data),
   }) as any;
   // update reactive at any change
   mold.onChange(instanceId, (newState: ActionState) => {

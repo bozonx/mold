@@ -7,7 +7,7 @@ import {saveComposition, SaveCompositionAdditionalProps} from './composition/sav
 export default function moldAction<T>(
   context: SetupContext,
   actionName: string,
-  actionProps: HighLevelProps & { dontLoadImmediately: boolean }
+  actionProps: HighLevelProps
 ): InstanceActionState<T> & SaveCompositionAdditionalProps {
   const {state} = saveComposition<T>(context, actionName, actionProps);
 

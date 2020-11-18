@@ -64,14 +64,14 @@ export default class Mold {
     return this.storage.getState(requestKey);
   }
 
-  start(instanceId: string) {
+  start(instanceId: string, data?: Record<string, any>) {
     const {requestKey, instanceNum} = splitInstanceId(instanceId);
 
     if (!this.requests.doesInstanceNumExist(requestKey, instanceNum)) {
       throw new Error(`Instance "${instanceId}" doesn't exists`);
     }
 
-    this.requests.start(requestKey)
+    this.requests.start(requestKey, data)
       .catch(this.log.error);
   }
 
