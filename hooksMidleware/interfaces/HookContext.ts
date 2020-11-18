@@ -6,8 +6,6 @@ import {MoldError} from '../MoldError';
 
 
 export interface GlobalContext {
-  // singleton to call some methods etc
-  readonly app: HooksApp;
   // in before hooks you can modify the request
   request: MoldRequest;
   // there is a result of request. It is available only with "after" hooks.
@@ -19,10 +17,12 @@ export interface GlobalContext {
   shared: {[index: string]: any};
 }
 
-export interface HookContext {
+export interface HookContext extends GlobalContext {
+  // singleton to call some methods etc
+  readonly app: HooksApp;
   // before request, after request and special hooks such as beforeRequest, error etc.
   readonly type: HookType;
   // name of set which is processed this request
   // or special middleware such as beforeRequest, afterHooks, error etc.
-  readonly set: string;
+  //readonly set: string;
 }

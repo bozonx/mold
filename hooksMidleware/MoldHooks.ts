@@ -8,6 +8,8 @@ import {REQUEST_STATUSES} from '../frontend/constants';
 import {cloneDeepObject} from '../helpers/objects';
 import HooksApp from './HooksApp';
 import {MoldHook} from './interfaces/MoldHooks';
+import {PROHIBITED_SET_NAMES} from './constants';
+import {HookType} from './interfaces/HookType';
 
 
 interface Sets {
@@ -44,20 +46,39 @@ export default class MoldHooks {
 
 
   async request(request: MoldRequest) {
-    const context: GlobalContext = this.makeGlobalContext(request);
+    if (PROHIBITED_SET_NAMES.includes(request.set)) {
+      throw new MoldError(
+        REQUEST_STATUSES.fatalError,
+        `Unappropriated set name "${request.set}"`
+      );
+    }
+    else if (!this.sets.setsBefore[request.set]) {
+      throw new MoldError(
+        REQUEST_STATUSES.fatalError,
+        `Can't find before hooks of set "${request.set}"`
+      );
+    }
+    else if (!this.sets.setsAfter[request.set]) {
+      throw new MoldError(
+        REQUEST_STATUSES.fatalError,
+        `Can't find after hooks of set "${request.set}"`
+      );
+    }
+
+    const globalContext: GlobalContext = this.makeGlobalContext(request);
 
     try {
-      await this.startSpecialHooks('beforeHooks', context);
-      await this.startBeforeHooks(context);
-      await this.startSpecialHooks('beforeRequest', context);
-      await this.startRequest(context);
-      await this.startSpecialHooks('afterRequest', context);
-      await this.startAfterHooks(context);
-      await this.startSpecialHooks('afterHooks', context);
+      await this.startSpecialHooks('beforeHooks', globalContext);
+      await this.startBeforeHooks(globalContext);
+      await this.startSpecialHooks('beforeRequest', globalContext);
+      await this.startRequest(globalContext);
+      await this.startSpecialHooks('afterRequest', globalContext);
+      await this.startAfterHooks(globalContext);
+      await this.startSpecialHooks('afterHooks', globalContext);
     }
     catch (e) {
       let error: MoldError = e;
-
+      // if standard error
       if (typeof e !== 'object' || typeof e.code !== 'number') {
         error = {
           code: REQUEST_STATUSES.fatalError,
@@ -65,41 +86,25 @@ export default class MoldHooks {
         }
       }
 
-      // TODO: поидее нужно обновлять контекст чтобы его не перезаписывали случайно
-      context.error = error;
+      globalContext.error = error;
 
-      await this.startSpecialHooks('error', context);
+      await this.startSpecialHooks('error', globalContext);
     }
   }
 
 
   private async startBeforeHooks(globalContext: GlobalContext) {
-    if (!this.sets.setsBefore[globalContext.request.set]) {
-      throw new MoldError(
-        REQUEST_STATUSES.fatalError,
-        `Can't find hooks of set "${globalContext.request.set}"`
-      );
-    }
-    else if (!this.sets.setsBefore[globalContext.request.set][globalContext.request.action]) {
-      throw new MoldError(
-        REQUEST_STATUSES.fatalError,
-        `Can't find hooks of action "${globalContext.request.action}"`
-      );
-    }
-
     const actionHooks = this.sets.setsBefore[globalContext.request.set][globalContext.request.action];
+    // do nothing because there arent action's hooks
+    if (!actionHooks) return;
 
-    for (let hook of this.sets.setsBefore[globalContext.set]) {
+    for (let hook of actionHooks) {
+      const hookContext = this.makeHookContext('before', globalContext);
 
-      // TODO: выполнять конкретный action!!!!
-      // TODO: app не надо клонировать
+      await hook(hookContext);
 
-      const localContext = cloneDeepObject(globalContext) as HookContext;
-
-      await hook.hook(localContext);
-
-      globalContext.request = localContext.request;
-      globalContext.shared = localContext.shared;
+      globalContext.request = hookContext.request;
+      globalContext.shared = hookContext.shared;
     }
   }
 
@@ -110,24 +115,39 @@ export default class MoldHooks {
   }
 
   private async startAfterHooks(globalContext: GlobalContext) {
-    for (let hook of this.sets.after[globalContext.set]) {
-      const localContext = cloneDeepObject(globalContext) as HookContext;
+    const actionHooks = this.sets.setsAfter[globalContext.request.set][globalContext.request.action];
+    // do nothing because there arent action's hooks
+    if (!actionHooks) return;
 
-      await hook.hook(localContext);
+    for (let hook of actionHooks) {
+      const hookContext = this.makeHookContext('after', globalContext);
 
-      globalContext.response = localContext.response;
-      globalContext.shared = localContext.shared;
+      await hook(hookContext);
+
+      globalContext.response = hookContext.response;
+      globalContext.shared = hookContext.shared;
     }
   }
 
-  private async startSpecialHooks(specialSet: SpecialSet, context: GlobalContext) {
-    // TODO: поидее нужно обновлять контекст чтобы его не перезаписывали случайно
-    // TODO: add
+  private async startSpecialHooks(specialSet: SpecialSet, globalContext: GlobalContext) {
+    const actionHooks = this.sets[specialSet];
+    // do nothing because there arent any hooks
+    if (!actionHooks) return;
+
+    for (let hook of actionHooks) {
+      const hookContext = this.makeHookContext('special', globalContext);
+
+      await hook(hookContext);
+
+      globalContext.request = hookContext.request;
+      globalContext.response = hookContext.response;
+      globalContext.shared = hookContext.shared;
+      globalContext.error = hookContext.error;
+    }
   }
 
   private makeGlobalContext(request: MoldRequest): GlobalContext {
     return {
-      app: this.app,
       request,
       response: undefined,
       error: undefined,
@@ -135,8 +155,12 @@ export default class MoldHooks {
     }
   }
 
-  private makeActionContext(globalContext: GlobalContext): HookContext {
-
+  private makeHookContext(type: HookType, globalContext: GlobalContext): HookContext {
+    return {
+      app: this.app,
+      type,
+      ...cloneDeepObject(globalContext) as GlobalContext,
+    };
   }
 
   /**
@@ -145,34 +169,20 @@ export default class MoldHooks {
    * @private
    */
   private prepareSets(rawSets: {[index: string]: PreHookDefinition[]}): Sets {
+    const sets: Sets = {
+      beforeHooks: [],
+      beforeRequest: [],
+      afterRequest: [],
+      afterHooks: [],
+      error: [],
+      setsAfter: {},
+      setsBefore: {},
+    };
+
+
     // TODO: рассортировать хуки по порядку вызова
+
+    return sets;
   }
-
-
-
-
-
-  // private mergeContext(
-  //   globalContext: HookContext,
-  //   localContext: Partial<HookContext>
-  // ): HookContext {
-  //   return cloneDeepObject({
-  //     ...globalContext,
-  //     ...localContext,
-  //   }) as HookContext;
-  // }
-
-  // middleware(): MoldMiddleware {
-  //
-  // }
-  //
-  //
-  // getEntity(entityName: string): MoldSet {
-  //   // TODO: add
-  // }
-  //
-  // makeEntity(entityName: string, params, hooks) {
-  //   // TODO: add
-  // }
 
 }
