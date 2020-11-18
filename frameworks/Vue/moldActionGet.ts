@@ -1,31 +1,32 @@
 import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
-import {
-  ActionState,
-  InstanceActionState,
-  ListResponse
-} from '../../frontend/interfaces/MethodsState';
 import {HighLevelProps} from '../../frontend/interfaces/MethodsProps';
+import {ActionState, InstanceActionState, ItemResponse} from '../../frontend/interfaces/MethodsState';
 import Mold from '../../frontend/Mold';
-import {INSTANCE_ID_PROP_NAME} from '../../frontend/constants';
 import {omitObj} from '../../helpers/objects';
+import {INSTANCE_ID_PROP_NAME} from '../../frontend/constants';
 
 
-type State<T> = InstanceActionState<ListResponse<T>> & {load: () => void};
+interface RetrieveResult<T> {
+  mold: Mold;
+  instanceId: string;
+  state: InstanceActionState<T> & {load: () => void};
+}
 
 
-export default function moldFind<T>(
+export function retrieveComposition<T>(
   context: SetupContext,
+  actionName: string,
   actionProps: HighLevelProps & { dontLoadImmediately: boolean }
-): State<T> {
+): RetrieveResult<T> {
   // @ts-ignore
   const mold: Mold = context.root.$mold;
   // init request
   const instanceId: string = mold.newRequest({
-    action: 'find',
+    action: actionName,
     isGetting: true,
     ...omitObj(actionProps, 'dontLoadImmediately') as HighLevelProps,
   });
-  const state: State<T> = reactive({
+  const state: InstanceActionState<T> & {load: () => void} = reactive({
     ...mold.getState(instanceId),
     [INSTANCE_ID_PROP_NAME]: instanceId,
     load: () => mold.start(instanceId),
@@ -43,6 +44,21 @@ export default function moldFind<T>(
   onUnmounted(() => {
     mold.destroyInstance(state[INSTANCE_ID_PROP_NAME]);
   });
+
+  return {
+    mold,
+    instanceId,
+    state,
+  }
+}
+
+
+export default function moldActionGet<T>(
+  context: SetupContext,
+  actionName: string,
+  actionProps: HighLevelProps & { dontLoadImmediately: boolean }
+): InstanceActionState<ItemResponse<T>> & {load: () => void} {
+  const {state} = retrieveComposition<ItemResponse<T>>(context, actionName, actionProps);
 
   return state;
 }
