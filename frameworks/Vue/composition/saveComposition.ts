@@ -6,40 +6,44 @@ import {omitObj} from '../../../helpers/objects';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
 
 
-interface RetrieveResult<T> {
+export interface SaveCompositionAdditionalProps {
+  save: (data: Record<string, any>) => void;
+}
+
+interface SaveResult<T> {
   mold: Mold;
   instanceId: string;
-  state: InstanceActionState<T> & {load: () => void};
+  state: InstanceActionState<T> & SaveCompositionAdditionalProps;
 }
 
 
-export function retrieveComposition<T>(
+export function saveComposition<T>(
   context: SetupContext,
-  actionName: string,
-  actionProps: HighLevelProps & { dontLoadImmediately: boolean }
-): RetrieveResult<T> {
+  // use undefined for save purpose where only at save method calling
+  // is clear which action to use: create or update
+  actionName: string | undefined,
+  actionProps: HighLevelProps
+): SaveResult<T> {
   // @ts-ignore
   const mold: Mold = context.root.$mold;
   // init request
   const instanceId: string = mold.newRequest({
     action: actionName,
-    isGetting: true,
-    ...omitObj(actionProps, 'dontLoadImmediately') as HighLevelProps,
+    ...actionProps,
   });
-  const state: InstanceActionState<T> & {load: () => void} = reactive({
+  const state: InstanceActionState<T> & SaveCompositionAdditionalProps = reactive({
     ...mold.getState(instanceId),
     [INSTANCE_ID_PROP_NAME]: instanceId,
-    load: () => mold.start(instanceId),
+    save: (data: Record<string, any>) => {
+      // TODO: куда передать data ???
+      // TODO: если нет id то create, если есть то patch
+      mold.start(instanceId);
+    },
   }) as any;
   // update reactive at any change
   mold.onChange(instanceId, (newState: ActionState) => {
     for (let key of Object.keys(newState)) state[key] = newState[key];
   });
-
-  if (!actionProps.dontLoadImmediately) {
-    // start request immediately
-    mold.start(instanceId);
-  }
 
   onUnmounted(() => {
     mold.destroyInstance(state[INSTANCE_ID_PROP_NAME]);
