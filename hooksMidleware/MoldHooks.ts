@@ -1,11 +1,12 @@
 import {SpecialSet} from './interfaces/SpecialSet';
-import {HookContext} from './interfaces/HookContext';
+import {GlobalContext, HookContext} from './interfaces/HookContext';
 import {HookDefinition, PreHookDefinition} from './interfaces/HookDefinition';
 import BackendResponse from '../interfaces/BackendResponse';
 import MoldRequest from '../interfaces/MoldRequest';
 import {MoldError} from './MoldError';
 import {REQUEST_STATUSES} from '../frontend/constants';
 import {cloneDeepObject} from '../helpers/objects';
+import HooksApp from './HooksApp';
 
 
 interface Sets {
@@ -24,11 +25,13 @@ export type HooksRequestFunc = (request: MoldRequest) => Promise<BackendResponse
 export default class MoldHooks {
   private readonly sets: Sets;
   private readonly requestFunc: HooksRequestFunc;
+  private readonly app: HooksApp;
 
 
   constructor(rawSets: {[index: string]: PreHookDefinition[]}, requestFunc: HooksRequestFunc) {
-    this.sets = this.prepareHooks(rawSets);
+    this.sets = this.prepareSets(rawSets);
     this.requestFunc = requestFunc;
+    this.app = new HooksApp(this);
   }
 
   destroy() {
@@ -36,8 +39,8 @@ export default class MoldHooks {
   }
 
 
-  async start() {
-    const context: HookContext = this.makeContext();
+  async request(request: MoldRequest) {
+    const context: GlobalContext = this.makeGlobalContext(request);
 
     try {
       await this.startSpecialHooks('beforeHooks', context);
@@ -66,7 +69,7 @@ export default class MoldHooks {
   }
 
 
-  private async startBeforeHooks(globalContext: HookContext) {
+  private async startBeforeHooks(globalContext: GlobalContext) {
     for (let hook of this.sets.before[globalContext.set]) {
 
       // TODO: выполнять конкретный action!!!!
@@ -80,13 +83,13 @@ export default class MoldHooks {
     }
   }
 
-  private async startRequest(globalContext: HookContext) {
+  private async startRequest(globalContext: GlobalContext) {
     const request = cloneDeepObject(globalContext.request) as MoldRequest;
 
     globalContext.response = await this.requestFunc(request);
   }
 
-  private async startAfterHooks(globalContext: HookContext) {
+  private async startAfterHooks(globalContext: GlobalContext) {
     for (let hook of this.sets.after[globalContext.set]) {
       const localContext = cloneDeepObject(globalContext) as HookContext;
 
@@ -97,23 +100,19 @@ export default class MoldHooks {
     }
   }
 
-  private async startSpecialHooks(specialSet: SpecialSet, context: HookContext) {
+  private async startSpecialHooks(specialSet: SpecialSet, context: GlobalContext) {
     // TODO: поидее нужно обновлять контекст чтобы его не перезаписывали случайно
     // TODO: add
   }
 
-  private makeContext(): HookContext {
-    // TODO: add
-  }
-
-  private mergeContext(
-    globalContext: HookContext,
-    localContext: Partial<HookContext>
-  ): HookContext {
-    return cloneDeepObject({
-      ...globalContext,
-      ...localContext,
-    }) as HookContext;
+  private makeGlobalContext(request: MoldRequest): GlobalContext {
+    return {
+      app: this.app,
+      request,
+      response: undefined,
+      error: undefined,
+      shared: {},
+    }
   }
 
   /**
@@ -121,13 +120,23 @@ export default class MoldHooks {
    * @param rawSets is { setName: [[type, hookCb]] } or { specialSet: [...] }
    * @private
    */
-  private prepareHooks(rawSets: {[index: string]: PreHookDefinition[]}): Sets {
+  private prepareSets(rawSets: {[index: string]: PreHookDefinition[]}): Sets {
     // TODO: рассортировать хуки по порядку вызова
   }
 
 
 
 
+
+  // private mergeContext(
+  //   globalContext: HookContext,
+  //   localContext: Partial<HookContext>
+  // ): HookContext {
+  //   return cloneDeepObject({
+  //     ...globalContext,
+  //     ...localContext,
+  //   }) as HookContext;
+  // }
 
   // middleware(): MoldMiddleware {
   //
