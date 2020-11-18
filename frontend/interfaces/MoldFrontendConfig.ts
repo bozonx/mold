@@ -1,3 +1,4 @@
-export default interface MoldFrontendConfig {
-  defaultPerPage: number;
+export interface MoldFrontendConfig {
+  //defaultPerPage: number;
+  deletedPropName: string;
 }

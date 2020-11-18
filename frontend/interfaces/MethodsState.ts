@@ -1,5 +1,5 @@
 import {JsonData} from '../../interfaces/Types';
-import {MoldErrorDefinition} from '../../interfaces/BackendResponse';
+import {MoldError} from '../../hooksMidleware/MoldError';
 
 
 export interface ActionState<T = JsonData> {

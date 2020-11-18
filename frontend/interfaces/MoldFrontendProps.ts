@@ -1,5 +1,5 @@
 import {Logger} from './Logger';
-import MoldFrontendConfig from './MoldFrontendConfig';
+import {MoldFrontendConfig} from './MoldFrontendConfig';
 import BackendClient from '../../interfaces/BackendClient';
 import StorageAdapter from './StorageAdapter';
 

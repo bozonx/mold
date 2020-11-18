@@ -10,5 +10,5 @@ export default function moldPatch<T>(
 ): InstanceActionState<T> & SaveCompositionAdditionalProps {
   const {state} = saveComposition<T>(context, 'patch', actionProps);
 
-  return state;
+  return state as InstanceActionState<T> & SaveCompositionAdditionalProps;
 }

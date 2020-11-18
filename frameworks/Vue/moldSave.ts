@@ -14,5 +14,5 @@ export default function moldSave<T>(
   ) ? 'patch' : 'create';
   const {state} = saveComposition<T>(context, actionName, actionProps);
 
-  return state;
+  return state as InstanceActionState<T> & SaveCompositionAdditionalProps;
 }

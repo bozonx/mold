@@ -7,8 +7,8 @@ import PushesManager, {PushIncomeMessage} from './PushesManager';
 import MoldFrontendProps from './interfaces/MoldFrontendProps';
 import {RequestKey} from './interfaces/RequestKey';
 import Requests from './Requests';
-import PushMessage from '../interfaces/PushMessage';
 import {Logger} from './interfaces/Logger';
+import {defaultConfig} from './defaultConfig';
 
 
 export default class Mold {
@@ -95,8 +95,18 @@ export default class Mold {
 
 
   private prepareProps(props: Partial<MoldFrontendProps>): MoldFrontendProps {
-    // TODO: check props and merge with defaults
-    return props as any;
+
+    // TODO: check props
+
+    const completed: MoldFrontendProps = {
+      ...props,
+      config: {
+        ...defaultConfig,
+        ...props.config,
+      }
+    } as MoldFrontendProps;
+
+    return completed;
   }
 
 }

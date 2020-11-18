@@ -10,5 +10,5 @@ export default function moldCreate<T>(
 ): InstanceActionState<T> & SaveCompositionAdditionalProps {
   const {state} = saveComposition<T>(context, 'create', actionProps);
 
-  return state;
+  return state as InstanceActionState<T> & SaveCompositionAdditionalProps;
 }

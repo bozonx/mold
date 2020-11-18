@@ -2,7 +2,7 @@ import Mold from '../../../frontend/Mold';
 import {ActionState, InstanceActionState} from '../../../frontend/interfaces/MethodsState';
 import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
 import {HighLevelProps} from '../../../frontend/interfaces/MethodsProps';
-import {omitObj} from '../../../helpers/objects';
+import {omitUndefined} from '../../../helpers/objects';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
 
 
@@ -13,7 +13,7 @@ export interface SaveCompositionAdditionalProps {
 interface SaveResult<T> {
   mold: Mold;
   instanceId: string;
-  state: InstanceActionState<T> & SaveCompositionAdditionalProps;
+  state: InstanceActionState<T>;
 }
 
 
@@ -22,7 +22,8 @@ export function saveComposition<T>(
   // use undefined for save purpose where only at save method calling
   // is clear which action to use: create or update
   actionName: string,
-  actionProps: HighLevelProps
+  actionProps: HighLevelProps,
+  stateAdditions?: Record<string, any>
 ): SaveResult<T> {
   // @ts-ignore
   const mold: Mold = context.root.$mold;
@@ -31,11 +32,14 @@ export function saveComposition<T>(
     action: actionName,
     ...actionProps,
   });
-  const state: InstanceActionState<T> & SaveCompositionAdditionalProps = reactive({
+  const state: InstanceActionState<T> = reactive(omitUndefined({
     ...mold.getState(instanceId),
     [INSTANCE_ID_PROP_NAME]: instanceId,
-    save: (data: Record<string, any>) => mold.start(instanceId, data),
-  }) as any;
+    ...stateAdditions,
+    save: (stateAdditions)
+      ? (data: Record<string, any>) => mold.start(instanceId, data)
+      : undefined,
+  })) as any;
   // update reactive at any change
   mold.onChange(instanceId, (newState: ActionState) => {
     for (let key of Object.keys(newState)) state[key] = newState[key];

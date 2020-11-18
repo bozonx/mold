@@ -11,7 +11,9 @@ export default function moldGetFirst<T>(
   context: SetupContext,
   actionProps: HighLevelProps & { dontLoadImmediately: boolean }
 ): InstanceActionState<ItemResponse<T>> & {load: () => void} {
-  const {state} = retrieveComposition<ItemResponse<T>>(context, 'get', actionProps);
+  const {state} = retrieveComposition<ItemResponse<T>>(context, 'find', actionProps);
+
+  // TODO: сделать запрос find, с параметрами page: 1, perPage: 1 и выбрать 1й вариант
 
   return state;
 }
