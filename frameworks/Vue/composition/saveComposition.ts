@@ -21,7 +21,7 @@ export function saveComposition<T>(
   context: SetupContext,
   // use undefined for save purpose where only at save method calling
   // is clear which action to use: create or update
-  actionName: string | undefined,
+  actionName: string,
   actionProps: HighLevelProps
 ): SaveResult<T> {
   // @ts-ignore
@@ -36,7 +36,6 @@ export function saveComposition<T>(
     [INSTANCE_ID_PROP_NAME]: instanceId,
     save: (data: Record<string, any>) => {
       // TODO: куда передать data ???
-      // TODO: если нет id то create, если есть то patch
       mold.start(instanceId);
     },
   }) as any;

@@ -8,7 +8,11 @@ export default function moldSave<T>(
   context: SetupContext,
   actionProps: HighLevelProps & { dontLoadImmediately: boolean }
 ): InstanceActionState<T> & SaveCompositionAdditionalProps {
-  const {state} = saveComposition<T>(context, undefined, actionProps);
+  const actionName = (
+    typeof actionProps.id === 'string'
+    || typeof actionProps.id === 'number'
+  ) ? 'patch' : 'create';
+  const {state} = saveComposition<T>(context, actionName, actionProps);
 
   return state;
 }
