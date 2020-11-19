@@ -5,6 +5,8 @@ import Mold from '../Mold';
 export default interface StorageAdapter {
   $init?(mold: Mold);
 
+  destroy();
+
   getState(id: string): ActionState | undefined;
 
   /**
@@ -31,6 +33,4 @@ export default interface StorageAdapter {
   onChange(cb: (id: string) => void): number;
 
   removeListener(handlerIndex: number);
-
-  destroy();
 }

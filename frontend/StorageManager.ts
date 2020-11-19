@@ -23,6 +23,11 @@ export default class StorageManager {
     this.store.onChange(this.handleChange);
   }
 
+  destroy() {
+    this.store.destroy();
+    this.events.destroy();
+  }
+
 
   getState(requestKey: RequestKey): ActionState | undefined {
     const id: string = requestKeyToString(requestKey);
@@ -55,11 +60,6 @@ export default class StorageManager {
 
     this.store.delete(id);
     this.events.removeAllListeners(id);
-  }
-
-  destroy() {
-    this.store.destroy();
-    this.events.destroy();
   }
 
   /**

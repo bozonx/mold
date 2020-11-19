@@ -15,7 +15,7 @@ const changeEvent = 'change';
 export default class VuexMoldStorage implements StorageAdapter {
   private readonly store: Store<any>;
   private readonly events = new IndexedEventEmitter();
-  private readonly unsubscribe: () => void;
+  private readonly unsubscribeCb: () => void;
 
 
   constructor(vuexStore: Store<any>) {
@@ -40,7 +40,7 @@ export default class VuexMoldStorage implements StorageAdapter {
       }
     });
 
-    this.unsubscribe = this.store.subscribe((mutationPayload, wholeState: {mold: MoldState}) => {
+    this.unsubscribeCb = this.store.subscribe((mutationPayload, wholeState: {mold: MoldState}) => {
       if (mutationPayload.type !== setStatePath) return;
 
       const ids: string[] = Object.keys(mutationPayload.payload);
@@ -49,6 +49,12 @@ export default class VuexMoldStorage implements StorageAdapter {
         this.events.emit(changeEvent, id);
       }
     });
+  }
+
+  destroy() {
+    this.unsubscribeCb();
+    this.store.unregisterModule(moduleName);
+    this.events.destroy();
   }
 
 
@@ -83,12 +89,6 @@ export default class VuexMoldStorage implements StorageAdapter {
 
   removeListener(handlerIndex: number) {
     this.events.removeListener(handlerIndex);
-  }
-
-  destroy() {
-    this.unsubscribe();
-    this.store.unregisterModule(moduleName);
-    this.events.destroy();
   }
 
 }
