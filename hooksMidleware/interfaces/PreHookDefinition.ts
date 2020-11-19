@@ -11,4 +11,4 @@ export interface PreHookDefinition {
 }
 
 export type SetHooks = (PreHookDefinition | PreHookDefinition[])[];
-export type SetsDefinition = {[index: string]: SetHooks;
+export type SetsDefinition = {[index: string]: SetHooks};

@@ -8,7 +8,7 @@ export default function moldActionGet<T>(
   context: SetupContext,
   actionName: string,
   actionProps: RetrieveCompositionProps
-): GetCompositionState<T> & {load: () => void} {
+): GetCompositionState<T> {
   const {state} = getComposition<T>(context, actionName, actionProps);
 
   return state;

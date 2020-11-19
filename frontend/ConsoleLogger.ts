@@ -20,23 +20,23 @@ export default class ConsoleLogger implements Logger {
   debug = (message: string) => {
     if (!this.allowDebug) return;
 
-    console.info(`DEBUG: ${message}`);
+    console.info(`DEBUG mold: ${message}`);
   }
 
   info = (message: string) => {
     if (!this.allowInfo) return;
 
-    console.info(message);
+    console.info(`INFO mold: ${message}`);
   }
 
   warn = (message: string) => {
     if (!this.allowWarn) return;
 
-    console.warn(`WARNING: ${message}`);
+    console.warn(`WARNING mold: ${message}`);
   }
 
   error = (message: string | Error) => {
-    console.error(`ERROR: ${message}`);
+    console.error(`ERROR mold: ${message}`);
   }
 
 }

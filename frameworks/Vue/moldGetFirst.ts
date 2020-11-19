@@ -1,19 +1,28 @@
 import {SetupContext} from '@vue/composition-api';
-import {HighLevelProps} from '../../frontend/interfaces/MethodsProps';
-import {InstanceActionState, ItemResponse} from '../../frontend/interfaces/MethodsState';
-import {retrieveComposition} from './composition/retrieveComposition';
-
-
-// TODO: add getFirst
+import {retrieveComposition, RetrieveCompositionProps} from './composition/retrieveComposition';
+import {GetCompositionState} from './composition/getComposition';
+import {ActionState, ListResponse} from '../../frontend/interfaces/MethodsState';
+import {omitObj} from '../../helpers/objects';
 
 
 export default function moldGetFirst<T>(
   context: SetupContext,
-  actionProps: HighLevelProps & { dontLoadImmediately?: boolean }
-): InstanceActionState<ItemResponse<T>> & {load: () => void} {
-  const {state} = retrieveComposition<ItemResponse<T>>(context, 'find', actionProps);
+  actionProps: RetrieveCompositionProps
+): GetCompositionState<T> {
+  const {state} = retrieveComposition<GetCompositionState<T>>(
+    context,
+    'find',
 
-  // TODO: сделать запрос find, с параметрами page: 1, perPage: 1 и выбрать 1й вариант
+    // TODO: указать параметры page: 1, perPage: 1
+
+    actionProps,
+    (newState: ActionState<ListResponse<T>>): GetCompositionState<T> => {
+      return {
+        ...omitObj(newState, 'result') as Omit<ActionState<T>, 'result'>,
+        item: newState.result?.data && newState.result?.data[0] || null,
+      };
+    }
+  );
 
   return state;
 }

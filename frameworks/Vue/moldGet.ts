@@ -7,7 +7,7 @@ import {RetrieveCompositionProps} from './composition/retrieveComposition';
 export default function moldGet<T>(
   context: SetupContext,
   actionProps: RetrieveCompositionProps
-): GetCompositionState<T> & {load: () => void} {
+): GetCompositionState<T> {
   const {state} = getComposition<T>(context, 'get', actionProps);
 
   return state;
