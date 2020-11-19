@@ -14,12 +14,12 @@ export default class StorageManager {
 
 
   constructor(mold: Mold) {
-    if (mold.props.storage) {
-      this.storage = mold.props.storage;
-    }
-    else {
-      this.storage = new DefaultStore();
-    }
+    // if (mold.props.storage) {
+    //   this.storage = mold.props.storage;
+    // }
+    // else {
+    //   this.storage = new DefaultStore();
+    // }
 
     if (this.storage.$init) this.storage.$init(mold);
 

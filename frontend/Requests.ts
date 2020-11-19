@@ -3,7 +3,7 @@ import {ActionProps} from './interfaces/MethodsProps';
 import Mold from './Mold';
 import BackendResponse from '../interfaces/BackendResponse';
 import {isEmptyObject} from '../helpers/objects';
-import {requestKeyToString, splitInstanceId} from '../helpers/common';
+import {makeRequestKey, requestKeyToString, splitInstanceId} from '../helpers/common';
 import {REQUEST_STATUSES} from './constants';
 
 
@@ -46,7 +46,12 @@ export default class Requests {
       && this.requests[backend][set][action][request];
   }
 
-  register(requestKey: RequestKey, props: ActionProps): string {
+  /**
+   * Creates storage and register request to further call.
+   * @return An instance id
+   */
+  register(props: ActionProps): string {
+    const requestKey: RequestKey = makeRequestKey(props);
     // init state if it doesn't exist
     this.mold.storage.initStateIfNeed(requestKey);
     // put or update request props into store

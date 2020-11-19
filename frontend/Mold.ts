@@ -2,13 +2,15 @@ import {ActionProps} from './interfaces/MethodsProps';
 import {ActionState} from './interfaces/MethodsState';
 import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
-import {makeRequestKey, splitInstanceId} from '../helpers/common';
+import {splitInstanceId} from '../helpers/common';
 import PushesManager, {PushIncomeMessage} from './PushesManager';
 import MoldFrontendProps from './interfaces/MoldFrontendProps';
-import {RequestKey} from './interfaces/RequestKey';
 import Requests from './Requests';
 import {Logger} from './interfaces/Logger';
 import {defaultConfig} from './defaultConfig';
+import {isEmptyObject} from '../helpers/objects';
+import ConsoleLogger from './ConsoleLogger';
+import DefaultStore from './DefaultStore';
 
 
 export default class Mold {
@@ -17,7 +19,6 @@ export default class Mold {
   readonly push: PushesManager;
   readonly storage: StorageManager;
   readonly requests: Requests;
-
 
   get log(): Logger {
     return this.props.logger;
@@ -48,22 +49,28 @@ export default class Mold {
   }
 
   /**
-   * Init request if need and make a new request instance id.
-   * It doesn't start the request
+   * It inits request if need and makes a new request instance id.
+   * It doesn't start the request itself
    * @return An instance id
    */
   newRequest(actionProps: ActionProps): string {
-    const requestKey: RequestKey = makeRequestKey(actionProps);
-    // create storage and register request to further call. It returns an instance id;
-    return this.requests.register(requestKey, actionProps);
+    return this.requests.register(actionProps);
   }
 
+  /**
+   * It receives as instanceId and returns state of request.
+   */
   getState(instanceId: string): ActionState | undefined {
     const {requestKey} = splitInstanceId(instanceId);
 
     return this.storage.getState(requestKey);
   }
 
+  /**
+   * Start the request which is corresponding to the instanceId.
+   * @param instanceId
+   * @param data will be passed to request's data param.
+   */
   start(instanceId: string, data?: Record<string, any>) {
     const {requestKey, instanceNum} = splitInstanceId(instanceId);
 
@@ -75,6 +82,10 @@ export default class Mold {
       .catch(this.log.error);
   }
 
+  /**
+   * Listen to changes of any part of state of specified request
+   * which is resolved by instanceId.
+   */
   onChange(instanceId: string, changeCb: (state: ActionState) => void): number {
     const {requestKey} = splitInstanceId(instanceId);
     // listen of changes of just created state or existed
@@ -87,7 +98,7 @@ export default class Mold {
 
   /**
    * Destroy instance of request.
-   * And destroy request and state themself if not one instance left.
+   * And destroy request and state themself if no one instance left.
    */
   destroyInstance = (instanceId: string) => {
     this.requests.destroyInstance(instanceId);
@@ -95,18 +106,19 @@ export default class Mold {
 
 
   private prepareProps(props: Partial<MoldFrontendProps>): MoldFrontendProps {
+    if (!props.backends || isEmptyObject(props.backends)) {
+      throw new Error(`Please specify almost one backend`);
+    }
 
-    // TODO: check props
-
-    const completed: MoldFrontendProps = {
-      ...props,
+    return {
+      backends: props.backends,
       config: {
         ...defaultConfig,
         ...props.config,
-      }
-    } as MoldFrontendProps;
-
-    return completed;
+      },
+      storage: (props.storage) ? props.storage : new DefaultStore(),
+      logger: (props.logger) ? props.logger : new ConsoleLogger(),
+    };
   }
 
 }
