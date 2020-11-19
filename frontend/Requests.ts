@@ -1,27 +1,23 @@
-import {REQUEST_KEY_POSITIONS, REQUEST_KEY_SEPARATOR, RequestKey} from './interfaces/RequestKey';
+import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import {ActionProps} from './interfaces/MethodsProps';
 import Mold from './Mold';
 import BackendResponse from '../interfaces/BackendResponse';
-import {isEmptyObject} from '../helpers/objects';
 import {makeRequestKey, requestKeyToString, splitInstanceId} from '../helpers/common';
 import {REQUEST_STATUSES} from './constants';
+import {InstancesStore} from './InstancesStore';
 
 
 export default class Requests {
   private mold: Mold;
-  // props of requests like { backend: { set: { action: { request: {...props} } } } }
-  private requests: {[index: string]: {[index: string]: {[index: string]: {[index: string]: ActionProps}}}} = {};
-  // object like: { "backend|set|action|request": ["0", "1", ...] }
-  private instances: {[index: string]: string[]} = {};
-
+  private readonly instances: InstancesStore;
 
   constructor(mold: Mold) {
     this.mold = mold;
+    this.instances = new InstancesStore();
   }
 
   destroy() {
-    this.instances = {};
-    this.requests = {};
+    this.instances.destroy();
   }
 
 
@@ -38,12 +34,7 @@ export default class Requests {
   }
 
   getProps(requestKey: RequestKey): ActionProps | undefined {
-    const [backend, set, action, request] = requestKey;
-
-    return this.requests[backend]
-      && this.requests[backend][set]
-      && this.requests[backend][set][action]
-      && this.requests[backend][set][action][request];
+    return this.instances.getProps(requestKey);
   }
 
   /**
@@ -55,9 +46,9 @@ export default class Requests {
     // init state if it doesn't exist
     this.mold.storage.initStateIfNeed(requestKey);
     // put or update request props into store
-    this.storeProps(requestKey, props);
+    this.instances.storeProps(requestKey, props);
 
-    return this.addInstance(requestKey);
+    return this.instances.addInstance(requestKey);
   }
 
   async start(requestKey: RequestKey, data?: Record<string, any>) {
@@ -125,74 +116,9 @@ export default class Requests {
     if (requestInstances.length) return;
     // else remove the request and state
     // remove request props
-    this.removeProps(requestKey);
+    this.instances.removeProps(requestKey);
     // remove state
     this.mold.storage.delete(requestKey);
-  }
-
-
-  private addInstance(requestKey: RequestKey): string {
-    const requestKeyStr: string = requestKeyToString(requestKey);
-    const requestInstances: string[] | undefined = this.instances[requestKeyStr];
-    let newInstanceNum = '0';
-
-    if (requestInstances) {
-      // TODO: test by hard
-      const newInstanceNum: string = String(this.instances[requestKeyStr].length);
-
-      this.instances[requestKeyStr].push(newInstanceNum);
-    }
-    else {
-      this.instances[requestKeyStr] = [newInstanceNum];
-    }
-
-    return requestKeyStr + REQUEST_KEY_SEPARATOR + newInstanceNum;
-  }
-
-  private removeProps(requestKey: RequestKey) {
-    const [backend, set, action, request] = requestKey;
-
-    if (
-      this.requests[backend]
-      && this.requests[backend][set]
-      && this.requests[backend][set][action]
-      && this.requests[backend][set][action][request]
-    ) {
-      delete this.requests[backend][set][action][request];
-    }
-
-    if (isEmptyObject(this.requests[backend][set][action])) {
-      delete this.requests[backend][set][action];
-    }
-
-    if (isEmptyObject(this.requests[backend][set])) {
-      delete this.requests[backend][set];
-    }
-
-    if (isEmptyObject(this.requests[backend])) {
-      delete this.requests[backend];
-    }
-  }
-
-  /**
-   * Put or replace the latest request props.
-   */
-  private storeProps(requestKey: RequestKey, props: ActionProps) {
-    const [backend, set, action, request] = requestKey;
-
-    if (!this.requests[backend]) {
-      this.requests[backend] = {};
-    }
-
-    if (!this.requests[backend][set]) {
-      this.requests[backend][set] = {};
-    }
-
-    if (!this.requests[backend][set][action]) {
-      this.requests[backend][set][action] = {};
-    }
-
-    this.requests[backend][set][action][request] = props;
   }
 
 }
