@@ -17,7 +17,7 @@ export interface RetrieveResult<T> {
   state: T & InstanceState & RetrieveAdditionalState;
 }
 
-export interface FindCompositionProps extends HighLevelProps {
+export interface RetrieveCompositionProps extends HighLevelProps {
   dontLoadImmediately?: boolean
 }
 
@@ -25,7 +25,7 @@ export interface FindCompositionProps extends HighLevelProps {
 export function retrieveComposition<T>(
   context: SetupContext,
   actionName: string,
-  actionProps: FindCompositionProps,
+  actionProps: RetrieveCompositionProps,
   changeTransform?: (newState: ActionState) => T
 ): RetrieveResult<T> {
   // @ts-ignore

@@ -1,14 +1,14 @@
 import {SetupContext} from '@vue/composition-api';
-import {HighLevelProps} from '../../frontend/interfaces/MethodsProps';
-import {InstanceActionState, ItemResponse} from '../../frontend/interfaces/MethodsState';
-import {retrieveComposition} from './composition/retrieveComposition';
+
+import {getComposition, GetCompositionState} from './composition/getComposition';
+import {RetrieveCompositionProps} from './composition/retrieveComposition';
 
 
 export default function moldGet<T>(
   context: SetupContext,
-  actionProps: HighLevelProps & { dontLoadImmediately?: boolean }
-): InstanceActionState<ItemResponse<T>> & {load: () => void} {
-  const {state} = retrieveComposition<ItemResponse<T>>(context, 'get', actionProps);
+  actionProps: RetrieveCompositionProps
+): GetCompositionState<T> & {load: () => void} {
+  const {state} = getComposition<T>(context, 'get', actionProps);
 
   return state;
 }

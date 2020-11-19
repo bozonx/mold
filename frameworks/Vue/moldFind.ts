@@ -1,11 +1,11 @@
 import {SetupContext} from '@vue/composition-api';
 import {findComposition, FindCompositionState} from './composition/findComposition';
-import {FindCompositionProps} from './composition/retrieveComposition';
+import {RetrieveCompositionProps} from './composition/retrieveComposition';
 
 
 export default function moldFind<T>(
   context: SetupContext,
-  actionProps: FindCompositionProps
+  actionProps: RetrieveCompositionProps
 ): FindCompositionState<T> {
   const {state} = findComposition<T>(context, 'find', actionProps);
 
