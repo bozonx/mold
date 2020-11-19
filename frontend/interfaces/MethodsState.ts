@@ -2,7 +2,7 @@ import {JsonData} from '../../interfaces/Types';
 import {MoldError} from '../../hooksMidleware/MoldError';
 
 
-export interface ActionState<T = JsonData> {
+export interface ActionState<T = any> {
   // it is loading or saving first time or further at the moment
   pending: boolean;
   // loaded or saved at least once or it is in a cache
@@ -49,4 +49,5 @@ export interface InstanceState {
 
 // export type InstanceListState<T = any> = ListState<T> & InstanceState;
 // export type InstanceItemState<T = any> = ItemState<T> & InstanceState;
-export type InstanceActionState<T = any> = ActionState<T> & InstanceState;
+
+//export type InstanceActionState<T = any> = ActionState<T> & InstanceState;

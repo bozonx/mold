@@ -3,7 +3,7 @@
  */
 import {cloneDeepArray} from './arrays';
 
-export function omitObj(obj: {[index: string]: any} | undefined, ...keysToExclude: string[]): {[index: string]: any} {
+export function omitObj(obj: {[index: string]: any} | null | undefined, ...keysToExclude: string[]): {[index: string]: any} {
   if (!obj) return {};
 
   const result: {[index: string]: any} = {};

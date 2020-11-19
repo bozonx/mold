@@ -1,15 +1,15 @@
 import {SetupContext} from '@vue/composition-api';
-import {HighLevelProps} from '../../frontend/interfaces/MethodsProps';
-import {InstanceActionState, ListResponse} from '../../frontend/interfaces/MethodsState';
-import {retrieveComposition} from './composition/retrieveComposition';
+
+import {findComposition, FindCompositionState} from './composition/findComposition';
+import {FindCompositionProps} from './composition/retrieveComposition';
 
 
 export default function moldActionFind<T>(
   context: SetupContext,
   actionName: string,
-  actionProps: HighLevelProps & { dontLoadImmediately?: boolean }
-): InstanceActionState<ListResponse<T>> & {load: () => void} {
-  const {state} = retrieveComposition<ListResponse<T>>(context, actionName, actionProps);
+  actionProps: FindCompositionProps
+): FindCompositionState<T> {
+  const {state} = findComposition<T>(context, actionName, actionProps);
 
   return state;
 }

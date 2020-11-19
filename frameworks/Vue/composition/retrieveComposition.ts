@@ -1,22 +1,32 @@
-import Mold from '../../../frontend/Mold';
-import {ActionState, InstanceActionState} from '../../../frontend/interfaces/MethodsState';
 import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
-import {HighLevelProps} from '../../../frontend/interfaces/MethodsProps';
+
 import {omitObj} from '../../../helpers/objects';
+import Mold from '../../../frontend/Mold';
+import {ActionState, InstanceState} from '../../../frontend/interfaces/MethodsState';
+import {HighLevelProps} from '../../../frontend/interfaces/MethodsProps';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
 
 
-interface RetrieveResult<T> {
+export interface RetrieveAdditionalState {
+  load: () => void;
+}
+
+export interface RetrieveResult<T> {
   mold: Mold;
   instanceId: string;
-  state: InstanceActionState<T> & {load: () => void};
+  state: T & InstanceState & RetrieveAdditionalState;
+}
+
+export interface FindCompositionProps extends HighLevelProps {
+  dontLoadImmediately?: boolean
 }
 
 
 export function retrieveComposition<T>(
   context: SetupContext,
   actionName: string,
-  actionProps: HighLevelProps & { dontLoadImmediately?: boolean }
+  actionProps: FindCompositionProps,
+  changeTransform?: (newState: ActionState) => T
 ): RetrieveResult<T> {
   // @ts-ignore
   const mold: Mold = context.root.$mold;
@@ -26,14 +36,20 @@ export function retrieveComposition<T>(
     isGetting: true,
     ...omitObj(actionProps, 'dontLoadImmediately') as HighLevelProps,
   });
-  const state: InstanceActionState<T> & {load: () => void} = reactive({
+
+  const state: T & InstanceState & RetrieveAdditionalState = reactive({
     ...mold.getState(instanceId),
     [INSTANCE_ID_PROP_NAME]: instanceId,
     load: () => mold.start(instanceId),
   }) as any;
+
   // update reactive at any change
   mold.onChange(instanceId, (newState: ActionState) => {
-    for (let key of Object.keys(newState)) state[key] = newState[key];
+    const completeState: ActionState | T = (changeTransform)
+      ? changeTransform(newState)
+      : newState
+
+    for (let key of Object.keys(completeState)) state[key] = completeState[key];
   });
 
   if (!actionProps.dontLoadImmediately) {
