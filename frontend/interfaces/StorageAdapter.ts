@@ -24,7 +24,7 @@ export default interface StorageAdapter {
 
   /**
    * Delete state and don't rise events on delete.
-   * It shouldn't rise any events after deleting
+   * It shouldn't rise any events after deleting.
    */
   delete(id: string);
 

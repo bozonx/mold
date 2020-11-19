@@ -2,35 +2,32 @@ import {ActionState} from './interfaces/MethodsState';
 import {RequestKey} from './interfaces/RequestKey';
 import Mold from './Mold';
 import StorageAdapter from './interfaces/StorageAdapter';
-import DefaultStore from './DefaultStore';
 import {makeInitialState, requestKeyToString} from '../helpers/common';
 import IndexedEventEmitter from '../helpers/IndexedEventEmitter';
 
 
 export default class StorageManager {
-  // TODO: rename to store ???
-  private readonly storage: StorageAdapter;
+  private readonly mold: Mold;
   private readonly events = new IndexedEventEmitter();
+
+  private get store(): StorageAdapter {
+    return this.mold.props.storage!;
+  }
 
 
   constructor(mold: Mold) {
-    // if (mold.props.storage) {
-    //   this.storage = mold.props.storage;
-    // }
-    // else {
-    //   this.storage = new DefaultStore();
-    // }
+    this.mold = mold;
 
-    if (this.storage.$init) this.storage.$init(mold);
+    if (this.store.$init) this.store.$init(mold);
 
-    this.storage.onChange(this.handleChange);
+    this.store.onChange(this.handleChange);
   }
 
 
   getState(requestKey: RequestKey): ActionState | undefined {
     const id: string = requestKeyToString(requestKey);
 
-    return this.storage.getState(id);
+    return this.store.getState(id);
   }
 
   /**
@@ -39,15 +36,15 @@ export default class StorageManager {
   initStateIfNeed(requestKey: RequestKey) {
     const id: string = requestKeyToString(requestKey);
     // do nothing if there is previously defined state
-    if (this.storage.hasState(id)) return;
+    if (this.store.hasState(id)) return;
 
-    this.storage.put(id, makeInitialState());
+    this.store.put(id, makeInitialState());
   }
 
   patch(requestKey: RequestKey, partialState: Partial<ActionState>) {
     const id: string = requestKeyToString(requestKey);
 
-    this.storage.patch(id, partialState);
+    this.store.patch(id, partialState);
   }
 
   /**
@@ -56,12 +53,12 @@ export default class StorageManager {
   delete(requestKey: RequestKey) {
     const id: string = requestKeyToString(requestKey);
 
-    this.storage.delete(id);
+    this.store.delete(id);
     this.events.removeAllListeners(id);
   }
 
   destroy() {
-    this.storage.destroy();
+    this.store.destroy();
     this.events.destroy();
   }
 
@@ -80,9 +77,9 @@ export default class StorageManager {
 
 
   private handleChange = (id: string) => {
-    if (!this.storage.hasState(id)) return;
+    if (!this.store.hasState(id)) return;
 
-    this.events.emit(id, this.storage.getState(id));
+    this.events.emit(id, this.store.getState(id));
   }
 
 }

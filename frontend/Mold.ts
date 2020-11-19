@@ -4,28 +4,33 @@ import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
 import {splitInstanceId} from '../helpers/common';
 import PushesManager, {PushIncomeMessage} from './PushesManager';
-import MoldFrontendProps from './interfaces/MoldFrontendProps';
+import MoldProps from './interfaces/MoldProps';
 import Requests from './Requests';
-import {Logger} from './interfaces/Logger';
+import {Logger, LogLevel} from './interfaces/Logger';
 import {defaultConfig} from './defaultConfig';
 import {isEmptyObject} from '../helpers/objects';
 import ConsoleLogger from './ConsoleLogger';
 import DefaultStore from './DefaultStore';
+import {MoldFrontendConfig} from './interfaces/MoldFrontendConfig';
 
 
 export default class Mold {
-  readonly props: MoldFrontendProps;
+  readonly props: MoldProps;
   readonly backend: BackendManager;
   readonly push: PushesManager;
   readonly storage: StorageManager;
   readonly requests: Requests;
 
   get log(): Logger {
-    return this.props.logger;
+    return this.props.log as any;
+  }
+
+  get config(): MoldFrontendConfig {
+    return this.props.config!;
   }
 
 
-  constructor(props: Partial<MoldFrontendProps>) {
+  constructor(props: Partial<MoldProps>) {
     this.props = this.prepareProps(props);
     this.backend = new BackendManager(this);
     this.push = new PushesManager(this);
@@ -105,7 +110,7 @@ export default class Mold {
   }
 
 
-  private prepareProps(props: Partial<MoldFrontendProps>): MoldFrontendProps {
+  private prepareProps(props: Partial<MoldProps>): MoldProps {
     if (!props.backends || isEmptyObject(props.backends)) {
       throw new Error(`Please specify almost one backend`);
     }
@@ -117,8 +122,16 @@ export default class Mold {
         ...props.config,
       },
       storage: (props.storage) ? props.storage : new DefaultStore(),
-      logger: (props.logger) ? props.logger : new ConsoleLogger(),
+      log: this.resolveLogger(props.log),
     };
+  }
+
+  private resolveLogger(rawLogger?: Logger | LogLevel): Logger {
+    if (!rawLogger) return new ConsoleLogger();
+
+    if (typeof rawLogger === 'string') return new ConsoleLogger(rawLogger);
+
+    return rawLogger;
   }
 
 }
