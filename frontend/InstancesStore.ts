@@ -29,6 +29,15 @@ export class InstancesStore {
       && this.requests[backend][set][action][request];
   }
 
+  doesInstanceNumExist(requestKey: RequestKey, instanceNum: string): boolean {
+    const requestKeyStr: string = requestKeyToString(requestKey);
+    const requestInstances: string[] | undefined = this.instances[requestKeyStr];
+
+    if (!requestInstances) return false;
+    // TODO: test
+    return requestInstances.indexOf(instanceNum) >= 0;
+  }
+
   addInstance(requestKey: RequestKey, props: ActionProps): string {
     const requestKeyStr: string = requestKeyToString(requestKey);
     const requestInstances: string[] | undefined = this.instances[requestKeyStr];

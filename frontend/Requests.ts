@@ -2,7 +2,7 @@ import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import {ActionProps} from './interfaces/MethodsProps';
 import Mold from './Mold';
 import BackendResponse from '../interfaces/BackendResponse';
-import {makeRequestKey, requestKeyToString, splitInstanceId} from '../helpers/common';
+import {makeRequestKey, splitInstanceId} from '../helpers/common';
 import {REQUEST_STATUSES} from './constants';
 import {InstancesStore} from './InstancesStore';
 import MoldRequest from '../interfaces/MoldRequest';
@@ -30,7 +30,7 @@ export default class Requests {
   doesInstanceExist(instanceId: string): boolean {
     const {requestKey, instanceNum} = splitInstanceId(instanceId);
 
-    return this.doesInstanceNumExist(requestKey, instanceNum);
+    return this.instances.doesInstanceNumExist(requestKey, instanceNum);
   }
 
   /**
@@ -48,7 +48,7 @@ export default class Requests {
   async start(instanceId: string, data?: Record<string, any>) {
     const {requestKey, instanceNum} = splitInstanceId(instanceId);
 
-    if (!this.doesInstanceNumExist(requestKey, instanceNum)) {
+    if (!this.instances.doesInstanceNumExist(requestKey, instanceNum)) {
       throw new Error(`Instance "${instanceId}" doesn't exists`);
     }
 
@@ -83,18 +83,6 @@ export default class Requests {
     if (!this.instances.getProps(requestKey)) this.mold.storage.delete(requestKey);
   }
 
-
-  private doesInstanceNumExist(requestKey: RequestKey, instanceNum: string): boolean {
-    const requestKeyStr: string = requestKeyToString(requestKey);
-    const requestInstances: string[] | undefined = this.instances[requestKeyStr];
-
-    // TODO: check storage exists
-    // TODO: check props exists
-
-    if (!requestInstances) return false;
-    // TODO: test
-    return requestInstances.indexOf(instanceNum) >= 0;
-  }
 
   private makeRequestProps(
     requestKey: RequestKey,
