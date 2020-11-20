@@ -5,6 +5,8 @@ import BackendResponse from '../interfaces/BackendResponse';
 import {makeRequestKey, requestKeyToString, splitInstanceId} from '../helpers/common';
 import {REQUEST_STATUSES} from './constants';
 import {InstancesStore} from './InstancesStore';
+import MoldRequest from '../interfaces/MoldRequest';
+import {omitObj} from '../helpers/objects';
 
 
 export default class Requests {
@@ -54,49 +56,10 @@ export default class Requests {
     //       если это сохранение то поставить в очередь после текущего
     //       если это get (isGetting) то отменить запрос
 
-    // set state of start loading
-    this.mold.storage.patch(requestKey, { pending: true });
 
-    // TODO: use "data" of request
+    const requestProps = this.makeRequestProps(requestKey, data);
 
-    const requestProps: ActionProps | undefined = this.getProps(requestKey);
-
-    if (!requestProps) {
-      throw new Error(`Can't find request props of "${JSON.stringify(requestKey)}"`);
-    }
-
-    let response: BackendResponse;
-
-    try {
-      response = await this.mold.backend.request(
-        requestKey[REQUEST_KEY_POSITIONS.backend],
-        requestProps
-      );
-    }
-    catch (e) {
-      // actually this is for error in the code not network or backend's error
-      this.mold.storage.patch(requestKey, {
-        pending: false,
-        finishedOnce: true,
-        responseSuccess: false,
-        responseStatus: REQUEST_STATUSES.fatalError,
-        responseErrors: [{code: REQUEST_STATUSES.fatalError, message: "Fatal error"}],
-        // it doesn't clear previous result
-      });
-      // log error because it isn't a network or backend's error
-      this.mold.log.error(e);
-      // do nothing else actually
-      return;
-    }
-    // success
-    this.mold.storage.patch(requestKey, {
-      pending: false,
-      finishedOnce: true,
-      responseSuccess: true,
-      responseStatus: response.status,
-      responseErrors: response.errors,
-      result: response.result,
-    });
+    await this.doRequest(requestKey, requestProps);
   }
 
   destroyInstance(instanceId: string) {
@@ -120,6 +83,61 @@ export default class Requests {
     if (!requestInstances) return false;
     // TODO: test
     return requestInstances.indexOf(instanceNum) >= 0;
+  }
+
+  private makeRequestProps(
+    requestKey: RequestKey,
+    data?: Record<string, any>
+  ): MoldRequest {
+    const actionProps: ActionProps | undefined = this.getProps(requestKey);
+
+    if (!actionProps) {
+      throw new Error(`Can't find request props of "${JSON.stringify(requestKey)}"`);
+    }
+
+    return {
+      ...omitObj(actionProps, 'backend', 'isGetting') as MoldRequest,
+      data: {
+        ...actionProps.data,
+        data,
+      },
+    }
+  }
+
+  private async doRequest(requestKey: RequestKey, requestProps: MoldRequest) {
+    const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
+    let response: BackendResponse;
+
+    // set pending state
+    this.mold.storage.patch(requestKey, { pending: true });
+
+    try {
+      response = await this.mold.backend.request(backendName, requestProps);
+    }
+    catch (e) {
+      // actually this is for error in the code not network or backend's error
+      this.mold.storage.patch(requestKey, {
+        pending: false,
+        finishedOnce: true,
+        responseSuccess: false,
+        responseStatus: REQUEST_STATUSES.fatalError,
+        responseErrors: [{code: REQUEST_STATUSES.fatalError, message: "Fatal error"}],
+        // it doesn't clear previous result
+      });
+      // log error because it isn't a network or backend's error
+      this.mold.log.error(e);
+      // do nothing else actually
+      return;
+    }
+    // success
+    this.mold.storage.patch(requestKey, {
+      pending: false,
+      finishedOnce: true,
+      responseSuccess: response.success,
+      responseStatus: response.status,
+      responseErrors: response.errors,
+      result: response.result,
+    });
   }
 
 }

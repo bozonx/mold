@@ -7,7 +7,7 @@ export interface ActionProps extends MoldRequest {
   // Backend where set is placed. If it isn't set it points to the default backend.
   backend?: string;
   // name of entity which is queried. It is mandatory
-  set: string;
+  //set: string;
   // means that this is find or get action or some custom action that works as find or get.
   isGetting?: boolean;
 }

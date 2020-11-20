@@ -41,11 +41,11 @@ export default class BackendManager {
    * It just makes the request to the specified backend client.
    * It doesn't care about are there any other similar requests.
    */
-  request<T = any>(backendName: string, props: ActionProps): Promise<BackendResponse> {
-    const request: MoldRequest = makeRequest(props);
+  request<T = any>(backendName: string, requestProps: MoldRequest): Promise<BackendResponse> {
+    const request: MoldRequest = makeRequest(requestProps);
     const backendClient: BackendClient = this.getBackendClient(backendName);
 
-    return backendClient.request(props.set, request);
+    return backendClient.request(request);
   }
 
 }
