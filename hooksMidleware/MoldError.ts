@@ -10,4 +10,8 @@ export class MoldError implements MoldErrorDefinition {
     this.code = code;
     this.message = message;
   }
+
+  toPlainObject(): MoldErrorDefinition {
+    return { code: this.code, message: this.message };
+  }
 }

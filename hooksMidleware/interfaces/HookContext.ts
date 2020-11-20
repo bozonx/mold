@@ -2,7 +2,7 @@ import MoldRequest from '../../interfaces/MoldRequest';
 import {MoldResponse} from '../../interfaces/MoldResponse';
 import HooksApp from '../HooksApp';
 import {HookType} from './HookType';
-import {MoldError} from '../MoldError';
+import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
 
 
 /**
@@ -15,7 +15,7 @@ export interface GlobalContext {
   // You can modify it in after hooks
   response?: MoldResponse;
   // it is only used in hooks of error set.
-  error?: MoldError;
+  error?: MoldErrorDefinition;
   // use it for shared data between hooks during whole request life.
   shared: {[index: string]: any};
 }

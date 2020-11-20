@@ -10,6 +10,7 @@ import HooksApp from './HooksApp';
 import {MoldHook} from './interfaces/MoldHooks';
 import {PROHIBITED_SET_NAMES} from './constants';
 import {HookType} from './interfaces/HookType';
+import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 
 
 interface Sets {
@@ -47,28 +48,30 @@ export default class MoldHooks {
   }
 
 
+  /**
+   * Do request to the backend though hooks transformation.
+   * Promise is only positive, on error it will return error-like response.
+   * @param request
+   * @return fully transformed response.
+   */
   async request(request: MoldRequest): Promise<MoldResponse> {
-    if (PROHIBITED_SET_NAMES.includes(request.set)) {
-      throw new MoldError(
-        REQUEST_STATUSES.fatalError,
-        `Unappropriated set name "${request.set}"`
-      );
+    try {
+      this.validateRequest(request);
     }
-    else if (!this.sets.setsBefore[request.set]) {
-      throw new MoldError(
-        REQUEST_STATUSES.fatalError,
-        `Can't find before hooks of set "${request.set}"`
-      );
-    }
-    else if (!this.sets.setsAfter[request.set]) {
-      throw new MoldError(
-        REQUEST_STATUSES.fatalError,
-        `Can't find after hooks of set "${request.set}"`
-      );
+    catch (e) {
+      const error: MoldError = e;
+
+      return {
+        status: error.code,
+        success: false,
+        errors: [error.toPlainObject()],
+        result: null,
+      }
     }
 
     const globalContext: GlobalContext = this.makeGlobalContext(request);
-
+    // try to go to the end of transformation.
+    // but if there an error occurred then start special error hooks branch.
     try {
       await this.startSpecialHooks('beforeHooks', globalContext);
       await this.startBeforeHooks(globalContext);
@@ -79,19 +82,10 @@ export default class MoldHooks {
       await this.startSpecialHooks('afterHooks', globalContext);
     }
     catch (e) {
-      let error: MoldError = e;
-      // if standard error
-      if (typeof e !== 'object' || typeof e.code !== 'number') {
-        error = {
-          code: REQUEST_STATUSES.fatalError,
-          message: String(e),
-        }
-      }
-
-      globalContext.error = error;
-
-      await this.startSpecialHooks('error', globalContext);
+      await this.handleRequestError(globalContext, e);
     }
+    // return response success or error
+    return this.makeResponse(globalContext);
   }
 
 
@@ -185,6 +179,51 @@ export default class MoldHooks {
     // TODO: рассортировать хуки по порядку вызова
 
     return sets;
+  }
+  private validateRequest(request: MoldRequest) {
+    if (PROHIBITED_SET_NAMES.includes(request.set)) {
+      // TODO: error-like response
+      throw new MoldError(
+        REQUEST_STATUSES.fatalError,
+        `Unappropriated set name "${request.set}"`
+      );
+    }
+    else if (!this.sets.setsBefore[request.set]) {
+      // TODO: error-like response
+      throw new MoldError(
+        REQUEST_STATUSES.fatalError,
+        `Can't find before hooks of set "${request.set}"`
+      );
+    }
+    else if (!this.sets.setsAfter[request.set]) {
+      // TODO: error-like response
+      throw new MoldError(
+        REQUEST_STATUSES.fatalError,
+        `Can't find after hooks of set "${request.set}"`
+      );
+    }
+  }
+
+  private async handleRequestError(globalContext: GlobalContext, e: MoldError | Error) {
+    let error: MoldErrorDefinition;
+    // if standard error
+    if (typeof e !== 'object' || typeof e.code !== 'number') {
+      error = {
+        code: REQUEST_STATUSES.fatalError,
+        message: String(e),
+      }
+    }
+    else {
+      error = (e as MoldError).toPlainObject();
+    }
+
+    globalContext.error = error;
+
+    await this.startSpecialHooks('error', globalContext);
+  }
+
+  private makeResponse(globalContext: GlobalContext): MoldResponse {
+    // TODO: do it
   }
 
 }
