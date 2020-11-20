@@ -5,6 +5,9 @@ import {HookType} from './HookType';
 import {MoldError} from '../MoldError';
 
 
+/**
+ * Context which is global for whole request handling life.
+ */
 export interface GlobalContext {
   // in before hooks you can modify the request
   request: MoldRequest;
@@ -17,6 +20,9 @@ export interface GlobalContext {
   shared: {[index: string]: any};
 }
 
+/**
+ * Context which is passed to each hook.
+ */
 export interface HookContext extends GlobalContext {
   // singleton to call some methods etc
   readonly app: HooksApp;

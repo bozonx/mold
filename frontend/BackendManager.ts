@@ -30,7 +30,7 @@ export default class BackendManager {
 
 
   getBackendClient(backendName: string): BackendClient {
-    if (!this.mold.props.backends[backendName]) {
+    if (!this.mold.props.backends?.[backendName]) {
       throw new Error(`Can't find backend client "${backendName}"`);
     }
 

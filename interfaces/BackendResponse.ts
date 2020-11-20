@@ -7,8 +7,8 @@ export default interface BackendResponse {
   status: number;
   // true if request was success and false if wasn't - an error
   success: boolean;
-  // some errors which the backend sent instead result.
+  // some errors which the backend sent instead of result.
   errors: MoldErrorDefinition[] | null;
-  // null if no body or error occurred
+  // null if no body or in case when error occurred
   result: JsonData | null;
 }

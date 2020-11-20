@@ -13,6 +13,7 @@ import {HookType} from './interfaces/HookType';
 
 
 interface Sets {
+  // special sets
   beforeHooks: MoldHook[];
   beforeRequest: MoldHook[];
   afterRequest: MoldHook[];
@@ -24,7 +25,8 @@ interface Sets {
   // set which will be called after request
   setsBefore: {[index: string]: {[index: string]: MoldHook[]}};
 }
-// on error it has to throw a new MoldError(code, message)
+// External request func.
+// on error it has to throw a new MoldError(code, message).
 export type HooksRequestFunc = (request: MoldRequest) => Promise<BackendResponse>;
 
 
