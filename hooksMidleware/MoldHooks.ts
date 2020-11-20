@@ -1,7 +1,7 @@
 import {SpecialSet} from './interfaces/SpecialSet';
 import {GlobalContext, HookContext} from './interfaces/HookContext';
 import {SetsDefinition} from './interfaces/PreHookDefinition';
-import BackendResponse from '../interfaces/BackendResponse';
+import {MoldResponse} from '../interfaces/MoldResponse';
 import MoldRequest from '../interfaces/MoldRequest';
 import {MoldError} from './MoldError';
 import {REQUEST_STATUSES} from '../frontend/constants';
@@ -27,7 +27,7 @@ interface Sets {
 }
 // External request func.
 // on error it has to throw a new MoldError(code, message).
-export type HooksRequestFunc = (request: MoldRequest) => Promise<BackendResponse>;
+export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>;
 
 
 export default class MoldHooks {
@@ -47,7 +47,7 @@ export default class MoldHooks {
   }
 
 
-  async request(request: MoldRequest) {
+  async request(request: MoldRequest): Promise<MoldResponse> {
     if (PROHIBITED_SET_NAMES.includes(request.set)) {
       throw new MoldError(
         REQUEST_STATUSES.fatalError,

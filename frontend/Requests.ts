@@ -1,7 +1,7 @@
 import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import {ActionProps} from './interfaces/MethodsProps';
 import Mold from './Mold';
-import BackendResponse from '../interfaces/BackendResponse';
+import {MoldResponse} from '../interfaces/MoldResponse';
 import {makeRequestKey, splitInstanceId} from '../helpers/common';
 import {REQUEST_STATUSES} from './constants';
 import {InstancesStore} from './InstancesStore';
@@ -105,7 +105,7 @@ export default class Requests {
 
   private async doRequest(requestKey: RequestKey, requestProps: MoldRequest) {
     const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
-    let response: BackendResponse;
+    let response: MoldResponse;
 
     // set pending state
     this.mold.storage.patch(requestKey, { pending: true });

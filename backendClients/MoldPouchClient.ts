@@ -1,6 +1,6 @@
 import BackendClient from '../interfaces/BackendClient';
 import {MoldMiddleware} from '../hooksMidleware/interfaces/MoldMiddleware';
-import BackendResponse from '../interfaces/BackendResponse';
+import {MoldResponse} from '../interfaces/MoldResponse';
 import Mold from '../frontend/Mold';
 import MoldRequest from '../interfaces/MoldRequest';
 import {SetsDefinition} from '../hooksMidleware/interfaces/PreHookDefinition';
@@ -30,7 +30,7 @@ export default class MoldPouchClient implements BackendClient {
   }
 
 
-  async request(set: string, request: MoldRequest): Promise<BackendResponse> {
+  async request(set: string, request: MoldRequest): Promise<MoldResponse> {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
