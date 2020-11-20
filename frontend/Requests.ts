@@ -21,20 +21,14 @@ export default class Requests {
   }
 
 
-  doesInstanceNumExist(requestKey: RequestKey, instanceNum: string): boolean {
-    const requestKeyStr: string = requestKeyToString(requestKey);
-    const requestInstances: string[] | undefined = this.instances[requestKeyStr];
-
-    // TODO: check storage exists
-    // TODO: check props exists
-
-    if (!requestInstances) return false;
-    // TODO: test
-    return requestInstances.indexOf(instanceNum) >= 0;
-  }
-
   getProps(requestKey: RequestKey): ActionProps | undefined {
     return this.instances.getProps(requestKey);
+  }
+
+  doesInstanceExist(instanceId: string): boolean {
+    const {requestKey, instanceNum} = splitInstanceId(instanceId);
+
+    return this.doesInstanceNumExist(requestKey, instanceNum);
   }
 
   /**
@@ -45,13 +39,16 @@ export default class Requests {
     const requestKey: RequestKey = makeRequestKey(props);
     // init state if it doesn't exist
     this.mold.storage.initStateIfNeed(requestKey);
-    // put or update request props into store
-    this.instances.storeProps(requestKey, props);
-
-    return this.instances.addInstance(requestKey);
+    // put or update request props into store and make instance ot it
+    return this.instances.addInstance(requestKey, props);
   }
 
-  async start(requestKey: RequestKey, data?: Record<string, any>) {
+  async start(instanceId: string, data?: Record<string, any>) {
+    const {requestKey, instanceNum} = splitInstanceId(instanceId);
+
+    if (!this.doesInstanceNumExist(requestKey, instanceNum)) {
+      throw new Error(`Instance "${instanceId}" doesn't exists`);
+    }
 
     // TODO: првоерить идет ли уже запрос
     //       если это сохранение то поставить в очередь после текущего
@@ -103,22 +100,26 @@ export default class Requests {
   }
 
   destroyInstance(instanceId: string) {
-    const {requestKey, instanceNum} = splitInstanceId(instanceId);
+    const {requestKey} = splitInstanceId(instanceId);
+    // do nothing if there isn't any request
+    if (!this.instances.getProps(requestKey)) return;
+    // remove instance and request if there aren't any more instances
+    this.instances.removeInstance(instanceId);
+    // remove storage state if request has been destroyed
+    if (!this.instances.getProps(requestKey)) this.mold.storage.delete(requestKey);
+  }
+
+
+  private doesInstanceNumExist(requestKey: RequestKey, instanceNum: string): boolean {
     const requestKeyStr: string = requestKeyToString(requestKey);
     const requestInstances: string[] | undefined = this.instances[requestKeyStr];
-    // do nothing if there isn't a request
-    if (!requestInstances) return;
+
+    // TODO: check storage exists
+    // TODO: check props exists
+
+    if (!requestInstances) return false;
     // TODO: test
-    const index: number = requestInstances.indexOf(instanceNum);
-    // TODO: test
-    requestInstances.splice(index, 1);
-    // if it has some other instances then do nothing
-    if (requestInstances.length) return;
-    // else remove the request and state
-    // remove request props
-    this.instances.removeProps(requestKey);
-    // remove state
-    this.mold.storage.delete(requestKey);
+    return requestInstances.indexOf(instanceNum) >= 0;
   }
 
 }

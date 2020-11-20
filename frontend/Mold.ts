@@ -72,18 +72,12 @@ export default class Mold {
   }
 
   /**
-   * Start the request which is corresponding to the instanceId.
+   * Start the request which was added by newRequest() and corresponding to the instanceId.
    * @param instanceId
    * @param data will be passed to request's data param.
    */
   start(instanceId: string, data?: Record<string, any>) {
-    const {requestKey, instanceNum} = splitInstanceId(instanceId);
-
-    if (!this.requests.doesInstanceNumExist(requestKey, instanceNum)) {
-      throw new Error(`Instance "${instanceId}" doesn't exists`);
-    }
-
-    this.requests.start(requestKey, data)
+    this.requests.start(instanceId, data)
       .catch(this.log.error);
   }
 
