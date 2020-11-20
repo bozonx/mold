@@ -7,6 +7,7 @@ import {REQUEST_STATUSES} from './constants';
 import {InstancesStore} from './InstancesStore';
 import MoldRequest from '../interfaces/MoldRequest';
 import {omitObj} from '../helpers/objects';
+import {ActionState} from './interfaces/MethodsState';
 
 
 export default class Requests {
@@ -52,11 +53,22 @@ export default class Requests {
       throw new Error(`Instance "${instanceId}" doesn't exists`);
     }
 
-    // TODO: првоерить идет ли уже запрос
-    //       если это сохранение то поставить в очередь после текущего
-    //       если это get (isGetting) то отменить запрос
+    const actionProps: ActionProps | undefined = this.getProps(requestKey);
 
+    if (!actionProps) throw new Error(`No props of "${instanceId}"`);
 
+    if (this.mold.isPending(instanceId)) {
+      if (actionProps.isGetting) {
+        // return a promise which will be resolved after current request is finished
+        return this.mold.waitRequestFinished(instanceId);
+      }
+      else {
+        // TODO: поставить в очередь и запустить запрос как только выполнится
+        //       текущий запрос. И перезаписывать колбэк при новых запросах
+        return;
+      }
+    }
+    // do fresh request
     const requestProps = this.makeRequestProps(requestKey, data);
 
     await this.doRequest(requestKey, requestProps);

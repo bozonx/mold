@@ -82,6 +82,34 @@ export default class Mold {
   }
 
   /**
+   * Is request is pending
+   * @param instanceId
+   */
+  isPending(instanceId: string): boolean {
+    const state: ActionState | undefined = this.getState(instanceId);
+
+    return state && state.pending || false;
+  }
+
+  waitRequestFinished(instanceId: string): Promise<void> {
+    const state: ActionState | undefined = this.getState(instanceId);
+
+    if (!state || !state.pending) return Promise.resolve();
+
+    return new Promise((resolve) => {
+
+      // TODO: add timeout
+
+      const handleIndex: number = this.onChange(instanceId, (state: ActionState) => {
+        if (state.pending) return;
+
+        this.removeListener(handleIndex);
+        resolve();
+      });
+    });
+  }
+
+  /**
    * Listen to changes of any part of state of specified request
    * which is resolved by instanceId.
    */
