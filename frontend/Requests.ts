@@ -7,7 +7,6 @@ import {REQUEST_STATUSES} from './constants';
 import {InstancesStore} from './InstancesStore';
 import MoldRequest from '../interfaces/MoldRequest';
 import {omitObj} from '../helpers/objects';
-import {ActionState} from './interfaces/MethodsState';
 
 
 export default class Requests {

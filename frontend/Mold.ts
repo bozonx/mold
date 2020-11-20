@@ -96,16 +96,18 @@ export default class Mold {
 
     if (!state || !state.pending) return Promise.resolve();
 
-    return new Promise((resolve) => {
-
-      // TODO: add timeout
-
+    return new Promise((resolve, reject) => {
       const handleIndex: number = this.onChange(instanceId, (state: ActionState) => {
         if (state.pending) return;
 
         this.removeListener(handleIndex);
+        clearTimeout(timeout);
         resolve();
       });
+      const timeout = setTimeout(() => {
+        this.removeListener(handleIndex);
+        reject(`Timeout has been exceeded`);
+      }, this.config.requestTimeoutSec * 1000);
     });
   }
 
