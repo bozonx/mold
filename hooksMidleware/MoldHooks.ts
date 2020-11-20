@@ -55,24 +55,12 @@ export default class MoldHooks {
    * @return fully transformed response.
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
-    try {
-      this.validateRequest(request);
-    }
-    catch (e) {
-      const error: MoldError = e;
-
-      return {
-        status: error.code,
-        success: false,
-        errors: [error.toPlainObject()],
-        result: null,
-      }
-    }
-
     const globalContext: GlobalContext = this.makeGlobalContext(request);
+
     // try to go to the end of transformation.
     // but if there an error occurred then start special error hooks branch.
     try {
+      this.validateRequest(request);
       await this.startSpecialHooks('beforeHooks', globalContext);
       await this.startBeforeHooks(globalContext);
       await this.startSpecialHooks('beforeRequest', globalContext);
@@ -140,6 +128,10 @@ export default class MoldHooks {
       globalContext.shared = hookContext.shared;
       globalContext.error = hookContext.error;
     }
+  }
+
+  private async startErrorHooks(globalContext: GlobalContext) {
+    // TODO: должно быть безопасно
   }
 
   private makeGlobalContext(request: MoldRequest): GlobalContext {
@@ -219,11 +211,20 @@ export default class MoldHooks {
 
     globalContext.error = error;
 
-    await this.startSpecialHooks('error', globalContext);
+    await this.startErrorHooks(globalContext);
   }
 
   private makeResponse(globalContext: GlobalContext): MoldResponse {
     // TODO: do it
+
+
+    //
+    // return {
+    //   status: error.code,
+    //   success: false,
+    //   errors: [error.toPlainObject()],
+    //   result: null,
+    // }
   }
 
 }
