@@ -10,5 +10,7 @@ export interface PreHookDefinition {
   readonly hook: MoldHook;
 }
 
-export type SetHooks = (PreHookDefinition | PreHookDefinition[])[];
-export type SetsDefinition = {[index: string]: SetHooks};
+export type SetsDefinitionItem = (PreHookDefinition | PreHookDefinition[]);
+// This is raw sets definition which is defined at the application.
+// like { setName: [...hooks]}. Set name can be special like beforeHooks, error etc
+export type SetsDefinition = {[index: string]: SetsDefinitionItem[]};
