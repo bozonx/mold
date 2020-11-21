@@ -11,6 +11,9 @@ export default class HooksApp {
     this.moldHooks = moldHooks;
   }
 
+  destroy() {
+  }
+
 
   /**
    * Make some request which will be processed with its own hooks.

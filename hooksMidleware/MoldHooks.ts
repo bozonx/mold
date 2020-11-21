@@ -1,4 +1,4 @@
-import {SpecialSet} from './interfaces/SpecialSet';
+import {SPECIAL_HOOKS, SpecialSet} from './interfaces/SpecialSet';
 import {GlobalContext, HookContext} from './interfaces/HookContext';
 import {SetsDefinition} from './interfaces/PreHookDefinition';
 import {MoldResponse} from '../interfaces/MoldResponse';
@@ -8,9 +8,11 @@ import {REQUEST_STATUSES} from '../frontend/constants';
 import {cloneDeepObject} from '../helpers/objects';
 import HooksApp from './HooksApp';
 import {MoldHook} from './interfaces/MoldHooks';
-import {PROHIBITED_SET_NAMES} from './constants';
 import {HookType} from './interfaces/HookType';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
+
+
+// TODO: better to use immutable for context, request and response
 
 
 interface Sets {
@@ -32,7 +34,7 @@ export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>;
 
 
 export default class MoldHooks {
-  private readonly sets: Sets;
+  private sets: Sets;
   private readonly requestFunc: HooksRequestFunc;
   private readonly app: HooksApp;
 
@@ -44,7 +46,9 @@ export default class MoldHooks {
   }
 
   destroy() {
-    // TODO: add
+    // @ts-ignore
+    delete this.sets;
+    this.app.destroy();
   }
 
 
@@ -57,8 +61,10 @@ export default class MoldHooks {
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
     const globalContext: GlobalContext = this.makeGlobalContext(request);
-    // try to go to the end of transformation.
-    // but if there is an error occurred then start special error hooks branch.
+    // Try to go to the end of transformation.
+    // But if there is an error occurred then start special error hooks branch.
+    // This error branch only for errors which was occurred while handling a request.
+    // Error which backend sent back doesn't matter - it means success request.
     try {
       this.validateRequest(request);
       await this.startSpecialHooks('beforeHooks', globalContext);
@@ -84,52 +90,51 @@ export default class MoldHooks {
   }
 
 
+  private async startRequest(globalContext: GlobalContext) {
+    const request = cloneDeepObject(globalContext.request) as MoldRequest;
+
+    globalContext.response = cloneDeepObject(await this.requestFunc(request)) as any;
+  }
+
   private async startBeforeHooks(globalContext: GlobalContext) {
-    const actionHooks = this.sets.setsBefore[globalContext.request.set][globalContext.request.action];
+    const {set, action} = globalContext.request;
     // do nothing because there arent action's hooks
-    if (!actionHooks) return;
+    if (!this.sets.setsBefore[set][action]) return;
 
-    for (let hook of actionHooks) {
+    for (let hook of this.sets.setsBefore[set][action]) {
       const hookContext = this.makeHookContext('before', globalContext);
-
+      // error will be handled at the upper level
       await hook(hookContext);
-
+      // save transformed request and shared
       globalContext.request = hookContext.request;
       globalContext.shared = hookContext.shared;
     }
   }
 
-  private async startRequest(globalContext: GlobalContext) {
-    const request = cloneDeepObject(globalContext.request) as MoldRequest;
-
-    globalContext.response = await this.requestFunc(request);
-  }
-
   private async startAfterHooks(globalContext: GlobalContext) {
-    const actionHooks = this.sets.setsAfter[globalContext.request.set][globalContext.request.action];
+    const {set, action} = globalContext.request;
     // do nothing because there arent action's hooks
-    if (!actionHooks) return;
+    if (!this.sets.setsAfter[set][action]) return;
 
-    for (let hook of actionHooks) {
+    for (let hook of this.sets.setsAfter[set][action]) {
       const hookContext = this.makeHookContext('after', globalContext);
-
+      // error will be handled at the upper level
       await hook(hookContext);
-
+      // save transformed response and shared
       globalContext.response = hookContext.response;
       globalContext.shared = hookContext.shared;
     }
   }
 
   private async startSpecialHooks(specialSet: SpecialSet, globalContext: GlobalContext) {
-    const actionHooks = this.sets[specialSet];
     // do nothing because there arent any hooks
-    if (!actionHooks) return;
+    if (!this.sets[specialSet]) return;
 
-    for (let hook of actionHooks) {
+    for (let hook of this.sets[specialSet]) {
       const hookContext = this.makeHookContext('special', globalContext);
-
+      // error will be handled at the upper level
       await hook(hookContext);
-
+      // save all the transformed context elements
       globalContext.request = hookContext.request;
       globalContext.response = hookContext.response;
       globalContext.shared = hookContext.shared;
@@ -154,6 +159,34 @@ export default class MoldHooks {
     };
   }
 
+  private validateRequest(request: MoldRequest) {
+    if (request.set) {
+      throw new Error(`Set isn't specified int the request`);
+    }
+    else if (request.action) {
+      throw new Error(`Action isn't specified int the request of set "${request.set}"`);
+    }
+    else if (SPECIAL_HOOKS.includes(request.set)) {
+      throw new Error(`Unappropriated set name "${request.set}"`);
+    }
+    else if (!this.sets.setsBefore[request.set] || !this.sets.setsAfter[request.set]) {
+      throw new Error(`Can't find set "${request.set}"`);
+    }
+  }
+
+  private parseError(e: MoldError | Error): MoldErrorDefinition {
+    // if standard error
+    if (e instanceof MoldError) {
+      return e.toPlainObject();
+    }
+    else {
+      return {
+        code: REQUEST_STATUSES.fatalError,
+        message: String(e),
+      }
+    }
+  }
+
   /**
    * Sort and normalize hooks
    * @param rawSets is { setName: [[type, hookCb]] } or { specialSet: [...] }
@@ -175,55 +208,31 @@ export default class MoldHooks {
 
     return sets;
   }
-  private validateRequest(request: MoldRequest) {
-    if (PROHIBITED_SET_NAMES.includes(request.set)) {
-      // TODO: error-like response
-      throw new MoldError(
-        REQUEST_STATUSES.fatalError,
-        `Unappropriated set name "${request.set}"`
-      );
-    }
-    else if (!this.sets.setsBefore[request.set]) {
-      // TODO: error-like response
-      throw new MoldError(
-        REQUEST_STATUSES.fatalError,
-        `Can't find before hooks of set "${request.set}"`
-      );
-    }
-    else if (!this.sets.setsAfter[request.set]) {
-      // TODO: error-like response
-      throw new MoldError(
-        REQUEST_STATUSES.fatalError,
-        `Can't find after hooks of set "${request.set}"`
-      );
-    }
-  }
 
-  private parseError(e: MoldError | Error): MoldErrorDefinition {
-    // if standard error
-    if (e instanceof MoldError) {
-      return e.toPlainObject();
-    }
-    else {
+  /**
+   * Error means only request handling error not error status in response.
+   * @param globalContext
+   * @private
+   */
+  private makeResponse(globalContext: GlobalContext): MoldResponse {
+    if (globalContext.error) {
       return {
-        code: REQUEST_STATUSES.fatalError,
-        message: String(e),
+        status: globalContext.error.code,
+        success: false,
+        errors: [globalContext.error],
+        result: null,
       }
     }
-  }
+    else if (!globalContext.response) {
+      return {
+        status: REQUEST_STATUSES.fatalError,
+        success: false,
+        errors: [{code: REQUEST_STATUSES.fatalError, message: 'No response'}],
+        result: null,
+      };
+    }
 
-  private makeResponse(globalContext: GlobalContext): MoldResponse {
-    // TODO: do it
-    // TODO: как передать ошибки бэкэнда ???
-
-
-    //
-    // return {
-    //   status: error.code,
-    //   success: false,
-    //   errors: [error.toPlainObject()],
-    //   result: null,
-    // }
+    return globalContext.response;
   }
 
 }
