@@ -14,4 +14,9 @@ export class MoldError implements MoldErrorDefinition {
   toPlainObject(): MoldErrorDefinition {
     return { code: this.code, message: this.message };
   }
+
+  toString(): string {
+    return `${this.code}: ${this.message || 'Unknown error'}`;
+  }
+
 }

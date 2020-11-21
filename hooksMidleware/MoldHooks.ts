@@ -50,15 +50,15 @@ export default class MoldHooks {
 
   /**
    * Do request to the backend though hooks transformation.
-   * Promise is only positive, on error it will return error-like response.
+   * Promise is only positive, reject will never be called.
+   * On error it will return error-like response.
    * @param request
    * @return fully transformed response.
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
     const globalContext: GlobalContext = this.makeGlobalContext(request);
-
     // try to go to the end of transformation.
-    // but if there an error occurred then start special error hooks branch.
+    // but if there is an error occurred then start special error hooks branch.
     try {
       this.validateRequest(request);
       await this.startSpecialHooks('beforeHooks', globalContext);
@@ -70,7 +70,14 @@ export default class MoldHooks {
       await this.startSpecialHooks('afterHooks', globalContext);
     }
     catch (e) {
-      await this.handleRequestError(globalContext, e);
+      globalContext.error = this.parseError(e);
+
+      try {
+        await this.startSpecialHooks('error', globalContext);
+      }
+      catch (e) {
+        globalContext.error = this.parseError(e);
+      }
     }
     // return response success or error
     return this.makeResponse(globalContext);
@@ -128,10 +135,6 @@ export default class MoldHooks {
       globalContext.shared = hookContext.shared;
       globalContext.error = hookContext.error;
     }
-  }
-
-  private async startErrorHooks(globalContext: GlobalContext) {
-    // TODO: должно быть безопасно
   }
 
   private makeGlobalContext(request: MoldRequest): GlobalContext {
@@ -196,26 +199,22 @@ export default class MoldHooks {
     }
   }
 
-  private async handleRequestError(globalContext: GlobalContext, e: MoldError | Error) {
-    let error: MoldErrorDefinition;
+  private parseError(e: MoldError | Error): MoldErrorDefinition {
     // if standard error
-    if (typeof e !== 'object' || typeof e.code !== 'number') {
-      error = {
+    if (e instanceof MoldError) {
+      return e.toPlainObject();
+    }
+    else {
+      return {
         code: REQUEST_STATUSES.fatalError,
         message: String(e),
       }
     }
-    else {
-      error = (e as MoldError).toPlainObject();
-    }
-
-    globalContext.error = error;
-
-    await this.startErrorHooks(globalContext);
   }
 
   private makeResponse(globalContext: GlobalContext): MoldResponse {
     // TODO: do it
+    // TODO: как передать ошибки бэкэнда ???
 
 
     //

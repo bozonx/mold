@@ -11,11 +11,13 @@ import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
 export interface GlobalContext {
   // in before hooks you can modify the request
   request: MoldRequest;
+  // This is only for "after" branch
   // there is a result of request. It is available only with "after" hooks.
   // You can modify it in after hooks
   response?: MoldResponse;
-  // it is only used in hooks of error set.
+  // This is only for "error" special branch
   error?: MoldErrorDefinition;
+  // This is for all the branches
   // use it for shared data between hooks during whole request life.
   shared: {[index: string]: any};
 }
