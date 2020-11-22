@@ -1,13 +1,12 @@
 import {SPECIAL_HOOKS, SpecialSet} from './interfaces/SpecialSet';
 import {GlobalContext, HookContext} from './interfaces/HookContext';
-import {PreHookDefinition, SetsDefinition, SetsDefinitionItem} from './interfaces/PreHookDefinition';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import MoldRequest from '../interfaces/MoldRequest';
 import {MoldError} from './MoldError';
 import {REQUEST_STATUSES} from '../frontend/constants';
 import {cloneDeepObject} from '../helpers/objects';
 import HooksApp from './HooksApp';
-import {MoldHook} from './interfaces/MoldHook';
+import {MoldHook, PreHookDefinition, SetsDefinition, SetsDefinitionItem} from './interfaces/MoldHook';
 import {HookType} from './interfaces/HookType';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 

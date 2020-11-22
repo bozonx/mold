@@ -2,7 +2,6 @@ import BackendClient from '../interfaces/BackendClient';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import Mold from '../frontend/Mold';
 import MoldRequest from '../interfaces/MoldRequest';
-import {SetsDefinition} from '../hooksMidleware/interfaces/PreHookDefinition';
 
 
 interface MoldPouchClientProps {
