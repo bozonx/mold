@@ -1,40 +1,5 @@
 import {MoldHook, PreHookDefinition, SetItem} from '../hooksMidleware/interfaces/MoldHook';
-import {ALL_ACTIONS} from '../hooksMidleware/constants';
-
-
-function handleActions(hook: MoldHook, onlyActions?: string[]): PreHookDefinition[] {
-  if (!onlyActions) return [{
-    type: 'before',
-    action: ALL_ACTIONS,
-    hook,
-  }];
-
-  const result: PreHookDefinition[] = [];
-
-  for (let actionName of onlyActions) {
-    result.push({
-      type: 'before',
-      action: actionName,
-      hook,
-    });
-  }
-
-  return result;
-}
-
-function handlePreHookDefinition(
-  preHook: MoldHook | PreHookDefinition,
-  onlyActions?: string[]
-): PreHookDefinition[] {
-  if (typeof preHook === 'function') {
-    // hook
-    return handleActions(preHook, onlyActions);
-  }
-  else {
-    // hook definition
-    return handleActions(preHook.hook, onlyActions);
-  }
-}
+import {handlePreHookDefinition} from '../helpers/hookHelpers';
 
 
 /**
@@ -55,13 +20,13 @@ export default function beforeAll(
     for (let item of hook) {
       result = [
         ...result,
-        ...handlePreHookDefinition(item, onlyActions),
+        ...handlePreHookDefinition('before', item, onlyActions),
       ]
     }
 
     return result;
   }
   else {
-    return handlePreHookDefinition(hook, onlyActions);
+    return handlePreHookDefinition('before', hook, onlyActions);
   }
 }
