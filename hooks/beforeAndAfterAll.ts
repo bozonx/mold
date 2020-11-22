@@ -1,5 +1,4 @@
 import {MoldHook, PreHookDefinition, SetItem} from '../hooksMidleware/interfaces/MoldHook';
-import {ALL_ACTIONS} from '../hooksMidleware/constants';
 import {handlePreHookDefinition} from '../helpers/hookHelpers';
 
 
@@ -19,12 +18,16 @@ export function beforeAndAfterAll(
       result = [
         ...result,
         ...handlePreHookDefinition('before', item, onlyActions),
+        ...handlePreHookDefinition('after', item, onlyActions),
       ]
     }
 
     return result;
   }
   else {
-    return handlePreHookDefinition('before', hook, onlyActions);
+    return [
+      ...handlePreHookDefinition('before', hook, onlyActions),
+      ...handlePreHookDefinition('after', hook, onlyActions),
+    ];
   }
 }

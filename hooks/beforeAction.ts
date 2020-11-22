@@ -1,14 +1,30 @@
-import {MoldHook} from '../hooksMidleware/interfaces/MoldHook';
+import {MoldHook, PreHookDefinition, SetItem} from '../hooksMidleware/interfaces/MoldHook';
 import {ALL_ACTIONS} from '../hooksMidleware/constants';
+import {handlePreHookDefinition} from '../helpers/hookHelpers';
 
 
 /**
  * Position of hook is certainly that which is in the set.
  */
-export function beforeAction(action: string, hook: MoldHook | MoldHook[]): PreHookDefinition {
-  return {
-    type: 'before',
-    action: action,
-    hook,
-  };
+export function beforeAction(
+  action: string,
+  hook: MoldHook | MoldHook[] | SetItem
+): SetItem {
+  if (!hook) throw new Error(`Please set almost one hook`);
+
+  if (Array.isArray(hook)) {
+    let result: PreHookDefinition[] = [];
+
+    for (let item of hook) {
+      result = [
+        ...result,
+        ...handlePreHookDefinition('before', item, [action]),
+      ]
+    }
+
+    return result;
+  }
+  else {
+    return handlePreHookDefinition('before', hook, [action]);
+  }
 }
