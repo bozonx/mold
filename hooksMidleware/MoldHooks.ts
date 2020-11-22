@@ -6,27 +6,16 @@ import {MoldError} from './MoldError';
 import {REQUEST_STATUSES} from '../frontend/constants';
 import {cloneDeepObject} from '../helpers/objects';
 import HooksApp from './HooksApp';
-import {MoldHook, PreHookDefinition, SetsDefinition, SetItem} from './interfaces/MoldHook';
+import {SetsDefinition} from './interfaces/MoldHook';
 import {HookType} from './interfaces/HookType';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
+import {Sets} from './interfaces/Sets';
+import {parseHooks} from './parseHooks';
 
 
 // TODO: better to use immutable for context, request and response
 
 
-interface Sets {
-  // special sets
-  beforeHooks: MoldHook[];
-  beforeRequest: MoldHook[];
-  afterRequest: MoldHook[];
-  afterHooks: MoldHook[];
-  error: MoldHook[];
-  // set which will be called before request
-  // like { setName: { actionName: [ ...hookCb() ] } }
-  setsAfter: {[index: string]: {[index: string]: MoldHook[]}};
-  // set which will be called after request
-  setsBefore: {[index: string]: {[index: string]: MoldHook[]}};
-}
 // External request func.
 // on error it has to throw a new MoldError(code, message).
 export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>;
@@ -39,7 +28,7 @@ export default class MoldHooks {
 
 
   constructor(rawSets: SetsDefinition, requestFunc: HooksRequestFunc) {
-    this.sets = this.prepareSets(rawSets);
+    this.sets = parseHooks(rawSets);
     this.requestFunc = requestFunc;
     this.app = new HooksApp(this);
   }
@@ -184,68 +173,6 @@ export default class MoldHooks {
         message: String(e),
       }
     }
-  }
-
-  /**
-   * Sort and normalize hooks
-   * @param rawSets is { setName: [[type, hookCb]] } or { specialSet: [...] }
-   * @private
-   */
-  private prepareSets(rawSets: SetsDefinition): Sets {
-    const sets: Sets = {
-      beforeHooks: [],
-      beforeRequest: [],
-      afterRequest: [],
-      afterHooks: [],
-      error: [],
-      setsBefore: {},
-      setsAfter: {},
-    };
-
-    for (let setName of Object.keys(rawSets)) {
-      if (SPECIAL_HOOKS.includes(setName)) {
-        sets[setName] = [
-          ...sets[setName],
-          ...rawSets[setName],
-        ];
-
-        continue;
-      }
-      // else this is user-defined set
-      this.parseSetHooks(setName, rawSets[setName], sets)
-    }
-
-    return sets;
-  }
-
-  private parseSetHooks(setName: string, hooks: SetItem[], sets: Sets) {
-    for (let item of hooks) {
-      if (Array.isArray(item)) {
-        // parse recursive
-        this.parseSetHooks(setName, item, sets);
-
-        continue;
-      }
-
-      const hookDefinition: PreHookDefinition = item;
-      const root = (hookDefinition.type === 'before') ? 'setsBefore' : 'setsAfter';
-
-      // TODO: what about "all"??? или это лучше сделать за счет мета-хуков??
-      // TODO: надо all делать тут так как мета-хук не знает какие есть action
-
-      // TODO: ??? запретить чтобы вложенные хуки были с разными action
-
-      if (!sets[root][setName]) {
-        sets[root][setName] = {};
-      }
-
-      if (!sets[root][setName][hookDefinition.action]) {
-        sets[root][setName][hookDefinition.action] = [];
-      }
-
-      sets[root][setName][hookDefinition.action].push(hookDefinition.hook);
-    }
-
   }
 
   /**

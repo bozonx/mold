@@ -1,6 +1,6 @@
 import {MoldHook, PreHookDefinition, SetItem} from '../hooksMidleware/interfaces/MoldHook';
 import {ALL_ACTIONS} from '../hooksMidleware/constants';
-import {handlePreHookDefinition} from '../helpers/hookHelpers';
+import {handlePreHookDefinition} from '../hooksMidleware/hookHelpers';
 
 
 /**
