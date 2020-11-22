@@ -8,7 +8,7 @@ import {handlePreHookDefinition} from '../helpers/hookHelpers';
  * @param hook - one or several hooks
  * @param onlyActions - actions to use for this hooks
  */
-export default function beforeAll(
+export function beforeAll(
   hook: MoldHook | MoldHook[] | SetItem,
   onlyActions?: string[]
 ): SetItem {
