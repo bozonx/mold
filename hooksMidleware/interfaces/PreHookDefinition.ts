@@ -5,7 +5,7 @@ import {MoldHook} from './MoldHooks';
 export interface PreHookDefinition {
   readonly type: HookType;
   // action like find, get, ... or some custom.
-  // Action "all" will be called inside all the action branches
+  // Action "all" will be called with all the action branches
   readonly action: string;
   readonly hook: MoldHook;
 }

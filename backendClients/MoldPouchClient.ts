@@ -1,5 +1,4 @@
 import BackendClient from '../interfaces/BackendClient';
-import {MoldMiddleware} from '../hooksMidleware/interfaces/MoldMiddleware';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import Mold from '../frontend/Mold';
 import MoldRequest from '../interfaces/MoldRequest';

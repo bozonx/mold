@@ -1,18 +1,20 @@
 import {CreateProps, DeleteProps, FindProps, GetItemProps, UpdateProps} from '../frontend/interfaces/MethodsProps';
 import {FindResponse, GetResponse} from '../frontend/interfaces/MethodsState';
 import {MoldHook} from '../interfaces/MoldHooks';
-import MoldSet from './interfaces/MoldSet';
+import MoldSet from '../hooksMidleware/interfaces/MoldSet';
 
 
-interface MoldSetItemProps {
+interface MoldSetTableProps {
   // table name or path to list. If not set then set name will be used.
   path?: string;
   [index: string]: any
 }
 
 
-export default class MoldSetItem implements MoldSet {
-  constructor(props: MoldSetItemProps, hooks: MoldHook[]) {
+// TODO: rename to MoldSetCrud
+
+export default class MoldSetTable implements MoldSet {
+  constructor(props: MoldSetTableProps, hooks: MoldHook[]) {
   }
 
 
@@ -42,5 +44,4 @@ export default class MoldSetItem implements MoldSet {
   delete(props: Omit<Omit<DeleteProps, 'backend'>, 'entity'>): Promise<void> {
 
   }
-
 }
