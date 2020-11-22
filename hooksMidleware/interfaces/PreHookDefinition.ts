@@ -1,5 +1,5 @@
 import {HookType} from './HookType';
-import {MoldHook} from './MoldHooks';
+import {MoldHook} from './MoldHook';
 
 
 export interface PreHookDefinition {

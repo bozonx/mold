@@ -7,7 +7,7 @@ import {MoldError} from './MoldError';
 import {REQUEST_STATUSES} from '../frontend/constants';
 import {cloneDeepObject} from '../helpers/objects';
 import HooksApp from './HooksApp';
-import {MoldHook} from './interfaces/MoldHooks';
+import {MoldHook} from './interfaces/MoldHook';
 import {HookType} from './interfaces/HookType';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 
