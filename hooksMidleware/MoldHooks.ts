@@ -6,7 +6,7 @@ import {MoldError} from './MoldError';
 import {REQUEST_STATUSES} from '../frontend/constants';
 import {cloneDeepObject} from '../helpers/objects';
 import HooksApp from './HooksApp';
-import {MoldHook, PreHookDefinition, SetsDefinition, SetsDefinitionItem} from './interfaces/MoldHook';
+import {MoldHook, PreHookDefinition, SetsDefinition, SetItem} from './interfaces/MoldHook';
 import {HookType} from './interfaces/HookType';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 
@@ -218,7 +218,7 @@ export default class MoldHooks {
     return sets;
   }
 
-  private parseSetHooks(setName: string, hooks: SetsDefinitionItem[], sets: Sets) {
+  private parseSetHooks(setName: string, hooks: SetItem[], sets: Sets) {
     for (let item of hooks) {
       if (Array.isArray(item)) {
         // parse recursive
