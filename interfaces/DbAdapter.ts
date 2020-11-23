@@ -5,17 +5,18 @@ import MoldRequest from './MoldRequest';
 export type RecordChangeHandler = () => void;
 
 
-export default interface DbAdapter {
+export interface DbAdapterDbInstance {
+  destroy(): Promise<void>;
 
-  find(request: MoldRequest): Promise<MoldResponse>;
+  find(): Promise<MoldResponse>;
 
-  get(request: MoldRequest): Promise<MoldResponse>;
+  get(): Promise<MoldResponse>;
 
-  create(request: MoldRequest): Promise<void>;
+  create(): Promise<void>;
 
-  update(request: MoldRequest): Promise<void>;
+  update(): Promise<void>;
 
-  delete(request: MoldRequest): Promise<void>;
+  delete(): Promise<void>;
 
   getField(): Promise<void>;
   hasField(): Promise<boolean>;
@@ -29,12 +30,15 @@ export default interface DbAdapter {
   renameTable(): Promise<void>;
   deleteTable(): Promise<void>;
 
-  getDb(): Promise<void>;
-  hasDb(): Promise<boolean>;
-  createDb(): Promise<void>;
-  renameDb(): Promise<void>;
-  deleteDb(): Promise<void>;
-
   onRecordChange(cb: RecordChangeHandler): number;
   removeListener(handlerIndex: number);
+}
+
+export interface DbAdapter {
+  destroy(): Promise<void>;
+  getDb(dbName: string): Promise<DbAdapterDbInstance>;
+  hasDb(dbName: string): Promise<boolean>;
+  createDb(dbName: string): Promise<void>;
+  renameDb(dbName: string, newName: string): Promise<void>;
+  deleteDb(dbName: string): Promise<void>;
 }

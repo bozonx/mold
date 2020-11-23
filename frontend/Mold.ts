@@ -36,6 +36,10 @@ export default class Mold {
     this.push = new PushesManager(this);
     this.storage = new StorageManager(this);
     this.requests = new Requests(this);
+
+    if (!this.props.production && window) {
+      (window as any).$mold = this;
+    }
   }
 
   destroy = () => {
@@ -142,6 +146,7 @@ export default class Mold {
     }
 
     return {
+      production: props.production || false,
       backends: props.backends,
       config: {
         ...defaultConfig,

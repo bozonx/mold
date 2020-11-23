@@ -5,6 +5,7 @@ import StorageAdapter from './StorageAdapter';
 
 
 export default interface MoldProps {
+  production?: boolean;
   config?: MoldFrontendConfig;
   // fill almost one backend. Name of backend is used in any request.
   // "default" backend doesn't have to be specified in request.
