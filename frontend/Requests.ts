@@ -40,7 +40,7 @@ export default class Requests {
   register(props: ActionProps): string {
     const requestKey: RequestKey = makeRequestKey(props);
     // init state if it doesn't exist
-    this.mold.storage.initStateIfNeed(requestKey);
+    this.mold.storageManager.initStateIfNeed(requestKey);
     // put or update request props into store and make instance ot it
     return this.instances.addInstance(requestKey, props);
   }
@@ -80,7 +80,7 @@ export default class Requests {
     // remove instance and request if there aren't any more instances
     this.instances.removeInstance(instanceId);
     // remove storage state if request has been destroyed
-    if (!this.instances.getProps(requestKey)) this.mold.storage.delete(requestKey);
+    if (!this.instances.getProps(requestKey)) this.mold.storageManager.delete(requestKey);
   }
 
 
@@ -108,14 +108,14 @@ export default class Requests {
     let response: MoldResponse;
 
     // set pending state
-    this.mold.storage.patch(requestKey, { pending: true });
+    this.mold.storageManager.patch(requestKey, { pending: true });
 
     try {
-      response = await this.mold.backend.request(backendName, requestProps);
+      response = await this.mold.backendManager.request(backendName, requestProps);
     }
     catch (e) {
       // actually this is for error in the code not network or backend's error
-      this.mold.storage.patch(requestKey, {
+      this.mold.storageManager.patch(requestKey, {
         pending: false,
         finishedOnce: true,
         responseSuccess: false,
@@ -129,7 +129,7 @@ export default class Requests {
       return;
     }
     // success
-    this.mold.storage.patch(requestKey, {
+    this.mold.storageManager.patch(requestKey, {
       pending: false,
       finishedOnce: true,
       responseSuccess: response.success,

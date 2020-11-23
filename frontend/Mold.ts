@@ -16,10 +16,10 @@ import {MoldFrontendConfig} from './interfaces/MoldFrontendConfig';
 
 export default class Mold {
   readonly props: MoldProps;
-  readonly backend: BackendManager;
-  readonly push: PushesManager;
-  readonly storage: StorageManager;
   readonly requests: Requests;
+  readonly backendManager: BackendManager;
+  readonly pushManager: PushesManager;
+  readonly storageManager: StorageManager;
 
   get log(): Logger {
     return this.props.log as any;
@@ -32,10 +32,10 @@ export default class Mold {
 
   constructor(props: Partial<MoldProps>) {
     this.props = this.prepareProps(props);
-    this.backend = new BackendManager(this);
-    this.push = new PushesManager(this);
-    this.storage = new StorageManager(this);
     this.requests = new Requests(this);
+    this.backendManager = new BackendManager(this);
+    this.pushManager = new PushesManager(this);
+    this.storageManager = new StorageManager(this);
 
     if (!this.props.production && window) {
       (window as any).$mold = this;
@@ -43,9 +43,9 @@ export default class Mold {
   }
 
   destroy = () => {
-    this.push.destroy();
-    this.backend.destroy();
-    this.storage.destroy();
+    this.pushManager.destroy();
+    this.backendManager.destroy();
+    this.storageManager.destroy();
     this.requests.destroy();
   }
 
@@ -54,7 +54,7 @@ export default class Mold {
    * Handle income push message. It can be json string or object or array of messages.
    */
   incomePush(backend: string, message: PushIncomeMessage) {
-    this.push.incomePush(backend, message);
+    this.pushManager.incomePush(backend, message);
   }
 
   /**
@@ -72,7 +72,7 @@ export default class Mold {
   getState(instanceId: string): ActionState | undefined {
     const {requestKey} = splitInstanceId(instanceId);
 
-    return this.storage.getState(requestKey);
+    return this.storageManager.getState(requestKey);
   }
 
   /**
@@ -124,11 +124,11 @@ export default class Mold {
   onChange(instanceId: string, changeCb: (state: ActionState) => void): number {
     const {requestKey} = splitInstanceId(instanceId);
     // listen of changes of just created state or existed
-    return this.storage.onChange(requestKey, changeCb);
+    return this.storageManager.onChange(requestKey, changeCb);
   }
 
   removeListener(handleIndex: number) {
-    this.storage.removeListener(handleIndex);
+    this.storageManager.removeListener(handleIndex);
   }
 
   /**
