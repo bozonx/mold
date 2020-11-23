@@ -51,7 +51,6 @@ export function makeRequest(props: ActionProps): MoldRequest {
   return omitObj(
     props,
     'backend',
-    'set',
     'isGetting'
   ) as MoldRequest;
 }

@@ -73,6 +73,7 @@ export default class MoldHooks {
         globalContext.error = this.parseError(e);
       }
     }
+
     // return response success or error
     return this.makeResponse(globalContext);
   }
@@ -87,7 +88,7 @@ export default class MoldHooks {
   private async startBeforeHooks(globalContext: GlobalContext) {
     const {set, action} = globalContext.request;
     // do nothing because there arent action's hooks
-    if (!this.sets.setsBefore[set][action]) return;
+    if (!this.sets.setsBefore[set]?.[action]) return;
 
     for (let hook of this.sets.setsBefore[set][action]) {
       const hookContext = this.makeHookContext('before', globalContext);
@@ -102,7 +103,7 @@ export default class MoldHooks {
   private async startAfterHooks(globalContext: GlobalContext) {
     const {set, action} = globalContext.request;
     // do nothing because there arent action's hooks
-    if (!this.sets.setsAfter[set][action]) return;
+    if (!this.sets.setsAfter[set]?.[action]) return;
 
     for (let hook of this.sets.setsAfter[set][action]) {
       const hookContext = this.makeHookContext('after', globalContext);
@@ -148,16 +149,16 @@ export default class MoldHooks {
   }
 
   private validateRequest(request: MoldRequest) {
-    if (request.set) {
+    if (!request.set) {
       throw new Error(`Set isn't specified int the request`);
     }
-    else if (request.action) {
+    else if (!request.action) {
       throw new Error(`Action isn't specified int the request of set "${request.set}"`);
     }
     else if (SPECIAL_HOOKS.includes(request.set)) {
       throw new Error(`Unappropriated set name "${request.set}"`);
     }
-    else if (!this.sets.setsBefore[request.set] || !this.sets.setsAfter[request.set]) {
+    else if (!this.sets.setsBefore[request.set] && !this.sets.setsAfter[request.set]) {
       throw new Error(`Can't find set "${request.set}"`);
     }
   }

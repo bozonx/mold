@@ -6,7 +6,7 @@ import {makeRequestKey, splitInstanceId} from '../helpers/common';
 import {REQUEST_STATUSES} from './constants';
 import {InstancesStore} from './InstancesStore';
 import MoldRequest from '../interfaces/MoldRequest';
-import {omitObj} from '../helpers/objects';
+import {omitObj, omitUndefined} from '../helpers/objects';
 
 
 export default class Requests {
@@ -94,13 +94,13 @@ export default class Requests {
       throw new Error(`Can't find request props of "${JSON.stringify(requestKey)}"`);
     }
 
-    return {
+    return omitUndefined({
       ...omitObj(actionProps, 'backend', 'isGetting') as MoldRequest,
-      data: {
+      data: (actionProps.data || data) && {
         ...actionProps.data,
-        data,
+        ...data,
       },
-    }
+    }) as MoldRequest;
   }
 
   private async doRequest(requestKey: RequestKey, requestProps: MoldRequest) {

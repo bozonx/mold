@@ -38,8 +38,20 @@
     "rootDir": "./"
   },
   "include": [
+//    "backendClients",
+//    "backendServers",
+//    "dbAdapters",
+//    "frameworks",
+//    "frontend",
+//    "helpers",
+//    "hooks",
+//    "hooksMidleware",
+//    "interfaces",
+//    "pushClients",
+//    "pushServers"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "__old"
   ]
 }
