@@ -39,6 +39,12 @@ export default class PouchDbAdapter implements DbAdapter {
 
   delete(request: MoldRequest): Promise<void> {}
 
+  getField(): Promise<void> {}
+  hasField(): Promise<boolean> {}
+  createField(): Promise<void> {}
+  updateField(): Promise<void> {}
+  deleteField(): Promise<void> {}
+
   getTable(): Promise<void> {}
   createTable(): Promise<void> {}
   renameTable(): Promise<void> {}

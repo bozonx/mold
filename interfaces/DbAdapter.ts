@@ -17,12 +17,20 @@ export default interface DbAdapter {
 
   delete(request: MoldRequest): Promise<void>;
 
+  getField(): Promise<void>;
+  hasField(): Promise<boolean>;
+  createField(): Promise<void>;
+  updateField(): Promise<void>;
+  deleteField(): Promise<void>;
+
   getTable(): Promise<void>;
+  hasTable(): Promise<boolean>;
   createTable(): Promise<void>;
   renameTable(): Promise<void>;
   deleteTable(): Promise<void>;
 
   getDb(): Promise<void>;
+  hasDb(): Promise<boolean>;
   createDb(): Promise<void>;
   renameDb(): Promise<void>;
   deleteDb(): Promise<void>;
