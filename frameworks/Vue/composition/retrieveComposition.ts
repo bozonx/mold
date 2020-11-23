@@ -49,6 +49,7 @@ export function retrieveComposition<T>(
       ? changeTransform(newState)
       : newState
 
+    // TODO: use Object.assign(state, newState);
     for (let key of Object.keys(completeState)) state[key] = completeState[key];
   });
 

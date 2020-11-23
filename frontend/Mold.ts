@@ -58,21 +58,21 @@ export default class Mold {
   }
 
   /**
-   * It inits request if need and makes a new request instance id.
-   * It doesn't start the request itself
-   * @return An instance id
-   */
-  newRequest(actionProps: ActionProps): string {
-    return this.requests.register(actionProps);
-  }
-
-  /**
    * It receives as instanceId and returns state of request.
    */
   getState(instanceId: string): ActionState | undefined {
     const {requestKey} = splitInstanceId(instanceId);
 
     return this.storageManager.getState(requestKey);
+  }
+
+  /**
+   * It inits request if need and makes a new request instance id.
+   * It doesn't start the request itself
+   * @return An instance id
+   */
+  newRequest(actionProps: ActionProps): string {
+    return this.requests.register(actionProps);
   }
 
   /**
@@ -83,6 +83,26 @@ export default class Mold {
   start(instanceId: string, data?: Record<string, any>) {
     this.requests.start(instanceId, data)
       .catch(this.log.error);
+  }
+
+  /**
+   * All in one. Useful for debug.
+   */
+  async doRequest(actionProps: ActionProps): Promise<ActionState> {
+    const instanceId = this.requests.register(actionProps);
+    const state = this.getState(instanceId);
+
+    if (!state) throw new Error(`No state`);
+
+    this.onChange(instanceId, (newState: ActionState) => {
+      Object.assign(state, newState);
+    });
+
+    this.requests.start(instanceId, actionProps.data)
+      .catch(this.log.error);
+
+
+    return state;
   }
 
   /**

@@ -9,3 +9,8 @@ To prevent processing further hooks just throw MoldError:
 
 Code can be http status or some other code.
 Message is optional.
+
+
+## Debug
+
+    $mold.doRequest({set: 'mySet', action: 'find'})
