@@ -1,5 +1,6 @@
 import {JsonData} from '../../interfaces/Types';
 import {MoldError} from '../../hooksMidleware/MoldError';
+import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
 
 
 export interface ActionState<T = any> {
@@ -12,7 +13,7 @@ export interface ActionState<T = any> {
   // last response status. Null while loading or saving
   responseStatus: number | null;
   // last response backend errors
-  responseErrors: MoldError[] | null;
+  responseErrors: MoldErrorDefinition[] | null;
   result: T | null;
 }
 
