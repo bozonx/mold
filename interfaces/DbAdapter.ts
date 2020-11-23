@@ -1,18 +1,32 @@
-import {CreateProps, DeleteProps, FindProps, GetItemProps, UpdateProps} from '../frontend/interfaces/MethodsProps';
-import {FindResponse, GetResponse} from '../frontend/interfaces/MethodsState';
+import {MoldResponse} from './MoldResponse';
+import MoldRequest from './MoldRequest';
+
+
+export type RecordChangeHandler = () => void;
+
 
 export default interface DbAdapter {
 
-  // TODO: remove meta. Review props
-  // TODO: review
-  find(props: Omit<Omit<FindProps, 'backend'>, 'entity'>): Promise<FindResponse>;
+  find(request: MoldRequest): Promise<MoldResponse>;
 
-  get(props: Omit<Omit<GetItemProps, 'backend'>, 'entity'>): Promise<GetResponse>;
+  get(request: MoldRequest): Promise<MoldResponse>;
 
-  create(props: Omit<Omit<CreateProps, 'backend'>, 'entity'>): Promise<void>;
+  create(request: MoldRequest): Promise<void>;
 
-  update(props: Omit<Omit<UpdateProps, 'backend'>, 'entity'>): Promise<void>;
+  update(request: MoldRequest): Promise<void>;
 
-  delete(props: Omit<Omit<DeleteProps, 'backend'>, 'entity'>): Promise<void>;
+  delete(request: MoldRequest): Promise<void>;
 
+  getTable(): Promise<void>;
+  createTable(): Promise<void>;
+  renameTable(): Promise<void>;
+  deleteTable(): Promise<void>;
+
+  getDb(): Promise<void>;
+  createDb(): Promise<void>;
+  renameDb(): Promise<void>;
+  deleteDb(): Promise<void>;
+
+  onRecordChange(cb: RecordChangeHandler): number;
+  removeListener(handlerIndex: number);
 }
