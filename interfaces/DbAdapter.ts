@@ -1,5 +1,5 @@
 import {MoldResponse} from './MoldResponse';
-import {ItemResponse, ListResponse} from '../frontend/interfaces/MethodsState';
+import {CreateResponse, ItemResponse, ListResponse} from '../frontend/interfaces/MethodsState';
 
 
 export type RecordChangeHandler = (set: string, action: string, response: MoldResponse) => void;
@@ -23,7 +23,7 @@ export interface DbAdapter {
     set: string,
     data: Record<string, any>,
     meta?: Record<string, any>
-  ): Promise<MoldResponse>;
+  ): Promise<MoldResponse<CreateResponse>>;
 
   patch(
     set: string,

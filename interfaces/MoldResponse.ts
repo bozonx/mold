@@ -2,7 +2,7 @@ import {JsonData} from './Types';
 import {MoldErrorDefinition} from './MoldErrorDefinition';
 
 
-export interface MoldResponse<T = JsonData> {
+export interface MoldResponse<T = any> {
   // status of response: 200, 400, 500 etc or some custom
   status: number;
   // true if request was success and false if wasn't - an error

@@ -33,6 +33,11 @@ export interface ItemResponse<T = any> {
   data: T | null;
 }
 
+export interface CreateResponse {
+  id: string | number;
+  [index: string]: any;
+}
+
 export interface InstanceState {
   // string like "backend|set|action|request|instanceNum"
   __instanceId: string;
