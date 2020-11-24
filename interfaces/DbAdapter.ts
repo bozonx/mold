@@ -53,7 +53,7 @@ export interface DbAdapter {
 
   batchDelete(
     set: string,
-    id: string[],
+    ids: (string | number)[],
     meta?: Record<string, any>
   ): Promise<MoldResponse>;
 

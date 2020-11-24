@@ -84,6 +84,7 @@ export default class PouchDbAdapter implements DbAdapter {
       });
     }
     catch (e) {
+      // TODO: а туту можен быть ошибка вообще ???
       return this.makeErrorResponse(e);
     }
 
@@ -279,6 +280,7 @@ export default class PouchDbAdapter implements DbAdapter {
       status: 200,
       success: true,
       errors: (errors.length) ? errors : null,
+      // TODO: может все сохранять в одном порядке и ошибки тоже сюда
       result: (successResult.length) ? successResult : null,
     }
   }
@@ -289,14 +291,31 @@ export default class PouchDbAdapter implements DbAdapter {
     meta?: Record<string, any>
   ): Promise<MoldResponse> {
 
+    // TODO: see docs
+
   }
 
   async batchDelete(
     set: string,
-    id: string[],
+    ids: (string | number)[],
     meta?: Record<string, any>
   ): Promise<MoldResponse> {
+    let findResult: FindSuccess;
 
+    try {
+      findResult = await this.db.allDocs({
+        include_docs: false,
+        keys: ids.map((id) => set + SET_DELIMITER + id),
+      });
+    }
+    catch (e) {
+      // TODO: а тут можен быть ошибка вообще ???
+      return this.makeErrorResponse(e);
+    }
+
+
+
+    // TODO: сначала запросить эти доки, потом удалить все сразу
   }
 
   async getField(): Promise<void> {
