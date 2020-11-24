@@ -3,27 +3,37 @@ import {Logger, LogLevel} from '../frontend/interfaces/Logger';
 import {DbAdapter} from '../interfaces/DbAdapter';
 import ConsoleLogger from '../helpers/ConsoleLogger';
 import {SeedContext} from './SeedContext';
+import {MoldSchema} from '../interfaces/MoldSchema';
+import {extractSeedFromSchema} from './extractSeedFromSchema';
 
 
 interface MoldSeedProps {
-  seed: (context: MoldSeedContext) => void;
   adapter: DbAdapter;
+  schemas?: MoldSchema[],
+  seed?: (context: MoldSeedContext) => void;
   log?: Logger | LogLevel;
 }
 
 
 export default class MoldSeed {
-  private readonly props: MoldSeedProps;
+  private readonly adapter: DbAdapter;
+  private readonly seed: (context: MoldSeedContext) => void;
+  private readonly log: Logger;
   private readonly context: SeedContext;
-
-  get log(): Logger {
-    return this.props.log as any;
-  }
 
 
   constructor(props: MoldSeedProps) {
-    this.props = this.prepareProps(props);
-    this.context = new SeedContext(this.props.adapter);
+    if (!props.seed && !props.schemas) {
+      throw new Error(`Please specify almost seed or schema`);
+    }
+    else if (!props.adapter) {
+      throw new Error(`Please specify the adapter`);
+    }
+
+    this.seed = (props.seed) ? props.seed : extractSeedFromSchema(props.schemas!);
+    this.adapter = props.adapter;
+    this.log = this.resolveLogger(props.log);
+    this.context = new SeedContext(this.adapter);
   }
 
   destroy() {
@@ -39,7 +49,7 @@ export default class MoldSeed {
 
   private async doStart() {
     try {
-      this.props.seed(this.context);
+      this.seed(this.context);
     }
     catch (e) {
       this.context.destroy();
@@ -52,17 +62,6 @@ export default class MoldSeed {
     this.log.info('Done');
 
     this.context.destroy();
-  }
-
-  private prepareProps(props: Partial<MoldSeedProps>): MoldSeedProps {
-    if (!props.seed) throw new Error(`Please specify the seed`);
-    else if (!props.adapter) throw new Error(`Please specify the adapter`);
-
-    return {
-      seed: props.seed,
-      adapter: props.adapter,
-      log: this.resolveLogger(props.log),
-    }
   }
 
   private resolveLogger(rawLogger?: Logger | LogLevel): Logger {
