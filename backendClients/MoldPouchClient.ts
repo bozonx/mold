@@ -6,12 +6,12 @@ import Mold from '../frontend/Mold';
 import MoldRequest from '../interfaces/MoldRequest';
 import {SetsDefinition} from '../hooksMidleware/interfaces/MoldHook';
 import MoldHooks from '../hooksMidleware/MoldHooks';
-import PouchDbAdapter from '../dbAdapters/PouchDb/PouchDbAdapter';
+import PouchDbAdapter from '../dbAdapters/PouchDbAdapter';
+import {resolveAdapterRequestAction} from '../helpers/backendHelpers';
 
 
 interface MoldPouchClientProps {
-  pouch: PouchDB;
-  db: string;
+  db: PouchDB;
   sets: SetsDefinition;
 }
 
@@ -21,18 +21,19 @@ interface MoldPouchClientProps {
  * It works only with specified db.
  */
 export default class MoldPouchClient implements BackendClient {
-  private readonly props: MoldPouchClientProps;
+  readonly props: MoldPouchClientProps;
+  readonly adapter: PouchDbAdapter;
+
   private mold!: Mold;
   private readonly hooks: MoldHooks;
-  private readonly pouchAdapter: PouchDbAdapter;
 
 
   constructor(props: MoldPouchClientProps) {
     this.props = props;
     this.hooks = new MoldHooks(props.sets, this.hooksRequestFunc);
-    this.pouchAdapter = new PouchDbAdapter(props.pouch);
+    this.adapter = new PouchDbAdapter(props.db);
 
-    //this.pouchAdapter.onRecordChange(this.handleRecordChange);
+    this.adapter.onRecordChange(this.handleRecordChange);
   }
 
   $init(mold: Mold) {
@@ -50,24 +51,11 @@ export default class MoldPouchClient implements BackendClient {
 
 
   private hooksRequestFunc = (request: MoldRequest): Promise<MoldResponse> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          status: 200,
-          errors: null,
-          success: true,
-          result: {
-            data: [
-              { name: 'fff' }
-            ]
-          } as any,
-        })
-      }, 2000)
-    });
+    return resolveAdapterRequestAction(this.adapter, request);
   }
 
-  private handleRecordChange = () => {
-    // TODO: слушать события pouch и выполнять mold.incomePush
-
+  private handleRecordChange = (set: string, action: string, response: MoldResponse) => {
+    // TODO: выполнять mold.incomePush
+    console.log(5555555555, set, action, response);
   }
 }

@@ -1,22 +1,43 @@
 import {MoldResponse} from './MoldResponse';
-import MoldRequest from './MoldRequest';
+import {ItemResponse, ListResponse} from '../frontend/interfaces/MethodsState';
 
 
-export type RecordChangeHandler = () => void;
+export type RecordChangeHandler = (set: string, action: string, response: MoldResponse) => void;
 
-
-export interface DbAdapterDbInstance {
+export interface DbAdapter {
   destroy(): Promise<void>;
 
-  find(): Promise<MoldResponse>;
+  find(
+    set: string,
+    query: Record<string, any>,
+    meta?: Record<string, any>
+  ): Promise<MoldResponse<ListResponse>>;
 
-  get(): Promise<MoldResponse>;
+  get(
+    set: string,
+    id: string | number,
+    query: Record<string, any>,
+    meta?: Record<string, any>
+  ): Promise<MoldResponse<ItemResponse>>;
 
-  create(): Promise<void>;
+  create(
+    set: string,
+    data: Record<string, any>,
+    meta?: Record<string, any>
+  ): Promise<MoldResponse>;
 
-  update(): Promise<void>;
+  patch(
+    set: string,
+    id: string | number,
+    partialData: Record<string, any>,
+    meta?: Record<string, any>
+  ): Promise<MoldResponse>;
 
-  delete(): Promise<void>;
+  delete(
+    set: string,
+    id: string | number,
+    meta?: Record<string, any>
+  ): Promise<MoldResponse>;
 
   getField(): Promise<void>;
   hasField(): Promise<boolean>;
@@ -32,13 +53,10 @@ export interface DbAdapterDbInstance {
 
   onRecordChange(cb: RecordChangeHandler): number;
   removeListener(handlerIndex: number);
-}
 
-export interface DbAdapter {
-  destroy(): Promise<void>;
-  getDb(dbName: string): Promise<DbAdapterDbInstance>;
-  hasDb(dbName: string): Promise<boolean>;
-  createDb(dbName: string): Promise<void>;
-  renameDb(dbName: string, newName: string): Promise<void>;
-  deleteDb(dbName: string): Promise<void>;
+  // getDb(dbName: string): Promise<DbAdapterDbInstance>;
+  // hasDb(dbName: string): Promise<boolean>;
+  // createDb(dbName: string): Promise<void>;
+  // renameDb(dbName: string, newName: string): Promise<void>;
+  // deleteDb(dbName: string): Promise<void>;
 }

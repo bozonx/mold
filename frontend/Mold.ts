@@ -88,7 +88,7 @@ export default class Mold {
   /**
    * All in one. Useful for debug.
    */
-  async doRequest(actionProps: ActionProps): Promise<ActionState> {
+  doRequest(actionProps: ActionProps): ActionState {
     const instanceId = this.requests.register(actionProps);
     const state = this.getState(instanceId);
 
@@ -100,7 +100,6 @@ export default class Mold {
 
     this.requests.start(instanceId, actionProps.data)
       .catch(this.log.error);
-
 
     return state;
   }
