@@ -1,7 +1,7 @@
 import {MoldSeedContext} from './interfaces/MoldSeedContext';
 import {Logger, LogLevel} from '../frontend/interfaces/Logger';
 import {DbAdapter} from '../interfaces/DbAdapter';
-import ConsoleLogger from '../frontend/ConsoleLogger';
+import ConsoleLogger from '../helpers/ConsoleLogger';
 
 
 // TODO: validate seeds

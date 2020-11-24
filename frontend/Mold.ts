@@ -9,7 +9,7 @@ import Requests from './Requests';
 import {Logger, LogLevel} from './interfaces/Logger';
 import {defaultConfig} from './defaultConfig';
 import {isEmptyObject} from '../helpers/objects';
-import ConsoleLogger from './ConsoleLogger';
+import ConsoleLogger from '../helpers/ConsoleLogger';
 import DefaultStore from './DefaultStore';
 import {MoldFrontendConfig} from './interfaces/MoldFrontendConfig';
 
