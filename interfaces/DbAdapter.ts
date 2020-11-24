@@ -44,11 +44,11 @@ export interface DbAdapter {
   updateField(): Promise<void>;
   deleteField(): Promise<void>;
 
-  getTable(): Promise<void>;
-  hasTable(): Promise<boolean>;
-  createTable(): Promise<void>;
-  renameTable(): Promise<void>;
-  deleteTable(): Promise<void>;
+  getSet(): Promise<void>;
+  hasSet(): Promise<boolean>;
+  createSet(): Promise<void>;
+  renameSet(): Promise<void>;
+  deleteSet(): Promise<void>;
 
   onRecordChange(cb: RecordChangeHandler): number;
   removeListener(handlerIndex: number);

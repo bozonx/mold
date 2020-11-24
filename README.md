@@ -14,3 +14,4 @@ Message is optional.
 ## Debug
 
     $mold.doRequest({set: 'mySet', action: 'find'})
+    $mold.props.backends.default.doAdapterRequest({set: 'mySet', action: 'find', query: {}})

@@ -34,10 +34,13 @@ export default class PouchDbAdapter implements DbAdapter {
           errors: null,
           success: true,
           result: {
+            count: 0,
+            hasNext: false,
+            hasPrev: false,
             data: [
               { name: 'fff' }
             ]
-          } as any,
+          },
         })
       }, 2000)
     });
@@ -54,7 +57,7 @@ export default class PouchDbAdapter implements DbAdapter {
           status: 200,
           errors: null,
           success: true,
-          result: { name: 'fff' },
+          result: { data: {name: 'fff'} },
         })
       }, 2000)
     });
@@ -64,7 +67,7 @@ export default class PouchDbAdapter implements DbAdapter {
     set: string,
     data: Record<string, any>,
     meta?: Record<string, any>
-  ): Promise<void> {
+  ): Promise<MoldResponse> {
 
   }
 
@@ -73,13 +76,17 @@ export default class PouchDbAdapter implements DbAdapter {
     id: string | number,
     partialData: Record<string, any>,
     meta?: Record<string, any>
-  ): Promise<void> {}
+  ): Promise<MoldResponse> {
+
+  }
 
   delete(
     set: string,
     id: string | number,
     meta?: Record<string, any>
-  ): Promise<void> {}
+  ): Promise<MoldResponse> {
+
+  }
 
   getField(): Promise<void> {}
   hasField(): Promise<boolean> {}
@@ -87,11 +94,11 @@ export default class PouchDbAdapter implements DbAdapter {
   updateField(): Promise<void> {}
   deleteField(): Promise<void> {}
 
-  getTable(): Promise<void> {}
-  hasTable(): Promise<boolean> {}
-  createTable(): Promise<void> {}
-  renameTable(): Promise<void> {}
-  deleteTable(): Promise<void> {}
+  getSet(): Promise<void> {}
+  hasSet(): Promise<boolean> {}
+  createSet(): Promise<void> {}
+  renameSet(): Promise<void> {}
+  deleteSet(): Promise<void> {}
 
   onRecordChange(cb: RecordChangeHandler): number {
     // TODO: add

@@ -30,7 +30,7 @@ export default class MoldPouchClient implements BackendClient {
 
   constructor(props: MoldPouchClientProps) {
     this.props = props;
-    this.hooks = new MoldHooks(props.sets, this.hooksRequestFunc);
+    this.hooks = new MoldHooks(props.sets, this.doAdapterRequest);
     this.adapter = new PouchDbAdapter(props.db);
 
     this.adapter.onRecordChange(this.handleRecordChange);
@@ -45,14 +45,21 @@ export default class MoldPouchClient implements BackendClient {
   }
 
 
+  /**
+   * Request from Mold
+   */
   async request(request: MoldRequest): Promise<MoldResponse> {
     return this.hooks.request(request);
   }
 
-
-  private hooksRequestFunc = (request: MoldRequest): Promise<MoldResponse> => {
+  /**
+   * Request to adapter after "before" hooks.
+   * It is useful for debug.
+   */
+  doAdapterRequest = (request: MoldRequest): Promise<MoldResponse> => {
     return callAdapterRequestAction(this.adapter, request);
   }
+
 
   private handleRecordChange = (set: string, action: string, response: MoldResponse) => {
     // TODO: выполнять mold.incomePush
