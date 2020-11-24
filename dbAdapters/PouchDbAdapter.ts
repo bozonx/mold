@@ -233,6 +233,10 @@ export default class PouchDbAdapter implements DbAdapter {
     }
   }
 
+  batchCreate(set: string, docs: Record<string, any>[]): Promise<MoldResponse> {
+    // TODO: add
+  }
+
   async getField(): Promise<void> {
     throw new Error(`PouchDbAdapter: doesn't support thw getField method`);
   }

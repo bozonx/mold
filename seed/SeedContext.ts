@@ -12,12 +12,26 @@ export class SeedContext implements MoldSeedContext {
   }
 
   destroy() {
-    delete this.actions;
+    this.actions = [];
   }
 
 
   insert(set: string, docs: Record<string, any>[]) {
+    this.actions.push(async () => {
+      const result = await this.adapter.batchCreate(set, docs);
 
+      if (result.success) return result;
+
+      throw new Error(result.errors?.map(
+        (item) => `${item.code}: ${item.message}`
+      ).join(', ') || `Unknown error`);
+    });
+  }
+
+  async startActions() {
+    for (let cb of this.actions) {
+      await cb();
+    }
   }
 
 }

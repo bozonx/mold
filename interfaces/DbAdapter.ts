@@ -38,6 +38,8 @@ export interface DbAdapter {
     meta?: Record<string, any>
   ): Promise<MoldResponse>;
 
+  batchCreate(set: string, docs: Record<string, any>[]): Promise<MoldResponse>;
+
   getField(): Promise<void>;
   hasField(): Promise<boolean>;
   createField(): Promise<void>;

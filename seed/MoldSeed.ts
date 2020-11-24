@@ -2,9 +2,8 @@ import {MoldSeedContext} from './interfaces/MoldSeedContext';
 import {Logger, LogLevel} from '../frontend/interfaces/Logger';
 import {DbAdapter} from '../interfaces/DbAdapter';
 import ConsoleLogger from '../helpers/ConsoleLogger';
+import {SeedContext} from './SeedContext';
 
-
-// TODO: validate seeds
 
 interface MoldSeedProps {
   seed: (context: MoldSeedContext) => void;
@@ -15,6 +14,7 @@ interface MoldSeedProps {
 
 export default class MoldSeed {
   private readonly props: MoldSeedProps;
+  private readonly context: SeedContext;
 
   get log(): Logger {
     return this.props.log as any;
@@ -23,13 +23,34 @@ export default class MoldSeed {
 
   constructor(props: MoldSeedProps) {
     this.props = this.prepareProps(props);
+    this.context = new SeedContext(this.props.adapter);
+  }
+
+  destroy() {
+    this.context.destroy();
   }
 
 
   start() {
-
+    this.doStart()
+      .catch(this.log.error);
   }
 
+
+  private async doStart() {
+    try {
+      this.props.seed(this.context);
+    }
+    catch (e) {
+      this.context.destroy();
+
+      throw e;
+    }
+
+    await this.context.startActions();
+
+    this.context.destroy();
+  }
 
   private prepareProps(props: Partial<MoldSeedProps>): MoldSeedProps {
     if (!props.seed) throw new Error(`Please specify the seed`);
