@@ -9,6 +9,8 @@ export function callAdapterRequestAction(
 ): Promise<MoldResponse<any>> {
   switch (request.action) {
     case 'find':
+
+      // TODO: наверное не нужнео ???
       if (!request.query) throw new Error(`No query in request ${JSON.stringify(request)}`)
 
       return adapter.find(

@@ -6,19 +6,26 @@ import {CreateResponse, ItemResponse, ListResponse} from '../frontend/interfaces
 import {makeUniqId} from '../helpers/uniqId';
 
 
+interface PouchRecord {
+  _id: string;
+  _rev: string;
+  [index: string]: any;
+}
+
 interface FindSuccess {
   offset: number;
   length: number;
   // the total number of non-deleted documents in the database
   total_rows: number;
-  rows: {id: "root/1", key: "root/1", value: Record<string, any>}[];
+  rows: {
+    id: "root/1";
+    key: "root/1";
+    value: {rev: string};
+    doc: PouchRecord;
+  }[];
 }
 
-interface GetSuccess {
-  _id: string;
-  _rev: string;
-  [index: string]: any;
-}
+type GetSuccess = PouchRecord;
 
 interface PutSuccess {
   id: string;
@@ -89,7 +96,7 @@ export default class PouchDbAdapter implements DbAdapter {
         hasNext: false,
         // TODO: расчитать
         hasPrev: false,
-        data: result.rows.map((item) => item.value),
+        data: result.rows.map((item) => item.doc),
       },
     }
   }
