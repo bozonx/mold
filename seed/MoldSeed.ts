@@ -8,7 +8,7 @@ import {SeedContext} from './SeedContext';
 interface MoldSeedProps {
   seed: (context: MoldSeedContext) => void;
   adapter: DbAdapter;
-  log?: Logger;
+  log?: Logger | LogLevel;
 }
 
 
@@ -48,6 +48,8 @@ export default class MoldSeed {
     }
 
     await this.context.startActions();
+
+    this.log.info('Done');
 
     this.context.destroy();
   }
