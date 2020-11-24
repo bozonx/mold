@@ -1,4 +1,4 @@
-import {MoldSeedContext} from './interfaces/MoldSeedContext';
+import {MoldSeedContext} from '../interfaces/MoldSeedContext';
 import {DbAdapter} from '../interfaces/DbAdapter';
 
 
