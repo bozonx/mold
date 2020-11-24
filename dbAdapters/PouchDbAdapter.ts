@@ -46,7 +46,6 @@ export default class PouchDbAdapter implements DbAdapter {
   get(
     set: string,
     id: string | number,
-    query: Record<string, any>,
     meta?: Record<string, any>
   ): Promise<MoldResponse<ItemResponse>> {
     return new Promise((resolve) => {
@@ -76,7 +75,11 @@ export default class PouchDbAdapter implements DbAdapter {
     meta?: Record<string, any>
   ): Promise<void> {}
 
-  delete(): Promise<void> {}
+  delete(
+    set: string,
+    id: string | number,
+    meta?: Record<string, any>
+  ): Promise<void> {}
 
   getField(): Promise<void> {}
   hasField(): Promise<boolean> {}

@@ -7,7 +7,7 @@ import MoldRequest from '../interfaces/MoldRequest';
 import {SetsDefinition} from '../hooksMidleware/interfaces/MoldHook';
 import MoldHooks from '../hooksMidleware/MoldHooks';
 import PouchDbAdapter from '../dbAdapters/PouchDbAdapter';
-import {resolveAdapterRequestAction} from '../helpers/backendHelpers';
+import {callAdapterRequestAction} from '../helpers/backendHelpers';
 
 
 interface MoldPouchClientProps {
@@ -51,7 +51,7 @@ export default class MoldPouchClient implements BackendClient {
 
 
   private hooksRequestFunc = (request: MoldRequest): Promise<MoldResponse> => {
-    return resolveAdapterRequestAction(this.adapter, request);
+    return callAdapterRequestAction(this.adapter, request);
   }
 
   private handleRecordChange = (set: string, action: string, response: MoldResponse) => {

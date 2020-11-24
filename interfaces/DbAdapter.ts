@@ -16,7 +16,6 @@ export interface DbAdapter {
   get(
     set: string,
     id: string | number,
-    query: Record<string, any>,
     meta?: Record<string, any>
   ): Promise<MoldResponse<ItemResponse>>;
 
