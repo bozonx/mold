@@ -67,6 +67,8 @@ export default class PouchDbAdapter implements DbAdapter {
         //startkey: set + SET_DELIMITER,
         startkey: set + SET_DELIMITER,
         endkey: set + SET_DELIMITER + '\ufff0',
+
+        // TODO: расчитать соглсно perPage и pageNum
         //limit: 1,
         //skip: 1,
         ...meta,
@@ -90,46 +92,6 @@ export default class PouchDbAdapter implements DbAdapter {
         data: result.rows.map((item) => item.value),
       },
     }
-
-    /*
-      $mold.props.backends.default.adapter.db.allDocs({startkey: 'root/'})
-
-      success
-      {
-      offset: 0
-      rows: Array(1)
-        0: {id: "root/1", key: "root/1", value: {…}}
-      length: 1
-      total_rows: 1
-      }
-
-      если не найдет ничего то
-      {
-      offset: 0
-      rows: Array(0)
-      length: 0
-      __proto__: Array(0)
-      total_rows: 1
-      }
-     */
-
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve({
-    //       status: 200,
-    //       errors: null,
-    //       success: true,
-    //       result: {
-    //         count: 0,
-    //         hasNext: false,
-    //         hasPrev: false,
-    //         data: [
-    //           { name: 'fff' }
-    //         ]
-    //       },
-    //     })
-    //   }, 2000)
-    // });
   }
 
   async get(
@@ -140,9 +102,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let result: GetSuccess;
 
     try {
-      result = await this.db.get({
-        _id: set + SET_DELIMITER + id,
-      }, meta);
+      result = await this.db.get(set + SET_DELIMITER + id, meta || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -156,36 +116,6 @@ export default class PouchDbAdapter implements DbAdapter {
         data: result,
       },
     }
-
-    /*
-     on success
-     {
-      param: 1
-      _id: "settings"
-      _rev: "1-9bb7a96644a280d92dda8ef556d10300"
-      }
-
-      on error
-      {
-      docId: "settings1"
-      error: true
-      message: "missing"
-      name: "not_found"
-      reason: "missing"
-      status: 404
-      }
-     */
-
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //     resolve({
-    //       status: 200,
-    //       errors: null,
-    //       success: true,
-    //       result: { data: {name: 'fff'} },
-    //     })
-    //   }, 2000)
-    // });
   }
 
   async create(
@@ -199,8 +129,9 @@ export default class PouchDbAdapter implements DbAdapter {
     try {
       result = await this.db.put({
         _id: set + SET_DELIMITER + id,
+        id,
         ...data,
-      }, meta);
+      }, meta || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -211,30 +142,11 @@ export default class PouchDbAdapter implements DbAdapter {
       success: true,
       errors: null,
       result: {
-        id: result.id,
+        id,
+        _id: result.id,
         _rev: result.rev,
       },
     }
-
-    /*
-    put returns
-
-    on success
-    {
-    id: "settings"
-    ok: true
-    rev: "1-9bb7a96644a280d92dda8ef556d10300"
-    }
-
-    on error - в reject промиса
-    {
-    error: true
-    message: "_id is required for puts"
-    name: "missing_id"
-    status: 412
-    }
-
-     */
   }
 
   async patch(
@@ -260,7 +172,7 @@ export default class PouchDbAdapter implements DbAdapter {
       result = await this.db.put({
         ...getResult,
         ...partialData,
-      }, meta);
+      }, meta || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -271,6 +183,7 @@ export default class PouchDbAdapter implements DbAdapter {
       success: true,
       errors: null,
       result: {
+        _id: result.id,
         _rev: result.rev,
       },
     }
@@ -296,7 +209,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let result: DeleteSuccess;
 
     try {
-      result = await this.db.remove(getResult, meta);
+      result = await this.db.remove(getResult, meta || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -307,40 +220,10 @@ export default class PouchDbAdapter implements DbAdapter {
       success: true,
       errors: null,
       result: {
-        id: result.id,
+        _id: result.id,
         _rev: result.rev,
       },
     }
-
-    /*
-    $mold.props.backends.default.adapter.db.remove({_id: 'settings', _rev: "1-9bb7a96644a280d92dda8ef556d10300"})
-
-    on success {
-      id: "settings"
-      ok: true
-      rev: "4-5b2d40d2b2902a0926ab21afb9380243"
-    }
-
-    on error
-    {
-    docId: undefined
-    error: true
-    id: undefined
-    message: "missing"
-    name: "not_found"
-    reason: "deleted"
-    status: 404
-    }
-    {
-    docId: "settings"
-    error: true
-    id: "settings"
-    message: "Document update conflict"
-    name: "conflict"
-    status: 409
-    }
-
-     */
   }
 
   async getField(): Promise<void> {
