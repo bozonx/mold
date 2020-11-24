@@ -1,5 +1,5 @@
 import {MoldResponse} from './MoldResponse';
-import {CreateResponse, ItemResponse, ListResponse} from '../frontend/interfaces/MethodsState';
+import {CreateResponse, ItemResponse, ListResponse, MoldDocument} from '../frontend/interfaces/MethodsState';
 
 
 export type RecordChangeHandler = (set: string, action: string, response: MoldResponse) => void;
@@ -27,6 +27,7 @@ export interface DbAdapter {
 
   patch(
     set: string,
+    // TODO: зачем тут id ??? лучше наверное указывать в data
     id: string | number,
     partialData: Record<string, any>,
     meta?: Record<string, any>
@@ -38,7 +39,23 @@ export interface DbAdapter {
     meta?: Record<string, any>
   ): Promise<MoldResponse>;
 
-  batchCreate(set: string, docs: Record<string, any>[]): Promise<MoldResponse>;
+  batchCreate(
+    set: string,
+    docs: Record<string, any>[],
+    meta?: Record<string, any>
+  ): Promise<MoldResponse<CreateResponse[]>>;
+
+  batchPatch(
+    set: string,
+    docs: MoldDocument[],
+    meta?: Record<string, any>
+  ): Promise<MoldResponse>;
+
+  batchDelete(
+    set: string,
+    id: string[],
+    meta?: Record<string, any>
+  ): Promise<MoldResponse>;
 
   getField(): Promise<void>;
   hasField(): Promise<boolean>;

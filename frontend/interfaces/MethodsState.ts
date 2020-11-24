@@ -33,10 +33,12 @@ export interface ItemResponse<T = any> {
   data: T | null;
 }
 
-export interface CreateResponse {
+export interface MoldDocument {
   id: string | number;
   [index: string]: any;
 }
+
+export type CreateResponse = MoldDocument;
 
 export interface InstanceState {
   // string like "backend|set|action|request|instanceNum"

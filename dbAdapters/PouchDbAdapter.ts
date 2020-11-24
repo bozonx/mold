@@ -4,6 +4,8 @@ import {DbAdapter, RecordChangeHandler} from '../interfaces/DbAdapter';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import {CreateResponse, ItemResponse, ListResponse} from '../frontend/interfaces/MethodsState';
 import {makeUniqId} from '../helpers/uniqId';
+import {omitObj} from '../helpers/objects';
+import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 
 
 interface PouchRecord {
@@ -233,8 +235,68 @@ export default class PouchDbAdapter implements DbAdapter {
     }
   }
 
-  batchCreate(set: string, docs: Record<string, any>[]): Promise<MoldResponse> {
-    // TODO: add
+  async batchCreate(
+    set: string,
+    docs: Record<string, any>[],
+    meta?: Record<string, any>
+  ): Promise<MoldResponse<CreateResponse[]>> {
+    const preparedDocs = docs.map((doc) => {
+      const id: string = (typeof doc.id === 'undefined') ? makeUniqId() : doc.id;
+
+      return {
+        _id: set + SET_DELIMITER + id,
+        ...omitObj(doc, id),
+      };
+    });
+    const result: (PutSuccess | ErrorResponse)[] = await this.db.bulkDocs(
+      preparedDocs,
+      meta || {}
+    );
+    const errors: MoldErrorDefinition[] = [];
+    const successResult: CreateResponse[] = [];
+
+    for (let item of result) {
+      if ((item as ErrorResponse).error) {
+        const errorItem = item as ErrorResponse;
+
+        errors.push({
+          code: errorItem.status,
+          message: errorItem.message,
+        });
+      }
+      else {
+        const successItem = item as PutSuccess;
+
+        successResult.push({
+          id: successItem.id.split(set + SET_DELIMITER)[0],
+          _id: successItem.id,
+          _rev: successItem.rev,
+        });
+      }
+    }
+
+    return {
+      status: 200,
+      success: true,
+      errors: (errors.length) ? errors : null,
+      result: (successResult.length) ? successResult : null,
+    }
+  }
+
+  async batchPatch(
+    set: string,
+    docs: {id: string | number, [index: string]: any}[],
+    meta?: Record<string, any>
+  ): Promise<MoldResponse> {
+
+  }
+
+  async batchDelete(
+    set: string,
+    id: string[],
+    meta?: Record<string, any>
+  ): Promise<MoldResponse> {
+
   }
 
   async getField(): Promise<void> {
