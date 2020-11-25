@@ -1,5 +1,6 @@
 import {MoldSeedContext} from '../interfaces/MoldSeedContext';
 import {DbAdapter} from '../interfaces/DbAdapter';
+import {stringifyError} from '../helpers/common';
 
 
 export class SeedContext implements MoldSeedContext {
@@ -22,9 +23,7 @@ export class SeedContext implements MoldSeedContext {
 
       if (result.success) return result;
 
-      throw new Error(result.errors?.map(
-        (item) => `${item.code}: ${item.message}`
-      ).join(', ') || `Unknown error`);
+      throw new Error(stringifyError(result.errors));
     });
   }
 

@@ -5,6 +5,7 @@ import {ActionState,} from '../frontend/interfaces/MethodsState';
 import {DEFAULT_BACKEND} from '../frontend/constants';
 import MoldRequest from '../interfaces/MoldRequest';
 import {omitObj} from './objects';
+import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 
 
 export function makeRequestKey(props: ActionProps): RequestKey {
@@ -69,4 +70,10 @@ export function isPromise(toCheck: any): boolean {
     && typeof toCheck === 'object'
     && typeof toCheck.then === 'function'
     || false;
+}
+
+export function stringifyError(errors?: MoldErrorDefinition[] | null): string {
+  if (!errors) return 'Unknown error';
+
+  return errors.map((item) => `${item.code}: ${item.message}`).join(', ');
 }

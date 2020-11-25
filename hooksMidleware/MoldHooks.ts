@@ -158,9 +158,9 @@ export default class MoldHooks {
     else if (SPECIAL_HOOKS.includes(request.set)) {
       throw new Error(`Unappropriated set name "${request.set}"`);
     }
-    else if (!this.sets.setsBefore[request.set] && !this.sets.setsAfter[request.set]) {
-      throw new Error(`Can't find set "${request.set}"`);
-    }
+    // else if (!this.sets.setsBefore[request.set] && !this.sets.setsAfter[request.set]) {
+    //   throw new Error(`Can't find set "${request.set}"`);
+    // }
   }
 
   private parseError(e: MoldError | Error): MoldErrorDefinition {

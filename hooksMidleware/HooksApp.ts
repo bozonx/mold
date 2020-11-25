@@ -18,7 +18,7 @@ export default class HooksApp {
   /**
    * Make some request which will be processed with its own hooks.
    */
-  request(set: string, request: MoldRequest): Promise<MoldResponse> {
+  request(request: MoldRequest): Promise<MoldResponse> {
     return this.moldHooks.request(request);
   }
 
