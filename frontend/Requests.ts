@@ -7,6 +7,7 @@ import {InstancesStore} from './InstancesStore';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {omitObj, omitUndefined} from '../helpers/objects';
 import {REQUEST_STATUSES} from '../shared/constants';
+import {ActionState} from './interfaces/ActionState';
 
 
 export default class Requests {
@@ -62,7 +63,9 @@ export default class Requests {
 
     if (!actionProps) throw new Error(`No props of "${instanceId}"`);
 
-    if (this.mold.isPending(instanceId)) {
+    const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
+
+    if (state && state.pending) {
       if (actionProps.isReading) {
         // return a promise which will be resolved after current request is finished
         return this.mold.waitRequestFinished(instanceId);

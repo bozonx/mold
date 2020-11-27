@@ -58,7 +58,7 @@ export default class Mold {
   }
 
   /**
-   * It receives as instanceId and returns state of request.
+   * It receives an instanceId and returns state of request.
    */
   getState(instanceId: string): ActionState | undefined {
     const {requestKey} = splitInstanceId(instanceId);
