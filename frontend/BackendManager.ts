@@ -18,7 +18,7 @@ export default class BackendManager {
       const backend: BackendClient = this.mold.props.backends![backendName];
 
       if (backend.$init) {
-        backend.$init(this.mold);
+        backend.$init(this.mold, backendName);
       }
     }
   }

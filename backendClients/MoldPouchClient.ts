@@ -9,6 +9,7 @@ import MoldHooks from '../hooksMidleware/MoldHooks';
 import PouchDbAdapter from '../dbAdapters/PouchDbAdapter';
 import {callAdapterRequestAction} from '../helpers/backendHelpers';
 import {MoldSchema} from '../interfaces/MoldSchema';
+import {DbAdapterEventType} from '../interfaces/DbAdapter';
 
 
 interface MoldPouchClientProps {
@@ -27,6 +28,7 @@ export default class MoldPouchClient implements BackendClient {
   readonly adapter: PouchDbAdapter;
 
   private mold!: Mold;
+  private backendName!: string;
   private readonly hooks: MoldHooks;
 
 
@@ -42,8 +44,9 @@ export default class MoldPouchClient implements BackendClient {
 
   }
 
-  $init(mold: Mold) {
+  $init(mold: Mold, backendName: string) {
     this.mold = mold;
+    this.backendName = backendName;
   }
 
   destroy() {
@@ -68,8 +71,7 @@ export default class MoldPouchClient implements BackendClient {
   }
 
 
-  private handleRecordChange = (set: string, action: string, response: MoldResponse) => {
-    // TODO: выполнять mold.incomePush
-    console.log(5555555555, set, action, response);
+  private handleRecordChange = (set: string, id: string, type: DbAdapterEventType) => {
+    this.mold.incomePush(this.backendName, [set, id, type]);
   }
 }

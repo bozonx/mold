@@ -66,7 +66,7 @@ interface PouchChangeResult {
   changes: {rev: string}[];
   deleted?: boolean;
   seq: number;
-  doc: Record<string, any>;
+  //doc: Record<string, any>;
 }
 
 const SET_DELIMITER = '/';
@@ -83,12 +83,12 @@ export default class PouchDbAdapter implements DbAdapter {
     this.pouchDb = pouchDb;
     this.pouchEventEmitter = this.pouchDb.changes({
       live: true,
-      include_docs: true,
       since: 'now',
+      //include_docs: true,
     });
 
     this.pouchDb.on('created', () => {
-
+      // TODO: ожидать создания базы ??? или это выше нужно сделать ???
     })
 
     this.pouchEventEmitter.on('change', (change: PouchChangeResult) => {
@@ -109,13 +109,14 @@ export default class PouchDbAdapter implements DbAdapter {
       this.events.emit(DB_ADAPTER_EVENTS.change, set, id, eventType);
     });
 
-    this.pouchEventEmitter.on('complete', (change: PouchChangeResult) => {
-      console.log(66666, change)
-    });
+    // this.pouchEventEmitter.on('complete', (change: PouchChangeResult) => {
+    //   console.log(66666, change)
+    // });
 
     this.pouchEventEmitter.on('error', (error: string) => {
       // This event is fired when the changes feed is stopped due to an unrecoverable failure.
       // TODO: what to do on error ????
+      // TODO: это просто внутренние ошибки, можно вывести в консоль
 
       console.log(88888888, error)
     });

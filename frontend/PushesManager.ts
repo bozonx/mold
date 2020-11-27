@@ -18,11 +18,13 @@ export default class PushesManager {
 
 
   incomePush(backend: string, message: PushIncomeMessage) {
-    const validMessages: PushMessage[] = this.parseMessage(message);
+    console.log(5555555555, backend, message);
 
-    for (let item of validMessages) {
-      this.handleMessage(item);
-    }
+    // const validMessages: PushMessage[] = this.parseMessage(message);
+    //
+    // for (let item of validMessages) {
+    //   this.handleMessage(item);
+    // }
   }
 
 
