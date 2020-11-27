@@ -3,7 +3,7 @@ import PouchDB from 'pouchdb';
 import {BackendClient} from '../interfaces/BackendClient';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import Mold from '../frontend/Mold';
-import MoldRequest from '../interfaces/MoldRequest';
+import {MoldRequest} from '../interfaces/MoldRequest';
 import {SetsDefinition} from '../hooksMidleware/interfaces/MoldHook';
 import MoldHooks from '../hooksMidleware/MoldHooks';
 import PouchDbAdapter from '../dbAdapters/PouchDbAdapter';

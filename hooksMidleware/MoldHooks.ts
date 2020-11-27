@@ -1,7 +1,7 @@
 import {SPECIAL_HOOKS, SpecialSet} from './interfaces/SpecialSet';
 import {GlobalContext, HookContext} from './interfaces/HookContext';
 import {MoldResponse} from '../interfaces/MoldResponse';
-import MoldRequest from '../interfaces/MoldRequest';
+import {MoldRequest} from '../interfaces/MoldRequest';
 import {MoldError} from './MoldError';
 import {cloneDeepObject} from '../helpers/objects';
 import HooksApp from './HooksApp';

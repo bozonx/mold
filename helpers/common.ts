@@ -3,7 +3,7 @@ import {LOG_LEVELS, LogLevel} from '../interfaces/Logger';
 import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestKey';
 import {ActionState,} from '../frontend/interfaces/ActionState';
 import {DEFAULT_BACKEND} from '../frontend/constants';
-import MoldRequest from '../interfaces/MoldRequest';
+import {MoldRequest} from '../interfaces/MoldRequest';
 import {omitObj} from './objects';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 

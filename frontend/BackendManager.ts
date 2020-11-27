@@ -1,6 +1,6 @@
 import Mold from './Mold';
 import {BackendClient} from '../interfaces/BackendClient';
-import MoldRequest from '../interfaces/MoldRequest';
+import {MoldRequest} from '../interfaces/MoldRequest';
 import {MoldResponse} from '../interfaces/MoldResponse';
 
 

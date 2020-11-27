@@ -1,7 +1,7 @@
 import {JsonTypes} from './Types';
 
 
-export default interface MoldRequest {
+export interface MoldRequest {
   set: string;
   // find, get, create, patch, delete or some custom action
   action: string;

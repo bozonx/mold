@@ -1,4 +1,4 @@
-import MoldRequest from './MoldRequest';
+import {MoldRequest} from './MoldRequest';
 import {MoldResponse} from './MoldResponse';
 import Mold from '../frontend/Mold';
 

@@ -1,4 +1,4 @@
-import MoldRequest from '../../interfaces/MoldRequest';
+import {MoldRequest} from '../../interfaces/MoldRequest';
 
 
 // This is Mold's action props

@@ -1,4 +1,4 @@
-import MoldRequest from '../interfaces/MoldRequest';
+import {MoldRequest} from '../interfaces/MoldRequest';
 import MoldHooks from './MoldHooks';
 import {MoldResponse} from '../interfaces/MoldResponse';
 
