@@ -3,7 +3,6 @@ import {GlobalContext, HookContext} from './interfaces/HookContext';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import MoldRequest from '../interfaces/MoldRequest';
 import {MoldError} from './MoldError';
-import {REQUEST_STATUSES} from '../frontend/constants';
 import {cloneDeepObject} from '../helpers/objects';
 import HooksApp from './HooksApp';
 import {SetsDefinition} from './interfaces/MoldHook';
@@ -11,6 +10,7 @@ import {HookType} from './interfaces/HookType';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 import {Sets} from './interfaces/Sets';
 import {parseHooks} from './parseHooks';
+import {REQUEST_STATUSES} from './constants';
 
 
 // TODO: better to use immutable for context, request and response

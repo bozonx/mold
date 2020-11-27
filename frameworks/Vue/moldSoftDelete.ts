@@ -1,12 +1,13 @@
 import {SetupContext} from '@vue/composition-api';
 import {HighLevelProps} from '../../frontend/interfaces/MethodsProps';
-import {InstanceActionState} from '../../frontend/interfaces/MethodsState';
 import {saveComposition} from './composition/saveComposition';
+import {InstanceActionState} from '../../frontend/interfaces/MethodsState';
 
 
 export default function moldSoftDelete<T>(
   context: SetupContext,
-  actionProps: HighLevelProps
+  actionProps: HighLevelProps,
+  deletedPropName: string = 'deleted'
 ): InstanceActionState<T> & {delete: () => void} {
   const {mold, instanceId, state} = saveComposition<T>(
     context,
@@ -14,7 +15,7 @@ export default function moldSoftDelete<T>(
     actionProps,
     {
       delete: () => {
-        mold.start(instanceId, {[mold.props.config.deletedPropName]: true});
+        mold.start(instanceId, {[deletedPropName]: true});
       }
     }
   );

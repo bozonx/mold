@@ -3,10 +3,10 @@ import {ActionProps} from './interfaces/MethodsProps';
 import Mold from './Mold';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import {makeRequestKey, splitInstanceId} from '../helpers/common';
-import {REQUEST_STATUSES} from './constants';
 import {InstancesStore} from './InstancesStore';
 import MoldRequest from '../interfaces/MoldRequest';
 import {omitObj, omitUndefined} from '../helpers/objects';
+import {REQUEST_STATUSES} from '../hooksMidleware/constants';
 
 
 export default class Requests {

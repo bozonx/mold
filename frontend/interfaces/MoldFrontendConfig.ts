@@ -1,6 +1,6 @@
 export interface MoldFrontendConfig {
   //defaultPerPage: number;
-  deletedPropName: string;
+  //deletedPropName: string;
 
   requestTimeoutSec: number;
 }

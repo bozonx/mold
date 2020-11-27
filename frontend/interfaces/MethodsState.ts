@@ -58,4 +58,4 @@ export interface InstanceState {
 // export type InstanceListState<T = any> = ListState<T> & InstanceState;
 // export type InstanceItemState<T = any> = ItemState<T> & InstanceState;
 
-//export type InstanceActionState<T = any> = ActionState<T> & InstanceState;
+export type InstanceActionState<T = any> = ActionState<T> & InstanceState;
