@@ -2,15 +2,7 @@ import Mold from './Mold';
 import {PushMessage} from '../interfaces/PushMessage';
 
 
-export type PushIncomeMessage = string | PushMessage | PushMessage[]
-
-
-
-//   // If set and action doesn't set it means find items with specified id in
-//   // all the requests all the actions of this set. And do new requests on of those
-//   // which contain specified item id.
-//   // If action and itemId are set it means find only at specified action.
-//   id?: number | string;
+export type PushIncomeMessage = string | PushMessage | PushMessage[];
 
 
 export default class PushesManager {
@@ -26,21 +18,20 @@ export default class PushesManager {
 
 
   incomePush(backend: string, message: PushIncomeMessage) {
-    console.log(5555555555, backend, message);
+    const validMessages: PushMessage[] = this.parseMessage(message);
 
-    // const validMessages: PushMessage[] = this.parseMessage(message);
-    //
-    // for (let item of validMessages) {
-    //   this.handleMessage(item);
-    // }
+    for (let item of validMessages) {
+      this.handleMessage(backend, item);
+    }
   }
 
 
-  private handleMessage(message: PushMessage) {
-    // TODO: если указан action - то его полностью перезапрашиваем, все его реквесты
-    // TODO: если не указан action, а указан itemId
-    //       - то ищем в хранилище этого set во всех action и request элементы с указанным itemId
-    //       - если нашли то перезапрашиваем запрос request
+  private handleMessage(backend: string, message: PushMessage) {
+    // TODO: наверное стоит сделать мини дебаунс на текущий тик
+
+    console.log(5555555555, backend, message);
+
+
   }
 
   private parseMessage(message: PushIncomeMessage): PushMessage[] {
@@ -58,17 +49,21 @@ export default class PushesManager {
 
       this.parseMessage(result);
     }
-    else if (Array.isArray(message)) {
+    else if (Array.isArray(message[0])) {
       for (let item of message) {
-        this.validateMessage(item);
+        const pushMsg = item as PushMessage;
 
-        result.push(item);
+        this.validateMessage(pushMsg);
+
+        result.push(pushMsg);
       }
     }
-    else if (typeof message === 'object') {
-      this.validateMessage(message);
+    else if (typeof message[0] === 'string') {
+      const pushMsg = message as PushMessage;
 
-      result.push(message);
+      this.validateMessage(pushMsg);
+
+      result.push(pushMsg);
     }
     else {
       throw new Error(`Can't parse push message: "${JSON.stringify(message)}"`)
@@ -78,8 +73,20 @@ export default class PushesManager {
   }
 
   private validateMessage(message: PushMessage) {
-    // TODO: check it and rise an error
-    // TODO: set обязателен
+    if (message.length !== 3) {
+      throw new Error(`Incorrect push message ${JSON.stringify(message)}`);
+    }
+    else if (typeof message[0] !== 'string') {
+      throw new Error(`Incorrect the "set" param push message ${JSON.stringify(message)}`);
+    }
+    else if (typeof message[1] !== 'string' && typeof message[1] !== 'number') {
+      throw new Error(`Incorrect the "id" param of push message ${JSON.stringify(message)}`);
+    }
+    else if (typeof message[2] !== 'number') {
+      throw new Error(
+        `Incorrect then "type" param of push message ${JSON.stringify(message)}`
+      );
+    }
   }
 
 }
