@@ -1,4 +1,4 @@
-import {ActionProps} from './interfaces/MethodsProps';
+import {ActionProps} from './interfaces/ActionProps';
 import {REQUEST_KEY_SEPARATOR, RequestKey} from './interfaces/RequestKey';
 import {requestKeyToString, splitInstanceId} from '../helpers/common';
 import {isEmptyObject} from '../helpers/objects';

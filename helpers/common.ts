@@ -1,4 +1,4 @@
-import {ActionProps} from '../frontend/interfaces/MethodsProps';
+import {ActionProps} from '../frontend/interfaces/ActionProps';
 import {LOG_LEVELS, LogLevel} from '../interfaces/Logger';
 import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestKey';
 import {ActionState,} from '../frontend/interfaces/MethodsState';

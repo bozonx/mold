@@ -1,4 +1,4 @@
-import {ActionProps} from './interfaces/MethodsProps';
+import {ActionProps} from './interfaces/ActionProps';
 import {ActionState} from './interfaces/MethodsState';
 import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';

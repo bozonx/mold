@@ -1,4 +1,4 @@
-import {ActionProps} from './interfaces/MethodsProps';
+import {ActionProps} from './interfaces/ActionProps';
 import Mold from './Mold';
 import BackendClient from '../interfaces/BackendClient';
 import MoldRequest from '../interfaces/MoldRequest';

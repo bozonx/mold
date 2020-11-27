@@ -1,5 +1,5 @@
 import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
-import {ActionProps} from './interfaces/MethodsProps';
+import {ActionProps} from './interfaces/ActionProps';
 import Mold from './Mold';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import {makeRequestKey, splitInstanceId} from '../helpers/common';
