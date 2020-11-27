@@ -28,7 +28,7 @@ export function populate(
     });
 
     if (!relatedResult.success) {
-      throw new Error(`Populate: ${relatedSet}, ${relatedIdField}. stringifyError(relatedResult.errors)`);
+      throw new Error(`Populate: ${relatedSet}, ${relatedIdField}. stringifyMoldError(relatedResult.errors)`);
     }
 
     return relatedResult.result?.data || undefined;

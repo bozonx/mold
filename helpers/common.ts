@@ -37,7 +37,7 @@ export function splitInstanceId(
   return {requestKey: splat as RequestKey, instanceNum};
 }
 
-export function makeInitialState(): ActionState {
+export function makeInitialActionState(): ActionState {
   return {
     pending: false,
     finishedOnce: false,
@@ -53,7 +53,7 @@ export function makeRequest(props: ActionProps): MoldRequest {
     props,
     'backend',
     'isGetting'
-  ) as MoldRequest;
+  ) as Omit<Omit<ActionProps, 'backend'>, 'isGetting'>;
 }
 
 /**
@@ -72,7 +72,7 @@ export function isPromise(toCheck: any): boolean {
     || false;
 }
 
-export function stringifyError(errors?: MoldErrorDefinition[] | null): string {
+export function stringifyMoldError(errors?: MoldErrorDefinition[] | null): string {
   if (!errors) return 'Unknown error';
 
   return errors.map((item) => `${item.code}: ${item.message}`).join(', ');

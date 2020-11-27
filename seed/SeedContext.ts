@@ -1,6 +1,6 @@
 import {MoldSeedContext} from '../interfaces/MoldSeedContext';
 import {DbAdapter} from '../interfaces/DbAdapter';
-import {stringifyError} from '../helpers/common';
+import {stringifyMoldError} from '../helpers/common';
 
 
 export class SeedContext implements MoldSeedContext {
@@ -23,7 +23,7 @@ export class SeedContext implements MoldSeedContext {
 
       if (result.success) return result;
 
-      throw new Error(stringifyError(result.errors));
+      throw new Error(stringifyMoldError(result.errors));
     });
   }
 

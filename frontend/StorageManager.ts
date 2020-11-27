@@ -2,7 +2,7 @@ import {ActionState} from './interfaces/ActionState';
 import {RequestKey} from './interfaces/RequestKey';
 import Mold from './Mold';
 import StorageAdapter from './interfaces/StorageAdapter';
-import {makeInitialState, requestKeyToString} from '../helpers/common';
+import {makeInitialActionState, requestKeyToString} from '../helpers/common';
 import IndexedEventEmitter from '../helpers/IndexedEventEmitter';
 
 
@@ -43,7 +43,7 @@ export default class StorageManager {
     // do nothing if there is previously defined state
     if (this.store.hasState(id)) return;
 
-    this.store.put(id, makeInitialState());
+    this.store.put(id, makeInitialActionState());
   }
 
   patch(requestKey: RequestKey, partialState: Partial<ActionState>) {
