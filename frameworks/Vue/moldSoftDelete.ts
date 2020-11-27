@@ -1,7 +1,7 @@
 import {SetupContext} from '@vue/composition-api';
 
 import {saveComposition} from './composition/saveComposition';
-import {InstanceActionState} from '../../frontend/interfaces/MethodsState';
+import {InstanceActionState} from '../../frontend/interfaces/ActionState';
 import {CompositionProps} from '../../frontend/interfaces/CompositionProps';
 
 

@@ -2,7 +2,7 @@ import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
 
 import {omitObj} from '../../../helpers/objects';
 import Mold from '../../../frontend/Mold';
-import {ActionState, InstanceState} from '../../../frontend/interfaces/MethodsState';
+import {ActionState, InstanceState} from '../../../frontend/interfaces/ActionState';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
 import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 

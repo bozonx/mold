@@ -1,4 +1,4 @@
-import {ActionState} from './MethodsState';
+import {ActionState} from './ActionState';
 import Mold from '../Mold';
 
 

@@ -1,4 +1,4 @@
-import {ActionState} from './interfaces/MethodsState';
+import {ActionState} from './interfaces/ActionState';
 import {RequestKey} from './interfaces/RequestKey';
 import Mold from './Mold';
 import StorageAdapter from './interfaces/StorageAdapter';

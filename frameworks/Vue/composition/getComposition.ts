@@ -1,4 +1,4 @@
-import {ActionState, ItemResponse} from '../../../frontend/interfaces/MethodsState';
+import {ActionState, ItemResponse} from '../../../frontend/interfaces/ActionState';
 import {SetupContext} from '@vue/composition-api';
 import {omitObj} from '../../../helpers/objects';
 import {RetrieveCompositionProps, retrieveComposition, RetrieveResult} from './retrieveComposition';

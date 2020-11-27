@@ -2,7 +2,7 @@ import PouchDB from 'pouchdb';
 
 import {DbAdapter, RecordChangeHandler} from '../interfaces/DbAdapter';
 import {MoldResponse} from '../interfaces/MoldResponse';
-import {CreateResponse, ItemResponse, ListResponse} from '../frontend/interfaces/MethodsState';
+import {CreateResponse, ItemResponse, ListResponse} from '../frontend/interfaces/ActionState';
 import {makeUniqId} from '../helpers/uniqId';
 import {omitObj} from '../helpers/objects';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';

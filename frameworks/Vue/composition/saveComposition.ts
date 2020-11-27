@@ -1,5 +1,5 @@
 import Mold from '../../../frontend/Mold';
-import {ActionState, InstanceActionState} from '../../../frontend/interfaces/MethodsState';
+import {ActionState, InstanceActionState} from '../../../frontend/interfaces/ActionState';
 import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
 import {omitUndefined} from '../../../helpers/objects';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';

@@ -1,7 +1,7 @@
 import {SetItem} from '../hooksMidleware/interfaces/MoldHook';
 import {HookContext} from '../hooksMidleware/interfaces/HookContext';
 import {MoldResponse} from '../interfaces/MoldResponse';
-import {ItemResponse, ListResponse} from '../frontend/interfaces/MethodsState';
+import {ItemResponse, ListResponse} from '../frontend/interfaces/ActionState';
 
 
 /**

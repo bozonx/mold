@@ -37,17 +37,4 @@ export interface InstanceState {
   __instanceId: string;
 }
 
-// export interface ListState<T = any> extends RequestState, FindResponse<T> {
-// }
-//
-// export interface ItemState<T = any> extends RequestState, GetResponse<T> {
-//   // creating or updating
-//   saving: boolean;
-//   // soft or hard deleting
-//   deleting: boolean;
-// }
-
-// export type InstanceListState<T = any> = ListState<T> & InstanceState;
-// export type InstanceItemState<T = any> = ItemState<T> & InstanceState;
-
 export type InstanceActionState<T = any> = ActionState<T> & InstanceState;

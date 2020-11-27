@@ -1,5 +1,5 @@
 import {ActionProps} from './interfaces/ActionProps';
-import {ActionState} from './interfaces/MethodsState';
+import {ActionState} from './interfaces/ActionState';
 import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
 import {splitInstanceId} from '../helpers/common';

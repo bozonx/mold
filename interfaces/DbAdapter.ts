@@ -1,5 +1,5 @@
 import {MoldResponse} from './MoldResponse';
-import {CreateResponse, ItemResponse, ListResponse, MoldDocument} from '../frontend/interfaces/MethodsState';
+import {CreateResponse, ItemResponse, ListResponse, MoldDocument} from '../frontend/interfaces/ActionState';
 
 
 export type RecordChangeHandler = (set: string, action: string, response: MoldResponse) => void;
