@@ -1,4 +1,4 @@
-import PushServer from '../interfaces/PushServer';
+import {PushServer} from '../interfaces/PushServer';
 
 
 export default class MoldWsPushServer implements PushServer {

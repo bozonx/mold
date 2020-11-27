@@ -1,3 +1,3 @@
-export default interface PushClient {
+export interface PushClient {
   // TODO: add
 }

@@ -1,4 +1,4 @@
-import PushClient from '../interfaces/PushClient';
+import {PushClient} from '../interfaces/PushClient';
 
 
 export default class MoldPouchPushClient implements PushClient {

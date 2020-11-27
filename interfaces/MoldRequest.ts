@@ -5,7 +5,6 @@ export interface MoldRequest {
   set: string;
   // find, get, create, patch, delete or some custom action
   action: string;
-  // TODO: может пернести в query ???
   // for get, patch, delete.
   id?: string | number;
   // data like in search part of url or some specific to backend.

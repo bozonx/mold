@@ -1,4 +1,4 @@
 
-export default interface PushServer {
+export interface PushServer {
   // TODO: add
 }

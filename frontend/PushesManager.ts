@@ -1,5 +1,5 @@
 import Mold from './Mold';
-import PushMessage from '../interfaces/PushMessage';
+import {PushMessage} from '../interfaces/PushMessage';
 
 
 export type PushIncomeMessage = string | PushMessage | PushMessage[]

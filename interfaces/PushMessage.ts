@@ -1,4 +1,4 @@
-export default interface PushMessage {
+export interface PushMessage {
   set: string;
   // if set and itemId doesn't set it means do all the requests of specified action
   action?: string;
