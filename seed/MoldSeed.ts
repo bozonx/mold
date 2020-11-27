@@ -1,5 +1,5 @@
 import {MoldSeedContext} from '../interfaces/MoldSeedContext';
-import {Logger, LogLevel} from '../frontend/interfaces/Logger';
+import {Logger, LogLevel} from '../shared/intefaces/Logger';
 import {DbAdapter} from '../interfaces/DbAdapter';
 import ConsoleLogger from '../helpers/ConsoleLogger';
 import {SeedContext} from './SeedContext';

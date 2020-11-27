@@ -10,7 +10,7 @@ import {HookType} from './interfaces/HookType';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 import {Sets} from './interfaces/Sets';
 import {parseHooks} from './parseHooks';
-import {REQUEST_STATUSES} from './constants';
+import {REQUEST_STATUSES} from '../shared/constants';
 
 
 // TODO: better to use immutable for context, request and response

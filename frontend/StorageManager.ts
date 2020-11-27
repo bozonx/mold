@@ -77,9 +77,11 @@ export default class StorageManager {
 
 
   private handleChange = (id: string) => {
-    if (!this.store.hasState(id)) return;
+    const state = this.store.getState(id);
 
-    this.events.emit(id, this.store.getState(id));
+    if (!state) return;
+
+    this.events.emit(id, state);
   }
 
 }

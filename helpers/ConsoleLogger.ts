@@ -1,4 +1,4 @@
-import {Logger, LogLevel} from '../frontend/interfaces/Logger';
+import {Logger, LogLevel} from '../shared/intefaces/Logger';
 import {calcAllowedLogLevels} from './common';
 
 

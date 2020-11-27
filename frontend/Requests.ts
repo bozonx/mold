@@ -6,7 +6,7 @@ import {makeRequestKey, splitInstanceId} from '../helpers/common';
 import {InstancesStore} from './InstancesStore';
 import MoldRequest from '../interfaces/MoldRequest';
 import {omitObj, omitUndefined} from '../helpers/objects';
-import {REQUEST_STATUSES} from '../hooksMidleware/constants';
+import {REQUEST_STATUSES} from '../shared/constants';
 
 
 export default class Requests {

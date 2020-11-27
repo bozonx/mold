@@ -1,5 +1,5 @@
 import {ActionProps} from '../frontend/interfaces/MethodsProps';
-import {LOG_LEVELS, LogLevel} from '../frontend/interfaces/Logger';
+import {LOG_LEVELS, LogLevel} from '../shared/intefaces/Logger';
 import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestKey';
 import {ActionState,} from '../frontend/interfaces/MethodsState';
 import {DEFAULT_BACKEND} from '../frontend/constants';
