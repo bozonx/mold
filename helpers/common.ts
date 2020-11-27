@@ -13,11 +13,10 @@ export function makeRequestKey(props: ActionProps): RequestKey {
     props.backend || DEFAULT_BACKEND,
     props.set,
     props.action,
-    // TODO: отсортировать query и meta
+    // TODO: отсортировать query
     JSON.stringify({
       id: props.id,
       query: props.query,
-      meta: props.meta,
     })
   ];
 }

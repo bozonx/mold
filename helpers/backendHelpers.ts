@@ -15,8 +15,7 @@ export function callAdapterRequestAction(
 
       return adapter.find(
         request.set,
-        request.query,
-        request.meta,
+        request.query
       );
     case 'get':
       if (typeof request.id === 'undefined') throw new Error(
@@ -26,7 +25,7 @@ export function callAdapterRequestAction(
       return adapter.get(
         request.set,
         request.id,
-        request.meta,
+        request.query,
       );
     case 'create':
       if (!request.data) throw new Error(`No data in request ${JSON.stringify(request)}`);
@@ -34,7 +33,7 @@ export function callAdapterRequestAction(
       return adapter.create(
         request.set,
         request.data,
-        request.meta,
+        request.query,
       );
     case 'patch':
       if (typeof request.id === 'undefined') throw new Error(
@@ -46,7 +45,7 @@ export function callAdapterRequestAction(
         request.set,
         request.id,
         request.data,
-        request.meta,
+        request.query,
       );
     case 'delete':
       if (typeof request.id === 'undefined') throw new Error(
@@ -56,7 +55,7 @@ export function callAdapterRequestAction(
       return adapter.delete(
         request.set,
         request.id,
-        request.meta,
+        request.query,
       );
     default:
       throw new Error(

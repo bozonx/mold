@@ -65,8 +65,7 @@ export default class PouchDbAdapter implements DbAdapter {
 
   async find(
     set: string,
-    query: Record<string, any>,
-    meta?: Record<string, any>
+    query: Record<string, any>
   ): Promise<MoldResponse<ListResponse>> {
     let result: FindSuccess;
 
@@ -80,7 +79,7 @@ export default class PouchDbAdapter implements DbAdapter {
         // TODO: расчитать соглсно perPage и pageNum
         //limit: 1,
         //skip: 1,
-        ...meta,
+        ...query,
       });
     }
     catch (e) {
@@ -107,12 +106,12 @@ export default class PouchDbAdapter implements DbAdapter {
   async get(
     set: string,
     id: string | number,
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse<ItemResponse>> {
     let result: GetSuccess;
 
     try {
-      result = await this.db.get(set + SET_DELIMITER + id, meta || {});
+      result = await this.db.get(set + SET_DELIMITER + id, query || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -131,7 +130,7 @@ export default class PouchDbAdapter implements DbAdapter {
   async create(
     set: string,
     data: Record<string, any>,
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse<CreateResponse>> {
     let result: PutSuccess;
     const id: string = makeUniqId();
@@ -141,7 +140,7 @@ export default class PouchDbAdapter implements DbAdapter {
         _id: set + SET_DELIMITER + id,
         id,
         ...data,
-      }, meta || {});
+      }, query || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -163,7 +162,7 @@ export default class PouchDbAdapter implements DbAdapter {
     set: string,
     id: string | number,
     partialData: Record<string, any>,
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse> {
     let getResult: GetSuccess;
 
@@ -182,7 +181,7 @@ export default class PouchDbAdapter implements DbAdapter {
       result = await this.db.put({
         ...getResult,
         ...partialData,
-      }, meta || {});
+      }, query || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -203,7 +202,7 @@ export default class PouchDbAdapter implements DbAdapter {
   async delete(
     set: string,
     id: string | number,
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse> {
     let getResult: GetSuccess;
 
@@ -219,7 +218,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let result: DeleteSuccess;
 
     try {
-      result = await this.db.remove(getResult, meta || {});
+      result = await this.db.remove(getResult, query || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -239,7 +238,7 @@ export default class PouchDbAdapter implements DbAdapter {
   async batchCreate(
     set: string,
     docs: Record<string, any>[],
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse<CreateResponse[]>> {
     const preparedDocs = docs.map((doc) => {
       const id: string = (typeof doc.id === 'undefined') ? makeUniqId() : doc.id;
@@ -251,7 +250,7 @@ export default class PouchDbAdapter implements DbAdapter {
     });
     const result: (PutSuccess | ErrorResponse)[] = await this.db.bulkDocs(
       preparedDocs,
-      meta || {}
+      query || {}
     );
     const errors: MoldErrorDefinition[] = [];
     const successResult: CreateResponse[] = [];
@@ -288,7 +287,7 @@ export default class PouchDbAdapter implements DbAdapter {
   async batchPatch(
     set: string,
     docs: {id: string | number, [index: string]: any}[],
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse> {
 
     // TODO: see docs
@@ -298,7 +297,7 @@ export default class PouchDbAdapter implements DbAdapter {
   async batchDelete(
     set: string,
     ids: (string | number)[],
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse> {
     let findResult: FindSuccess;
 

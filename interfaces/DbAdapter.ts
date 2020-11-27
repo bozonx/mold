@@ -10,20 +10,19 @@ export interface DbAdapter {
 
   find(
     set: string,
-    query: Record<string, any>,
-    meta?: Record<string, any>
+    query: Record<string, any>
   ): Promise<MoldResponse<ListResponse>>;
 
   get(
     set: string,
     id: string | number,
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse<ItemResponse>>;
 
   create(
     set: string,
     data: Record<string, any>,
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse<CreateResponse>>;
 
   patch(
@@ -31,31 +30,31 @@ export interface DbAdapter {
     // TODO: зачем тут id ??? лучше наверное указывать в data
     id: string | number,
     partialData: Record<string, any>,
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse>;
 
   delete(
     set: string,
     id: string | number,
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse>;
 
   batchCreate(
     set: string,
     docs: Record<string, any>[],
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse<CreateResponse[]>>;
 
   batchPatch(
     set: string,
     docs: MoldDocument[],
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse>;
 
   batchDelete(
     set: string,
     ids: (string | number)[],
-    meta?: Record<string, any>
+    query?: Record<string, any>
   ): Promise<MoldResponse>;
 
   getField(): Promise<void>;

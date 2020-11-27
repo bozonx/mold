@@ -15,6 +15,6 @@ export type RequestKey = [
   string,
   // action: find, get, getFirst, actionGet.
   string,
-  // request hash. This is a hash of serialized id, query and meta
+  // request hash. This is a hash of serialized id and query
   string,
 ];
