@@ -6,7 +6,7 @@ import {splitInstanceId} from '../helpers/common';
 import PushesManager, {PushIncomeMessage} from './PushesManager';
 import MoldProps from './interfaces/MoldProps';
 import Requests from './Requests';
-import {Logger, LogLevel} from '../shared/intefaces/Logger';
+import {Logger, LogLevel} from '../interfaces/Logger';
 import {defaultConfig} from './defaultConfig';
 import {isEmptyObject} from '../helpers/objects';
 import ConsoleLogger from '../helpers/ConsoleLogger';

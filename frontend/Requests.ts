@@ -118,9 +118,9 @@ export default class Requests {
       this.mold.storageManager.patch(requestKey, {
         pending: false,
         finishedOnce: true,
-        responseSuccess: false,
-        responseStatus: REQUEST_STATUSES.fatalError,
-        responseErrors: [{code: REQUEST_STATUSES.fatalError, message: "Fatal error"}],
+        success: false,
+        status: REQUEST_STATUSES.fatalError,
+        errors: [{code: REQUEST_STATUSES.fatalError, message: "Fatal error"}],
         // it doesn't clear previous result
       });
       // log error because it isn't a network or backend's error
@@ -132,9 +132,9 @@ export default class Requests {
     this.mold.storageManager.patch(requestKey, {
       pending: false,
       finishedOnce: true,
-      responseSuccess: response.success,
-      responseStatus: response.status,
-      responseErrors: response.errors,
+      success: response.success,
+      status: response.status,
+      errors: response.errors,
       result: response.result,
     });
   }

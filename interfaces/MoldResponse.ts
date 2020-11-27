@@ -9,6 +9,6 @@ export interface MoldResponse<T = any> {
   success: boolean;
   // some errors which the backend sent instead of result.
   errors: MoldErrorDefinition[] | null;
-  // null if no body or in case when error occurred
+  // null if no body or in case when error occurred. Null while loading or saving
   result: T | null;
 }

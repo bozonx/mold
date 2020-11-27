@@ -1,5 +1,5 @@
 import {ActionProps} from '../frontend/interfaces/MethodsProps';
-import {LOG_LEVELS, LogLevel} from '../shared/intefaces/Logger';
+import {LOG_LEVELS, LogLevel} from '../interfaces/Logger';
 import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestKey';
 import {ActionState,} from '../frontend/interfaces/MethodsState';
 import {DEFAULT_BACKEND} from '../frontend/constants';
@@ -41,9 +41,9 @@ export function makeInitialState(): ActionState {
   return {
     pending: false,
     finishedOnce: false,
-    responseSuccess: null,
-    responseStatus: null,
-    responseErrors: null,
+    success: null,
+    status: null,
+    errors: null,
     result: null,
   };
 }

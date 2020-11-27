@@ -1,4 +1,4 @@
-import {Logger, LogLevel} from '../../shared/intefaces/Logger';
+import {Logger, LogLevel} from '../../interfaces/Logger';
 import {MoldFrontendConfig} from './MoldFrontendConfig';
 import BackendClient from '../../interfaces/BackendClient';
 import StorageAdapter from './StorageAdapter';

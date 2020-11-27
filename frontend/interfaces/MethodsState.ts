@@ -1,20 +1,12 @@
-import {JsonData} from '../../interfaces/Types';
-import {MoldError} from '../../hooksMidleware/MoldError';
-import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
+import {MoldResponse} from '../../interfaces/MoldResponse';
 
 
-export interface ActionState<T = any> {
+export interface ActionState<T = any> extends MoldResponse<T> {
   // it is loading or saving first time or further at the moment
   pending: boolean;
   // loaded or saved at least once or it is in a cache
   finishedOnce: boolean;
-  // was the last response success or not
-  responseSuccess: boolean | null;
-  // last response status. Null while loading or saving
-  responseStatus: number | null;
-  // last response backend errors
-  responseErrors: MoldErrorDefinition[] | null;
-  result: T | null;
+  // success, status, errors, result - for last response
 }
 
 // TODO: review
