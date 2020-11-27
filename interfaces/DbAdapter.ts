@@ -3,7 +3,29 @@ import {CreateResponse, ItemResponse, ListResponse} from './ReponseStructure';
 import {MoldDocument} from './MoldDocument';
 
 
-export type RecordChangeHandler = (set: string, action: string, response: MoldResponse) => void;
+/**
+ * * created - means the item is totally new and an id was generated.
+ * * update - it is put or patch. Id hasn't been changed.
+ * * deleted - item has been deleted.
+ */
+export type DbAdapterEventType = 'created' | 'updated' | 'deleted';
+export type RecordChangeHandler = (
+  set: string,
+  id: string,
+  type: DbAdapterEventType,
+) => void;
+
+export const DB_ADAPTER_EVENTS = {
+  change: 'change',
+  error: 'error',
+};
+
+export const DB_ADAPTER_EVENT_TYPES: Record<string, DbAdapterEventType> = {
+  created: 'created',
+  updated: 'updated',
+  deleted: 'deleted',
+}
+
 
 export interface DbAdapter {
   destroy(): Promise<void>;
@@ -15,6 +37,7 @@ export interface DbAdapter {
 
   get(
     set: string,
+    // TODO: наверное тут и везде id должны быть строкой
     id: string | number,
     query?: Record<string, any>
   ): Promise<MoldResponse<ItemResponse>>;

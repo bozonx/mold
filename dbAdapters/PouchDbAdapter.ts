@@ -1,11 +1,18 @@
 import PouchDB from 'pouchdb';
 
-import {DbAdapter, RecordChangeHandler} from '../interfaces/DbAdapter';
+import {
+  DB_ADAPTER_EVENT_TYPES,
+  DB_ADAPTER_EVENTS,
+  DbAdapter,
+  DbAdapterEventType,
+  RecordChangeHandler
+} from '../interfaces/DbAdapter';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import {makeUniqId} from '../helpers/uniqId';
 import {omitObj} from '../helpers/objects';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 import {CreateResponse, ItemResponse, ListResponse} from '../interfaces/ReponseStructure';
+import IndexedEventEmitter from '../helpers/IndexedEventEmitter';
 
 
 interface PouchRecord {
@@ -48,18 +55,78 @@ interface ErrorResponse {
   status: 404
 }
 
+interface PouchEventEmitter {
+  cancel();
+  on(eventName: string, cb: (data: any) => void);
+}
+
+interface PouchChangeResult {
+  // full id of document
+  id: string;
+  changes: {rev: string}[];
+  deleted?: boolean;
+  seq: number;
+  doc: Record<string, any>;
+}
+
 const SET_DELIMITER = '/';
 
 
 export default class PouchDbAdapter implements DbAdapter {
   pouchDb: PouchDB;
 
+  private readonly pouchEventEmitter: PouchEventEmitter;
+  private readonly events = new IndexedEventEmitter();
 
-  constructor(pouchDb: typeof PouchDB) {
+
+  constructor(pouchDb: PouchDB) {
     this.pouchDb = pouchDb;
+    this.pouchEventEmitter = this.pouchDb.changes({
+      live: true,
+      include_docs: true,
+      since: 'now',
+    });
+
+    this.pouchDb.on('created', () => {
+
+    })
+
+    this.pouchEventEmitter.on('change', (change: PouchChangeResult) => {
+      const [set, id] = change.id.split(SET_DELIMITER);
+      let eventType: DbAdapterEventType = DB_ADAPTER_EVENT_TYPES.updated;
+
+      if (change.deleted) {
+        // was deleted
+        eventType = DB_ADAPTER_EVENT_TYPES.deleted;
+      }
+      else {
+        // else was put
+        const [revNum, rest] = change.changes[0].rev.split('-');
+        // 1 is the first insert
+        if (revNum === '1') eventType = DB_ADAPTER_EVENT_TYPES.created;
+      }
+
+      this.events.emit(DB_ADAPTER_EVENTS.change, set, id, eventType);
+    });
+
+    this.pouchEventEmitter.on('complete', (change: PouchChangeResult) => {
+      console.log(66666, change)
+    });
+
+    this.pouchEventEmitter.on('error', (error: string) => {
+      // This event is fired when the changes feed is stopped due to an unrecoverable failure.
+      // TODO: what to do on error ????
+
+      console.log(88888888, error)
+    });
   }
 
+  // TODO: поидее нужно ожидать пока выполнится промис db created
+
   async destroy(): Promise<void> {
+    this.events.destroy();
+    this.pouchEventEmitter.cancel();
+    await this.pouchDb.close();
   }
 
 
@@ -165,11 +232,10 @@ export default class PouchDbAdapter implements DbAdapter {
     query?: Record<string, any>
   ): Promise<MoldResponse> {
     let getResult: GetSuccess;
+    const fullId = set + SET_DELIMITER + id;
 
     try {
-      getResult = await this.pouchDb.get({
-        _id: set + SET_DELIMITER + id,
-      });
+      getResult = await this.pouchDb.get(fullId);
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -181,6 +247,7 @@ export default class PouchDbAdapter implements DbAdapter {
       result = await this.pouchDb.put({
         ...getResult,
         ...partialData,
+        _id: fullId,
       }, query || {});
     }
     catch (e) {
@@ -207,9 +274,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let getResult: GetSuccess;
 
     try {
-      getResult = await this.pouchDb.get({
-        _id: set + SET_DELIMITER + id,
-      });
+      getResult = await this.pouchDb.get(set + SET_DELIMITER + id);
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -350,11 +415,11 @@ export default class PouchDbAdapter implements DbAdapter {
   }
 
   onRecordChange(cb: RecordChangeHandler): number {
-    // TODO: add
+    return this.events.addListener(DB_ADAPTER_EVENTS.change, cb);
   }
 
   removeListener(handlerIndex: number) {
-
+    this.events.removeListener(handlerIndex);
   }
 
 
