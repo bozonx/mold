@@ -1,13 +1,11 @@
-import {ActionProps} from './interfaces/ActionProps';
 import Mold from './Mold';
 import BackendClient from '../interfaces/BackendClient';
 import MoldRequest from '../interfaces/MoldRequest';
 import {MoldResponse} from '../interfaces/MoldResponse';
-import {makeRequest} from '../helpers/common';
 
 
 /**
- * It makes a requests to corresponding backend specified in Mold config.
+ * It makes a requests to the corresponding backend specified in Mold config.
  */
 export default class BackendManager {
   private readonly mold: Mold;
@@ -42,10 +40,9 @@ export default class BackendManager {
    * It doesn't care about are there any other similar requests.
    */
   request<T = any>(backendName: string, requestProps: MoldRequest): Promise<MoldResponse> {
-    const request: MoldRequest = makeRequest(requestProps);
     const backendClient: BackendClient = this.getBackendClient(backendName);
 
-    return backendClient.request(request);
+    return backendClient.request(requestProps);
   }
 
 }

@@ -2,7 +2,7 @@ import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import {ActionProps} from './interfaces/ActionProps';
 import Mold from './Mold';
 import {MoldResponse} from '../interfaces/MoldResponse';
-import {makeRequestKey, splitInstanceId} from '../helpers/common';
+import {makeRequest, makeRequestKey, splitInstanceId} from '../helpers/common';
 import {InstancesStore} from './InstancesStore';
 import MoldRequest from '../interfaces/MoldRequest';
 import {omitObj, omitUndefined} from '../helpers/objects';
@@ -12,6 +12,7 @@ import {REQUEST_STATUSES} from '../shared/constants';
 export default class Requests {
   private mold: Mold;
   private readonly instances: InstancesStore;
+
 
   constructor(mold: Mold) {
     this.mold = mold;
@@ -45,6 +46,11 @@ export default class Requests {
     return this.instances.addInstance(requestKey, props);
   }
 
+  /**
+   * Start a new request
+   * @param instanceId
+   * @param data - data for create, delete, patch or custom actions
+   */
   async start(instanceId: string, data?: Record<string, any>) {
     const {requestKey, instanceNum} = splitInstanceId(instanceId);
 
@@ -95,7 +101,7 @@ export default class Requests {
     }
 
     return omitUndefined({
-      ...omitObj(actionProps, 'backend', 'isGetting') as MoldRequest,
+      ...makeRequest(actionProps),
       data: (actionProps.data || data) && {
         ...actionProps.data,
         ...data,
@@ -120,7 +126,7 @@ export default class Requests {
         finishedOnce: true,
         success: false,
         status: REQUEST_STATUSES.fatalError,
-        errors: [{code: REQUEST_STATUSES.fatalError, message: "Fatal error"}],
+        errors: [{code: REQUEST_STATUSES.fatalError, message: String(e)}],
         // it doesn't clear previous result
       });
       // log error because it isn't a network or backend's error
@@ -128,14 +134,11 @@ export default class Requests {
       // do nothing else actually
       return;
     }
-    // success
+    // success of response. It also can contain an error status.
     this.mold.storageManager.patch(requestKey, {
       pending: false,
       finishedOnce: true,
-      success: response.success,
-      status: response.status,
-      errors: response.errors,
-      result: response.result,
+      ...response,
     });
   }
 
