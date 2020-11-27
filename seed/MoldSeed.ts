@@ -9,7 +9,7 @@ import {extractSeedFromSchema} from './extractSeedFromSchema';
 
 interface MoldSeedProps {
   adapter: DbAdapter;
-  schemas?: MoldSchema[],
+  schemas?: MoldSchema[];
   seed?: (context: MoldSeedContext) => void;
   log?: Logger | LogLevel;
 }

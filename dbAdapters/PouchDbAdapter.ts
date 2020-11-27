@@ -52,11 +52,11 @@ const SET_DELIMITER = '/';
 
 
 export default class PouchDbAdapter implements DbAdapter {
-  db: PouchDB;
+  pouchDb: PouchDB;
 
 
-  constructor(db: typeof PouchDB) {
-    this.db = db;
+  constructor(pouchDb: typeof PouchDB) {
+    this.pouchDb = pouchDb;
   }
 
   async destroy(): Promise<void> {
@@ -70,7 +70,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let result: FindSuccess;
 
     try {
-      result = await this.db.allDocs({
+      result = await this.pouchDb.allDocs({
         include_docs: true,
         //startkey: set + SET_DELIMITER,
         startkey: set + SET_DELIMITER,
@@ -111,7 +111,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let result: GetSuccess;
 
     try {
-      result = await this.db.get(set + SET_DELIMITER + id, query || {});
+      result = await this.pouchDb.get(set + SET_DELIMITER + id, query || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -136,7 +136,7 @@ export default class PouchDbAdapter implements DbAdapter {
     const id: string = makeUniqId();
 
     try {
-      result = await this.db.put({
+      result = await this.pouchDb.put({
         _id: set + SET_DELIMITER + id,
         id,
         ...data,
@@ -167,7 +167,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let getResult: GetSuccess;
 
     try {
-      getResult = await this.db.get({
+      getResult = await this.pouchDb.get({
         _id: set + SET_DELIMITER + id,
       });
     }
@@ -178,7 +178,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let result: PutSuccess;
 
     try {
-      result = await this.db.put({
+      result = await this.pouchDb.put({
         ...getResult,
         ...partialData,
       }, query || {});
@@ -207,7 +207,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let getResult: GetSuccess;
 
     try {
-      getResult = await this.db.get({
+      getResult = await this.pouchDb.get({
         _id: set + SET_DELIMITER + id,
       });
     }
@@ -218,7 +218,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let result: DeleteSuccess;
 
     try {
-      result = await this.db.remove(getResult, query || {});
+      result = await this.pouchDb.remove(getResult, query || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -248,7 +248,7 @@ export default class PouchDbAdapter implements DbAdapter {
         ...omitObj(doc, id),
       };
     });
-    const result: (PutSuccess | ErrorResponse)[] = await this.db.bulkDocs(
+    const result: (PutSuccess | ErrorResponse)[] = await this.pouchDb.bulkDocs(
       preparedDocs,
       query || {}
     );
@@ -302,7 +302,7 @@ export default class PouchDbAdapter implements DbAdapter {
     let findResult: FindSuccess;
 
     try {
-      findResult = await this.db.allDocs({
+      findResult = await this.pouchDb.allDocs({
         include_docs: false,
         keys: ids.map((id) => set + SET_DELIMITER + id),
       });
@@ -369,36 +369,36 @@ export default class PouchDbAdapter implements DbAdapter {
 }
 
 // async getDb(dbName: string): Promise<DbAdapterDbInstance> {
-//   if (!this.dbInstances[dbName]) {
+//   if (!this.pouchDbInstances[dbName]) {
 //
 //     // TODO: если база не существует то ошибка
 //
 //     const pouchDb = new PouchDB(dbName);
 //
-//     this.dbInstances[dbName] = new DbInstance(pouchDb);
+//     this.pouchDbInstances[dbName] = new DbInstance(pouchDb);
 //   }
 //
 //   // TODO: создать инстанс
 //
-//   return this.dbInstances[dbName];
+//   return this.pouchDbInstances[dbName];
 // }
 //
 // async hasDb(dbName: string): Promise<boolean> {
 //
 //   // TODO: не правильно !!! проверить саму базу
 //
-//   return Boolean(this.dbInstances[dbName]);
+//   return Boolean(this.pouchDbInstances[dbName]);
 // }
 //
 // async createDb(dbName: string): Promise<void> {
 //   // TODO: если база существует - то ошибка
-//   // if (!this.dbInstances[dbName]) {
+//   // if (!this.pouchDbInstances[dbName]) {
 //   //   throw new Error(`Can't find pouch data base "${dbName}"`)
 //   // }
 //
 //   const pouchDb = new PouchDB(dbName);
 //
-//   this.dbInstances[dbName] = new DbInstance(pouchDb);
+//   this.pouchDbInstances[dbName] = new DbInstance(pouchDb);
 // }
 //
 // async renameDb(dbName: string, newName: string): Promise<void> {
@@ -408,7 +408,7 @@ export default class PouchDbAdapter implements DbAdapter {
 // }
 //
 // async deleteDb(dbName: string): Promise<void> {
-//   if (!this.dbInstances[dbName]) {
+//   if (!this.pouchDbInstances[dbName]) {
 //     throw new Error(`Can't find pouch data base "${dbName}"`)
 //   }
 //
@@ -416,7 +416,7 @@ export default class PouchDbAdapter implements DbAdapter {
 //
 //   // await db.destroy();
 //
-//   await this.dbInstances[dbName].destroy();
+//   await this.pouchDbInstances[dbName].destroy();
 //
-//   delete this.dbInstances[dbName];
+//   delete this.pouchDbInstances[dbName];
 // }

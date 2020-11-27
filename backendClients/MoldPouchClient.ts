@@ -8,11 +8,13 @@ import {SetsDefinition} from '../hooksMidleware/interfaces/MoldHook';
 import MoldHooks from '../hooksMidleware/MoldHooks';
 import PouchDbAdapter from '../dbAdapters/PouchDbAdapter';
 import {callAdapterRequestAction} from '../helpers/backendHelpers';
+import {MoldSchema} from '../interfaces/MoldSchema';
 
 
 interface MoldPouchClientProps {
-  db: PouchDB;
+  pouchDb: PouchDB;
   sets: SetsDefinition;
+  schemas?: MoldSchema[];
 }
 
 
@@ -31,9 +33,13 @@ export default class MoldPouchClient implements BackendClient {
   constructor(props: MoldPouchClientProps) {
     this.props = props;
     this.hooks = new MoldHooks(props.sets, this.doAdapterRequest);
-    this.adapter = new PouchDbAdapter(props.db);
+    this.adapter = new PouchDbAdapter(props.pouchDb);
 
     this.adapter.onRecordChange(this.handleRecordChange);
+
+    // TODO: use schema
+    // TODO: validate props
+
   }
 
   $init(mold: Mold) {
@@ -57,6 +63,7 @@ export default class MoldPouchClient implements BackendClient {
    * It is useful for debug.
    */
   doAdapterRequest = (request: MoldRequest): Promise<MoldResponse> => {
+    // TODO: может сюда перенести ???
     return callAdapterRequestAction(this.adapter, request);
   }
 
