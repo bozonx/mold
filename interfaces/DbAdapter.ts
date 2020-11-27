@@ -8,23 +8,23 @@ import {MoldDocument} from './MoldDocument';
  * * update - it is put or patch. Id hasn't been changed.
  * * deleted - item has been deleted.
  */
-export type DbAdapterEventType = 'created' | 'updated' | 'deleted';
+export enum DB_ADAPTER_EVENT_TYPES {
+  created,
+  updated,
+  deleted,
+}
+
+
 export type RecordChangeHandler = (
   set: string,
   id: string,
-  type: DbAdapterEventType,
+  type: DB_ADAPTER_EVENT_TYPES,
 ) => void;
 
 export const DB_ADAPTER_EVENTS = {
   change: 'change',
   error: 'error',
 };
-
-export const DB_ADAPTER_EVENT_TYPES: Record<string, DbAdapterEventType> = {
-  created: 'created',
-  updated: 'updated',
-  deleted: 'deleted',
-}
 
 
 export interface DbAdapter {

@@ -1,4 +1,4 @@
-import {DbAdapterEventType} from './DbAdapter';
+import {DB_ADAPTER_EVENT_TYPES} from './DbAdapter';
 
 
 export type PushMessage = [
@@ -6,17 +6,6 @@ export type PushMessage = [
   string,
   // id
   (string | number),
-  // created, updated, deleted
-  DbAdapterEventType
+  // created = 0, updated = 1, deleted = 2
+  DB_ADAPTER_EVENT_TYPES
 ];
-
-// export interface PushMessage {
-//   set: string;
-//   // if set and itemId doesn't set it means do all the requests of specified action
-//   //action?: string;
-//   // If set and action doesn't set it means find items with specified id in
-//   // all the requests all the actions of this set. And do new requests on of those
-//   // which contain specified item id.
-//   // If action and itemId are set it means find only at specified action.
-//   id?: number | string;
-// }

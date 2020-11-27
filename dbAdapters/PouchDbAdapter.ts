@@ -4,7 +4,6 @@ import {
   DB_ADAPTER_EVENT_TYPES,
   DB_ADAPTER_EVENTS,
   DbAdapter,
-  DbAdapterEventType,
   RecordChangeHandler
 } from '../interfaces/DbAdapter';
 import {MoldResponse} from '../interfaces/MoldResponse';
@@ -93,7 +92,7 @@ export default class PouchDbAdapter implements DbAdapter {
 
     this.pouchEventEmitter.on('change', (change: PouchChangeResult) => {
       const [set, id] = change.id.split(SET_DELIMITER);
-      let eventType: DbAdapterEventType = DB_ADAPTER_EVENT_TYPES.updated;
+      let eventType: DB_ADAPTER_EVENT_TYPES = DB_ADAPTER_EVENT_TYPES.updated;
 
       if (change.deleted) {
         // was deleted

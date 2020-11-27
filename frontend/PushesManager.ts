@@ -5,6 +5,14 @@ import {PushMessage} from '../interfaces/PushMessage';
 export type PushIncomeMessage = string | PushMessage | PushMessage[]
 
 
+
+//   // If set and action doesn't set it means find items with specified id in
+//   // all the requests all the actions of this set. And do new requests on of those
+//   // which contain specified item id.
+//   // If action and itemId are set it means find only at specified action.
+//   id?: number | string;
+
+
 export default class PushesManager {
   private readonly mold: Mold;
 

@@ -9,7 +9,7 @@ import MoldHooks from '../hooksMidleware/MoldHooks';
 import PouchDbAdapter from '../dbAdapters/PouchDbAdapter';
 import {callAdapterRequestAction} from '../helpers/backendHelpers';
 import {MoldSchema} from '../interfaces/MoldSchema';
-import {DbAdapterEventType} from '../interfaces/DbAdapter';
+import {DB_ADAPTER_EVENT_TYPES} from '../interfaces/DbAdapter';
 
 
 interface MoldPouchClientProps {
@@ -71,7 +71,7 @@ export default class MoldPouchClient implements BackendClient {
   }
 
 
-  private handleRecordChange = (set: string, id: string, type: DbAdapterEventType) => {
+  private handleRecordChange = (set: string, id: string, type: DB_ADAPTER_EVENT_TYPES) => {
     this.mold.incomePush(this.backendName, [set, id, type]);
   }
 }
