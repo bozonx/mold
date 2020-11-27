@@ -105,7 +105,7 @@ export default class Mold {
   }
 
   /**
-   * Is request is pending
+   * Is request or instance is pending
    * @param instanceId
    */
   isPending(instanceId: string): boolean {
@@ -114,6 +114,9 @@ export default class Mold {
     return state && state.pending || false;
   }
 
+  /**
+   * Wait while request is finished but not greater then 60 seconds.
+   */
   waitRequestFinished(instanceId: string): Promise<void> {
     const state: ActionState | undefined = this.getState(instanceId);
 

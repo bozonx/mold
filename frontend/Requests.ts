@@ -79,6 +79,8 @@ export default class Requests {
     // do fresh request
     const requestProps = this.makeRequestProps(requestKey, data);
 
+    // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
+
     await this.doRequest(requestKey, requestProps);
   }
 
