@@ -2,7 +2,7 @@ import {ActionState} from './ActionState';
 import Mold from '../Mold';
 
 
-export default interface StorageAdapter {
+export interface StorageAdapter {
   $init?(mold: Mold);
 
   destroy();

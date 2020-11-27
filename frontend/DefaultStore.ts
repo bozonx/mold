@@ -1,4 +1,4 @@
-import StorageAdapter from './interfaces/StorageAdapter';
+import {StorageAdapter} from './interfaces/StorageAdapter';
 import {ActionState} from './interfaces/ActionState';
 import IndexedEventEmitter from '../helpers/IndexedEventEmitter';
 

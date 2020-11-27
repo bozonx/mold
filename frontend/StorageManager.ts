@@ -1,7 +1,7 @@
 import {ActionState} from './interfaces/ActionState';
 import {RequestKey} from './interfaces/RequestKey';
 import Mold from './Mold';
-import StorageAdapter from './interfaces/StorageAdapter';
+import {StorageAdapter} from './interfaces/StorageAdapter';
 import {makeInitialActionState, requestKeyToString} from '../helpers/common';
 import IndexedEventEmitter from '../helpers/IndexedEventEmitter';
 

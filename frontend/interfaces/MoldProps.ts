@@ -1,10 +1,10 @@
 import {Logger, LogLevel} from '../../interfaces/Logger';
 import {MoldFrontendConfig} from './MoldFrontendConfig';
 import {BackendClient} from '../../interfaces/BackendClient';
-import StorageAdapter from './StorageAdapter';
+import {StorageAdapter} from './StorageAdapter';
 
 
-export default interface MoldProps {
+export interface MoldProps {
   // it app in production mode.
   // In not production mode the window.$mold variable will be set for debug purpose.
   production?: boolean;

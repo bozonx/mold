@@ -1,4 +1,4 @@
-import StorageAdapter from '../../frontend/interfaces/StorageAdapter';
+import {StorageAdapter} from '../../frontend/interfaces/StorageAdapter';
 import {ActionState} from '../../frontend/interfaces/ActionState';
 import {Store} from 'vuex';
 import IndexedEventEmitter from '../../helpers/IndexedEventEmitter';
