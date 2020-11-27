@@ -29,6 +29,18 @@ export class InstancesStore {
       && this.requests[backend][set][action][request];
   }
 
+  eachAction(
+    backendName: string,
+    set: string,
+    cb: (actionName: string, requests: {[index: string]: ActionProps}) => void
+  ) {
+    if (!this.requests[backendName]?.[set]) return;
+
+    for (let actionName of Object.keys(this.requests[backendName][set])) {
+      cb(actionName, this.requests[backendName][set][actionName]);
+    }
+  }
+
   doesInstanceNumExist(requestKey: RequestKey, instanceNum: string): boolean {
     const requestKeyStr: string = requestKeyToString(requestKey);
     const requestInstances: string[] | undefined = this.instances[requestKeyStr];

@@ -12,7 +12,7 @@ import {ActionState} from './interfaces/ActionState';
 
 export default class Requests {
   private mold: Mold;
-  private readonly instances: InstancesStore;
+  readonly instances: InstancesStore;
 
 
   constructor(mold: Mold) {

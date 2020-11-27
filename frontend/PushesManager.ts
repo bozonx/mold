@@ -1,5 +1,8 @@
 import Mold from './Mold';
-import {PushMessage} from '../interfaces/PushMessage';
+import {PUSH_MESSAGE_POSITIONS, PushMessage} from '../interfaces/PushMessage';
+import {ActionProps} from './interfaces/ActionProps';
+import {ActionState} from './interfaces/ActionState';
+import {RequestKey} from './interfaces/RequestKey';
 
 
 export type PushIncomeMessage = string | PushMessage | PushMessage[];
@@ -27,10 +30,35 @@ export default class PushesManager {
 
 
   private handleMessage(backend: string, message: PushMessage) {
+
     // TODO: наверное стоит сделать мини дебаунс на текущий тик
 
     console.log(5555555555, backend, message);
 
+    const set = message[PUSH_MESSAGE_POSITIONS.set];
+
+    this.mold.requests.instances.eachAction(
+      backend,
+      set,
+      (actionName: string, requests: {[index: string]: ActionProps}) => {
+        for (let requestId of Object.keys(requests)) {
+          const actionProps: ActionProps = requests[requestId];
+          // don't update saving requests
+          if (!actionProps.isReading) continue;
+
+          const requestKey: RequestKey = [backend, set, actionName, requestId];
+          const state: ActionState | undefined = this.mold.storageManager.getState(
+            requestKey
+          );
+
+          if (!state) continue;
+
+
+        }
+
+        console.log(6666, actionName, requests)
+      }
+    );
 
   }
 
