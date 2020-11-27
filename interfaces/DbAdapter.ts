@@ -1,5 +1,5 @@
 import {MoldResponse} from './MoldResponse';
-import {CreateResponse, ItemResponse, ListResponse} from './ReponseState';
+import {CreateResponse, ItemResponse, ListResponse} from './ReponseStructure';
 import {MoldDocument} from './MoldDocument';
 
 

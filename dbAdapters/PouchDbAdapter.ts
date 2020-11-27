@@ -5,7 +5,7 @@ import {MoldResponse} from '../interfaces/MoldResponse';
 import {makeUniqId} from '../helpers/uniqId';
 import {omitObj} from '../helpers/objects';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
-import {CreateResponse, ItemResponse, ListResponse} from '../interfaces/ReponseState';
+import {CreateResponse, ItemResponse, ListResponse} from '../interfaces/ReponseStructure';
 
 
 interface PouchRecord {
