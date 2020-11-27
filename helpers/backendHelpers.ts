@@ -11,11 +11,11 @@ export function callAdapterRequestAction(
     case 'find':
 
       // TODO: наверное не нужнео ???
-      if (!request.query) throw new Error(`No query in request ${JSON.stringify(request)}`)
+      //if (!request.query) throw new Error(`No query in request ${JSON.stringify(request)}`)
 
       return adapter.find(
         request.set,
-        request.query
+        request.query || {}
       );
     case 'get':
       if (typeof request.id === 'undefined') throw new Error(

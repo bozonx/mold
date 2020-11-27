@@ -1,8 +1,10 @@
 import Mold from './Mold';
-import {PUSH_MESSAGE_POSITIONS, PushMessage} from '../interfaces/PushMessage';
+import {PushMessage} from '../interfaces/PushMessage';
 import {ActionProps} from './interfaces/ActionProps';
 import {ActionState} from './interfaces/ActionState';
 import {RequestKey} from './interfaces/RequestKey';
+import {DB_ADAPTER_EVENT_TYPES} from '../interfaces/DbAdapter';
+import {ItemResponse, ListResponse} from '../interfaces/ReponseStructure';
 
 
 export type PushIncomeMessage = string | PushMessage | PushMessage[];
@@ -33,9 +35,7 @@ export default class PushesManager {
 
     // TODO: наверное стоит сделать мини дебаунс на текущий тик
 
-    console.log(5555555555, backend, message);
-
-    const set = message[PUSH_MESSAGE_POSITIONS.set];
+    const [set, id, type] = message;
 
     this.mold.requests.instances.eachAction(
       backend,
@@ -53,13 +53,42 @@ export default class PushesManager {
 
           if (!state) continue;
 
+          const needUpdate: boolean = this.doesStateNeedUpdate(state, id, type);
 
+          if (!needUpdate) continue;
+
+          this.mold.requests.rerunRequest(actionProps)
+            .catch(this.mold.log.error);
         }
-
-        console.log(6666, actionName, requests)
       }
     );
+  }
 
+  private doesStateNeedUpdate(
+    state: ActionState<ListResponse | ItemResponse>,
+    itemId: string | number,
+    eventType: DB_ADAPTER_EVENT_TYPES,
+  ): boolean {
+    // TODO: test by hard
+    if (eventType === DB_ADAPTER_EVENT_TYPES.created || eventType === DB_ADAPTER_EVENT_TYPES.deleted) {
+      // make new requests for all the lists
+      // skip standalone requests event on delete event.
+      if (Array.isArray(state.result?.data)) return true;
+    }
+    // else updated - make requests only for lists which includes this element
+    // and make requests for standalone elements with this id.
+    if (Array.isArray(state.result?.data)) {
+      for (let item of state.result!.data) {
+        if (typeof item === 'object' && item.id === itemId) {
+          return true;
+        }
+      }
+    }
+    else if (typeof state.result?.data === 'object' && state.result?.data?.id === itemId) {
+      return true;
+    }
+
+    return false;
   }
 
   private parseMessage(message: PushIncomeMessage): PushMessage[] {

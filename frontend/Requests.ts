@@ -63,6 +63,18 @@ export default class Requests {
 
     if (!actionProps) throw new Error(`No props of "${instanceId}"`);
 
+
+    // do fresh request
+    const requestProps = this.makeRequestProps(requestKey, data);
+
+    await this.rerunRequest(actionProps);
+  }
+
+  async rerunRequest(actionProps: ActionProps) {
+
+    console.log(77777, actionProps)
+
+    // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
     const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
 
     if (state && state.pending) {
@@ -76,10 +88,6 @@ export default class Requests {
         return;
       }
     }
-    // do fresh request
-    const requestProps = this.makeRequestProps(requestKey, data);
-
-    // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
 
     await this.doRequest(requestKey, requestProps);
   }
