@@ -1,12 +1,12 @@
 import {SetupContext} from '@vue/composition-api';
-import {HighLevelProps} from '../../frontend/interfaces/MethodsProps';
 import {InstanceActionState} from '../../frontend/interfaces/MethodsState';
 import {saveComposition, SaveCompositionAdditionalProps} from './composition/saveComposition';
+import {CompositionProps} from '../../frontend/interfaces/CompositionProps';
 
 
 export default function moldCreate<T>(
   context: SetupContext,
-  actionProps: HighLevelProps
+  actionProps: CompositionProps
 ): InstanceActionState<T> & SaveCompositionAdditionalProps {
   const {state} = saveComposition<T>(context, 'create', actionProps);
 

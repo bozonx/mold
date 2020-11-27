@@ -1,9 +1,9 @@
 import Mold from '../../../frontend/Mold';
 import {ActionState, InstanceActionState} from '../../../frontend/interfaces/MethodsState';
 import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
-import {HighLevelProps} from '../../../frontend/interfaces/MethodsProps';
 import {omitUndefined} from '../../../helpers/objects';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
+import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 
 
 export interface SaveCompositionAdditionalProps {
@@ -22,7 +22,7 @@ export function saveComposition<T>(
   // use undefined for save purpose where only at save method calling
   // is clear which action to use: create or update
   actionName: string,
-  actionProps: HighLevelProps,
+  actionProps: CompositionProps,
   stateAdditions?: Record<string, any>
 ): SaveResult<T> {
   // @ts-ignore

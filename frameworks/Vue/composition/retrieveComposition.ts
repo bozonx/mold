@@ -3,8 +3,8 @@ import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
 import {omitObj} from '../../../helpers/objects';
 import Mold from '../../../frontend/Mold';
 import {ActionState, InstanceState} from '../../../frontend/interfaces/MethodsState';
-import {HighLevelProps} from '../../../frontend/interfaces/MethodsProps';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
+import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 
 
 export interface RetrieveAdditionalState {
@@ -17,7 +17,7 @@ export interface RetrieveResult<T> {
   state: T & InstanceState & RetrieveAdditionalState;
 }
 
-export interface RetrieveCompositionProps extends HighLevelProps {
+export interface RetrieveCompositionProps extends CompositionProps {
   dontLoadImmediately?: boolean
 }
 
