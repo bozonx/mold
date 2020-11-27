@@ -1,6 +1,6 @@
 import {Logger, LogLevel} from '../../interfaces/Logger';
 import {MoldFrontendConfig} from './MoldFrontendConfig';
-import BackendClient from '../../interfaces/BackendClient';
+import {BackendClient} from '../../interfaces/BackendClient';
 import StorageAdapter from './StorageAdapter';
 
 

@@ -1,4 +1,4 @@
 
-export default interface BackendServer {
+export interface BackendServer {
   // TODO: add
 }

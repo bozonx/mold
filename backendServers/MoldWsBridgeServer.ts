@@ -1,4 +1,4 @@
-import BackendServer from '../interfaces/BackendServer';
+import {BackendServer} from '../interfaces/BackendServer';
 
 
 /**

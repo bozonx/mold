@@ -1,4 +1,4 @@
-import BackendClient from '../interfaces/BackendClient';
+import {BackendClient} from '../interfaces/BackendClient';
 
 
 /**

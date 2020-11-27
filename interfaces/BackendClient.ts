@@ -3,7 +3,7 @@ import {MoldResponse} from './MoldResponse';
 import Mold from '../frontend/Mold';
 
 
-export default interface BackendClient {
+export interface BackendClient {
   $init?(mold: Mold);
 
   destroy(): void;
