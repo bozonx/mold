@@ -63,7 +63,7 @@ export default class Requests {
     if (!actionProps) throw new Error(`No props of "${instanceId}"`);
 
     if (this.mold.isPending(instanceId)) {
-      if (actionProps.isGetting) {
+      if (actionProps.isReading) {
         // return a promise which will be resolved after current request is finished
         return this.mold.waitRequestFinished(instanceId);
       }

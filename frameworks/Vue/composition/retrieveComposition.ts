@@ -33,7 +33,7 @@ export function retrieveComposition<T>(
   // init request
   const instanceId: string = mold.newRequest({
     action: actionName,
-    isGetting: true,
+    isReading: true,
     ...omitObj(actionProps, 'dontLoadImmediately') as HighLevelProps,
   });
 

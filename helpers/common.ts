@@ -52,8 +52,8 @@ export function makeRequest(props: ActionProps): MoldRequest {
   return omitObj(
     props,
     'backend',
-    'isGetting'
-  ) as Omit<Omit<ActionProps, 'backend'>, 'isGetting'>;
+    'isReading'
+  ) as Omit<Omit<ActionProps, 'backend'>, 'isReading'>;
 }
 
 /**
