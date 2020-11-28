@@ -1,7 +1,7 @@
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 
 
-export class MoldError implements MoldErrorDefinition {
+export class HookError implements MoldErrorDefinition {
   readonly code: number;
   readonly message?: string;
 

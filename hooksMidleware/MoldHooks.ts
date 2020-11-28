@@ -2,7 +2,7 @@ import {SPECIAL_HOOKS, SpecialSet} from './interfaces/SpecialSet';
 import {GlobalContext, HookContext} from './interfaces/HookContext';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import {MoldRequest} from '../interfaces/MoldRequest';
-import {MoldError} from './MoldError';
+import {HookError} from '../shared/HookError';
 import {cloneDeepObject} from '../helpers/objects';
 import HooksApp from './HooksApp';
 import {SetsDefinition} from './interfaces/MoldHook';
@@ -163,9 +163,9 @@ export default class MoldHooks {
     // }
   }
 
-  private parseError(e: MoldError | Error): MoldErrorDefinition {
+  private parseError(e: HookError | Error): MoldErrorDefinition {
     // if standard error
-    if (e instanceof MoldError) {
+    if (e instanceof HookError) {
       return e.toPlainObject();
     }
     else {
