@@ -34,6 +34,7 @@ export default class MoldPouchClient implements BackendClient {
 
   constructor(props: MoldPouchClientProps) {
     this.props = props;
+    // TODO: передать юзера
     this.hooks = new MoldHooks(props.sets, this.doAdapterRequest);
     this.adapter = new PouchDbAdapter(props.pouchDb);
 

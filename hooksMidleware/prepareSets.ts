@@ -2,6 +2,7 @@ import {PreHookDefinition, SetItem, SetsDefinition} from './interfaces/MoldHook'
 import {SPECIAL_HOOKS} from './interfaces/SpecialSet';
 import {Sets} from './interfaces/Sets';
 
+
 function parseSetHooks(setName: string, hooks: SetItem[], sets: Sets) {
   for (let item of hooks) {
     if (Array.isArray(item)) {
@@ -36,7 +37,7 @@ function parseSetHooks(setName: string, hooks: SetItem[], sets: Sets) {
  * Sort and normalize hooks
  * @param rawSets is { setName: [[type, hookCb]] } or { specialSet: [...] }
  */
-export function parseHooks(rawSets: SetsDefinition): Sets {
+export function prepareSets(rawSets: SetsDefinition): Sets {
   const sets: Sets = {
     beforeHooks: [],
     beforeRequest: [],

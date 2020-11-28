@@ -9,15 +9,14 @@ import {SetsDefinition} from './interfaces/MoldHook';
 import {HookType} from './interfaces/HookType';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 import {Sets} from './interfaces/Sets';
-import {parseHooks} from './parseHooks';
+import {prepareSets} from './prepareSets';
 import {REQUEST_STATUSES} from '../shared/constants';
+import {MoldDocument} from '../interfaces/MoldDocument';
 
 
-// TODO: better to use immutable for context, request and response
-
-
+// TODO: string or Error on error
 // External request func.
-// on error it has to throw a new MoldError(code, message).
+// on fatal error it has to throw a new HookError(code, message).
 export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>;
 
 
@@ -27,10 +26,14 @@ export default class MoldHooks {
   private readonly app: HooksApp;
 
 
-  constructor(rawSets: SetsDefinition, requestFunc: HooksRequestFunc) {
-    this.sets = parseHooks(rawSets);
+  constructor(
+    rawSets: SetsDefinition,
+    requestFunc: HooksRequestFunc,
+    user?: MoldDocument
+  ) {
+    this.sets = prepareSets(rawSets);
     this.requestFunc = requestFunc;
-    this.app = new HooksApp(this);
+    this.app = new HooksApp(this, user);
   }
 
   destroy() {

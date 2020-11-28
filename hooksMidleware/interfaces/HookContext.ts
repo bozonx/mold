@@ -15,6 +15,7 @@ export interface GlobalContext {
   // there is a result of request. It is available only with "after" hooks.
   // You can modify it in after hooks
   response?: MoldResponse;
+  // TODO: string or Error
   // This is only for "error" special branch
   error?: MoldErrorDefinition;
   // This is for all the branches
@@ -30,7 +31,4 @@ export interface HookContext extends GlobalContext {
   readonly app: HooksApp;
   // before request, after request and special hooks such as beforeRequest, error etc.
   readonly type: HookType;
-  // name of set which is processed this request
-  // or special middleware such as beforeRequest, afterHooks, error etc.
-  //readonly set: string;
 }
