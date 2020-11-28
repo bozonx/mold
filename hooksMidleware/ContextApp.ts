@@ -7,7 +7,7 @@ import {MoldDocument} from '../interfaces/MoldDocument';
 /**
  * This is "context: {app}" of for each hook.
  */
-export default class HooksApp {
+export default class ContextApp {
   readonly user?: MoldDocument;
 
   private moldHooks: MoldHooks;

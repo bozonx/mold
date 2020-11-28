@@ -4,7 +4,7 @@ import {MoldResponse} from '../interfaces/MoldResponse';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {HookError} from '../shared/HookError';
 import {cloneDeepObject} from '../helpers/objects';
-import HooksApp from './HooksApp';
+import ContextApp from './ContextApp';
 import {SetsDefinition} from './interfaces/MoldHook';
 import {HookType} from './interfaces/HookType';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
@@ -23,7 +23,7 @@ export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>;
 export default class MoldHooks {
   private sets: Sets;
   private readonly requestFunc: HooksRequestFunc;
-  private readonly app: HooksApp;
+  private readonly contextApp: ContextApp;
 
 
   constructor(
@@ -33,13 +33,13 @@ export default class MoldHooks {
   ) {
     this.sets = prepareSets(rawSets);
     this.requestFunc = requestFunc;
-    this.app = new HooksApp(this, user);
+    this.contextApp = new ContextApp(this, user);
   }
 
   destroy() {
     // @ts-ignore
     delete this.sets;
-    this.app.destroy();
+    this.contextApp.destroy();
   }
 
 
@@ -145,7 +145,7 @@ export default class MoldHooks {
 
   private makeHookContext(type: HookType, globalContext: GlobalContext): HookContext {
     return {
-      app: this.app,
+      app: this.contextApp,
       type,
       ...cloneDeepObject(globalContext) as GlobalContext,
     };
