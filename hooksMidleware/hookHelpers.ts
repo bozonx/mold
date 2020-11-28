@@ -1,6 +1,6 @@
 import {MoldHook, PreHookDefinition} from './interfaces/MoldHook';
-import {ALL_ACTIONS} from './constants';
 import {HookType} from './interfaces/HookType';
+import {ALL_ACTIONS} from '../shared/constants';
 
 
 export function handleActions(

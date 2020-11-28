@@ -67,12 +67,7 @@ export default class Requests {
     // do fresh request
     const requestProps = this.makeRequestProps(requestKey, data);
 
-    await this.rerunRequest(actionProps);
-  }
-
-  async rerunRequest(actionProps: ActionProps) {
-
-    console.log(77777, actionProps)
+    //await this.rerunRequest(actionProps);
 
     // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
     const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
@@ -90,6 +85,28 @@ export default class Requests {
     }
 
     await this.doRequest(requestKey, requestProps);
+  }
+
+  async rerunRequest(actionProps: ActionProps) {
+
+    console.log(77777, actionProps)
+
+    // // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
+    // const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
+    //
+    // if (state && state.pending) {
+    //   if (actionProps.isReading) {
+    //     // return a promise which will be resolved after current request is finished
+    //     return this.mold.waitRequestFinished(instanceId);
+    //   }
+    //   else {
+    //     // TODO: поставить в очередь и запустить запрос как только выполнится
+    //     //       текущий запрос. И перезаписывать колбэк при новых запросах
+    //     return;
+    //   }
+    // }
+    //
+    // await this.doRequest(requestKey, requestProps);
   }
 
   destroyInstance(instanceId: string) {
