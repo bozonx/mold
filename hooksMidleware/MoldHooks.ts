@@ -12,6 +12,7 @@ import {Sets} from './interfaces/Sets';
 import {prepareSets} from './prepareSets';
 import {REQUEST_STATUSES} from '../shared/constants';
 import {MoldDocument} from '../interfaces/MoldDocument';
+import {validateRequest, validateResponse} from './hookHelpers';
 
 
 // TODO: string or Error on error
@@ -57,7 +58,7 @@ export default class MoldHooks {
     // This error branch only for errors which was occurred while handling a request.
     // Error which backend sent back doesn't matter - it means success request.
     try {
-      this.validateRequest(request);
+      validateRequest(request);
       await this.startSpecialHooks('beforeHooks', globalContext);
       await this.startBeforeHooks(globalContext);
       await this.startSpecialHooks('beforeRequest', globalContext);
@@ -67,6 +68,9 @@ export default class MoldHooks {
       await this.startSpecialHooks('afterHooks', globalContext);
     }
     catch (e) {
+
+      // TODO: review
+
       globalContext.error = this.parseError(e);
 
       try {
@@ -86,7 +90,7 @@ export default class MoldHooks {
     const request = cloneDeepObject(globalContext.request) as MoldRequest;
     const rawResponse: MoldResponse = await this.requestFunc(request);
 
-    this.validateResponse(rawResponse);
+    validateResponse(rawResponse);
 
     globalContext.response = cloneDeepObject({
       ...rawResponse,
@@ -158,30 +162,6 @@ export default class MoldHooks {
     };
   }
 
-  private validateRequest(request: MoldRequest) {
-    if (!request.set) {
-      throw new Error(`Set isn't specified int the request`);
-    }
-    else if (!request.action) {
-      throw new Error(`Action isn't specified int the request of set "${request.set}"`);
-    }
-    else if (SPECIAL_HOOKS.includes(request.set)) {
-      throw new Error(`Unappropriated set name "${request.set}"`);
-    }
-  }
-
-  private validateResponse(response: MoldResponse) {
-    if (typeof response.status !== 'number') {
-      throw new Error(`Incorrect type of "status" of response`);
-    }
-    else if (typeof response.success !== 'boolean') {
-      throw new Error(`Incorrect type of "success" of response`);
-    }
-    else if (response.errors && !Array.isArray(response.errors)) {
-      throw new Error(`Incorrect type of "errors" of response`);
-    }
-  }
-
   // TODO: review
   private parseError(e: HookError | Error): MoldErrorDefinition {
     // if standard error
@@ -196,14 +176,15 @@ export default class MoldHooks {
     }
   }
 
-  // TODO: review
   /**
-   * Error means only request handling error not error status in response.
+   * Error means only request handling fatal error not error status in response.
    * @param globalContext
    * @private
    */
   private makeResponse(globalContext: GlobalContext): MoldResponse {
     if (globalContext.error) {
+      // TODO: review
+
       return {
         status: globalContext.error.code,
         success: false,
@@ -212,6 +193,7 @@ export default class MoldHooks {
       }
     }
     else if (!globalContext.response) {
+      // something wrong - no response
       return {
         status: REQUEST_STATUSES.fatalError,
         success: false,
@@ -220,7 +202,7 @@ export default class MoldHooks {
       };
     }
 
-    return globalContext.response;
+    return cloneDeepObject(globalContext.response) as MoldResponse;
   }
 
 }
