@@ -19,7 +19,7 @@ import {validateRequest, validateResponse} from './hookHelpers';
 export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>;
 
 
-export default class MoldHooks {
+export default class MoldRequestTransform {
   private sets: Sets;
   private readonly requestFunc: HooksRequestFunc;
   private readonly contextApp: ContextApp;
@@ -46,6 +46,8 @@ export default class MoldHooks {
    * Do request to the backend though hooks transformation.
    * Promise is only positive, reject will never be called.
    * On error it will return error-like response.
+   * Actions don't matter for transform.
+   * There isn't specific processing for certain actions.
    * @param request
    * @return fully transformed response.
    */

@@ -4,8 +4,8 @@ import {BackendClient} from '../interfaces/BackendClient';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import Mold from '../frontend/Mold';
 import {MoldRequest} from '../interfaces/MoldRequest';
-import {SetsDefinition} from '../hooksMidleware/interfaces/MoldHook';
-import MoldHooks from '../hooksMidleware/MoldHooks';
+import {SetsDefinition} from '../transform/interfaces/MoldHook';
+import MoldRequestTransform from '../transform/MoldRequestTransform';
 import PouchDbAdapter from '../dbAdapters/PouchDbAdapter';
 import {callAdapterRequestAction} from '../helpers/backendHelpers';
 import {MoldSchema} from '../interfaces/MoldSchema';
@@ -29,13 +29,13 @@ export default class MoldPouchClient implements BackendClient {
 
   private mold!: Mold;
   private backendName!: string;
-  private readonly hooks: MoldHooks;
+  private readonly hooks: MoldRequestTransform;
 
 
   constructor(props: MoldPouchClientProps) {
     this.props = props;
     // TODO: передать юзера
-    this.hooks = new MoldHooks(props.sets, this.doAdapterRequest);
+    this.hooks = new MoldRequestTransform(props.sets, this.doAdapterRequest);
     this.adapter = new PouchDbAdapter(props.pouchDb);
 
     this.adapter.onRecordChange(this.handleRecordChange);

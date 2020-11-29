@@ -1,5 +1,5 @@
-import {MoldHook, PreHookDefinition, SetItem} from '../hooksMidleware/interfaces/MoldHook';
-import {handlePreHookDefinition} from '../hooksMidleware/hookHelpers';
+import {MoldHook, PreHookDefinition, SetItem} from '../transform/interfaces/MoldHook';
+import {handlePreHookDefinition} from '../transform/hookHelpers';
 
 
 /**
