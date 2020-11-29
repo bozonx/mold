@@ -8,14 +8,13 @@ import {SetsDefinition} from './interfaces/MoldHook';
 import {HookType} from './interfaces/HookType';
 import {Sets} from './interfaces/Sets';
 import {prepareSets} from './prepareSets';
-import {REQUEST_STATUSES} from '../shared/constants';
 import {MoldDocument} from '../interfaces/MoldDocument';
 import {validateRequest, validateResponse} from './hookHelpers';
 
 
 // External request func.
-// on fatal error it has to throw a new Error(message).
-// And then cycle will be interrupted and fatalError special branch will be started.
+// On fatal error it has to throw a new Error(message).
+// And then cycle will be interrupted.
 export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>;
 
 
@@ -44,7 +43,11 @@ export default class MoldRequestTransform {
 
   /**
    * Do request to the backend though hooks transformation.
-   * Promise is only positive, reject will never be called.
+   * Promise is positive, reject is only on fatal error.
+   * Try to go to the end of transformation.
+   * But if there is a fatal error occurred then execution will be interrupted and
+   * error will be risen.
+   * Error which backend sent back doesn't matter - it means success request.
    * On error it will return error-like response.
    * Actions don't matter for transform.
    * There isn't specific processing for certain actions.
@@ -53,33 +56,17 @@ export default class MoldRequestTransform {
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
     const globalContext: GlobalContext = this.makeGlobalContext(request);
-    // Try to go to the end of transformation.
-    // But if there is an error occurred then start special error hooks branch.
-    // This error branch only for errors which was occurred while handling a request.
-    // Error which backend sent back doesn't matter - it means success request.
-    try {
-      validateRequest(request);
-      await this.startSpecialHooks('beforeHooks', globalContext);
-      await this.startBeforeHooks(globalContext);
-      await this.startSpecialHooks('beforeRequest', globalContext);
-      await this.startRequest(globalContext);
-      await this.startSpecialHooks('afterRequest', globalContext);
-      await this.startAfterHooks(globalContext);
-      await this.startSpecialHooks('afterHooks', globalContext);
-    }
-    catch (e) {
-      globalContext.fatalError = String(e);
 
-      try {
-        await this.startSpecialHooks('fatalError', globalContext);
-      }
-      catch (e) {
-        globalContext.fatalError = String(e);
-      }
-    }
-
-    // return response success or error
-    return this.makeResponse(globalContext);
+    validateRequest(request);
+    await this.startSpecialHooks('beforeHooks', globalContext);
+    await this.startBeforeHooks(globalContext);
+    await this.startSpecialHooks('beforeRequest', globalContext);
+    await this.startRequest(globalContext);
+    await this.startSpecialHooks('afterRequest', globalContext);
+    await this.startAfterHooks(globalContext);
+    await this.startSpecialHooks('afterHooks', globalContext);
+    // return response
+    return cloneDeepObject(globalContext.response) as MoldResponse;
   }
 
 
@@ -138,7 +125,6 @@ export default class MoldRequestTransform {
       globalContext.request = hookContext.request;
       globalContext.response = hookContext.response;
       globalContext.shared = hookContext.shared;
-      globalContext.fatalError = hookContext.fatalError;
     }
   }
 
@@ -147,7 +133,6 @@ export default class MoldRequestTransform {
       request,
       response: undefined,
       shared: {},
-      fatalError: undefined,
     }
   }
 
@@ -157,29 +142,6 @@ export default class MoldRequestTransform {
       type,
       ...cloneDeepObject(globalContext) as GlobalContext,
     };
-  }
-
-  private makeResponse(globalContext: GlobalContext): MoldResponse {
-    if (globalContext.fatalError) {
-      // Error means only request handling fatal error not error status in response.
-      return {
-        status: REQUEST_STATUSES.fatalError,
-        success: false,
-        errors: [{code: REQUEST_STATUSES.fatalError, message: globalContext.fatalError}],
-        result: null,
-      }
-    }
-    else if (!globalContext.response) {
-      // something wrong - no response
-      return {
-        status: REQUEST_STATUSES.fatalError,
-        success: false,
-        errors: [{code: REQUEST_STATUSES.fatalError, message: 'No response'}],
-        result: null,
-      };
-    }
-
-    return cloneDeepObject(globalContext.response) as MoldResponse;
   }
 
 }

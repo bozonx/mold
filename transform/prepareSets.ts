@@ -43,7 +43,6 @@ export function prepareSets(rawSets: SetsDefinition): Sets {
     beforeRequest: [],
     afterRequest: [],
     afterHooks: [],
-    error: [],
     setsBefore: {},
     setsAfter: {},
   };

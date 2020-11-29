@@ -2,7 +2,6 @@ import {MoldRequest} from '../../interfaces/MoldRequest';
 import {MoldResponse} from '../../interfaces/MoldResponse';
 import ContextApp from '../ContextApp';
 import {HookType} from './HookType';
-import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
 
 
 /**
@@ -18,8 +17,6 @@ export interface GlobalContext {
   // This is for all the branches
   // use it for shared data between hooks during whole request life.
   shared: {[index: string]: any};
-  // This is only for "error" special branch. Only fatal error.
-  fatalError?: string;
 }
 
 /**

@@ -3,10 +3,7 @@
 
 ## Hooks Middleware
 
-To prevent processing further hooks just throw HookError:
-
-    throw new HookError(code, message);
-
+To prevent processing further hooks just throw new Error().
 Code can be http status or some other code.
 Message is optional.
 

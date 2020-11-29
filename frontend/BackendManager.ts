@@ -15,9 +15,9 @@ export default class BackendManager {
     this.mold = mold;
     // init all the backend clients
     for (let backendName of Object.keys(this.mold.props.backends || {})) {
-      const backend: BackendClient = this.mold.props.backends![backendName];
+      const backend: BackendClient | undefined = this.mold.props.backends![backendName];
 
-      if (backend.$init) {
+      if (backend?.$init) {
         backend.$init(this.mold, backendName);
       }
     }
@@ -27,12 +27,12 @@ export default class BackendManager {
   }
 
 
-  getBackendClient(backendName: string): BackendClient {
+  getBackend(backendName: string): BackendClient {
     if (!this.mold.props.backends?.[backendName]) {
       throw new Error(`Can't find backend client "${backendName}"`);
     }
 
-    return this.mold.props.backends[backendName];
+    return this.mold.props.backends[backendName]!;
   }
 
   /**
@@ -40,7 +40,7 @@ export default class BackendManager {
    * It doesn't care about are there any other similar requests.
    */
   request<T = any>(backendName: string, requestProps: MoldRequest): Promise<MoldResponse> {
-    const backendClient: BackendClient = this.getBackendClient(backendName);
+    const backendClient: BackendClient = this.getBackend(backendName);
 
     return backendClient.request(requestProps);
   }

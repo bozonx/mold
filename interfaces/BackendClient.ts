@@ -8,6 +8,6 @@ export interface BackendClient {
 
   destroy(): void;
 
-  // actually it shouldn't do reject of promise. On error it should set status and errors.
+  // it throws an error only on fatal error
   request(request: MoldRequest): Promise<MoldResponse>;
 }

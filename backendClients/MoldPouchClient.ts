@@ -29,13 +29,13 @@ export default class MoldPouchClient implements BackendClient {
 
   private mold!: Mold;
   private backendName!: string;
-  private readonly hooks: MoldRequestTransform;
+  private readonly transform: MoldRequestTransform;
 
 
   constructor(props: MoldPouchClientProps) {
     this.props = props;
     // TODO: передать юзера
-    this.hooks = new MoldRequestTransform(props.sets, this.doAdapterRequest);
+    this.transform = new MoldRequestTransform(props.sets, this.doAdapterRequest);
     this.adapter = new PouchDbAdapter(props.pouchDb);
 
     this.adapter.onRecordChange(this.handleRecordChange);
@@ -51,7 +51,7 @@ export default class MoldPouchClient implements BackendClient {
   }
 
   destroy() {
-    this.hooks.destroy();
+    this.transform.destroy();
   }
 
 
@@ -59,7 +59,7 @@ export default class MoldPouchClient implements BackendClient {
    * Request from Mold
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
-    return this.hooks.request(request);
+    return this.transform.request(request);
   }
 
   /**

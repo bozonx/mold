@@ -3,11 +3,9 @@ export const SPECIAL_HOOKS = [
   'beforeRequest',
   'afterRequest',
   'afterHooks',
-  'fatalError',
 ]
 
 export type SpecialSet = 'beforeHooks'
   | 'beforeRequest'
   | 'afterRequest'
-  | 'afterHooks'
-  | 'fatalError';
+  | 'afterHooks';

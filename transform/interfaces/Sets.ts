@@ -7,7 +7,6 @@ export interface Sets {
   beforeRequest: MoldHook[];
   afterRequest: MoldHook[];
   afterHooks: MoldHook[];
-  error: MoldHook[];
   // set which will be called before request
   // like { setName: { actionName: [ ...hookCb() ] } }
   setsAfter: {[index: string]: {[index: string]: MoldHook[]}};

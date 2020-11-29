@@ -146,6 +146,7 @@ export default class Requests {
     // set pending state
     this.mold.storageManager.patch(requestKey, { pending: true });
 
+    // TODO: review - поднимет fatal ошибку
     try {
       response = await this.mold.backendManager.request(backendName, requestProps);
     }
