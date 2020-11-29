@@ -3,8 +3,7 @@ import {HookType} from './HookType';
 
 
 /**
- * It it throws a `new Error()` then code will be -2 means fatal.
- * If to throws a `new MoldError()` then its code will be used ad response status.
+ * Should throw a `new Error()` on fatal.
  */
 export type MoldHook = (context: HookContext) => Promise<void>;
 
@@ -12,7 +11,9 @@ export interface PreHookDefinition {
   readonly type: HookType;
   // action like find, get, ... or some custom.
   // Action "all" will be called with all the action branches
-  readonly action: string;
+  // Don't set it for special hook types
+  readonly action?: string;
+  // hook callback itself
   readonly hook: MoldHook;
 }
 
