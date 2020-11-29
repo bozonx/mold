@@ -1,7 +1,7 @@
-import {SetItem} from '../transform/interfaces/MoldHook';
 import {HookContext} from '../transform/interfaces/HookContext';
 import {MoldResponse} from '../interfaces/MoldResponse';
-import {ItemResponse, ListResponse} from '../frontend/interfaces/ActionState';
+import {ItemResponse, ListResponse} from '../interfaces/ReponseStructure';
+import {PreHookDefinition} from '../transform/interfaces/MoldHook';
 
 
 /**
@@ -14,7 +14,7 @@ export function populate(
   relatedSet: string,
   relatedIdField: string,
   populateField: string
-): SetItem {
+): PreHookDefinition[] {
   async function requestRelatedItem(
     context: HookContext,
     id: string | number

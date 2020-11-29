@@ -1,4 +1,4 @@
-import {PreHookDefinition, SetItem, SetsDefinition} from './interfaces/MoldHook';
+import {PreHookDefinition, SetsDefinition} from './interfaces/MoldHook';
 import {SPECIAL_HOOKS} from './interfaces/SpecialSet';
 import {Sets} from './interfaces/Sets';
 

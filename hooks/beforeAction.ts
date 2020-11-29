@@ -1,4 +1,4 @@
-import {MoldHook, PreHookDefinition, SetItem} from '../transform/interfaces/MoldHook';
+import {MoldHook, PreHookDefinition} from '../transform/interfaces/MoldHook';
 import {handlePreHookDefinition} from '../transform/hookHelpers';
 
 

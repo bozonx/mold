@@ -1,29 +1,16 @@
-import {MoldHook, PreHookDefinition, SetItem} from '../transform/interfaces/MoldHook';
-import {handlePreHookDefinition} from '../transform/hookHelpers';
+import {MoldHook, PreHookDefinition} from '../transform/interfaces/MoldHook';
+import {makeHooksDefinitions} from '../transform/hookHelpers';
 
 
 /**
  * Position of hook is certainly that which is in the set.
  */
 export function afterAll(
-  hook: MoldHook | MoldHook[] | SetItem,
-  onlyActions?: string[]
-): SetItem {
+  hook: MoldHook | MoldHook[],
+  includeActions?: string[],
+  excludeActions?: string[]
+): PreHookDefinition[] {
   if (!hook) throw new Error(`Please set almost one hook`);
 
-  if (Array.isArray(hook)) {
-    let result: PreHookDefinition[] = [];
-
-    for (let item of hook) {
-      result = [
-        ...result,
-        ...handlePreHookDefinition('after', item, onlyActions),
-      ]
-    }
-
-    return result;
-  }
-  else {
-    return handlePreHookDefinition('after', hook, onlyActions);
-  }
+  return makeHooksDefinitions('after', hook, includeActions, excludeActions);
 }

@@ -1,8 +1,9 @@
-import {MoldHook, PreHookDefinition, SetItem} from './interfaces/MoldHook';
+import {MoldHook, PreHookDefinition} from './interfaces/MoldHook';
 import {ALL_ACTIONS} from '../shared/constants';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {SPECIAL_HOOKS} from './interfaces/SpecialSet';
 import {MoldResponse} from '../interfaces/MoldResponse';
+import {BaseHookTypes} from './interfaces/HookType';
 
 
 export function handleActions(
@@ -47,8 +48,8 @@ export function handlePreHookDefinition(
 }
 
 export function makeHooksDefinitions(
-  type: HookType,
-  hook: MoldHook | MoldHook[] | SetItem,
+  type: BaseHookTypes,
+  hook: MoldHook | MoldHook[],
   includeActions?: string[],
   excludeActions?: string[]
 ): PreHookDefinition[] {
@@ -65,7 +66,7 @@ export function makeHooksDefinitions(
     return result;
   }
   else {
-    return handlePreHookDefinition('before', hook, includeActions, excludeActions);
+    return [handlePreHookDefinition('before', hook, includeActions, excludeActions)];
   }
 }
 

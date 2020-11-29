@@ -1,4 +1,4 @@
-import {MoldHook, SetItem} from '../transform/interfaces/MoldHook';
+import {MoldHook, PreHookDefinition} from '../transform/interfaces/MoldHook';
 import {makeHooksDefinitions} from '../transform/hookHelpers';
 
 
@@ -10,10 +10,10 @@ import {makeHooksDefinitions} from '../transform/hookHelpers';
  * @param excludeActions - use all the actions exclude specified
  */
 export function beforeAll(
-  hook: MoldHook | MoldHook[] | SetItem,
+  hook: MoldHook | MoldHook[],
   includeActions?: string[],
   excludeActions?: string[]
-): SetItem {
+): PreHookDefinition[] {
   if (!hook) throw new Error(`Please set almost one hook`);
 
   return makeHooksDefinitions('before', hook, includeActions, excludeActions);
