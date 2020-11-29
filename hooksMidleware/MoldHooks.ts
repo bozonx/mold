@@ -1,13 +1,11 @@
-import {SPECIAL_HOOKS, SpecialSet} from './interfaces/SpecialSet';
+import {SpecialSet} from './interfaces/SpecialSet';
 import {GlobalContext, HookContext} from './interfaces/HookContext';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import {MoldRequest} from '../interfaces/MoldRequest';
-import {HookError} from '../shared/HookError';
 import {cloneDeepObject} from '../helpers/objects';
 import ContextApp from './ContextApp';
 import {SetsDefinition} from './interfaces/MoldHook';
 import {HookType} from './interfaces/HookType';
-import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 import {Sets} from './interfaces/Sets';
 import {prepareSets} from './prepareSets';
 import {REQUEST_STATUSES} from '../shared/constants';
@@ -15,9 +13,9 @@ import {MoldDocument} from '../interfaces/MoldDocument';
 import {validateRequest, validateResponse} from './hookHelpers';
 
 
-// TODO: string or Error on error
 // External request func.
-// on fatal error it has to throw a new HookError(code, message).
+// on fatal error it has to throw a new Error(message).
+// And then cycle will be interrupted and fatalError special branch will be started.
 export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>;
 
 
@@ -68,16 +66,13 @@ export default class MoldHooks {
       await this.startSpecialHooks('afterHooks', globalContext);
     }
     catch (e) {
-
-      // TODO: review
-
-      globalContext.error = this.parseError(e);
+      globalContext.fatalError = String(e);
 
       try {
-        await this.startSpecialHooks('error', globalContext);
+        await this.startSpecialHooks('fatalError', globalContext);
       }
       catch (e) {
-        globalContext.error = this.parseError(e);
+        globalContext.fatalError = String(e);
       }
     }
 
@@ -141,7 +136,7 @@ export default class MoldHooks {
       globalContext.request = hookContext.request;
       globalContext.response = hookContext.response;
       globalContext.shared = hookContext.shared;
-      globalContext.error = hookContext.error;
+      globalContext.fatalError = hookContext.fatalError;
     }
   }
 
@@ -149,8 +144,8 @@ export default class MoldHooks {
     return {
       request,
       response: undefined,
-      error: undefined,
       shared: {},
+      fatalError: undefined,
     }
   }
 
@@ -162,33 +157,13 @@ export default class MoldHooks {
     };
   }
 
-  // TODO: review
-  private parseError(e: HookError | Error): MoldErrorDefinition {
-    // if standard error
-    if (e instanceof HookError) {
-      return e.toPlainObject();
-    }
-    else {
-      return {
-        code: REQUEST_STATUSES.fatalError,
-        message: String(e),
-      }
-    }
-  }
-
-  /**
-   * Error means only request handling fatal error not error status in response.
-   * @param globalContext
-   * @private
-   */
   private makeResponse(globalContext: GlobalContext): MoldResponse {
-    if (globalContext.error) {
-      // TODO: review
-
+    if (globalContext.fatalError) {
+      // Error means only request handling fatal error not error status in response.
       return {
-        status: globalContext.error.code,
+        status: REQUEST_STATUSES.fatalError,
         success: false,
-        errors: [globalContext.error],
+        errors: [{code: REQUEST_STATUSES.fatalError, message: globalContext.fatalError}],
         result: null,
       }
     }

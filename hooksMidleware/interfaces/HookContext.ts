@@ -15,12 +15,11 @@ export interface GlobalContext {
   // there is a result of request. It is available only with "after" hooks.
   // You can modify it in after hooks
   response?: MoldResponse;
-  // TODO: string or Error
-  // This is only for "error" special branch
-  error?: MoldErrorDefinition;
   // This is for all the branches
   // use it for shared data between hooks during whole request life.
   shared: {[index: string]: any};
+  // This is only for "error" special branch. Only fatal error.
+  fatalError?: string;
 }
 
 /**
