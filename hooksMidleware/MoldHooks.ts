@@ -84,8 +84,15 @@ export default class MoldHooks {
 
   private async startRequest(globalContext: GlobalContext) {
     const request = cloneDeepObject(globalContext.request) as MoldRequest;
+    const rawResponse: MoldResponse = await this.requestFunc(request);
 
-    globalContext.response = cloneDeepObject(await this.requestFunc(request)) as any;
+    this.validateResponse(rawResponse);
+
+    globalContext.response = cloneDeepObject({
+      ...rawResponse,
+      errors: (typeof rawResponse.errors === 'undefined') ? null : rawResponse.errors,
+      result: (typeof rawResponse.result === 'undefined') ? null : rawResponse.result,
+    }) as MoldResponse;
   }
 
   private async startBeforeHooks(globalContext: GlobalContext) {
@@ -120,7 +127,7 @@ export default class MoldHooks {
 
   private async startSpecialHooks(specialSet: SpecialSet, globalContext: GlobalContext) {
     // do nothing because there arent any hooks
-    if (!this.sets[specialSet]) return;
+    if (!this.sets[specialSet] || !this.sets[specialSet].length) return;
 
     for (let hook of this.sets[specialSet]) {
       const hookContext = this.makeHookContext('special', globalContext);
@@ -161,11 +168,21 @@ export default class MoldHooks {
     else if (SPECIAL_HOOKS.includes(request.set)) {
       throw new Error(`Unappropriated set name "${request.set}"`);
     }
-    // else if (!this.sets.setsBefore[request.set] && !this.sets.setsAfter[request.set]) {
-    //   throw new Error(`Can't find set "${request.set}"`);
-    // }
   }
 
+  private validateResponse(response: MoldResponse) {
+    if (typeof response.status !== 'number') {
+      throw new Error(`Incorrect type of "status" of response`);
+    }
+    else if (typeof response.success !== 'boolean') {
+      throw new Error(`Incorrect type of "success" of response`);
+    }
+    else if (response.errors && !Array.isArray(response.errors)) {
+      throw new Error(`Incorrect type of "errors" of response`);
+    }
+  }
+
+  // TODO: review
   private parseError(e: HookError | Error): MoldErrorDefinition {
     // if standard error
     if (e instanceof HookError) {
@@ -179,6 +196,7 @@ export default class MoldHooks {
     }
   }
 
+  // TODO: review
   /**
    * Error means only request handling error not error status in response.
    * @param globalContext

@@ -6,7 +6,7 @@ import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
 
 
 /**
- * Context which is global for whole request handling life.
+ * Context which is global for whole request handling life cycle.
  */
 export interface GlobalContext {
   // in before hooks you can modify the request
