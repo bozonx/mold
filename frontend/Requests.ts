@@ -156,6 +156,7 @@ export default class Requests {
         pending: false,
         finishedOnce: true,
         success: false,
+        // TODO: review
         status: REQUEST_STATUSES.fatalError,
         errors: [{code: REQUEST_STATUSES.fatalError, message: String(e)}],
         // it doesn't clear previous result

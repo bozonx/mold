@@ -1,7 +1,7 @@
 import {MoldRequest} from '../../interfaces/MoldRequest';
 import {MoldResponse} from '../../interfaces/MoldResponse';
 import ContextApp from '../ContextApp';
-import {HookType} from './HookType';
+import {AllHookTypes} from './HookType';
 
 
 /**
@@ -26,5 +26,5 @@ export interface HookContext extends GlobalContext {
   // singleton to call some methods etc
   readonly app: ContextApp;
   // before request, after request and special hooks such as beforeRequest, error etc.
-  readonly type: HookType;
+  readonly type: AllHookTypes;
 }

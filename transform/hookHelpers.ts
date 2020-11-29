@@ -1,5 +1,4 @@
-import {MoldHook, PreHookDefinition} from './interfaces/MoldHook';
-import {HookType} from './interfaces/HookType';
+import {MoldHook, PreHookDefinition, SetItem} from './interfaces/MoldHook';
 import {ALL_ACTIONS} from '../shared/constants';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {SPECIAL_HOOKS} from './interfaces/SpecialSet';
@@ -11,6 +10,7 @@ export function handleActions(
   hook: MoldHook,
   onlyActions?: string[]
 ): PreHookDefinition[] {
+  // TODO: review
   if (!onlyActions) return [{
     type,
     action: ALL_ACTIONS,
@@ -33,7 +33,8 @@ export function handleActions(
 export function handlePreHookDefinition(
   type: HookType,
   preHook: MoldHook | PreHookDefinition,
-  onlyActions?: string[]
+  includeActions?: string[],
+  excludeActions?: string[]
 ): PreHookDefinition[] {
   if (typeof preHook === 'function') {
     // hook
@@ -42,6 +43,29 @@ export function handlePreHookDefinition(
   else {
     // hook definition
     return handleActions(type, preHook.hook, onlyActions);
+  }
+}
+
+export function makeHooksDefinitions(
+  type: HookType,
+  hook: MoldHook | MoldHook[] | SetItem,
+  includeActions?: string[],
+  excludeActions?: string[]
+): PreHookDefinition[] {
+  if (Array.isArray(hook)) {
+    let result: PreHookDefinition[] = [];
+
+    for (let item of hook) {
+      result = [
+        ...result,
+        ...handlePreHookDefinition('before', item, includeActions, excludeActions),
+      ]
+    }
+
+    return result;
+  }
+  else {
+    return handlePreHookDefinition('before', hook, includeActions, excludeActions);
   }
 }
 

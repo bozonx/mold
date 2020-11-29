@@ -1,5 +1,5 @@
 import {HookContext} from './HookContext';
-import {HookType} from './HookType';
+import {BaseHookTypes} from './HookType';
 
 
 /**
@@ -8,11 +8,11 @@ import {HookType} from './HookType';
 export type MoldHook = (context: HookContext) => Promise<void>;
 
 export interface PreHookDefinition {
-  readonly type: HookType;
+  // before or after
+  readonly type: BaseHookTypes;
   // action like find, get, ... or some custom.
   // Action "all" will be called with all the action branches
-  // Don't set it for special hook types
-  readonly action?: string;
+  readonly action: string;
   // hook callback itself
   readonly hook: MoldHook;
 }

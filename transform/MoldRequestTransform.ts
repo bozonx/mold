@@ -5,11 +5,11 @@ import {MoldRequest} from '../interfaces/MoldRequest';
 import {cloneDeepObject} from '../helpers/objects';
 import ContextApp from './ContextApp';
 import {SetsDefinition} from './interfaces/MoldHook';
-import {HookType} from './interfaces/HookType';
 import {Sets} from './interfaces/Sets';
 import {prepareSets} from './prepareSets';
 import {MoldDocument} from '../interfaces/MoldDocument';
 import {validateRequest, validateResponse} from './hookHelpers';
+import {AllHookTypes} from './interfaces/HookType';
 
 
 // External request func.
@@ -136,7 +136,7 @@ export default class MoldRequestTransform {
     }
   }
 
-  private makeHookContext(type: HookType, globalContext: GlobalContext): HookContext {
+  private makeHookContext(type: AllHookTypes, globalContext: GlobalContext): HookContext {
     return {
       app: this.contextApp,
       type,

@@ -1,32 +1,20 @@
-import {MoldHook, PreHookDefinition, SetItem} from '../transform/interfaces/MoldHook';
-import {handlePreHookDefinition} from '../transform/hookHelpers';
+import {MoldHook, SetItem} from '../transform/interfaces/MoldHook';
+import {makeHooksDefinitions} from '../transform/hookHelpers';
 
 
 /**
- * It will be called before request time and in all the actions branch.
+ * It will be called before request time and in all the actions branches.
  * Position of hook is certainly that which is in the set.
  * @param hook - one or several hooks
- * @param onlyActions - actions to use for this hooks
+ * @param includeActions - actions to use for this hooks
+ * @param excludeActions - use all the actions exclude specified
  */
 export function beforeAll(
   hook: MoldHook | MoldHook[] | SetItem,
-  onlyActions?: string[]
+  includeActions?: string[],
+  excludeActions?: string[]
 ): SetItem {
   if (!hook) throw new Error(`Please set almost one hook`);
 
-  if (Array.isArray(hook)) {
-    let result: PreHookDefinition[] = [];
-
-    for (let item of hook) {
-      result = [
-        ...result,
-        ...handlePreHookDefinition('before', item, onlyActions),
-      ]
-    }
-
-    return result;
-  }
-  else {
-    return handlePreHookDefinition('before', hook, onlyActions);
-  }
+  return makeHooksDefinitions('before', hook, includeActions, excludeActions);
 }
