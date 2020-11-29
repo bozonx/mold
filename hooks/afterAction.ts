@@ -1,5 +1,5 @@
 import {MoldHook, PreHookDefinition} from '../transform/interfaces/MoldHook';
-import {handlePreHookDefinition} from '../transform/hookHelpers';
+import {makeHooksDefinitions} from '../transform/hookHelpers';
 
 
 /**
@@ -7,23 +7,9 @@ import {handlePreHookDefinition} from '../transform/hookHelpers';
  */
 export function afterAction(
   action: string,
-  hook: MoldHook | MoldHook[] | SetItem
-): SetItem {
+  hook: MoldHook | MoldHook[]
+): PreHookDefinition[] {
   if (!hook) throw new Error(`Please set almost one hook`);
 
-  if (Array.isArray(hook)) {
-    let result: PreHookDefinition[] = [];
-
-    for (let item of hook) {
-      result = [
-        ...result,
-        ...handlePreHookDefinition('after', item, [action]),
-      ]
-    }
-
-    return result;
-  }
-  else {
-    return handlePreHookDefinition('after', hook, [action]);
-  }
+  return makeHooksDefinitions('after', hook, [action]);
 }
