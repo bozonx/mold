@@ -266,11 +266,19 @@ export default class PouchDbAdapter implements DbAdapter {
         _id: makeDbId(set, + id),
       };
     });
-    // TODO: обработать ошибку потомучто там своя ошибка
-    const bulkResult: (PutSuccess | ErrorResponse)[] = await this.pouchDb.bulkDocs(
-      preparedDocs,
-      query || {}
-    );
+
+    let bulkResult: (PutSuccess | ErrorResponse)[];
+
+    try {
+      bulkResult = await this.pouchDb.bulkDocs(
+        preparedDocs,
+        query || {}
+      );
+    }
+    catch (e) {
+      return makeErrorResponse(e);
+    }
+
     const {errors, result} = processBatchResult(
       preparedDocs.map(item => item.id),
       bulkResult
@@ -335,11 +343,18 @@ export default class PouchDbAdapter implements DbAdapter {
       _rev: item.value.rev,
       _deleted : true,
     }));
-    // TODO: обработать ошибку потомучто там своя ошибка
-    const bulkResult: (PutSuccess | ErrorResponse)[] = await this.pouchDb.bulkDocs(
-      preparedDocs,
-      query || {}
-    );
+    let bulkResult: (PutSuccess | ErrorResponse)[];
+
+    try {
+      bulkResult = await this.pouchDb.bulkDocs(
+        preparedDocs,
+        query || {}
+      );
+    }
+    catch (e) {
+      return makeErrorResponse(e);
+    }
+
     const {errors, result} = processBatchResult(ids, bulkResult);
 
     return {
