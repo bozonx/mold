@@ -25,7 +25,7 @@ import {
   PutSuccess
 } from './interfaces';
 import {SET_DELIMITER} from './constants';
-import {makeDbId, makeErrorResponse, processBatchResult} from './helpers';
+import {makeDbId, makeErrorResponse, makeBatchResponse} from './helpers';
 
 
 export default class PouchDbAdapter implements DbAdapter {
@@ -150,11 +150,7 @@ export default class PouchDbAdapter implements DbAdapter {
       status: 200,
       success: true,
       errors: null,
-      result: {
-        id,
-        // _id: result.id,
-        // _rev: result.rev,
-      },
+      result: { id },
     }
   }
 
@@ -199,10 +195,6 @@ export default class PouchDbAdapter implements DbAdapter {
       success: true,
       errors: null,
       result: null,
-      // result: {
-      //   _id: result.id,
-      //   _rev: result.rev,
-      // },
     }
 
   }
@@ -243,10 +235,6 @@ export default class PouchDbAdapter implements DbAdapter {
       success: true,
       errors: null,
       result: null,
-      // result: {
-      //   _id: result.id,
-      //   _rev: result.rev,
-      // },
     }
   }
 
@@ -266,7 +254,6 @@ export default class PouchDbAdapter implements DbAdapter {
         _id: makeDbId(set, + id),
       };
     });
-
     let bulkResult: (PutSuccess | ErrorResponse)[];
 
     try {
@@ -279,18 +266,7 @@ export default class PouchDbAdapter implements DbAdapter {
       return makeErrorResponse(e);
     }
 
-    const {errors, result} = processBatchResult(
-      preparedDocs.map(item => item.id),
-      bulkResult
-    );
-
-    return {
-      // TODO: какой статус в случае ошибки
-      status: 200,
-      success: Boolean(errors),
-      errors,
-      result,
-    }
+    return makeBatchResponse(preparedDocs.map(item => item.id), bulkResult);
   }
 
   async batchPatch(
@@ -298,27 +274,44 @@ export default class PouchDbAdapter implements DbAdapter {
     docs: MoldDocument[],
     query?: Record<string, any>
   ): Promise<MoldResponse<BatchResponse>> {
+    const ids: (string | number)[] = [];
     let findResult: FindSuccess;
 
-    // TODO: проверить если нет у элементов id - то ошибка
+    for (let doc of docs) {
+      if (typeof doc.id === 'undefined' || doc.id === null) {
+        throw new Error(`Document doesn't have an id: ${JSON.stringify(doc)}`);
+      }
+
+      ids.push(doc.id);
+    }
 
     try {
       findResult = await this.pouchDb.allDocs({
-        include_docs: false,
-        keys: docs.map((doc) => makeDbId(set, doc.id)),
+        include_docs: true,
+        keys: ids.map((docId) => makeDbId(set, docId)),
       });
     }
     catch (e) {
       return makeErrorResponse(e);
     }
 
-    const preparedDocs: PouchRecord[] = findResult.rows.map((item) => ({
-      _id: item.id,
-      _rev: item.value.rev,
+    const preparedDocs: (PouchRecord & MoldDocument)[] = findResult.rows.map((item, index) => ({
+      ...item.doc,
+      ...docs[index],
     }));
+    let bulkResult: (PutSuccess | ErrorResponse)[];
 
-    // TODO: see docs
+    try {
+      bulkResult = await this.pouchDb.bulkDocs(
+        preparedDocs,
+        query || {}
+      );
+    }
+    catch (e) {
+      return makeErrorResponse(e);
+    }
 
+    return makeBatchResponse(ids, bulkResult);
   }
 
   async batchDelete(
@@ -355,15 +348,7 @@ export default class PouchDbAdapter implements DbAdapter {
       return makeErrorResponse(e);
     }
 
-    const {errors, result} = processBatchResult(ids, bulkResult);
-
-    return {
-      // TODO: какой статус в случае ошибки
-      status: 200,
-      success: Boolean(errors),
-      errors,
-      result,
-    }
+    return makeBatchResponse(ids, bulkResult);
   }
 
   action(

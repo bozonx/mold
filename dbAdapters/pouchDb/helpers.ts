@@ -25,10 +25,10 @@ export function makeErrorResponse(
   }
 }
 
-export function processBatchResult(
+export function makeBatchResponse(
   docIds: (string | number)[],
   batchResult: (PutSuccess | ErrorResponse)[]
-): Pick<MoldResponse, 'errors'> & {result: BatchResponse} {
+): MoldResponse<BatchResponse> {
   const errors: MoldErrorDefinition[] = [];
   const successResult: (CreateResponse & {_index: number})[] = [];
 
@@ -36,20 +36,17 @@ export function processBatchResult(
     const errorItem = batchResult[index] as ErrorResponse;
 
     if (errorItem.error) {
-      errors.push({
-        code: errorItem.status,
-        message: errorItem.message,
-      });
+      errors.push({ code: errorItem.status, message: errorItem.message });
     }
     else {
-      successResult.push({
-        id: docIds[index],
-        _index: parseInt(index),
-      });
+      successResult.push({ id: docIds[index], _index: parseInt(index) });
     }
   }
 
   return {
+    // 207 means multi status
+    status: (errors) ? 207 : 200,
+    success: Boolean(errors),
     errors: (errors.length) ? errors : null,
     result: (successResult.length) ? successResult : null,
   };
