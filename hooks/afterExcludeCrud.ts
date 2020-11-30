@@ -5,7 +5,7 @@ import {makeHooksDefinitions} from '../transform/hookHelpers';
 /**
  * Position of hook is certainly that which is in the set.
  */
-export function afterExclude(
+export function afterExcludeCrud(
   hook: MoldHook | MoldHook[],
   excludeCrudActions: string[]
 ): PreHookDefinition[] {

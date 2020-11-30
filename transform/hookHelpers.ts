@@ -4,15 +4,18 @@ import {MoldRequest} from '../interfaces/MoldRequest';
 import {SPECIAL_HOOKS} from './interfaces/SpecialSet';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import {BaseHookTypes} from './interfaces/HookType';
+import {combineWhiteAndBlackLists} from '../helpers/common';
+import {HOOK_CRUD_ACTIONS} from './interfaces/HookCrudActions';
 
 
 export function handleActions(
   type: BaseHookTypes,
   hook: MoldHook,
-  includeActions?: string[],
-  excludeCrudActions?: string[]
+  includeActions: string[] = [],
+  excludeCrudActions: string[] = []
 ): PreHookDefinition[] {
-  if (!includeActions && !excludeCrudActions) {
+  // TODO: зачем так ??? может all указывать в самом beforeAll
+  if (!includeActions.length && !excludeCrudActions.length) {
     // if no white or black lists then it is for all the actions.
     return [{
       type,
@@ -21,21 +24,19 @@ export function handleActions(
     }];
   }
 
-  if (includeActions) {
-    const result: PreHookDefinition[] = [];
+  const actionList = combineWhiteAndBlackLists(
+    HOOK_CRUD_ACTIONS,
+    includeActions,
+    excludeCrudActions
+  );
 
-    for (let actionName of includeActions) {
-      result.push({
-        type,
-        action: actionName,
-        hook,
-      });
-    }
-
-    return result;
-  }
-
-  // TODO: что делать если есть exclude ???
+  return actionList.map((action) => {
+    return {
+      type,
+      action,
+      hook,
+    };
+  });
 }
 
 export function makeHooksDefinitions(
