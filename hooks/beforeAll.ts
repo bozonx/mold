@@ -7,14 +7,14 @@ import {makeHooksDefinitions} from '../transform/hookHelpers';
  * Position of hook is certainly that which is in the set.
  * @param hook - one or several hooks
  * @param includeActions - actions to use for this hooks
- * @param excludeActions - use all the actions exclude specified
+ * @param excludeCrudActions - use all the CRUD actions but exclude specified
  */
 export function beforeAll(
   hook: MoldHook | MoldHook[],
   includeActions?: string[],
-  excludeActions?: string[]
+  excludeCrudActions?: string[]
 ): PreHookDefinition[] {
   if (!hook) throw new Error(`Please set almost one hook`);
 
-  return makeHooksDefinitions('before', hook, includeActions, excludeActions);
+  return makeHooksDefinitions('before', hook, includeActions, excludeCrudActions);
 }

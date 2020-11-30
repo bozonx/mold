@@ -7,9 +7,9 @@ import {makeHooksDefinitions} from '../transform/hookHelpers';
  */
 export function beforeExclude(
   hook: MoldHook | MoldHook[],
-  excludeActions: string[]
+  excludeCrudActions: string[]
 ): PreHookDefinition[] {
   if (!hook) throw new Error(`Please set almost one hook`);
 
-  return makeHooksDefinitions('before', hook, undefined, excludeActions);
+  return makeHooksDefinitions('before', hook, undefined, excludeCrudActions);
 }

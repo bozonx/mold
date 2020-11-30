@@ -7,67 +7,57 @@ import {BaseHookTypes} from './interfaces/HookType';
 
 
 export function handleActions(
-  type: HookType,
+  type: BaseHookTypes,
   hook: MoldHook,
-  onlyActions?: string[]
-): PreHookDefinition[] {
-  // TODO: review
-  if (!onlyActions) return [{
-    type,
-    action: ALL_ACTIONS,
-    hook,
-  }];
-
-  const result: PreHookDefinition[] = [];
-
-  for (let actionName of onlyActions) {
-    result.push({
-      type: 'before',
-      action: actionName,
-      hook,
-    });
-  }
-
-  return result;
-}
-
-export function handlePreHookDefinition(
-  type: HookType,
-  preHook: MoldHook | PreHookDefinition,
   includeActions?: string[],
-  excludeActions?: string[]
+  excludeCrudActions?: string[]
 ): PreHookDefinition[] {
-  if (typeof preHook === 'function') {
-    // hook
-    return handleActions(type, preHook, onlyActions);
+  if (!includeActions && !excludeCrudActions) {
+    // if no white or black lists then it is for all the actions.
+    return [{
+      type,
+      action: ALL_ACTIONS,
+      hook,
+    }];
   }
-  else {
-    // hook definition
-    return handleActions(type, preHook.hook, onlyActions);
+
+  if (includeActions) {
+    const result: PreHookDefinition[] = [];
+
+    for (let actionName of includeActions) {
+      result.push({
+        type,
+        action: actionName,
+        hook,
+      });
+    }
+
+    return result;
   }
+
+  // TODO: что делать если есть exclude ???
 }
 
 export function makeHooksDefinitions(
   type: BaseHookTypes,
   hook: MoldHook | MoldHook[],
   includeActions?: string[],
-  excludeActions?: string[]
+  excludeCrudActions?: string[]
 ): PreHookDefinition[] {
   if (Array.isArray(hook)) {
     let result: PreHookDefinition[] = [];
 
-    for (let item of hook) {
+    for (let hookItem of hook) {
       result = [
         ...result,
-        ...handlePreHookDefinition('before', item, includeActions, excludeActions),
+        ...handleActions(type, hookItem, includeActions, excludeCrudActions),
       ]
     }
 
     return result;
   }
-  else {
-    return [handlePreHookDefinition('before', hook, includeActions, excludeActions)];
-  }
+
+  return handleActions(type, hook, includeActions, excludeCrudActions);
 }
 
 export function validateRequest(request: MoldRequest) {

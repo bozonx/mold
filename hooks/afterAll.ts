@@ -8,9 +8,9 @@ import {makeHooksDefinitions} from '../transform/hookHelpers';
 export function afterAll(
   hook: MoldHook | MoldHook[],
   includeActions?: string[],
-  excludeActions?: string[]
+  excludeCrudActions?: string[]
 ): PreHookDefinition[] {
   if (!hook) throw new Error(`Please set almost one hook`);
 
-  return makeHooksDefinitions('after', hook, includeActions, excludeActions);
+  return makeHooksDefinitions('after', hook, includeActions, excludeCrudActions);
 }
