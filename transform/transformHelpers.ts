@@ -1,35 +1,16 @@
 import {MoldHook, PreHookDefinition} from './interfaces/MoldHook';
-import {ALL_ACTIONS} from '../shared/constants';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {SPECIAL_HOOKS} from './interfaces/SpecialSet';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import {BaseHookTypes} from './interfaces/HookType';
-import {combineWhiteAndBlackLists} from '../helpers/common';
-import {HOOK_CRUD_ACTIONS} from './interfaces/HookCrudActions';
 
 
 export function handleActions(
   type: BaseHookTypes,
   hook: MoldHook,
-  includeActions: string[] = []
+  includeActions: string[]
 ): PreHookDefinition[] {
-  // TODO: зачем так ??? может all указывать в самом beforeAll
-  if (!includeActions.length && !excludeCrudActions.length) {
-    // if no white or black lists then it is for all the actions.
-    return [{
-      type,
-      action: ALL_ACTIONS,
-      hook,
-    }];
-  }
-
-  const actionList = combineWhiteAndBlackLists(
-    HOOK_CRUD_ACTIONS,
-    includeActions,
-    excludeCrudActions
-  );
-
-  return actionList.map((action) => {
+  return includeActions.map((action) => {
     return {
       type,
       action,
@@ -41,7 +22,7 @@ export function handleActions(
 export function makeHooksDefinitions(
   type: BaseHookTypes,
   hook: MoldHook | MoldHook[],
-  includeActions?: string[]
+  includeActions: string[] = []
 ): PreHookDefinition[] {
   if (Array.isArray(hook)) {
     let result: PreHookDefinition[] = [];

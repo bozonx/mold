@@ -1,5 +1,5 @@
 import {MoldHook, PreHookDefinition} from '../transform/interfaces/MoldHook';
-import {makeHooksDefinitions} from '../transform/hookHelpers';
+import {makeHooksDefinitions} from '../transform/transformHelpers';
 
 
 /**

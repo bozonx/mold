@@ -8,7 +8,7 @@ import {SetsDefinition} from './interfaces/MoldHook';
 import {Sets} from './interfaces/Sets';
 import {prepareSets} from './prepareSets';
 import {MoldDocument} from '../interfaces/MoldDocument';
-import {validateRequest, validateResponse} from './hookHelpers';
+import {validateRequest, validateResponse} from './transformHelpers';
 import {AllHookTypes} from './interfaces/HookType';
 
 

@@ -1,5 +1,5 @@
 import {MoldHook, PreHookDefinition} from '../transform/interfaces/MoldHook';
-import {makeHooksDefinitions} from '../transform/hookHelpers';
+import {makeHooksDefinitions} from '../transform/transformHelpers';
 import {HOOK_CRUD_ACTIONS} from '../transform/interfaces/HookCrudActions';
 import {filterBlackList} from '../helpers/common';
 
