@@ -4,9 +4,8 @@ import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestK
 import {ActionState,} from '../frontend/interfaces/ActionState';
 import {DEFAULT_BACKEND} from '../frontend/constants';
 import {MoldRequest} from '../interfaces/MoldRequest';
-import {omitObj} from './objects';
+import {omitObj, omitUndefined, sortObject} from './objects';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
-import {HOOK_CRUD_ACTIONS} from '../transform/interfaces/HookCrudActions';
 
 
 export function makeRequestKey(props: ActionProps): RequestKey {
@@ -14,11 +13,10 @@ export function makeRequestKey(props: ActionProps): RequestKey {
     props.backend || DEFAULT_BACKEND,
     props.set,
     props.action,
-    // TODO: отсортировать query
-    JSON.stringify({
+    JSON.stringify(omitUndefined({
       id: props.id,
-      query: props.query,
-    })
+      query: props.query && sortObject(props.query),
+    })),
   ];
 }
 

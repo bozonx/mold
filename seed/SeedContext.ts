@@ -23,6 +23,7 @@ export class SeedContext implements MoldSeedContext {
 
       if (result.success) return result;
 
+      // TODO: оно вообще так будет ???
       throw new Error(stringifyMoldError(result.errors));
     });
   }

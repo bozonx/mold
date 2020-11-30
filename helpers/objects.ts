@@ -2,6 +2,7 @@
  * Make a new object which doesn't include specified keys
  */
 import {cloneDeepArray} from './arrays';
+import {JsonTypes} from '../interfaces/Types';
 
 export function omitObj(obj: {[index: string]: any} | null | undefined, ...keysToExclude: string[]): {[index: string]: any} {
   if (!obj) return {};
@@ -114,4 +115,30 @@ export function mergeDeepObjects(
  */
 export function cloneDeepObject(obj?: {[index: string]: any}): {[index: string]: any} {
   return mergeDeepObjects({}, obj);
+}
+
+/**
+ * Sort keys of object recursively.
+ * Arrays won't be sorted.
+ */
+export function sortObject(preObj: Record<string, any>): Record<string, any> {
+  const sortedKeys = Object.keys(preObj).sort();
+  const result: Record<string, any> = {};
+
+  for (let key of sortedKeys) {
+    if (Array.isArray(preObj[key])) {
+      // don't sort arrays
+      result[key] = preObj[key];
+    }
+    else if (typeof preObj[key] === 'object') {
+      // sort recursively
+      result[key] = sortObject(preObj[key]);
+    }
+    else {
+      // other primitives
+      result[key] = preObj[key];
+    }
+  }
+
+  return result;
 }
