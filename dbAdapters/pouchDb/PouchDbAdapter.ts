@@ -46,12 +46,6 @@ export default class PouchDbAdapter implements DbAdapter {
       include_docs: true,
     });
 
-
-    // TODO: поидее нужно ожидать пока выполнится промис db created
-    this.pouchDb.on('created', () => {
-      // TODO: ожидать создания базы ??? или это выше нужно сделать ???
-    })
-
     this.pouchEventEmitter.on('change', this.handleChange);
     this.pouchEventEmitter.on('error', this.handleError);
   }
@@ -60,6 +54,13 @@ export default class PouchDbAdapter implements DbAdapter {
     this.events.destroy();
     this.pouchEventEmitter.cancel();
     await this.pouchDb.close();
+  }
+
+  async init() {
+    // TODO: поидее нужно ожидать пока выполнится промис db created
+    // this.pouchDb.on('created', () => {
+    //   // TODO: ожидать создания базы ??? или это выше нужно сделать ???
+    // })
   }
 
 

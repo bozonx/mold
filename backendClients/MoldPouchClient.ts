@@ -49,6 +49,8 @@ export default class MoldPouchClient implements BackendClient {
   $init(mold: Mold, backendName: string) {
     this.mold = mold;
     this.backendName = backendName;
+
+    await this.adapter.init();
   }
 
   destroy() {
