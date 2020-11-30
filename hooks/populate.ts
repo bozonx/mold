@@ -10,8 +10,6 @@ async function requestRelatedItem(
   relatedSet: string,
   relatedIdField: string,
 ): Promise<Record<string, any> | undefined> {
-  if (!context.response?.result || typeof id === 'undefined') return;
-
   const relatedResult: MoldResponse<ItemResponse> = await context.app.request({
     set: relatedSet,
     action: 'get',
@@ -33,16 +31,18 @@ async function populateItemHook(
   relatedIdField: string,
   populateField: string
 ) {
+  const id = context.response?.result.data?.[relatedIdField];
+
+  if (typeof id !== 'undefined' && id !== null) return;
+
   const relatedItem: Record<string, any> | undefined = await requestRelatedItem(
     context,
-    context.response?.result.data[relatedIdField],
+    id,
     relatedSet,
     relatedIdField,
   );
 
-  if (context.response && relatedItem) {
-    context.response.result.data[populateField] = relatedItem;
-  }
+  if (relatedItem) context.response!.result.data[populateField] = relatedItem;
 }
 
 async function populateFindHook(
@@ -50,25 +50,27 @@ async function populateFindHook(
   relatedSet: string,
   relatedIdField: string,
   populateField: string
-) {
+): Promise<void> {
   if (!context.response?.result) return;
 
   const findResponse: ListResponse = context.response.result;
 
   if (!findResponse.data) return;
 
-  // TODO: асинхронно
+  await Promise.all(findResponse.data.map(async (item) => {
+    const id = item[relatedIdField];
 
-  for (let item of findResponse.data) {
+    if (typeof id !== 'undefined' && id !== null) return;
+
     const relatedItem: Record<string, any> | undefined = await requestRelatedItem(
       context,
-      item[relatedIdField],
+      id,
       relatedSet,
       relatedIdField,
     );
 
     if (relatedItem) item[populateField] = relatedItem;
-  }
+  }));
 }
 
 
