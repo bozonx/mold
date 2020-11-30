@@ -1,5 +1,6 @@
 import {MoldHook, PreHookDefinition} from '../transform/interfaces/MoldHook';
 import {makeHooksDefinitions} from '../transform/hookHelpers';
+import {ALL_ACTIONS} from '../shared/constants';
 
 
 /**
@@ -7,13 +8,12 @@ import {makeHooksDefinitions} from '../transform/hookHelpers';
  */
 export function beforeAndAfterAll(
   hook: MoldHook | MoldHook[],
-  includeActions?: string[],
-  excludeCrudActions?: string[]
+  onlyActions: string[] = [ALL_ACTIONS]
 ): PreHookDefinition[] {
   if (!hook) throw new Error(`Please set almost one hook`);
 
   return [
-    ...makeHooksDefinitions('before', hook, includeActions, excludeCrudActions),
-    ...makeHooksDefinitions('after', hook, includeActions, excludeCrudActions),
+    ...makeHooksDefinitions('before', hook, onlyActions),
+    ...makeHooksDefinitions('after', hook, onlyActions),
   ];
 }

@@ -11,8 +11,7 @@ import {HOOK_CRUD_ACTIONS} from './interfaces/HookCrudActions';
 export function handleActions(
   type: BaseHookTypes,
   hook: MoldHook,
-  includeActions: string[] = [],
-  excludeCrudActions: string[] = []
+  includeActions: string[] = []
 ): PreHookDefinition[] {
   // TODO: зачем так ??? может all указывать в самом beforeAll
   if (!includeActions.length && !excludeCrudActions.length) {
@@ -42,8 +41,7 @@ export function handleActions(
 export function makeHooksDefinitions(
   type: BaseHookTypes,
   hook: MoldHook | MoldHook[],
-  includeActions?: string[],
-  excludeCrudActions?: string[]
+  includeActions?: string[]
 ): PreHookDefinition[] {
   if (Array.isArray(hook)) {
     let result: PreHookDefinition[] = [];
@@ -51,14 +49,14 @@ export function makeHooksDefinitions(
     for (let hookItem of hook) {
       result = [
         ...result,
-        ...handleActions(type, hookItem, includeActions, excludeCrudActions),
+        ...handleActions(type, hookItem, includeActions),
       ]
     }
 
     return result;
   }
 
-  return handleActions(type, hook, includeActions, excludeCrudActions);
+  return handleActions(type, hook, includeActions);
 }
 
 export function validateRequest(request: MoldRequest) {
