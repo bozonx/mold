@@ -2,7 +2,7 @@ import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import {ActionProps} from './interfaces/ActionProps';
 import Mold from './Mold';
 import {MoldResponse} from '../interfaces/MoldResponse';
-import {makeRequest, makeRequestKey, splitInstanceId} from '../helpers/common';
+import {makeRequest, makeRequestKey, splitInstanceId} from '../helpers/helpers';
 import {InstancesStore} from './InstancesStore';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {omitObj, omitUndefined} from '../helpers/objects';

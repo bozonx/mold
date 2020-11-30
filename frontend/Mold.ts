@@ -2,7 +2,7 @@ import {ActionProps} from './interfaces/ActionProps';
 import {ActionState} from './interfaces/ActionState';
 import StorageManager from './StorageManager';
 import BackendManager from './BackendManager';
-import {splitInstanceId} from '../helpers/common';
+import {splitInstanceId} from '../helpers/helpers';
 import PushesManager, {PushIncomeMessage} from './PushesManager';
 import {MoldProps} from './interfaces/MoldProps';
 import Requests from './Requests';

@@ -1,6 +1,6 @@
 import {MoldSeedContext} from '../interfaces/MoldSeedContext';
 import {DbAdapter} from '../interfaces/DbAdapter';
-import {stringifyMoldError} from '../helpers/common';
+import {stringifyMoldError} from '../helpers/helpers';
 
 
 export class SeedContext implements MoldSeedContext {
