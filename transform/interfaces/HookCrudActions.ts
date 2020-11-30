@@ -4,7 +4,7 @@ export type HookCrudActions = 'find'
   | 'patch'
   | 'delete';
 
-export const HOOK_CRUD_ACTIONS = [
+export const HOOK_CRUD_ACTIONS: HookCrudActions[] = [
   'find',
   'get',
   'create',

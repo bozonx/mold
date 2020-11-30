@@ -6,6 +6,7 @@ import {DEFAULT_BACKEND} from '../frontend/constants';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {omitObj} from './objects';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
+import {HOOK_CRUD_ACTIONS} from '../transform/interfaces/HookCrudActions';
 
 
 export function makeRequestKey(props: ActionProps): RequestKey {
@@ -77,35 +78,49 @@ export function stringifyMoldError(errors?: MoldErrorDefinition[] | null): strin
   return errors.map((item) => `${item.code}: ${item.message}`).join(', ');
 }
 
-export function combineWhiteAndBlackLists(
-  allItems: string[],
-  whiteList: string[],
-  blackList: string[]
-): string[] {
-  if (!whiteList.length && !blackList.length) return [];
-  // only white
-  if (whiteList.length && !blackList.length) {
-    // TODO: по хорошему нужно фильтрануть allItems
-    return whiteList;
-  }
-  // only black list
-  if (!whiteList.length && blackList.length) {
-    const result: string[] = [];
-    // TODO: better to use kind of interception function
-    for (let item of allItems) {
-      if (!blackList.includes(item)) result.push(item);
-    }
+export function filterBlackList(allItems: string[], blackList: string[] = []): string[] {
+  if (!blackList || !blackList.length) return allItems;
 
-    return result;
-  }
+  let whiteList: string[] = [];
 
-  // and black and white - filter white list
-  const result: string[] = [];
-  // TODO: по хорошему нужно фильтрануть allItems
   // TODO: better to use kind of interception function
-  for (let item of whiteList) {
-    if (!blackList.includes(item)) result.push(item);
+  for (let item of allItems) {
+    if (!blackList.includes(item)) whiteList.push(item);
   }
 
-  return result;
+  return whiteList;
 }
+
+
+// export function combineWhiteAndBlackLists(
+//   allItems: string[],
+//   whiteList: string[],
+//   blackList: string[]
+// ): string[] {
+//   if (!whiteList.length && !blackList.length) return [];
+//   // only white
+//   if (whiteList.length && !blackList.length) {
+//     // TODO: по хорошему нужно фильтрануть allItems
+//     return whiteList;
+//   }
+//   // only black list
+//   if (!whiteList.length && blackList.length) {
+//     const result: string[] = [];
+//     // TODO: better to use kind of interception function
+//     for (let item of allItems) {
+//       if (!blackList.includes(item)) result.push(item);
+//     }
+//
+//     return result;
+//   }
+//
+//   // and black and white - filter white list
+//   const result: string[] = [];
+//   // TODO: по хорошему нужно фильтрануть allItems
+//   // TODO: better to use kind of interception function
+//   for (let item of whiteList) {
+//     if (!blackList.includes(item)) result.push(item);
+//   }
+//
+//   return result;
+// }
