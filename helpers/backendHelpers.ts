@@ -58,8 +58,11 @@ export function callAdapterRequestAction(
         request.query,
       );
     default:
-      throw new Error(
-        `Mold adapters doesn't support custom actions especially "${request.action}"`
-      );
+
+      // TODO: call custom action
+
+      // throw new Error(
+      //   `Mold adapters doesn't support custom actions especially "${request.action}"`
+      // );
   }
 }

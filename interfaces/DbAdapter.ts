@@ -87,8 +87,16 @@ export interface DbAdapter {
     query?: Record<string, any>
   ): Promise<MoldResponse<null>>;
 
+  action(
+    set: string,
+    actionName: string,
+    query?: Record<string, any>,
+    data?: Record<string, any>,
+  ): Promise<MoldResponse>;
+
 
   // TODO: add migration methods
+  // TODO: может это делать транзакциями ???
 
   getField(): Promise<void>;
   hasField(): Promise<boolean>;

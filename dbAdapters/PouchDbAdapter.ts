@@ -312,17 +312,23 @@ export default class PouchDbAdapter implements DbAdapter {
     query?: Record<string, any>
   ): Promise<MoldResponse<CreateResponse[]>> {
     const preparedDocs = docs.map((doc) => {
-      const id: string = (typeof doc.id === 'undefined') ? makeUniqId() : doc.id;
+      const id: string | number = (typeof doc.id === 'undefined' || doc.id === null)
+        ? makeUniqId()
+        : doc.id;
 
       return {
-        _id: set + SET_DELIMITER + id,
-        ...omitObj(doc, id),
+        ...omitObj(doc, 'id'),
+        id,
+        _id: makeDbId(set, + id),
       };
     });
     const result: (PutSuccess | ErrorResponse)[] = await this.pouchDb.bulkDocs(
       preparedDocs,
       query || {}
     );
+
+    // TODO: strong review !!!
+
     const errors: MoldErrorDefinition[] = [];
     const successResult: CreateResponse[] = [];
 
@@ -388,40 +394,54 @@ export default class PouchDbAdapter implements DbAdapter {
     // TODO: сначала запросить эти доки, потом удалить все сразу
   }
 
+  action(
+    set: string,
+    actionName: string,
+    query?: Record<string, any>,
+    data?: Record<string, any>,
+  ): Promise<MoldResponse> {
+    throw new Error(`PouchDbAdapter: doesn't support custom actions`);
+  }
+
+
   async getField(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support thw getField method`);
+    throw new Error(`PouchDbAdapter: doesn't support the getField method`);
   }
   async hasField(): Promise<boolean> {
-    throw new Error(`PouchDbAdapter: doesn't support thw hasField method`);
+    throw new Error(`PouchDbAdapter: doesn't support the hasField method`);
   }
   async createField(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support thw createField method`);
+    throw new Error(`PouchDbAdapter: doesn't support the createField method`);
   }
   async updateField(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support thw updateField method`);
+    throw new Error(`PouchDbAdapter: doesn't support the updateField method`);
   }
   async deleteField(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support thw deleteField method`);
+    throw new Error(`PouchDbAdapter: doesn't support the deleteField method`);
   }
 
   async getSet(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support thw getSet method`);
+    throw new Error(`PouchDbAdapter: doesn't support the getSet method`);
   }
   async hasSet(): Promise<boolean> {
-    throw new Error(`PouchDbAdapter: doesn't support thw hasSet method`);
+    throw new Error(`PouchDbAdapter: doesn't support the hasSet method`);
   }
   async createSet(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support thw createSet method`);
+    throw new Error(`PouchDbAdapter: doesn't support the createSet method`);
   }
   async renameSet(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support thw renameSet method`);
+    throw new Error(`PouchDbAdapter: doesn't support the renameSet method`);
   }
   async deleteSet(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support thw deleteSet method`);
+    throw new Error(`PouchDbAdapter: doesn't support the deleteSet method`);
   }
 
   onRecordChange(cb: RecordChangeHandler): number {
     return this.events.addListener(DB_ADAPTER_EVENTS.change, cb);
+  }
+
+  onError(cb: (error: string) => void) {
+    return this.events.addListener(DB_ADAPTER_EVENTS.error, cb);
   }
 
   removeListener(handlerIndex: number) {
@@ -444,7 +464,6 @@ export default class PouchDbAdapter implements DbAdapter {
     }
   }
 
-
   private handleChange = (change: PouchChangeResult) => {
     const [set] = change.id.split(SET_DELIMITER);
     let eventType: DB_ADAPTER_EVENT_TYPES = DB_ADAPTER_EVENT_TYPES.updated;
@@ -455,73 +474,17 @@ export default class PouchDbAdapter implements DbAdapter {
     }
     else {
       // else was put
-      const [revNum, rest] = change.changes[0].rev.split('-');
+      const [revNum] = change.changes[0].rev.split('-');
       // 1 is the first insert
       if (revNum === '1') eventType = DB_ADAPTER_EVENT_TYPES.created;
     }
 
-    this.events.emit(DB_ADAPTER_EVENTS.change, set, id, eventType);
+    this.events.emit(DB_ADAPTER_EVENTS.change, set, change.doc.id, eventType);
   }
 
   private handleError = (error: string) => {
     // This event is fired when the changes feed is stopped due to an unrecoverable failure.
-    // TODO: what to do on error ????
-    // TODO: это просто внутренние ошибки, можно вывести в консоль
-
-    console.log(88888888, error)
+    this.events.emit(DB_ADAPTER_EVENTS.error, error);
   }
 
 }
-
-// async getDb(dbName: string): Promise<DbAdapterDbInstance> {
-//   if (!this.pouchDbInstances[dbName]) {
-//
-//     // TODO: если база не существует то ошибка
-//
-//     const pouchDb = new PouchDB(dbName);
-//
-//     this.pouchDbInstances[dbName] = new DbInstance(pouchDb);
-//   }
-//
-//   // TODO: создать инстанс
-//
-//   return this.pouchDbInstances[dbName];
-// }
-//
-// async hasDb(dbName: string): Promise<boolean> {
-//
-//   // TODO: не правильно !!! проверить саму базу
-//
-//   return Boolean(this.pouchDbInstances[dbName]);
-// }
-//
-// async createDb(dbName: string): Promise<void> {
-//   // TODO: если база существует - то ошибка
-//   // if (!this.pouchDbInstances[dbName]) {
-//   //   throw new Error(`Can't find pouch data base "${dbName}"`)
-//   // }
-//
-//   const pouchDb = new PouchDB(dbName);
-//
-//   this.pouchDbInstances[dbName] = new DbInstance(pouchDb);
-// }
-//
-// async renameDb(dbName: string, newName: string): Promise<void> {
-//
-//   // TODO: do rename
-//
-// }
-//
-// async deleteDb(dbName: string): Promise<void> {
-//   if (!this.pouchDbInstances[dbName]) {
-//     throw new Error(`Can't find pouch data base "${dbName}"`)
-//   }
-//
-//   // TODO: cal delete pouch
-//
-//   // await db.destroy();
-//
-//   await this.pouchDbInstances[dbName].destroy();
-//
-//   delete this.pouchDbInstances[dbName];
-// }

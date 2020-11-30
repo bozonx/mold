@@ -39,6 +39,7 @@ export default class MoldPouchClient implements BackendClient {
     this.adapter = new PouchDbAdapter(props.pouchDb);
 
     this.adapter.onRecordChange(this.handleRecordChange);
+    this.adapter.onError(this.mold.log.error);
 
     // TODO: use schema
     // TODO: validate props
