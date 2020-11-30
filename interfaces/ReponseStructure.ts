@@ -13,4 +13,4 @@ export interface ItemResponse<T = MoldDocument> {
   data: T | null;
 }
 
-export type CreateResponse = MoldDocument;
+export type CreateResponse = { id: string | number };

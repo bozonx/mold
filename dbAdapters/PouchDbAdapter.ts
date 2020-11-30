@@ -12,6 +12,9 @@ import {omitObj} from '../helpers/objects';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
 import {CreateResponse, ItemResponse, ListResponse} from '../interfaces/ReponseStructure';
 import IndexedEventEmitter from '../helpers/IndexedEventEmitter';
+import {FindQuery} from '../interfaces/FindQuery';
+import {GetQuery} from '../interfaces/GetQuery';
+import {MoldDocument} from '../interfaces/MoldDocument';
 
 
 interface PouchRecord {
@@ -130,11 +133,10 @@ export default class PouchDbAdapter implements DbAdapter {
   }
 
 
-  async find(
-    set: string,
-    query: Record<string, any>
-  ): Promise<MoldResponse<ListResponse>> {
+  async find(set: string, query: FindQuery): Promise<MoldResponse<ListResponse>> {
     let result: FindSuccess;
+
+    // TODO: handle page, perPage
 
     try {
       result = await this.pouchDb.allDocs({
@@ -170,11 +172,7 @@ export default class PouchDbAdapter implements DbAdapter {
     }
   }
 
-  async get(
-    set: string,
-    id: string | number,
-    query?: Record<string, any>
-  ): Promise<MoldResponse<ItemResponse>> {
+  async get(set: string, query: GetQuery): Promise<MoldResponse<ItemResponse>> {
     let result: GetSuccess;
 
     try {
@@ -196,7 +194,7 @@ export default class PouchDbAdapter implements DbAdapter {
 
   async create(
     set: string,
-    data: Record<string, any>,
+    data: Partial<MoldDocument>,
     query?: Record<string, any>
   ): Promise<MoldResponse<CreateResponse>> {
     let result: PutSuccess;
@@ -227,10 +225,9 @@ export default class PouchDbAdapter implements DbAdapter {
 
   async patch(
     set: string,
-    id: string | number,
-    partialData: Record<string, any>,
+    partialData: MoldDocument,
     query?: Record<string, any>
-  ): Promise<MoldResponse> {
+  ): Promise<MoldResponse<null>> {
     let getResult: GetSuccess;
     const fullId = set + SET_DELIMITER + id;
 
@@ -270,7 +267,7 @@ export default class PouchDbAdapter implements DbAdapter {
     set: string,
     id: string | number,
     query?: Record<string, any>
-  ): Promise<MoldResponse> {
+  ): Promise<MoldResponse<null>> {
     let getResult: GetSuccess;
 
     try {
@@ -302,7 +299,7 @@ export default class PouchDbAdapter implements DbAdapter {
 
   async batchCreate(
     set: string,
-    docs: Record<string, any>[],
+    docs: Partial<MoldDocument>[],
     query?: Record<string, any>
   ): Promise<MoldResponse<CreateResponse[]>> {
     const preparedDocs = docs.map((doc) => {
@@ -351,9 +348,9 @@ export default class PouchDbAdapter implements DbAdapter {
 
   async batchPatch(
     set: string,
-    docs: {id: string | number, [index: string]: any}[],
+    docs: MoldDocument[],
     query?: Record<string, any>
-  ): Promise<MoldResponse> {
+  ): Promise<MoldResponse<null>> {
 
     // TODO: see docs
 
@@ -363,7 +360,7 @@ export default class PouchDbAdapter implements DbAdapter {
     set: string,
     ids: (string | number)[],
     query?: Record<string, any>
-  ): Promise<MoldResponse> {
+  ): Promise<MoldResponse<null>> {
     let findResult: FindSuccess;
 
     try {

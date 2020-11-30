@@ -1,11 +1,13 @@
 import {MoldResponse} from './MoldResponse';
 import {CreateResponse, ItemResponse, ListResponse} from './ReponseStructure';
 import {MoldDocument} from './MoldDocument';
+import {FindQuery} from './FindQuery';
+import {GetQuery} from './GetQuery';
 
 
 /**
- * * created - means the item is totally new and an id was generated.
- * * update - it is put or patch. Id hasn't been changed.
+ * * created - means the item is totally new.
+ * * update - it is put(means replace) or patch. Id hasn't been changed.
  * * deleted - item has been deleted.
  */
 export enum DB_ADAPTER_EVENT_TYPES {
@@ -30,41 +32,43 @@ export const DB_ADAPTER_EVENTS = {
 export interface DbAdapter {
   destroy(): Promise<void>;
 
-  find(
-    set: string,
-    query: Record<string, any>
-  ): Promise<MoldResponse<ListResponse>>;
+  /**
+   * Request several items by query
+   */
+  find(set: string, query: FindQuery): Promise<MoldResponse<ListResponse>>;
 
-  get(
-    set: string,
-    // TODO: наверное тут и везде id должны быть строкой
-    id: string | number,
-    query?: Record<string, any>
-  ): Promise<MoldResponse<ItemResponse>>;
+  /**
+   * Request one item usually by id
+   */
+  get(set: string, query: GetQuery): Promise<MoldResponse<ItemResponse>>;
 
   create(
     set: string,
-    data: Record<string, any>,
+    // it can have an id or not
+    data: Partial<MoldDocument>,
     query?: Record<string, any>
   ): Promise<MoldResponse<CreateResponse>>;
 
   patch(
     set: string,
-    // TODO: зачем тут id ??? лучше наверное указывать в data
-    id: string | number,
-    partialData: Record<string, any>,
+    // set id here and some partial data to be changed.
+    partialData: MoldDocument,
     query?: Record<string, any>
-  ): Promise<MoldResponse>;
+  ): Promise<MoldResponse<null>>;
 
+  /**
+   * Hard delete
+   */
   delete(
     set: string,
     id: string | number,
     query?: Record<string, any>
-  ): Promise<MoldResponse>;
+  ): Promise<MoldResponse<null>>;
 
   batchCreate(
     set: string,
-    docs: Record<string, any>[],
+    // it can have an id or not
+    docs: Partial<MoldDocument>[],
     query?: Record<string, any>
   ): Promise<MoldResponse<CreateResponse[]>>;
 
@@ -72,13 +76,19 @@ export interface DbAdapter {
     set: string,
     docs: MoldDocument[],
     query?: Record<string, any>
-  ): Promise<MoldResponse>;
+  ): Promise<MoldResponse<null>>;
 
+  /**
+   * Batch hard delete
+   */
   batchDelete(
     set: string,
     ids: (string | number)[],
     query?: Record<string, any>
-  ): Promise<MoldResponse>;
+  ): Promise<MoldResponse<null>>;
+
+
+  // TODO: add migration methods
 
   getField(): Promise<void>;
   hasField(): Promise<boolean>;
@@ -95,9 +105,4 @@ export interface DbAdapter {
   onRecordChange(cb: RecordChangeHandler): number;
   removeListener(handlerIndex: number);
 
-  // getDb(dbName: string): Promise<DbAdapterDbInstance>;
-  // hasDb(dbName: string): Promise<boolean>;
-  // createDb(dbName: string): Promise<void>;
-  // renameDb(dbName: string, newName: string): Promise<void>;
-  // deleteDb(dbName: string): Promise<void>;
 }

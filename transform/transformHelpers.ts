@@ -71,6 +71,7 @@ export function parseSetHooks(
   setName: string,
   definitions: PreHookDefinition[][]
 ): Pick<Sets, 'setsAfter'> & Pick<Sets, 'setsBefore'> {
+  // TODO: неправильно !!!
   const result = {
     setsAfter: {},
     setsBefore: {},
