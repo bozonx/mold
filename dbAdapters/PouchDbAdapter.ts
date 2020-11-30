@@ -16,6 +16,7 @@ import {FindQuery} from '../interfaces/FindQuery';
 import {GetQuery} from '../interfaces/GetQuery';
 import {MoldDocument} from '../interfaces/MoldDocument';
 import {convertPageToOffset} from '../helpers/common';
+import {httpStatusMessage} from '../helpers/http';
 
 
 interface PouchRecord {
@@ -78,6 +79,10 @@ interface PouchEventEmitter {
 
 const SET_DELIMITER = '/';
 
+function makeDbId(set: string, id: string | number): string {
+  return set + SET_DELIMITER + id;
+}
+
 
 export default class PouchDbAdapter implements DbAdapter {
   pouchDb: PouchDB;
@@ -122,7 +127,6 @@ export default class PouchDbAdapter implements DbAdapter {
         include_docs: true,
         startkey: set + SET_DELIMITER,
         endkey: set + SET_DELIMITER + '\ufff0',
-
         // TODO: вроде это не эффективный способ, нужно наверное view использовать
         ...convertPageToOffset(query.page, query.perPage),
         ...query,
@@ -137,11 +141,9 @@ export default class PouchDbAdapter implements DbAdapter {
       success: true,
       errors: null,
       result: {
-        // TODO: на самом деле это вообще все записи в базе
+        // TODO: расчитать все
         count: -1,
-        // TODO: расчитать
         hasNext: false,
-        // TODO: расчитать
         hasPrev: false,
         data: result.rows.map((item): MoldDocument => item.doc as any),
       },
@@ -157,7 +159,7 @@ export default class PouchDbAdapter implements DbAdapter {
 
     try {
       result = await this.pouchDb.get(
-        set + SET_DELIMITER + query.id,
+        makeDbId(set, query.id),
         omitObj(query, 'id')
       );
     }
@@ -181,17 +183,23 @@ export default class PouchDbAdapter implements DbAdapter {
     query?: Record<string, any>
   ): Promise<MoldResponse<CreateResponse>> {
     let result: PutSuccess;
-    const id: string = makeUniqId();
+    const id: string | number = (typeof data.id === 'undefined' || data.id === null)
+      ? makeUniqId()
+      : data.id;
 
     try {
       result = await this.pouchDb.put({
-        _id: set + SET_DELIMITER + id,
-        id,
         ...data,
+        id,
+        _id: makeDbId(set, id),
       }, query || {});
     }
     catch (e) {
       return this.makeErrorResponse(e);
+    }
+
+    if (!result.ok) {
+      return this.makeErrorResponse({status: 500});
     }
 
     return {
@@ -211,9 +219,13 @@ export default class PouchDbAdapter implements DbAdapter {
     partialData: MoldDocument,
     query?: Record<string, any>
   ): Promise<MoldResponse<null>> {
-    let getResult: GetSuccess;
-    const fullId = set + SET_DELIMITER + id;
+    if (typeof partialData.id === 'undefined' || partialData.id === null) {
+      throw new Error(`Id of document hasn't been set`);
+    }
 
+    const fullId = makeDbId(set, partialData.id);
+    let getResult: GetSuccess;
+    // first get full document
     try {
       getResult = await this.pouchDb.get(fullId);
     }
@@ -234,16 +246,19 @@ export default class PouchDbAdapter implements DbAdapter {
       return this.makeErrorResponse(e);
     }
 
-    // TODO: в ответе проверить ok
+    if (!result.ok) {
+      return this.makeErrorResponse({status: 500});
+    }
 
     return {
       status: 200,
       success: true,
       errors: null,
-      result: {
-        _id: result.id,
-        _rev: result.rev,
-      },
+      result: null,
+      // result: {
+      //   _id: result.id,
+      //   _rev: result.rev,
+      // },
     }
 
   }
@@ -407,11 +422,17 @@ export default class PouchDbAdapter implements DbAdapter {
   }
 
 
-  private makeErrorResponse(dbErrorResponse: ErrorResponse): MoldResponse {
+  private makeErrorResponse(
+    dbErrorResponse: Pick<ErrorResponse, 'status'> & Partial<Pick<ErrorResponse, 'message'>>
+  ): MoldResponse {
+    const message: string = (dbErrorResponse.message)
+      ? dbErrorResponse.message
+      : httpStatusMessage(dbErrorResponse.status)
+
     return {
       status: dbErrorResponse.status,
       success: false,
-      errors: [{code: dbErrorResponse.status, message: dbErrorResponse.message}],
+      errors: [{code: dbErrorResponse.status, message}],
       result: null,
     }
   }
