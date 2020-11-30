@@ -6,7 +6,7 @@ import Mold from '../frontend/Mold';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {SetsDefinition} from '../transform/interfaces/MoldHook';
 import MoldRequestTransform from '../transform/MoldRequestTransform';
-import PouchDbAdapter from '../dbAdapters/PouchDbAdapter';
+import PouchDbAdapter from '../dbAdapters/pouchDb/PouchDbAdapter';
 import {callAdapterRequestAction} from '../helpers/backendHelpers';
 import {MoldSchema} from '../interfaces/MoldSchema';
 import {DB_ADAPTER_EVENT_TYPES} from '../interfaces/DbAdapter';

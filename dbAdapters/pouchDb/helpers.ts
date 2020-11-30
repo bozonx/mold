@@ -1,0 +1,57 @@
+import {MoldResponse} from '../../interfaces/MoldResponse';
+import {httpStatusMessage} from '../../helpers/http';
+import {CreateResponse} from '../../interfaces/ReponseStructure';
+import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
+import {SET_DELIMITER} from './constants';
+import {ErrorResponse, PutSuccess} from './interfaces';
+
+
+export function makeDbId(set: string, id: string | number): string {
+  return set + SET_DELIMITER + id;
+}
+
+export function makeErrorResponse(
+  dbErrorResponse: Pick<ErrorResponse, 'status'> & Partial<Pick<ErrorResponse, 'message'>>
+): MoldResponse {
+  const message: string = (dbErrorResponse.message)
+    ? dbErrorResponse.message
+    : httpStatusMessage(dbErrorResponse.status)
+
+  return {
+    status: dbErrorResponse.status,
+    success: false,
+    errors: [{code: dbErrorResponse.status, message}],
+    result: null,
+  }
+}
+
+export function processBatchResult(
+  docIds: (string | number)[],
+  batchResult: (PutSuccess | ErrorResponse)[]
+): Pick<MoldResponse, 'errors'> & {result: (CreateResponse & {_index: number})[] | null} {
+  const errors: MoldErrorDefinition[] = [];
+  const successResult: (CreateResponse & {_index: number})[] = [];
+
+  for (let index in batchResult) {
+    const errorItem = batchResult[index] as ErrorResponse;
+
+    if (errorItem.error) {
+      errors.push({
+        code: errorItem.status,
+        message: errorItem.message,
+      });
+    }
+    else {
+      //const successItem = result[index] as PutSuccess;
+      successResult.push({
+        id: docIds[index],
+        _index: parseInt(index),
+      });
+    }
+  }
+
+  return {
+    errors: (errors.length) ? errors : null,
+    result: (successResult.length) ? successResult : null,
+  };
+}

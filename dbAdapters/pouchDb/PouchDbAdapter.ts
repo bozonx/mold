@@ -5,83 +5,27 @@ import {
   DB_ADAPTER_EVENTS,
   DbAdapter,
   RecordChangeHandler
-} from '../interfaces/DbAdapter';
-import {MoldResponse} from '../interfaces/MoldResponse';
-import {makeUniqId} from '../helpers/uniqId';
-import {omitObj} from '../helpers/objects';
-import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
-import {CreateResponse, ItemResponse, ListResponse} from '../interfaces/ReponseStructure';
-import IndexedEventEmitter from '../helpers/IndexedEventEmitter';
-import {FindQuery} from '../interfaces/FindQuery';
-import {GetQuery} from '../interfaces/GetQuery';
-import {MoldDocument} from '../interfaces/MoldDocument';
-import {convertPageToOffset} from '../helpers/common';
-import {httpStatusMessage} from '../helpers/http';
-
-
-interface PouchRecord {
-  _id: string;
-  _rev: string;
-  [index: string]: any;
-}
-
-interface FindSuccess {
-  offset: number;
-  length: number;
-  // the total number of ALL! non-deleted documents in the database
-  total_rows: number;
-  rows: {
-    // full id in db
-    id: string;
-    key: string;
-    value: {rev: string};
-    doc: PouchRecord;
-  }[];
-}
-
-type GetSuccess = PouchRecord;
-
-interface PutSuccess {
-  id: string;
-  ok: boolean;
-  rev: string;
-}
-
-type DeleteSuccess = PutSuccess;
-
-interface ErrorResponse {
-  // it seems that it always true
-  error: boolean;
-  // full message
-  message: string,
-  // status unique name such as not_found
-  name: string;
-  // status text
-  reason: string;
-  // like 404
-  status: number;
-}
-
-interface PouchChangeResult {
-  // full id of document
-  id: string;
-  changes: {rev: string}[];
-  deleted?: boolean;
-  seq: number;
-  doc: Record<string, any>;
-}
-
-interface PouchEventEmitter {
-  cancel();
-  on(eventName: 'change', cb: (change: PouchChangeResult) => void);
-  on(eventName: 'error', cb: (error: string) => void);
-}
-
-const SET_DELIMITER = '/';
-
-function makeDbId(set: string, id: string | number): string {
-  return set + SET_DELIMITER + id;
-}
+} from '../../interfaces/DbAdapter';
+import {MoldResponse} from '../../interfaces/MoldResponse';
+import {makeUniqId} from '../../helpers/uniqId';
+import {omitObj} from '../../helpers/objects';
+import {CreateResponse, ItemResponse, ListResponse} from '../../interfaces/ReponseStructure';
+import IndexedEventEmitter from '../../helpers/IndexedEventEmitter';
+import {FindQuery} from '../../interfaces/FindQuery';
+import {GetQuery} from '../../interfaces/GetQuery';
+import {MoldDocument} from '../../interfaces/MoldDocument';
+import {convertPageToOffset} from '../../helpers/common';
+import {
+  DeleteSuccess,
+  ErrorResponse,
+  FindSuccess,
+  GetSuccess,
+  PouchChangeResult,
+  PouchEventEmitter,
+  PutSuccess
+} from './interfaces';
+import {SET_DELIMITER} from './constants';
+import {makeDbId, makeErrorResponse, processBatchResult} from './helpers';
 
 
 export default class PouchDbAdapter implements DbAdapter {
@@ -164,7 +108,7 @@ export default class PouchDbAdapter implements DbAdapter {
       );
     }
     catch (e) {
-      return this.makeErrorResponse(e);
+      return makeErrorResponse(e);
     }
 
     return {
@@ -195,11 +139,11 @@ export default class PouchDbAdapter implements DbAdapter {
       }, query || {});
     }
     catch (e) {
-      return this.makeErrorResponse(e);
+      return makeErrorResponse(e);
     }
 
     if (!result.ok) {
-      return this.makeErrorResponse({status: 500});
+      return makeErrorResponse({status: 500});
     }
 
     return {
@@ -230,7 +174,7 @@ export default class PouchDbAdapter implements DbAdapter {
       getResult = await this.pouchDb.get(fullId);
     }
     catch (e) {
-      return this.makeErrorResponse(e);
+      return makeErrorResponse(e);
     }
 
     let result: PutSuccess;
@@ -243,11 +187,11 @@ export default class PouchDbAdapter implements DbAdapter {
       }, query || {});
     }
     catch (e) {
-      return this.makeErrorResponse(e);
+      return makeErrorResponse(e);
     }
 
     if (!result.ok) {
-      return this.makeErrorResponse({status: 500});
+      return makeErrorResponse({status: 500});
     }
 
     return {
@@ -278,7 +222,7 @@ export default class PouchDbAdapter implements DbAdapter {
       getResult = await this.pouchDb.get(makeDbId(set, id));
     }
     catch (e) {
-      return this.makeErrorResponse(e);
+      return makeErrorResponse(e);
     }
 
     let result: DeleteSuccess;
@@ -287,11 +231,11 @@ export default class PouchDbAdapter implements DbAdapter {
       result = await this.pouchDb.remove(getResult, query || {});
     }
     catch (e) {
-      return this.makeErrorResponse(e);
+      return makeErrorResponse(e);
     }
 
     if (!result.ok) {
-      return this.makeErrorResponse({status: 500});
+      return makeErrorResponse({status: 500});
     }
 
     return {
@@ -326,7 +270,7 @@ export default class PouchDbAdapter implements DbAdapter {
       preparedDocs,
       query || {}
     );
-    const {errors, result} = this.processBatchResult(
+    const {errors, result} = processBatchResult(
       preparedDocs.map(item => item.id),
       batchPutResult
     );
@@ -414,6 +358,7 @@ export default class PouchDbAdapter implements DbAdapter {
     throw new Error(`PouchDbAdapter: doesn't support the deleteSet method`);
   }
 
+
   onRecordChange(cb: RecordChangeHandler): number {
     return this.events.addListener(DB_ADAPTER_EVENTS.change, cb);
   }
@@ -426,52 +371,6 @@ export default class PouchDbAdapter implements DbAdapter {
     this.events.removeListener(handlerIndex);
   }
 
-
-  private makeErrorResponse(
-    dbErrorResponse: Pick<ErrorResponse, 'status'> & Partial<Pick<ErrorResponse, 'message'>>
-  ): MoldResponse {
-    const message: string = (dbErrorResponse.message)
-      ? dbErrorResponse.message
-      : httpStatusMessage(dbErrorResponse.status)
-
-    return {
-      status: dbErrorResponse.status,
-      success: false,
-      errors: [{code: dbErrorResponse.status, message}],
-      result: null,
-    }
-  }
-
-  private processBatchResult(
-    docIds: (string | number)[],
-    batchResult: (PutSuccess | ErrorResponse)[]
-  ): Pick<MoldResponse, 'errors'> & {result: (CreateResponse & {_index: number})[] | null} {
-    const errors: MoldErrorDefinition[] = [];
-    const successResult: (CreateResponse & {_index: number})[] = [];
-
-    for (let index in batchResult) {
-      const errorItem = batchResult[index] as ErrorResponse;
-
-      if (errorItem.error) {
-        errors.push({
-          code: errorItem.status,
-          message: errorItem.message,
-        });
-      }
-      else {
-        //const successItem = result[index] as PutSuccess;
-        successResult.push({
-          id: docIds[index],
-          _index: parseInt(index),
-        });
-      }
-    }
-
-    return {
-      errors: (errors.length) ? errors : null,
-      result: (successResult.length) ? successResult : null,
-    };
-  }
 
   private handleChange = (change: PouchChangeResult) => {
     const [set] = change.id.split(SET_DELIMITER);
