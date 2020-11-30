@@ -26,11 +26,12 @@ interface PouchRecord {
 interface FindSuccess {
   offset: number;
   length: number;
-  // the total number of non-deleted documents in the database
+  // the total number of ALL! non-deleted documents in the database
   total_rows: number;
   rows: {
-    id: "root/1";
-    key: "root/1";
+    // full id in db
+    id: string;
+    key: string;
     value: {rev: string};
     doc: PouchRecord;
   }[];
@@ -40,25 +41,28 @@ type GetSuccess = PouchRecord;
 
 interface PutSuccess {
   id: string;
-  ok: true
+  ok: boolean;
   rev: string;
 }
 
 type DeleteSuccess = PutSuccess;
 
 interface ErrorResponse {
-  error: true;
+  // it seems that it always true
+  error: boolean;
   // full message
   message: string,
   // status unique name such as not_found
   name: string;
   // status text
   reason: string;
-  status: 404
+  // like 404
+  status: number;
 }
 
 interface PouchEventEmitter {
   cancel();
+  // TODO: а что в data ???
   on(eventName: string, cb: (data: any) => void);
 }
 
@@ -68,7 +72,7 @@ interface PouchChangeResult {
   changes: {rev: string}[];
   deleted?: boolean;
   seq: number;
-  //doc: Record<string, any>;
+  doc?: Record<string, any>;
 }
 
 const SET_DELIMITER = '/';
@@ -251,6 +255,8 @@ export default class PouchDbAdapter implements DbAdapter {
       return this.makeErrorResponse(e);
     }
 
+    // TODO: в ответе проверить ok
+
     return {
       status: 200,
       success: true,
@@ -285,6 +291,8 @@ export default class PouchDbAdapter implements DbAdapter {
     catch (e) {
       return this.makeErrorResponse(e);
     }
+
+    // TODO: в ответе проверить ok
 
     return {
       status: 200,
