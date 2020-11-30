@@ -268,10 +268,14 @@ export default class PouchDbAdapter implements DbAdapter {
     id: string | number,
     query?: Record<string, any>
   ): Promise<MoldResponse<null>> {
+    if (typeof id === 'undefined' || id === null) {
+      throw new Error(`Id of document hasn't been set`);
+    }
+
     let getResult: GetSuccess;
 
     try {
-      getResult = await this.pouchDb.get(set + SET_DELIMITER + id);
+      getResult = await this.pouchDb.get(makeDbId(set, id));
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -286,16 +290,19 @@ export default class PouchDbAdapter implements DbAdapter {
       return this.makeErrorResponse(e);
     }
 
-    // TODO: в ответе проверить ok
+    if (!result.ok) {
+      return this.makeErrorResponse({status: 500});
+    }
 
     return {
       status: 200,
       success: true,
       errors: null,
-      result: {
-        _id: result.id,
-        _rev: result.rev,
-      },
+      result: null,
+      // result: {
+      //   _id: result.id,
+      //   _rev: result.rev,
+      // },
     }
   }
 
