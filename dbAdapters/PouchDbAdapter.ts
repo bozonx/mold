@@ -322,42 +322,20 @@ export default class PouchDbAdapter implements DbAdapter {
         _id: makeDbId(set, + id),
       };
     });
-    const result: (PutSuccess | ErrorResponse)[] = await this.pouchDb.bulkDocs(
+    const batchPutResult: (PutSuccess | ErrorResponse)[] = await this.pouchDb.bulkDocs(
       preparedDocs,
       query || {}
     );
-
-    // TODO: strong review !!!
-
-    const errors: MoldErrorDefinition[] = [];
-    const successResult: CreateResponse[] = [];
-
-    for (let item of result) {
-      if ((item as ErrorResponse).error) {
-        const errorItem = item as ErrorResponse;
-
-        errors.push({
-          code: errorItem.status,
-          message: errorItem.message,
-        });
-      }
-      else {
-        const successItem = item as PutSuccess;
-
-        successResult.push({
-          id: successItem.id.split(set + SET_DELIMITER)[0],
-          _id: successItem.id,
-          _rev: successItem.rev,
-        });
-      }
-    }
+    const {errors, result} = this.processBatchResult(
+      preparedDocs.map(item => item.id),
+      batchPutResult
+    );
 
     return {
       status: 200,
-      success: true,
-      errors: (errors.length) ? errors : null,
-      // TODO: может все сохранять в одном порядке и ошибки тоже сюда
-      result: (successResult.length) ? successResult : null,
+      success: Boolean(errors),
+      errors,
+      result,
     }
   }
 
@@ -462,6 +440,37 @@ export default class PouchDbAdapter implements DbAdapter {
       errors: [{code: dbErrorResponse.status, message}],
       result: null,
     }
+  }
+
+  private processBatchResult(
+    docIds: (string | number)[],
+    batchResult: (PutSuccess | ErrorResponse)[]
+  ): Pick<MoldResponse, 'errors'> & {result: (CreateResponse & {_index: number})[] | null} {
+    const errors: MoldErrorDefinition[] = [];
+    const successResult: (CreateResponse & {_index: number})[] = [];
+
+    for (let index in batchResult) {
+      const errorItem = batchResult[index] as ErrorResponse;
+
+      if (errorItem.error) {
+        errors.push({
+          code: errorItem.status,
+          message: errorItem.message,
+        });
+      }
+      else {
+        //const successItem = result[index] as PutSuccess;
+        successResult.push({
+          id: docIds[index],
+          _index: parseInt(index),
+        });
+      }
+    }
+
+    return {
+      errors: (errors.length) ? errors : null,
+      result: (successResult.length) ? successResult : null,
+    };
   }
 
   private handleChange = (change: PouchChangeResult) => {
