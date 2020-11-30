@@ -1,5 +1,5 @@
 import {MoldResponse} from './MoldResponse';
-import {CreateResponse, ItemResponse, ListResponse} from './ReponseStructure';
+import {BatchResponse, CreateResponse, ItemResponse, ListResponse} from './ReponseStructure';
 import {MoldDocument} from './MoldDocument';
 import {FindQuery} from './FindQuery';
 import {GetQuery} from './GetQuery';
@@ -70,13 +70,13 @@ export interface DbAdapter {
     // it can have an id or not
     docs: Partial<MoldDocument>[],
     query?: Record<string, any>
-  ): Promise<MoldResponse<CreateResponse[]>>;
+  ): Promise<MoldResponse<BatchResponse>>;
 
   batchPatch(
     set: string,
     docs: MoldDocument[],
     query?: Record<string, any>
-  ): Promise<MoldResponse<null>>;
+  ): Promise<MoldResponse<BatchResponse>>;
 
   /**
    * Batch hard delete
@@ -85,7 +85,7 @@ export interface DbAdapter {
     set: string,
     ids: (string | number)[],
     query?: Record<string, any>
-  ): Promise<MoldResponse<null>>;
+  ): Promise<MoldResponse<BatchResponse>>;
 
   action(
     set: string,

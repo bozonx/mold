@@ -9,7 +9,7 @@ import {
 import {MoldResponse} from '../../interfaces/MoldResponse';
 import {makeUniqId} from '../../helpers/uniqId';
 import {omitObj} from '../../helpers/objects';
-import {CreateResponse, ItemResponse, ListResponse} from '../../interfaces/ReponseStructure';
+import {BatchResponse, CreateResponse, ItemResponse, ListResponse} from '../../interfaces/ReponseStructure';
 import IndexedEventEmitter from '../../helpers/IndexedEventEmitter';
 import {FindQuery} from '../../interfaces/FindQuery';
 import {GetQuery} from '../../interfaces/GetQuery';
@@ -21,7 +21,7 @@ import {
   FindSuccess,
   GetSuccess,
   PouchChangeResult,
-  PouchEventEmitter,
+  PouchEventEmitter, PouchRecord,
   PutSuccess
 } from './interfaces';
 import {SET_DELIMITER} from './constants';
@@ -77,7 +77,7 @@ export default class PouchDbAdapter implements DbAdapter {
       });
     }
     catch (e) {
-      return this.makeErrorResponse(e);
+      return makeErrorResponse(e);
     }
 
     return {
@@ -254,7 +254,7 @@ export default class PouchDbAdapter implements DbAdapter {
     set: string,
     docs: Partial<MoldDocument>[],
     query?: Record<string, any>
-  ): Promise<MoldResponse<CreateResponse[]>> {
+  ): Promise<MoldResponse<BatchResponse>> {
     const preparedDocs = docs.map((doc) => {
       const id: string | number = (typeof doc.id === 'undefined' || doc.id === null)
         ? makeUniqId()
@@ -266,16 +266,18 @@ export default class PouchDbAdapter implements DbAdapter {
         _id: makeDbId(set, + id),
       };
     });
-    const batchPutResult: (PutSuccess | ErrorResponse)[] = await this.pouchDb.bulkDocs(
+    // TODO: обработать ошибку потомучто там своя ошибка
+    const bulkResult: (PutSuccess | ErrorResponse)[] = await this.pouchDb.bulkDocs(
       preparedDocs,
       query || {}
     );
     const {errors, result} = processBatchResult(
       preparedDocs.map(item => item.id),
-      batchPutResult
+      bulkResult
     );
 
     return {
+      // TODO: какой статус в случае ошибки
       status: 200,
       success: Boolean(errors),
       errors,
@@ -287,7 +289,25 @@ export default class PouchDbAdapter implements DbAdapter {
     set: string,
     docs: MoldDocument[],
     query?: Record<string, any>
-  ): Promise<MoldResponse<null>> {
+  ): Promise<MoldResponse<BatchResponse>> {
+    let findResult: FindSuccess;
+
+    // TODO: проверить если нет у элементов id - то ошибка
+
+    try {
+      findResult = await this.pouchDb.allDocs({
+        include_docs: false,
+        keys: docs.map((doc) => makeDbId(set, doc.id)),
+      });
+    }
+    catch (e) {
+      return makeErrorResponse(e);
+    }
+
+    const preparedDocs: PouchRecord[] = findResult.rows.map((item) => ({
+      _id: item.id,
+      _rev: item.value.rev,
+    }));
 
     // TODO: see docs
 
@@ -297,23 +317,38 @@ export default class PouchDbAdapter implements DbAdapter {
     set: string,
     ids: (string | number)[],
     query?: Record<string, any>
-  ): Promise<MoldResponse<null>> {
+  ): Promise<MoldResponse<BatchResponse>> {
     let findResult: FindSuccess;
 
     try {
       findResult = await this.pouchDb.allDocs({
         include_docs: false,
-        keys: ids.map((id) => set + SET_DELIMITER + id),
+        keys: ids.map((id) => makeDbId(set, id)),
       });
     }
     catch (e) {
-      // TODO: а тут можен быть ошибка вообще ???
-      return this.makeErrorResponse(e);
+      return makeErrorResponse(e);
     }
 
+    const preparedDocs: PouchRecord[] = findResult.rows.map((item) => ({
+      _id: item.id,
+      _rev: item.value.rev,
+      _deleted : true,
+    }));
+    // TODO: обработать ошибку потомучто там своя ошибка
+    const bulkResult: (PutSuccess | ErrorResponse)[] = await this.pouchDb.bulkDocs(
+      preparedDocs,
+      query || {}
+    );
+    const {errors, result} = processBatchResult(ids, bulkResult);
 
-
-    // TODO: сначала запросить эти доки, потом удалить все сразу
+    return {
+      // TODO: какой статус в случае ошибки
+      status: 200,
+      success: Boolean(errors),
+      errors,
+      result,
+    }
   }
 
   action(

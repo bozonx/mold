@@ -1,6 +1,6 @@
 import {MoldResponse} from '../../interfaces/MoldResponse';
 import {httpStatusMessage} from '../../helpers/http';
-import {CreateResponse} from '../../interfaces/ReponseStructure';
+import {BatchResponse, CreateResponse} from '../../interfaces/ReponseStructure';
 import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
 import {SET_DELIMITER} from './constants';
 import {ErrorResponse, PutSuccess} from './interfaces';
@@ -28,7 +28,7 @@ export function makeErrorResponse(
 export function processBatchResult(
   docIds: (string | number)[],
   batchResult: (PutSuccess | ErrorResponse)[]
-): Pick<MoldResponse, 'errors'> & {result: (CreateResponse & {_index: number})[] | null} {
+): Pick<MoldResponse, 'errors'> & {result: BatchResponse} {
   const errors: MoldErrorDefinition[] = [];
   const successResult: (CreateResponse & {_index: number})[] = [];
 
@@ -42,7 +42,6 @@ export function processBatchResult(
       });
     }
     else {
-      //const successItem = result[index] as PutSuccess;
       successResult.push({
         id: docIds[index],
         _index: parseInt(index),

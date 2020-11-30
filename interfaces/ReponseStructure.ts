@@ -14,3 +14,4 @@ export interface ItemResponse<T = MoldDocument> {
 }
 
 export type CreateResponse = { id: string | number };
+export type BatchResponse = { id: string | number, _index: number }[] | null;
