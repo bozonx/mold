@@ -15,6 +15,7 @@ import IndexedEventEmitter from '../helpers/IndexedEventEmitter';
 import {FindQuery} from '../interfaces/FindQuery';
 import {GetQuery} from '../interfaces/GetQuery';
 import {MoldDocument} from '../interfaces/MoldDocument';
+import {convertPageToOffset} from '../helpers/common';
 
 
 interface PouchRecord {
@@ -116,23 +117,18 @@ export default class PouchDbAdapter implements DbAdapter {
   async find(set: string, query: FindQuery): Promise<MoldResponse<ListResponse>> {
     let result: FindSuccess;
 
-    // TODO: handle page, perPage
-
     try {
       result = await this.pouchDb.allDocs({
         include_docs: true,
-        //startkey: set + SET_DELIMITER,
         startkey: set + SET_DELIMITER,
         endkey: set + SET_DELIMITER + '\ufff0',
 
-        // TODO: расчитать соглсно perPage и pageNum
-        //limit: 1,
-        //skip: 1,
+        // TODO: вроде это не эффективный способ, нужно наверное view использовать
+        ...convertPageToOffset(query.page, query.perPage),
         ...query,
       });
     }
     catch (e) {
-      // TODO: а туту можен быть ошибка вообще ???
       return this.makeErrorResponse(e);
     }
 
@@ -147,7 +143,7 @@ export default class PouchDbAdapter implements DbAdapter {
         hasNext: false,
         // TODO: расчитать
         hasPrev: false,
-        data: result.rows.map((item) => item.doc),
+        data: result.rows.map((item): MoldDocument => item.doc as any),
       },
     }
   }
@@ -155,8 +151,15 @@ export default class PouchDbAdapter implements DbAdapter {
   async get(set: string, query: GetQuery): Promise<MoldResponse<ItemResponse>> {
     let result: GetSuccess;
 
+    if (typeof query.id === 'undefined' || query.id === null) {
+      throw new Error(`Id has to be a string or number`);
+    }
+
     try {
-      result = await this.pouchDb.get(set + SET_DELIMITER + id, query || {});
+      result = await this.pouchDb.get(
+        set + SET_DELIMITER + query.id,
+        omitObj(query, 'id')
+      );
     }
     catch (e) {
       return this.makeErrorResponse(e);
@@ -167,7 +170,7 @@ export default class PouchDbAdapter implements DbAdapter {
       success: true,
       errors: null,
       result: {
-        data: result,
+        data: result as any,
       },
     }
   }
@@ -197,8 +200,8 @@ export default class PouchDbAdapter implements DbAdapter {
       errors: null,
       result: {
         id,
-        _id: result.id,
-        _rev: result.rev,
+        // _id: result.id,
+        // _rev: result.rev,
       },
     }
   }
@@ -404,11 +407,11 @@ export default class PouchDbAdapter implements DbAdapter {
   }
 
 
-  private makeErrorResponse(dbResponse: ErrorResponse): MoldResponse {
+  private makeErrorResponse(dbErrorResponse: ErrorResponse): MoldResponse {
     return {
-      status: dbResponse.status,
+      status: dbErrorResponse.status,
       success: false,
-      errors: [{code: dbResponse.status, message: dbResponse.message}],
+      errors: [{code: dbErrorResponse.status, message: dbErrorResponse.message}],
       result: null,
     }
   }

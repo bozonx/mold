@@ -78,6 +78,17 @@ export function stringifyMoldError(errors?: MoldErrorDefinition[] | null): strin
   return errors.map((item) => `${item.code}: ${item.message}`).join(', ');
 }
 
+export function convertPageToOffset(
+  page?: number, perPage?: number
+): { limit?: number, skip?: number } {
+  if (!page || page < 0 || !perPage || perPage < 0) return {};
+
+  return {
+    limit: perPage,
+    skip: (page - 1) * perPage,
+  }
+}
+
 export function filterBlackList(allItems: string[], blackList: string[] = []): string[] {
   if (!blackList || !blackList.length) return allItems;
 
