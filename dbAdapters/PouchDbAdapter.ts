@@ -60,19 +60,19 @@ interface ErrorResponse {
   status: number;
 }
 
-interface PouchEventEmitter {
-  cancel();
-  // TODO: а что в data ???
-  on(eventName: string, cb: (data: any) => void);
-}
-
 interface PouchChangeResult {
   // full id of document
   id: string;
   changes: {rev: string}[];
   deleted?: boolean;
   seq: number;
-  doc?: Record<string, any>;
+  doc: Record<string, any>;
+}
+
+interface PouchEventEmitter {
+  cancel();
+  on(eventName: 'change', cb: (change: PouchChangeResult) => void);
+  on(eventName: 'error', cb: (error: string) => void);
 }
 
 const SET_DELIMITER = '/';
@@ -88,47 +88,23 @@ export default class PouchDbAdapter implements DbAdapter {
   constructor(pouchDb: PouchDB) {
     this.pouchDb = pouchDb;
     this.pouchEventEmitter = this.pouchDb.changes({
+      // listen all the events on once
       live: true,
+      // means to listen after init, not to catch init messages.
       since: 'now',
-      //include_docs: true,
+      // this is needs to get an id of doc because the id can be a number.
+      include_docs: true,
     });
 
+
+    // TODO: поидее нужно ожидать пока выполнится промис db created
     this.pouchDb.on('created', () => {
       // TODO: ожидать создания базы ??? или это выше нужно сделать ???
     })
 
-    this.pouchEventEmitter.on('change', (change: PouchChangeResult) => {
-      const [set, id] = change.id.split(SET_DELIMITER);
-      let eventType: DB_ADAPTER_EVENT_TYPES = DB_ADAPTER_EVENT_TYPES.updated;
-
-      if (change.deleted) {
-        // was deleted
-        eventType = DB_ADAPTER_EVENT_TYPES.deleted;
-      }
-      else {
-        // else was put
-        const [revNum, rest] = change.changes[0].rev.split('-');
-        // 1 is the first insert
-        if (revNum === '1') eventType = DB_ADAPTER_EVENT_TYPES.created;
-      }
-
-      this.events.emit(DB_ADAPTER_EVENTS.change, set, id, eventType);
-    });
-
-    // this.pouchEventEmitter.on('complete', (change: PouchChangeResult) => {
-    //   console.log(66666, change)
-    // });
-
-    this.pouchEventEmitter.on('error', (error: string) => {
-      // This event is fired when the changes feed is stopped due to an unrecoverable failure.
-      // TODO: what to do on error ????
-      // TODO: это просто внутренние ошибки, можно вывести в консоль
-
-      console.log(88888888, error)
-    });
+    this.pouchEventEmitter.on('change', this.handleChange);
+    this.pouchEventEmitter.on('error', this.handleError);
   }
-
-  // TODO: поидее нужно ожидать пока выполнится промис db created
 
   async destroy(): Promise<void> {
     this.events.destroy();
@@ -436,6 +412,34 @@ export default class PouchDbAdapter implements DbAdapter {
       result: null,
     }
   }
+
+
+  private handleChange = (change: PouchChangeResult) => {
+    const [set] = change.id.split(SET_DELIMITER);
+    let eventType: DB_ADAPTER_EVENT_TYPES = DB_ADAPTER_EVENT_TYPES.updated;
+
+    if (change.deleted) {
+      // was deleted
+      eventType = DB_ADAPTER_EVENT_TYPES.deleted;
+    }
+    else {
+      // else was put
+      const [revNum, rest] = change.changes[0].rev.split('-');
+      // 1 is the first insert
+      if (revNum === '1') eventType = DB_ADAPTER_EVENT_TYPES.created;
+    }
+
+    this.events.emit(DB_ADAPTER_EVENTS.change, set, id, eventType);
+  }
+
+  private handleError = (error: string) => {
+    // This event is fired when the changes feed is stopped due to an unrecoverable failure.
+    // TODO: what to do on error ????
+    // TODO: это просто внутренние ошибки, можно вывести в консоль
+
+    console.log(88888888, error)
+  }
+
 }
 
 // async getDb(dbName: string): Promise<DbAdapterDbInstance> {
