@@ -7,7 +7,7 @@ import {MoldRequest} from '../interfaces/MoldRequest';
 import {SetsDefinition} from '../transform/interfaces/MoldHook';
 import MoldRequestTransform from '../transform/MoldRequestTransform';
 import PouchDbAdapter from '../dbAdapters/pouchDb/PouchDbAdapter';
-import {callAdapterRequestAction} from '../helpers/backendHelpers';
+import {callDbAdapterAction} from '../helpers/callDbAdapterAction';
 import {DB_ADAPTER_EVENT_TYPES} from '../interfaces/DbAdapter';
 import {MoldDocument} from '../interfaces/MoldDocument';
 
@@ -65,7 +65,6 @@ export default class MoldPouchClient implements BackendClient {
    * Request from Mold
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
-    // TODO: review
     return this.transform.request(request);
   }
 
@@ -73,10 +72,8 @@ export default class MoldPouchClient implements BackendClient {
    * Request to adapter after "before" hooks.
    * It is useful for debug.
    */
-  doAdapterRequest = (request: MoldRequest): Promise<MoldResponse> => {
-    // TODO: review
-    // TODO: может сюда перенести ???
-    return callAdapterRequestAction(this.adapter, request);
+  doAdapterRequest = async (request: MoldRequest): Promise<MoldResponse> => {
+    return callDbAdapterAction(this.adapter, request);
   }
 
 
@@ -85,8 +82,15 @@ export default class MoldPouchClient implements BackendClient {
   }
 
   private validateProps(props: MoldPouchClientProps) {
-    // TODO: add
-
+    if (typeof props.pouchDb !== 'object') {
+      throw new Error(`Incorrect pouchDb prop`);
+    }
+    else if (typeof props.sets !== 'object') {
+      throw new Error(`Incorrect sets prop`);
+    }
+    else if (typeof props.user !== 'undefined' && typeof props.user !== 'object') {
+      throw new Error(`Incorrect user prop`);
+    }
   }
 
 }

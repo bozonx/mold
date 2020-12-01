@@ -3,10 +3,12 @@ import {MoldResponse} from '../interfaces/MoldResponse';
 import {DbAdapter} from '../interfaces/DbAdapter';
 
 
-export function callAdapterRequestAction(
+// TODO: review
+
+export function callDbAdapterAction(
   adapter: DbAdapter,
   request: MoldRequest
-): Promise<MoldResponse<any>> {
+): Promise<MoldResponse> {
   switch (request.action) {
     case 'find':
 
