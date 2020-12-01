@@ -18,7 +18,7 @@ export default class BackendManager {
   async init() {
     await Promise.all(
       Object.keys(this.mold.props.backends!).map(async (backendName) => {
-        const backend: BackendClient | undefined = this.mold.props.backends![backendName];
+        const backend: BackendClient = this.mold.props.backends![backendName]!;
 
         if (backend?.$init) {
           await backend.$init(this.mold, backendName);
@@ -27,7 +27,14 @@ export default class BackendManager {
     );
   }
 
-  destroy() {
+  async destroy() {
+    await Promise.all(
+      Object.keys(this.mold.props.backends!).map(async (backendName) => {
+        const backend: BackendClient = this.mold.props.backends![backendName]!;
+
+        if (backend?.destroy) await backend.destroy();
+      })
+    );
   }
 
 

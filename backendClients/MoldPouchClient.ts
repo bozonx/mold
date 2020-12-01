@@ -8,14 +8,13 @@ import {SetsDefinition} from '../transform/interfaces/MoldHook';
 import MoldRequestTransform from '../transform/MoldRequestTransform';
 import PouchDbAdapter from '../dbAdapters/pouchDb/PouchDbAdapter';
 import {callAdapterRequestAction} from '../helpers/backendHelpers';
-import {MoldSchema} from '../interfaces/MoldSchema';
 import {DB_ADAPTER_EVENT_TYPES} from '../interfaces/DbAdapter';
 
 
 interface MoldPouchClientProps {
   pouchDb: PouchDB;
   sets: SetsDefinition;
-  schemas?: MoldSchema[];
+  //schemas?: MoldSchema[];
 }
 
 
@@ -53,8 +52,9 @@ export default class MoldPouchClient implements BackendClient {
     await this.adapter.init();
   }
 
-  destroy() {
+  async destroy() {
     this.transform.destroy();
+    // TODO: destroy adapter
   }
 
 

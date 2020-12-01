@@ -45,11 +45,11 @@ export default class Mold {
     this.initPromise = this.doInit();
   }
 
-  destroy = () => {
+  destroy = async () => {
     this.pushManager.destroy();
-    this.backendManager.destroy();
     this.storageManager.destroy();
     this.requests.destroy();
+    await this.backendManager.destroy();
   }
 
 
