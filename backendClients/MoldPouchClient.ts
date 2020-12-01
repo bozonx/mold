@@ -9,12 +9,14 @@ import MoldRequestTransform from '../transform/MoldRequestTransform';
 import PouchDbAdapter from '../dbAdapters/pouchDb/PouchDbAdapter';
 import {callAdapterRequestAction} from '../helpers/backendHelpers';
 import {DB_ADAPTER_EVENT_TYPES} from '../interfaces/DbAdapter';
+import {MoldDocument} from '../interfaces/MoldDocument';
 
 
 interface MoldPouchClientProps {
   pouchDb: PouchDB;
   sets: SetsDefinition;
-  //schemas?: MoldSchema[];
+  // set user if it is authorized, undefined if not.
+  user?: MoldDocument;
 }
 
 
@@ -32,17 +34,18 @@ export default class MoldPouchClient implements BackendClient {
 
 
   constructor(props: MoldPouchClientProps) {
+    this.validateProps(props);
+
     this.props = props;
-    // TODO: передать юзера
-    this.transform = new MoldRequestTransform(props.sets, this.doAdapterRequest);
+    this.transform = new MoldRequestTransform(
+      props.sets,
+      this.doAdapterRequest,
+      this.props.user
+    );
     this.adapter = new PouchDbAdapter(props.pouchDb);
 
-    this.adapter.onRecordChange(this.handleRecordChange);
+    this.adapter.onChange(this.handleRecordChange);
     this.adapter.onError(this.mold.log.error);
-
-    // TODO: use schema
-    // TODO: validate props
-
   }
 
   async $init(mold: Mold, backendName: string) {
@@ -54,7 +57,7 @@ export default class MoldPouchClient implements BackendClient {
 
   async destroy() {
     this.transform.destroy();
-    // TODO: destroy adapter
+    await this.adapter.destroy();
   }
 
 
@@ -62,6 +65,7 @@ export default class MoldPouchClient implements BackendClient {
    * Request from Mold
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
+    // TODO: review
     return this.transform.request(request);
   }
 
@@ -70,6 +74,7 @@ export default class MoldPouchClient implements BackendClient {
    * It is useful for debug.
    */
   doAdapterRequest = (request: MoldRequest): Promise<MoldResponse> => {
+    // TODO: review
     // TODO: может сюда перенести ???
     return callAdapterRequestAction(this.adapter, request);
   }
@@ -77,6 +82,11 @@ export default class MoldPouchClient implements BackendClient {
 
   private handleRecordChange = (set: string, id: string, type: DB_ADAPTER_EVENT_TYPES) => {
     this.mold.incomePush(this.backendName, [set, id, type]);
+  }
+
+  private validateProps(props: MoldPouchClientProps) {
+    // TODO: add
+
   }
 
 }

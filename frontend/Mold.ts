@@ -53,6 +53,8 @@ export default class Mold {
   }
 
 
+  // TODO: add getBackend ???
+
   /**
    * Handle income push message. It can be json string or object or array of messages.
    */

@@ -30,8 +30,8 @@ export const DB_ADAPTER_EVENTS = {
 
 
 export interface DbAdapter {
-  init(): Promise<void>;
-  destroy(): Promise<void>;
+  init?(): Promise<void>;
+  destroy?(): Promise<void>;
 
   /**
    * Request several items by query
@@ -111,7 +111,8 @@ export interface DbAdapter {
   renameSet(): Promise<void>;
   deleteSet(): Promise<void>;
 
-  onRecordChange(cb: RecordChangeHandler): number;
+  onChange(cb: RecordChangeHandler): number;
+  onError(cb: (error: string) => void): number;
   removeListener(handlerIndex: number);
 
 }

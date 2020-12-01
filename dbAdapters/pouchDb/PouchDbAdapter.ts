@@ -395,7 +395,7 @@ export default class PouchDbAdapter implements DbAdapter {
   }
 
 
-  onRecordChange(cb: RecordChangeHandler): number {
+  onChange(cb: RecordChangeHandler): number {
     return this.events.addListener(DB_ADAPTER_EVENTS.change, cb);
   }
 
