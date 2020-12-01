@@ -20,6 +20,7 @@ export default class Mold {
   readonly backendManager: BackendManager;
   readonly pushManager: PushesManager;
   readonly storageManager: StorageManager;
+  readonly initPromise: Promise<void>;
 
   get log(): Logger {
     return this.props.log as any;
@@ -40,6 +41,8 @@ export default class Mold {
     if (!this.props.production && window) {
       (window as any).$mold = this;
     }
+
+    this.initPromise = this.doInit();
   }
 
   destroy = () => {
@@ -185,6 +188,10 @@ export default class Mold {
     if (typeof rawLogger === 'string') return new ConsoleLogger(rawLogger);
 
     return rawLogger;
+  }
+
+  private async doInit() {
+    await this.backendManager.init();
   }
 
 }

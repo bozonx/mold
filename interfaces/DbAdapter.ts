@@ -30,8 +30,8 @@ export const DB_ADAPTER_EVENTS = {
 
 
 export interface DbAdapter {
-  destroy(): Promise<void>;
   init(): Promise<void>;
+  destroy(): Promise<void>;
 
   /**
    * Request several items by query

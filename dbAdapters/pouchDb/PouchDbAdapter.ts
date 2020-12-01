@@ -50,17 +50,17 @@ export default class PouchDbAdapter implements DbAdapter {
     this.pouchEventEmitter.on('error', this.handleError);
   }
 
-  async destroy(): Promise<void> {
-    this.events.destroy();
-    this.pouchEventEmitter.cancel();
-    await this.pouchDb.close();
-  }
-
   async init() {
     // TODO: поидее нужно ожидать пока выполнится промис db created
     // this.pouchDb.on('created', () => {
     //   // TODO: ожидать создания базы ??? или это выше нужно сделать ???
     // })
+  }
+
+  async destroy(): Promise<void> {
+    this.events.destroy();
+    this.pouchEventEmitter.cancel();
+    await this.pouchDb.close();
   }
 
 

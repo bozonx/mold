@@ -13,14 +13,18 @@ export default class BackendManager {
 
   constructor(mold: Mold) {
     this.mold = mold;
-    // init all the backend clients
-    for (let backendName of Object.keys(this.mold.props.backends || {})) {
-      const backend: BackendClient | undefined = this.mold.props.backends![backendName];
+  }
 
-      if (backend?.$init) {
-        backend.$init(this.mold, backendName);
-      }
-    }
+  async init() {
+    await Promise.all(
+      Object.keys(this.mold.props.backends!).map(async (backendName) => {
+        const backend: BackendClient | undefined = this.mold.props.backends![backendName];
+
+        if (backend?.$init) {
+          await backend.$init(this.mold, backendName);
+        }
+      })
+    );
   }
 
   destroy() {
