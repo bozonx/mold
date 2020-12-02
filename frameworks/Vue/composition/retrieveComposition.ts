@@ -18,6 +18,7 @@ export interface RetrieveResult<T> {
 }
 
 export interface RetrieveCompositionProps extends CompositionProps {
+  // TODO: rename to disableInitialLoad
   dontLoadImmediately?: boolean
 }
 
