@@ -25,7 +25,6 @@ export interface RetrieveCompositionProps extends CompositionProps {
 
 export function retrieveComposition<T>(
   context: SetupContext,
-  actionName: string,
   actionProps: RetrieveCompositionProps,
   changeTransform?: (newState: ActionState) => T
 ): RetrieveResult<T> {
@@ -33,9 +32,8 @@ export function retrieveComposition<T>(
   const mold: Mold = context.root.$mold;
   // init request
   const instanceId: string = mold.newRequest({
-    action: actionName,
-    isReading: true,
     ...omitObj(actionProps, 'dontLoadImmediately') as HighLevelProps,
+    isReading: true,
   });
 
   const state: T & InstanceState & RetrieveAdditionalState = reactive({

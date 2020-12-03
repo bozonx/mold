@@ -1,7 +1,8 @@
-import {ActionState, ListResponse} from '../../../frontend/interfaces/ActionState';
+import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {SetupContext} from '@vue/composition-api';
 import {omitObj} from '../../../helpers/objects';
 import {RetrieveCompositionProps, retrieveComposition, RetrieveResult} from './retrieveComposition';
+import {ListResponse} from '../../../interfaces/ReponseStructure';
 
 
 export interface FindCompositionState<T> extends
@@ -14,12 +15,10 @@ export interface FindCompositionState<T> extends
 
 export function findComposition<T>(
   context: SetupContext,
-  actionName: string,
   actionProps: RetrieveCompositionProps
 ): RetrieveResult<FindCompositionState<T>> {
   return retrieveComposition<FindCompositionState<T>>(
     context,
-    actionName,
     actionProps,
     (newState: ActionState<ListResponse<T>>): FindCompositionState<T> => {
       return {

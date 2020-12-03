@@ -2,4 +2,5 @@
 import {ActionProps} from './ActionProps';
 
 
-export type CompositionProps = Omit<Omit<ActionProps, 'action'>, 'isReading'>;
+//export type CompositionProps = Omit<Omit<ActionProps, 'action'>, 'isReading'>;
+export type CompositionProps = Omit<ActionProps, 'isReading'>;

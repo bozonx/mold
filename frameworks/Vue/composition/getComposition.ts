@@ -14,7 +14,6 @@ export interface GetCompositionState<T> extends
 
 export function getComposition<T>(
   context: SetupContext,
-  actionName: string,
   actionProps: RetrieveCompositionProps
 ): RetrieveResult<GetCompositionState<T>> {
   return retrieveComposition<GetCompositionState<T>>(
