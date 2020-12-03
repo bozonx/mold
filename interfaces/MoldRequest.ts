@@ -9,7 +9,7 @@ export interface MoldRequest {
   id?: string | number;
   // data like in search part of url or some specific to backend.
   // id, pageNum, perPage
-  query?: {[index: string]: JsonTypes};
+  query?: Record<string, JsonTypes>;
   // Data to save. For create, patch, batchPatch, batchDelete
-  data?: {[index: string]: JsonTypes} | {[index: string]: JsonTypes}[] | (string | number)[];
+  data?: Record<string, JsonTypes> | Record<string, JsonTypes>[] | (string | number)[];
 }

@@ -11,9 +11,9 @@ export default function moldGet<T>(
   backend?: string
 ): GetCompositionState<T> {
   const {state} = getComposition<T>(context, {
-    action: 'get',
     backend,
     set,
+    action: 'get',
     query: (typeof idOrQuery === 'string' || typeof idOrQuery === 'number')
       ? { id: idOrQuery }
       : idOrQuery,

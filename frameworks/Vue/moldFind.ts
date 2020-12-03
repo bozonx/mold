@@ -11,9 +11,9 @@ export default function moldFind<T>(
   backend?: string
 ): FindCompositionState<T> {
   const {state} = findComposition<T>(context, {
-    action: 'find',
     backend,
     set,
+    action: 'find',
     query,
   });
 

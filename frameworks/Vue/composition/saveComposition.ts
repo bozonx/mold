@@ -19,9 +19,9 @@ interface SaveResult<T> {
 
 export function saveComposition<T>(
   context: SetupContext,
-  // use undefined for save purpose where only at save method calling
-  // is clear which action to use: create or update
-  actionName: string,
+  // // use undefined for save purpose where only at save method calling
+  // // is clear which action to use: create or update
+  // actionName: string,
   actionProps: CompositionProps,
   stateAdditions?: Record<string, any>
 ): SaveResult<T> {
