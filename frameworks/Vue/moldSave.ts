@@ -3,24 +3,21 @@ import {SetupContext} from '@vue/composition-api';
 import {InstanceActionState} from '../../frontend/interfaces/ActionState';
 import {saveComposition, SaveCompositionAdditionalProps} from './composition/saveComposition';
 import {JsonTypes} from '../../interfaces/Types';
-import {MoldDocument} from '../../interfaces/MoldDocument';
 
 
 export default function moldSave<T>(
   context: SetupContext,
   set: string,
-  data: MoldDocument,
   query?: Record<string, JsonTypes>,
   backend?: string
 ): InstanceActionState<T> & SaveCompositionAdditionalProps {
-  const actionName = (typeof data.id === 'string' || typeof data.id === 'number')
+  const actionName = (typeof query?.id === 'string' || typeof query?.id === 'number')
     ? 'patch'
     : 'create';
   const {state} = saveComposition<T>(context, {
     backend,
     set,
     action: actionName,
-    data,
     query,
   });
 

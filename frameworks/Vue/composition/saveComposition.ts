@@ -10,6 +10,7 @@ export interface SaveCompositionAdditionalProps {
   save: (data: Record<string, any>) => void;
 }
 
+// TODO: review !!!!!!@@@!@!
 interface SaveResult<T> {
   mold: Mold;
   instanceId: string;
@@ -36,6 +37,7 @@ export function saveComposition<T>(
     ...mold.getState(instanceId),
     [INSTANCE_ID_PROP_NAME]: instanceId,
     ...stateAdditions,
+    // TODO: strong review !!!! - use data only
     save: (stateAdditions)
       ? (data: Record<string, any>) => mold.start(instanceId, data)
       : undefined,

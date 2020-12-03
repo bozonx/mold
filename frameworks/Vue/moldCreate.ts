@@ -8,7 +8,6 @@ import {JsonTypes} from '../../interfaces/Types';
 export default function moldCreate<T>(
   context: SetupContext,
   set: string,
-  data: Record<string, JsonTypes>,
   query?: Record<string, JsonTypes>,
   backend?: string
 ): InstanceActionState<T> & SaveCompositionAdditionalProps {
@@ -16,7 +15,6 @@ export default function moldCreate<T>(
     backend,
     set,
     action: 'create',
-    data,
     query,
   });
 
