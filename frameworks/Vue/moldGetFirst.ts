@@ -1,5 +1,4 @@
 import {SetupContext} from '@vue/composition-api';
-import {retrieveComposition, RetrieveCompositionProps} from './composition/retrieveComposition';
 import {GetCompositionState} from './composition/getComposition';
 import {ActionState, ListResponse} from '../../frontend/interfaces/ActionState';
 import {omitObj} from '../../helpers/objects';

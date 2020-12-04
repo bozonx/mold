@@ -7,7 +7,7 @@ import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
 import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 
 
-interface SaveResult<T> {
+interface MoldCompositionResult<T> {
   mold: Mold;
   instanceId: string;
   state: ActionState<T>;
@@ -18,7 +18,7 @@ export function moldComposition<T>(
   context: SetupContext,
   actionProps: CompositionProps,
   onChangeCbOverride?: (newState: ActionState<T>) => T
-): SaveResult<T> {
+): MoldCompositionResult<T> {
   // @ts-ignore
   const mold: Mold = context.root.$mold;
   // init request

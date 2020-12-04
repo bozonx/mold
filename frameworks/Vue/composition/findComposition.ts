@@ -1,11 +1,10 @@
 import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {SetupContext} from '@vue/composition-api';
 import {omitObj} from '../../../helpers/objects';
-import {RetrieveCompositionProps, retrieveComposition, RetrieveResult} from './retrieveComposition';
 import {ListResponse} from '../../../interfaces/ReponseStructure';
 import {moldComposition} from './MoldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
-import {MoldDocument} from '../../../interfaces/MoldDocument';
+import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 
 
 interface RetrieveAdditionalState {
@@ -13,6 +12,11 @@ interface RetrieveAdditionalState {
 }
 
 // load: () => mold.start(instanceId),
+
+export interface RetrieveCompositionProps extends CompositionProps {
+  // TODO: rename to disableInitialLoad
+  dontLoadImmediately?: boolean
+}
 
 
 export interface FindCompositionState<T> extends
