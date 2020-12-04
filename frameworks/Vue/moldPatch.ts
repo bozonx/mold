@@ -1,6 +1,6 @@
 import {SetupContext} from '@vue/composition-api';
 
-import {saveComposition} from './composition/saveComposition';
+import {moldComposition} from './composition/MoldComposition';
 import {GetQuery} from '../../interfaces/GetQuery';
 import {MoldDocument} from '../../interfaces/MoldDocument';
 import {ActionState} from '../../frontend/interfaces/ActionState';
@@ -17,7 +17,7 @@ export default function moldPatch<T>(
   idOrQuery?: (string | number) | GetQuery,
   backend?: string
 ): MoldPatchState<T> {
-  const {mold, instanceId, state: moldState} = saveComposition<T>(context, {
+  const {mold, instanceId, state: moldState} = moldComposition<T>(context, {
     backend,
     set,
     action: 'patch',

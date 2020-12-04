@@ -1,7 +1,7 @@
 import {SetupContext} from '@vue/composition-api';
 
 import {ActionState} from '../../frontend/interfaces/ActionState';
-import {saveComposition} from './composition/saveComposition';
+import {moldComposition} from './composition/MoldComposition';
 import {JsonTypes} from '../../interfaces/Types';
 
 
@@ -16,7 +16,7 @@ export default function moldBatchDelete<T>(
   query?: Record<string, JsonTypes>,
   backend?: string
 ): MoldBatchDeleteState<T> {
-  const {mold, instanceId, state: moldState} = saveComposition<T>(context, {
+  const {mold, instanceId, state: moldState} = moldComposition<T>(context, {
     backend,
     set,
     action: 'batchDelete',

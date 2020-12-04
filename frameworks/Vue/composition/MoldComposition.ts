@@ -14,7 +14,7 @@ interface SaveResult<T> {
 }
 
 
-export function saveComposition<T>(
+export function moldComposition<T>(
   context: SetupContext,
   actionProps: CompositionProps,
   onChangeCbOverride?: (newState: ActionState<T>) => T

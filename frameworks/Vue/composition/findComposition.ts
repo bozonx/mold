@@ -3,7 +3,7 @@ import {SetupContext} from '@vue/composition-api';
 import {omitObj} from '../../../helpers/objects';
 import {RetrieveCompositionProps, retrieveComposition, RetrieveResult} from './retrieveComposition';
 import {ListResponse} from '../../../interfaces/ReponseStructure';
-import {saveComposition} from './saveComposition';
+import {moldComposition} from './MoldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 import {MoldDocument} from '../../../interfaces/MoldDocument';
 
@@ -35,7 +35,7 @@ export function findComposition<T>(
     };
   }
 
-  const {mold, instanceId, state: moldState} = saveComposition<T>(context, {
+  const {mold, instanceId, state: moldState} = moldComposition<T>(context, {
     // TODO: remove dontLoadImmediately
     ...actionProps,
     isReading: true,
