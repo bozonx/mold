@@ -1,6 +1,6 @@
 import {SetupContext} from '@vue/composition-api';
 
-import {moldComposition} from './composition/MoldComposition';
+import {moldComposition} from './composition/moldComposition';
 import {ActionState} from '../../frontend/interfaces/ActionState';
 import {GetQuery} from '../../interfaces/GetQuery';
 

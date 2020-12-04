@@ -1,7 +1,7 @@
 import {SetupContext} from '@vue/composition-api';
 
 import {ActionState} from '../../frontend/interfaces/ActionState';
-import {moldComposition} from './composition/MoldComposition';
+import {moldComposition} from './composition/moldComposition';
 
 
 interface MoldActionState<T> extends ActionState<T> {

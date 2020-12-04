@@ -2,7 +2,7 @@ import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {SetupContext} from '@vue/composition-api';
 import {omitObj} from '../../../helpers/objects';
 import {ListResponse} from '../../../interfaces/ReponseStructure';
-import {moldComposition} from './MoldComposition';
+import {moldComposition} from './moldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 
@@ -55,16 +55,4 @@ export function findComposition<T>(
   state.load = (queryOverride: Record<string, any>) => mold.start(instanceId, data);
 
   return state;
-
-  // return retrieveComposition<FindCompositionState<T>>(
-  //   context,
-  //   actionProps,
-  //   (newState: ActionState<ListResponse<T>>): FindCompositionState<T> => {
-  //     return {
-  //       ...omitObj(newState, 'result') as Omit<ActionState<T>, 'result'>,
-  //       ...omitObj(newState.result, 'data') as Omit<ListResponse, 'data'>,
-  //       items: newState.result?.data || null,
-  //     };
-  //   }
-  // );
 }

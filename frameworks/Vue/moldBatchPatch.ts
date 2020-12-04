@@ -1,7 +1,7 @@
 import {SetupContext} from '@vue/composition-api';
 
 import {ActionState} from '../../frontend/interfaces/ActionState';
-import {moldComposition} from './composition/MoldComposition';
+import {moldComposition} from './composition/moldComposition';
 import {JsonTypes} from '../../interfaces/Types';
 import {MoldDocument} from '../../interfaces/MoldDocument';
 
