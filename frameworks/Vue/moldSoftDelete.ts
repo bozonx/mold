@@ -2,14 +2,13 @@ import {SetupContext} from '@vue/composition-api';
 
 import {saveComposition} from './composition/saveComposition';
 import {InstanceActionState} from '../../frontend/interfaces/ActionState';
-import {JsonTypes} from '../../interfaces/Types';
+import {GetQuery} from '../../interfaces/GetQuery';
 
 
 export default function moldSoftDelete<T>(
   context: SetupContext,
   set: string,
-  id: string | number,
-  query?: Record<string, JsonTypes>,
+  idOrQuery?: (string | number) | GetQuery,
   backend?: string,
   deletedPropName: string = 'deleted'
 ): InstanceActionState<T> & {delete: () => void} {
@@ -19,12 +18,12 @@ export default function moldSoftDelete<T>(
       backend,
       set,
       action: 'patch',
-      query: { id },
+      query: (typeof idOrQuery === 'string' || typeof idOrQuery === 'number')
+        ? { id: idOrQuery }
+        : idOrQuery,
     },
     {
-      delete: () => {
-        mold.start(instanceId, {[deletedPropName]: true});
-      }
+      delete: () => mold.start(instanceId, {[deletedPropName]: true}),
     }
   );
 

@@ -1,19 +1,27 @@
 import {SetupContext} from '@vue/composition-api';
 import {InstanceActionState} from '../../frontend/interfaces/ActionState';
 import {saveComposition} from './composition/saveComposition';
-import {CompositionProps} from '../../frontend/interfaces/CompositionProps';
+import {GetQuery} from '../../interfaces/GetQuery';
 
 
 export default function moldDelete<T>(
   context: SetupContext,
-  actionProps: CompositionProps
+  set: string,
+  idOrQuery?: (string | number) | GetQuery,
+  backend?: string,
 ): InstanceActionState<T> & {delete: () => void} {
   const {mold, instanceId, state} = saveComposition<T>(
     context,
-    'delete',
-    actionProps,
     {
-      delete: () => mold.start(instanceId)
+      backend,
+      set,
+      action: 'delete',
+      query: (typeof idOrQuery === 'string' || typeof idOrQuery === 'number')
+        ? { id: idOrQuery }
+        : idOrQuery,
+    },
+    {
+      delete: () => mold.start(instanceId),
     }
   );
 
