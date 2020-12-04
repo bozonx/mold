@@ -1,5 +1,5 @@
 import {SetupContext} from '@vue/composition-api';
-import {InstanceActionState} from '../../frontend/interfaces/ActionState';
+import {ActionState} from '../../frontend/interfaces/ActionState';
 import {saveComposition, SaveCompositionAdditionalProps} from './composition/saveComposition';
 
 
@@ -9,7 +9,7 @@ export default function moldAction<T>(
   actionName: string,
   query?: Record<string, any>,
   backend?: string
-): InstanceActionState<T> & SaveCompositionAdditionalProps {
+): ActionState<T> & SaveCompositionAdditionalProps {
   const {state} = saveComposition<T>(context, {
     backend,
     set,
@@ -17,5 +17,5 @@ export default function moldAction<T>(
     query,
   });
 
-  return state as InstanceActionState<T> & SaveCompositionAdditionalProps;
+  return state as ActionState<T> & SaveCompositionAdditionalProps;
 }
