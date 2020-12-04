@@ -3,11 +3,14 @@ import {retrieveComposition, RetrieveCompositionProps} from './composition/retri
 import {GetCompositionState} from './composition/getComposition';
 import {ActionState, ListResponse} from '../../frontend/interfaces/ActionState';
 import {omitObj} from '../../helpers/objects';
+import {GetQuery} from '../../interfaces/GetQuery';
 
 
 export default function moldGetFirst<T>(
   context: SetupContext,
-  actionProps: RetrieveCompositionProps
+  set: string,
+  query?: Record<string, any>,
+  backend?: string
 ): GetCompositionState<T> {
   const {state} = retrieveComposition<GetCompositionState<T>>(
     context,

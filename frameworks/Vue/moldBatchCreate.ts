@@ -3,29 +3,30 @@ import {SetupContext} from '@vue/composition-api';
 import {ActionState} from '../../frontend/interfaces/ActionState';
 import {saveComposition} from './composition/saveComposition';
 import {JsonTypes} from '../../interfaces/Types';
+import {MoldDocument} from '../../interfaces/MoldDocument';
 
 
-interface MoldBatchDeleteState<T> extends ActionState<T> {
-  delete: (ids: (string | number)[]) => void;
+interface MoldBatchCreateState<T> extends ActionState<T> {
+  create: (docs: Partial<MoldDocument>[]) => void;
 }
 
 
-export default function moldBatchDelete<T>(
+export default function moldBatchCreate<T>(
   context: SetupContext,
   set: string,
   query?: Record<string, JsonTypes>,
   backend?: string
-): MoldBatchDeleteState<T> {
+): MoldBatchCreateState<T> {
   const {mold, instanceId, state: moldState} = saveComposition<T>(context, {
     backend,
     set,
-    action: 'batchDelete',
+    action: 'batchCreate',
     query,
   });
 
-  const state: MoldBatchDeleteState<T> = moldState as any;
+  const state: MoldBatchCreateState<T> = moldState as any;
 
-  state.delete = (ids: (string | number)[]) => mold.start(instanceId, ids);
+  state.create = (docs: Partial<MoldDocument>[]) => mold.start(instanceId, docs);
 
   return state;
 }

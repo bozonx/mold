@@ -3,10 +3,11 @@ import {SetupContext} from '@vue/composition-api';
 import {ActionState} from '../../frontend/interfaces/ActionState';
 import {saveComposition} from './composition/saveComposition';
 import {JsonTypes} from '../../interfaces/Types';
+import {MoldDocument} from '../../interfaces/MoldDocument';
 
 
 interface MoldCreateState<T> extends ActionState<T> {
-  create: (data: Record<string, any>) => void;
+  create: (data: Partial<MoldDocument>) => void;
 }
 
 
@@ -25,7 +26,7 @@ export default function moldCreate<T>(
 
   const state: MoldCreateState<T> = moldState as any;
 
-  state.create = (data: Record<string, any>) => mold.start(instanceId, data);
+  state.create = (data: Partial<MoldDocument>) => mold.start(instanceId, data);
 
   return state;
 }
