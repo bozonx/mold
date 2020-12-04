@@ -18,7 +18,7 @@ export interface MoldCompositionResult<T> {
 export function moldComposition<T>(
   context: SetupContext,
   actionProps: ActionProps,
-  onChangeCbOverride?: (newState: ActionState<T>) => T
+  onChangeCbOverride?: (newState: ActionState<T>) => ActionState
 ): MoldCompositionResult<T> {
   // @ts-ignore
   const mold: Mold = context.root.$mold;

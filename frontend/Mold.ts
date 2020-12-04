@@ -85,8 +85,12 @@ export default class Mold {
    * @param instanceId
    * @param data will be passed to request's data param.
    */
-  start(instanceId: string, data?: Record<string, any>) {
-    // TODO: добавить query override
+  start(
+    instanceId: string,
+    data?: Record<string, any>,
+    queryOverride?: Record<string, any>
+  ) {
+    // TODO: добавить queryOverride
     // TODO: может всетаки делать с промисом, а уже выше в коде его оборачивать
     this.requests.start(instanceId, data)
       .catch(this.log.error);
