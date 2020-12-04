@@ -2,22 +2,14 @@ import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {SetupContext} from '@vue/composition-api';
 import {omitObj} from '../../../helpers/objects';
 import {ListResponse} from '../../../interfaces/ReponseStructure';
-import {moldComposition, MoldCompositionResult} from './moldComposition';
+import {moldComposition} from './moldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 
 
-interface RetrieveAdditionalState {
-  load: () => void;
+export interface FindCompositionProps extends CompositionProps {
+  disableInitialLoad?: boolean
 }
-
-// load: () => mold.start(instanceId),
-
-export interface RetrieveCompositionProps extends CompositionProps {
-  // TODO: rename to disableInitialLoad
-  dontLoadImmediately?: boolean
-}
-
 
 // TODO: review
 export interface FindCompositionState<T> extends
@@ -31,7 +23,7 @@ export interface FindCompositionState<T> extends
 
 export function findComposition<T>(
   context: SetupContext,
-  actionProps: ActionProps
+  actionProps: FindCompositionProps
 ): FindCompositionState<T> {
   const stateTransform = (newState: ActionState<ListResponse<T>>): FindCompositionState<T> => {
     return {
@@ -42,12 +34,11 @@ export function findComposition<T>(
   }
 
   const {mold, instanceId, state: moldState} = moldComposition<T>(context, {
-    // TODO: remove dontLoadImmediately
-    ...actionProps,
+    ...omitObj(actionProps, 'disableInitialLoad') as ActionProps,
     isReading: true,
   }, stateTransform);
 
-  if (!actionProps.dontLoadImmediately) {
+  if (!actionProps.disableInitialLoad) {
     // start request immediately
     mold.start(instanceId);
   }
