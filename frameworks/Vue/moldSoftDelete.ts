@@ -5,14 +5,19 @@ import {ActionState} from '../../frontend/interfaces/ActionState';
 import {GetQuery} from '../../interfaces/GetQuery';
 
 
+interface MoldSoftDeleteState<T> extends ActionState<T> {
+  delete: () => void;
+}
+
+
 export default function moldSoftDelete<T>(
   context: SetupContext,
   set: string,
   idOrQuery?: (string | number) | GetQuery,
   backend?: string,
   deletedPropName: string = 'deleted'
-): ActionState<T> & {delete: () => void} {
-  const {mold, instanceId, state} = saveComposition<T>(
+): MoldSoftDeleteState<T> {
+  const {mold, instanceId, state: moldState} = saveComposition<T>(
     context,
     {
       backend,
@@ -21,11 +26,12 @@ export default function moldSoftDelete<T>(
       query: (typeof idOrQuery === 'string' || typeof idOrQuery === 'number')
         ? { id: idOrQuery }
         : idOrQuery,
-    },
-    {
-      delete: () => mold.start(instanceId, {[deletedPropName]: true}),
     }
   );
 
-  return state as ActionState<T> & {delete: () => void};
+  const state: MoldSoftDeleteState<T> = moldState as any;
+
+  state.delete = () => mold.start(instanceId, {[deletedPropName]: true});
+
+  return state;
 }

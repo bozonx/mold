@@ -1,11 +1,14 @@
 import {SetupContext} from '@vue/composition-api';
 
-import {
-  saveComposition,
-  SaveCompositionProps,
-  compositionSaveFunction
-} from './composition/saveComposition';
+import {saveComposition} from './composition/saveComposition';
 import {GetQuery} from '../../interfaces/GetQuery';
+import {MoldDocument} from '../../interfaces/MoldDocument';
+import {ActionState} from '../../frontend/interfaces/ActionState';
+
+
+interface MoldSaveState<T> extends ActionState<T> {
+  save: (data: Record<string, any>) => void;
+}
 
 
 export default function moldSave<T>(
@@ -13,23 +16,23 @@ export default function moldSave<T>(
   set: string,
   idOrQuery?: (string | number) | GetQuery,
   backend?: string
-): SaveCompositionProps<T> {
+): MoldSaveState<T> {
   const query: GetQuery | undefined = (typeof idOrQuery === 'string' || typeof idOrQuery === 'number')
     ? { id: idOrQuery }
     : idOrQuery;
   const actionName = (typeof query?.id === 'string' || typeof query?.id === 'number')
     ? 'patch'
     : 'create';
-  const {instanceId, state: moldState} = saveComposition<T>(context, {
+  const {mold, instanceId, state: moldState} = saveComposition<T>(context, {
     backend,
     set,
     action: actionName,
     query,
   });
 
-  const state: SaveCompositionProps<T> = moldState as any;
+  const state: MoldSaveState<T> = moldState as any;
 
-  state.save = (data: Record<string, any>) => compositionSaveFunction(instanceId, data);
+  state.save = (data: Partial<MoldDocument>) => mold.start(instanceId, data);
 
   return state;
 }

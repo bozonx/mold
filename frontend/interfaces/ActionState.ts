@@ -18,4 +18,4 @@ export interface InstanceState {
   __instanceId: string;
 }
 
-export type InstanceActionState<T = any> = ActionState<T> & InstanceState;
+//export type InstanceActionState<T = any> = ActionState<T> & InstanceState;

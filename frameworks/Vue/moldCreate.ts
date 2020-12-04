@@ -1,8 +1,13 @@
 import {SetupContext} from '@vue/composition-api';
 
 import {ActionState} from '../../frontend/interfaces/ActionState';
-import {saveComposition, SaveCompositionAdditionalProps} from './composition/saveComposition';
+import {saveComposition} from './composition/saveComposition';
 import {JsonTypes} from '../../interfaces/Types';
+
+
+interface MoldCreateState<T> extends ActionState<T> {
+  create: (data: Record<string, any>) => void;
+}
 
 
 export default function moldCreate<T>(
@@ -10,13 +15,17 @@ export default function moldCreate<T>(
   set: string,
   query?: Record<string, JsonTypes>,
   backend?: string
-): ActionState<T> & SaveCompositionAdditionalProps {
-  const {state} = saveComposition<T>(context, {
+): MoldCreateState<T> {
+  const {mold, instanceId, state: moldState} = saveComposition<T>(context, {
     backend,
     set,
     action: 'create',
     query,
   });
 
-  return state as ActionState<T> & SaveCompositionAdditionalProps;
+  const state: MoldCreateState<T> = moldState as any;
+
+  state.create = (data: Record<string, any>) => mold.start(instanceId, data);
+
+  return state;
 }

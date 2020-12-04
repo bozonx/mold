@@ -86,6 +86,7 @@ export default class Mold {
    * @param data will be passed to request's data param.
    */
   start(instanceId: string, data?: Record<string, any>) {
+    // TODO: может всетаки делать с промисом, а уже выше в коде его оборачивать
     this.requests.start(instanceId, data)
       .catch(this.log.error);
   }

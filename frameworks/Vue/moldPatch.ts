@@ -1,8 +1,14 @@
 import {SetupContext} from '@vue/composition-api';
 
-import {ActionState} from '../../frontend/interfaces/ActionState';
-import {saveComposition, SaveCompositionAdditionalProps} from './composition/saveComposition';
+import {saveComposition} from './composition/saveComposition';
 import {GetQuery} from '../../interfaces/GetQuery';
+import {MoldDocument} from '../../interfaces/MoldDocument';
+import {ActionState} from '../../frontend/interfaces/ActionState';
+
+
+interface MoldPatchState<T> extends ActionState<T> {
+  patch: (data: MoldDocument) => void;
+}
 
 
 export default function moldPatch<T>(
@@ -10,8 +16,8 @@ export default function moldPatch<T>(
   set: string,
   idOrQuery?: (string | number) | GetQuery,
   backend?: string
-): ActionState<T> & SaveCompositionAdditionalProps {
-  const {state} = saveComposition<T>(context, {
+): MoldPatchState<T> {
+  const {mold, instanceId, state: moldState} = saveComposition<T>(context, {
     backend,
     set,
     action: 'patch',
@@ -20,5 +26,9 @@ export default function moldPatch<T>(
       : idOrQuery,
   });
 
-  return state as ActionState<T> & SaveCompositionAdditionalProps;
+  const state: MoldPatchState<T> = moldState as any;
+
+  state.patch = (data: MoldDocument) => mold.start(instanceId, data);
+
+  return state;
 }
