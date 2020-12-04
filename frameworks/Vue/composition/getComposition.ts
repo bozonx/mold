@@ -4,6 +4,10 @@ import {omitObj} from '../../../helpers/objects';
 import {RetrieveCompositionProps, retrieveComposition, RetrieveResult} from './retrieveComposition';
 
 
+interface RetrieveAdditionalState {
+  load: () => void;
+}
+
 export interface GetCompositionState<T> extends
   Omit<ActionState<T>, 'result'>,
   Omit<ItemResponse, 'data'>

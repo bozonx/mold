@@ -1,20 +1,17 @@
 import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
 
-import {omitObj} from '../../../helpers/objects';
+import {omitObj, omitUndefined} from '../../../helpers/objects';
 import Mold from '../../../frontend/Mold';
 import {ActionState, InstanceState} from '../../../frontend/interfaces/ActionState';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
 import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
+import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 
-
-export interface RetrieveAdditionalState {
-  load: () => void;
-}
 
 export interface RetrieveResult<T> {
   mold: Mold;
   instanceId: string;
-  state: T & InstanceState & RetrieveAdditionalState;
+  state: ActionState<T>;
 }
 
 export interface RetrieveCompositionProps extends CompositionProps {
@@ -32,18 +29,19 @@ export function retrieveComposition<T>(
   const mold: Mold = context.root.$mold;
   // init request
   const instanceId: string = mold.newRequest({
-    ...omitObj(actionProps, 'dontLoadImmediately') as HighLevelProps,
+    ...omitObj(actionProps, 'dontLoadImmediately') as ActionProps<T>,
+    // TODO: отличается
     isReading: true,
   });
 
-  const state: T & InstanceState & RetrieveAdditionalState = reactive({
+  const state: ActionState<T> = reactive(omitUndefined({
     ...mold.getState(instanceId),
     [INSTANCE_ID_PROP_NAME]: instanceId,
-    load: () => mold.start(instanceId),
-  }) as any;
+  })) as any;
 
   // update reactive at any change
   mold.onChange(instanceId, (newState: ActionState) => {
+    // TODO: отличается
     const completeState: ActionState | T = (changeTransform)
       ? changeTransform(newState)
       : newState
@@ -52,6 +50,7 @@ export function retrieveComposition<T>(
     for (let key of Object.keys(completeState)) state[key] = completeState[key];
   });
 
+  // TODO: отличается
   if (!actionProps.dontLoadImmediately) {
     // start request immediately
     mold.start(instanceId);

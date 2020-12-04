@@ -86,6 +86,7 @@ export default class Mold {
    * @param data will be passed to request's data param.
    */
   start(instanceId: string, data?: Record<string, any>) {
+    // TODO: добавить query override
     // TODO: может всетаки делать с промисом, а уже выше в коде его оборачивать
     this.requests.start(instanceId, data)
       .catch(this.log.error);
@@ -148,6 +149,7 @@ export default class Mold {
   /**
    * Listen to changes of any part of state of specified request
    * which is resolved by instanceId.
+   * This is certainly changes of state storage.
    */
   onChange(instanceId: string, changeCb: (state: ActionState) => void): number {
     const {requestKey} = splitInstanceId(instanceId);

@@ -17,6 +17,7 @@ interface SaveResult<T> {
 export function saveComposition<T>(
   context: SetupContext,
   actionProps: CompositionProps,
+  onChangeCbOverride?: (newState: ActionState<T>) => T
 ): SaveResult<T> {
   // @ts-ignore
   const mold: Mold = context.root.$mold;
@@ -28,7 +29,12 @@ export function saveComposition<T>(
   })) as any;
   // update reactive at any change
   mold.onChange(instanceId, (newState: ActionState) => {
-    for (let key of Object.keys(newState)) state[key] = newState[key];
+    const completeState: ActionState | T = (onChangeCbOverride)
+      ? onChangeCbOverride(newState)
+      : newState;
+
+    // TODO: use Object.assign(state, newState);
+    for (let key of Object.keys(completeState)) state[key] = completeState[key];
   });
 
   onUnmounted(() => {

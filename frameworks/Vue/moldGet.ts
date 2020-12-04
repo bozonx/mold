@@ -19,7 +19,5 @@ export default function moldGet<T>(
       : idOrQuery,
   });
 
-  // TODO: сделать поддержку поиска первого элемента если не указан id ???
-
   return state;
 }
