@@ -2,7 +2,6 @@ import {SetupContext} from '@vue/composition-api';
 
 import {InstanceActionState} from '../../frontend/interfaces/ActionState';
 import {saveComposition, SaveCompositionAdditionalProps} from './composition/saveComposition';
-import {MoldDocument} from '../../interfaces/MoldDocument';
 import {GetQuery} from '../../interfaces/GetQuery';
 
 

@@ -1,4 +1,5 @@
 import {SetupContext} from '@vue/composition-api';
+
 import {InstanceActionState} from '../../frontend/interfaces/ActionState';
 import {saveComposition} from './composition/saveComposition';
 import {GetQuery} from '../../interfaces/GetQuery';

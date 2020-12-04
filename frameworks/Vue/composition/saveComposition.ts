@@ -1,6 +1,7 @@
+import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
+
 import Mold from '../../../frontend/Mold';
 import {ActionState, InstanceActionState} from '../../../frontend/interfaces/ActionState';
-import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
 import {omitUndefined} from '../../../helpers/objects';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
 import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
@@ -24,6 +25,7 @@ export function saveComposition<T>(
   // // is clear which action to use: create or update
   // actionName: string,
   actionProps: CompositionProps,
+  // TODO: перезаписать а не расширить
   stateAdditions?: Record<string, any>
 ): SaveResult<T> {
   // @ts-ignore
