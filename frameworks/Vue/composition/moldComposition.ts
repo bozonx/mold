@@ -5,9 +5,10 @@ import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {omitUndefined} from '../../../helpers/objects';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
 import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
+import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 
 
-interface MoldCompositionResult<T> {
+export interface MoldCompositionResult<T> {
   mold: Mold;
   instanceId: string;
   state: ActionState<T>;
@@ -16,7 +17,7 @@ interface MoldCompositionResult<T> {
 
 export function moldComposition<T>(
   context: SetupContext,
-  actionProps: CompositionProps,
+  actionProps: ActionProps,
   onChangeCbOverride?: (newState: ActionState<T>) => T
 ): MoldCompositionResult<T> {
   // @ts-ignore

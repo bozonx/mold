@@ -2,7 +2,7 @@ import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {SetupContext} from '@vue/composition-api';
 import {omitObj} from '../../../helpers/objects';
 import {ListResponse} from '../../../interfaces/ReponseStructure';
-import {moldComposition} from './moldComposition';
+import {moldComposition, MoldCompositionResult} from './moldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 
@@ -19,18 +19,20 @@ export interface RetrieveCompositionProps extends CompositionProps {
 }
 
 
+// TODO: review
 export interface FindCompositionState<T> extends
   Omit<ActionState<T>, 'result'>,
   Omit<ListResponse, 'data'>
 {
   items: T[] | null;
+  load: (queryOverride: Record<string, any>) => void;
 }
 
 
 export function findComposition<T>(
   context: SetupContext,
   actionProps: ActionProps
-): RetrieveResult<FindCompositionState<T>> {
+): FindCompositionState<T> {
   const stateTransform = (newState: ActionState<ListResponse<T>>): FindCompositionState<T> => {
     return {
       ...omitObj(newState, 'result') as Omit<ActionState<T>, 'result'>,
@@ -50,9 +52,11 @@ export function findComposition<T>(
     mold.start(instanceId);
   }
 
-  const state: MoldCreateState<T> = moldState as any;
+  const state: FindCompositionState<T> = moldState as any;
 
-  state.load = (queryOverride: Record<string, any>) => mold.start(instanceId, data);
+  state.load = (queryOverride: Record<string, any>) => {
+    mold.start(instanceId, undefined, queryOverride);
+  };
 
   return state;
 }
