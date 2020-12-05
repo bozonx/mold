@@ -73,7 +73,7 @@ export default class PouchDbAdapter implements DbAdapter {
         startkey: set + SET_DELIMITER,
         endkey: set + SET_DELIMITER + '\ufff0',
         // TODO: вроде это не эффективный способ, нужно наверное view использовать
-        ...convertPageToOffset(query.page, query.perPage),
+        ...convertPageToOffset(query.page, query.pageSize),
         ...query,
       });
     }

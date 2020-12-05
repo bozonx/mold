@@ -1,5 +1,6 @@
-import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {SetupContext} from '@vue/composition-api';
+
+import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {omitObj} from '../../../helpers/objects';
 import {moldComposition} from './moldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
@@ -10,8 +11,8 @@ export interface GetCompositionProps extends Omit<ActionProps, 'isReading'> {
   disableInitialLoad?: boolean
 }
 
-export interface GetCompositionState<T> extends ActionState, Omit<ItemResponse, 'data'> {
-  // replace result.data to this
+export interface GetCompositionState<T> extends ActionState {
+  // it is result.data
   item: T | null;
   load: (queryOverride?: Record<string, any>) => void;
 }
@@ -26,7 +27,6 @@ export function getComposition<T>(
   ): Omit<GetCompositionState<T>, 'load'> => {
     return {
       ...newState,
-      ...omitObj(newState.result, 'data') as Omit<ItemResponse, 'data'>,
       item: newState.result?.data || null,
     };
   }
