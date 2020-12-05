@@ -4,7 +4,6 @@ import Mold from '../../../frontend/Mold';
 import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {omitUndefined} from '../../../helpers/objects';
 import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
-import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 
 
@@ -12,6 +11,11 @@ export interface MoldCompositionResult<T> {
   mold: Mold;
   instanceId: string;
   state: ActionState<T>;
+}
+
+export interface InstanceState {
+  // string like "backend|set|action|request|instanceNum"
+  __instanceId: string;
 }
 
 

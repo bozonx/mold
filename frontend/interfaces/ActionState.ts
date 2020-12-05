@@ -12,10 +12,3 @@ export interface ActionState<T = any>
   success: boolean | null,
   status: number | null,
 }
-
-export interface InstanceState {
-  // string like "backend|set|action|request|instanceNum"
-  __instanceId: string;
-}
-
-//export type InstanceActionState<T = any> = ActionState<T> & InstanceState;

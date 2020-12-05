@@ -10,7 +10,7 @@ export default function moldGet<T>(
   idOrQuery?: (string | number) | GetQuery,
   backend?: string
 ): GetCompositionState<T> {
-  const {state} = getComposition<T>(context, {
+  return getComposition<T>(context, {
     backend,
     set,
     action: 'get',
@@ -18,6 +18,4 @@ export default function moldGet<T>(
       ? { id: idOrQuery }
       : idOrQuery,
   });
-
-  return state;
 }

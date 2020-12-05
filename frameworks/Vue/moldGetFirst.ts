@@ -1,8 +1,6 @@
 import {SetupContext} from '@vue/composition-api';
-import {GetCompositionState} from './composition/getComposition';
 import {ActionState, ListResponse} from '../../frontend/interfaces/ActionState';
 import {omitObj} from '../../helpers/objects';
-import {GetQuery} from '../../interfaces/GetQuery';
 
 
 export default function moldGetFirst<T>(

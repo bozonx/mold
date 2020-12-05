@@ -4,10 +4,9 @@ import {omitObj} from '../../../helpers/objects';
 import {ListResponse} from '../../../interfaces/ReponseStructure';
 import {moldComposition} from './moldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
-import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 
 
-export interface FindCompositionProps extends CompositionProps {
+export interface FindCompositionProps extends Omit<ActionProps, 'isReading'> {
   disableInitialLoad?: boolean
 }
 

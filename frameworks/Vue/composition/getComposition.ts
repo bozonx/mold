@@ -3,11 +3,10 @@ import {SetupContext} from '@vue/composition-api';
 import {omitObj} from '../../../helpers/objects';
 import {moldComposition} from './moldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
-import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
 import {ItemResponse} from '../../../interfaces/ReponseStructure';
 
 
-export interface GetCompositionProps extends CompositionProps {
+export interface GetCompositionProps extends Omit<ActionProps, 'isReading'> {
   disableInitialLoad?: boolean
 }
 
