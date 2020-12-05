@@ -7,8 +7,6 @@ import {moldComposition} from './moldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 
 
-export type FindCompositionProps = Omit<ActionProps, 'isReading'>;
-
 export interface FindCompositionState<T> extends ActionState, Omit<ListResponse, 'data'> {
   // replace result.data to this
   items: T[] | null;
@@ -18,7 +16,7 @@ export interface FindCompositionState<T> extends ActionState, Omit<ListResponse,
 
 export function findComposition<T>(
   context: SetupContext,
-  actionProps: FindCompositionProps,
+  actionProps: Omit<ActionProps, 'isReading'>,
   disableInitialLoad: boolean = false
 ): FindCompositionState<T> {
   const stateTransform = (

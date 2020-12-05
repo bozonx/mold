@@ -1,13 +1,10 @@
 import {SetupContext} from '@vue/composition-api';
 
 import {ActionState} from '../../../frontend/interfaces/ActionState';
-import {omitObj} from '../../../helpers/objects';
 import {moldComposition} from './moldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 import {ItemResponse} from '../../../interfaces/ReponseStructure';
 
-
-export type GetCompositionProps = Omit<ActionProps, 'isReading'>;
 
 export interface GetCompositionState<T> extends ActionState {
   // it is result.data
@@ -18,7 +15,7 @@ export interface GetCompositionState<T> extends ActionState {
 
 export function getComposition<T>(
   context: SetupContext,
-  actionProps: GetCompositionProps,
+  actionProps: Omit<ActionProps, 'isReading'>,
   disableInitialLoad: boolean = false
 ): GetCompositionState<T> {
   const stateTransform = (
