@@ -24,6 +24,7 @@ export default class MoldRequestTransform {
 
 
   constructor(
+    // TODO: rename to transforms
     rawSets: SetsDefinition,
     requestFunc: HooksRequestFunc,
     user?: MoldDocument

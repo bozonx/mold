@@ -1,3 +1,6 @@
+import {MoldDocument} from './MoldDocument';
+
+
 export interface MoldSeedContext {
-  insert(set: string, docs: Record<string, any>[]);
+  insert(set: string, docs: MoldDocument[]);
 }

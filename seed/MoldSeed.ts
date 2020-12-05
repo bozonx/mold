@@ -4,7 +4,7 @@ import {DbAdapter} from '../interfaces/DbAdapter';
 import ConsoleLogger from '../helpers/ConsoleLogger';
 import {SeedContext} from './SeedContext';
 import {MoldSchema} from '../interfaces/MoldSchema';
-import {extractSeedFromSchema} from './extractSeedFromSchema';
+import {extractSeedFromSchema} from '../__old/extractSeedFromSchema';
 
 
 interface MoldSeedProps {
@@ -30,6 +30,7 @@ export default class MoldSeed {
       throw new Error(`Please specify the adapter`);
     }
 
+    // TODO: remove
     this.seed = (props.seed) ? props.seed : extractSeedFromSchema(props.schemas!);
     this.adapter = props.adapter;
     this.log = this.resolveLogger(props.log);

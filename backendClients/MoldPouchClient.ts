@@ -14,7 +14,7 @@ import {MoldDocument} from '../interfaces/MoldDocument';
 
 interface MoldPouchClientProps {
   pouchDb: PouchDB;
-  sets: SetsDefinition;
+  transforms: SetsDefinition;
   // set user if it is authorized, undefined if not.
   user?: MoldDocument;
 }
@@ -38,7 +38,7 @@ export default class MoldPouchClient implements BackendClient {
 
     this.props = props;
     this.transform = new MoldRequestTransform(
-      props.sets,
+      props.transforms,
       this.doAdapterRequest,
       this.props.user
     );
@@ -85,7 +85,7 @@ export default class MoldPouchClient implements BackendClient {
     if (typeof props.pouchDb !== 'object') {
       throw new Error(`Incorrect pouchDb prop`);
     }
-    else if (typeof props.sets !== 'object') {
+    else if (typeof props.transforms !== 'object') {
       throw new Error(`Incorrect sets prop`);
     }
     else if (typeof props.user !== 'undefined' && typeof props.user !== 'object') {
