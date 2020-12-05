@@ -12,7 +12,7 @@ export interface FindCompositionProps extends CompositionProps {
 }
 
 export interface FindCompositionState<T> extends ActionState, Omit<ListResponse, 'data'> {
-  // this is result.data
+  // replace result.data to this
   items: T[] | null;
   load: (queryOverride: Record<string, any>) => void;
 }

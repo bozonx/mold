@@ -11,12 +11,10 @@ export default function moldActionFind<T>(
   query?: FindQuery,
   backend?: string
 ): FindCompositionState<T> {
-  const {state} = findComposition<T>(context, {
+  return findComposition<T>(context, {
     backend,
     set,
     action: actionName,
     query,
   });
-
-  return state;
 }

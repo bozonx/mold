@@ -1,34 +1,52 @@
-import {ActionState, ItemResponse} from '../../../frontend/interfaces/ActionState';
+import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {SetupContext} from '@vue/composition-api';
 import {omitObj} from '../../../helpers/objects';
+import {moldComposition} from './moldComposition';
+import {ActionProps} from '../../../frontend/interfaces/ActionProps';
+import {CompositionProps} from '../../../frontend/interfaces/CompositionProps';
+import {ItemResponse} from '../../../interfaces/ReponseStructure';
 
 
-interface RetrieveAdditionalState {
-  load: () => void;
+export interface GetCompositionProps extends CompositionProps {
+  disableInitialLoad?: boolean
 }
 
-export interface GetCompositionState<T> extends
-  Omit<ActionState<T>, 'result'>,
-  Omit<ItemResponse, 'data'>
-{
+export interface GetCompositionState<T> extends ActionState, Omit<ItemResponse, 'data'> {
+  // replace result.data to this
   item: T | null;
+  load: (queryOverride: Record<string, any>) => void;
 }
 
 
 export function getComposition<T>(
   context: SetupContext,
-  actionProps: RetrieveCompositionProps
-): RetrieveResult<GetCompositionState<T>> {
-  return retrieveComposition<GetCompositionState<T>>(
-    context,
-    actionName,
-    actionProps,
-    (newState: ActionState<ItemResponse<T>>): GetCompositionState<T> => {
-      return {
-        ...omitObj(newState, 'result') as Omit<ActionState<T>, 'result'>,
-        ...omitObj(newState.result, 'data') as Omit<ItemResponse, 'data'>,
-        item: newState.result?.data || null,
-      };
-    }
-  );
+  actionProps: GetCompositionProps
+): GetCompositionState<T> {
+  const stateTransform = (
+    newState: ActionState<ItemResponse<T>>
+  ): Omit<GetCompositionState<T>, 'load'> => {
+    return {
+      ...newState,
+      ...omitObj(newState.result, 'data') as Omit<ItemResponse, 'data'>,
+      item: newState.result?.data || null,
+    };
+  }
+
+  const {mold, instanceId, state: moldState} = moldComposition<ItemResponse<T>>(context, {
+    ...omitObj(actionProps, 'disableInitialLoad') as ActionProps,
+    isReading: true,
+  }, stateTransform);
+
+  if (!actionProps.disableInitialLoad) {
+    // start request immediately
+    mold.start(instanceId);
+  }
+
+  const state: GetCompositionState<T> = moldState as any;
+
+  state.load = (queryOverride: Record<string, any>) => {
+    mold.start(instanceId, undefined, queryOverride);
+  };
+
+  return state;
 }
