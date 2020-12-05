@@ -5,6 +5,7 @@ import ConsoleLogger from '../helpers/ConsoleLogger';
 import {SeedContext} from './SeedContext';
 import {extractSeedFromSchema} from '../__old/extractSeedFromSchema';
 import {MoldSchema} from '../interfaces/MoldSchema';
+import {normalizeSchema} from '../schema/normalizeSchema';
 
 
 export default class MoldSeed {
@@ -17,9 +18,11 @@ export default class MoldSeed {
   constructor(
     adapter: DbAdapter,
     seed: (context: MoldSeedContext) => void,
-    schema?: MoldSchema,
+    rawSchema?: MoldSchema,
     log?: Logger | LogLevel,
   ) {
+
+    const schema: MoldSchema = normalizeSchema(rawSchema);
 
     // TODO: validate seed using schema
 

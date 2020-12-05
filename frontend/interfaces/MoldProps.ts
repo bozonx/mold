@@ -11,7 +11,7 @@ export interface MoldProps {
   config?: MoldFrontendConfig;
   // fill almost one backend. Name of backend is used in any request.
   // "default" backend doesn't have to be specified in request.
-  backends?: {[index: string]: BackendClient | undefined};
+  backends?: {[index: string]: BackendClient};
   storage?: StorageAdapter;
   log?: Logger | LogLevel;
 }
