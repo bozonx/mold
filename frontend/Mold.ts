@@ -12,6 +12,7 @@ import {isEmptyObject} from '../helpers/objects';
 import ConsoleLogger from '../helpers/ConsoleLogger';
 import DefaultStore from './DefaultStore';
 import {MoldFrontendConfig} from './interfaces/MoldFrontendConfig';
+import {BackendClient} from '../interfaces/BackendClient';
 
 
 export default class Mold {
@@ -28,6 +29,10 @@ export default class Mold {
 
   get config(): MoldFrontendConfig {
     return this.props.config!;
+  }
+
+  get backends(): {[index: string]: BackendClient} {
+    return this.props.backends as any;
   }
 
 
@@ -52,8 +57,6 @@ export default class Mold {
     await this.backendManager.destroy();
   }
 
-
-  // TODO: add getBackend ???
 
   /**
    * Handle income push message. It can be json string or object or array of messages.
@@ -90,10 +93,16 @@ export default class Mold {
     data?: Record<string, any>,
     queryOverride?: Record<string, any>
   ) {
-    // TODO: добавить queryOverride
-    // TODO: может всетаки делать с промисом, а уже выше в коде его оборачивать
-    this.requests.start(instanceId, data)
+    this.requests.start(instanceId, data, queryOverride)
       .catch(this.log.error);
+  }
+
+  startAsync(
+    instanceId: string,
+    data?: Record<string, any>,
+    queryOverride?: Record<string, any>
+  ): Promise<void> {
+    return this.requests.start(instanceId, data, queryOverride);
   }
 
   /**

@@ -12,10 +12,7 @@ export function makeRequestKey(props: ActionProps): RequestKey {
     props.backend || DEFAULT_BACKEND,
     props.set,
     props.action,
-    JSON.stringify(omitUndefined({
-      id: props.id,
-      query: props.query && sortObject(props.query),
-    })),
+    JSON.stringify(props.query && sortObject(props.query)),
   ];
 }
 

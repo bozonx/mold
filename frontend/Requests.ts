@@ -52,7 +52,14 @@ export default class Requests {
    * @param instanceId
    * @param data - data for create, delete, patch or custom actions
    */
-  async start(instanceId: string, data?: Record<string, any>) {
+  async start(
+    instanceId: string,
+    data?: Record<string, any>,
+    queryOverride?: Record<string, any>
+  ) {
+
+    // TODO: добавить queryOverride
+
     const {requestKey, instanceNum} = splitInstanceId(instanceId);
 
     if (!this.instances.doesInstanceNumExist(requestKey, instanceNum)) {
