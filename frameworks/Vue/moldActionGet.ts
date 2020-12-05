@@ -19,6 +19,5 @@ export default function moldActionGet<T>(
     query: (typeof idOrQuery === 'string' || typeof idOrQuery === 'number')
       ? { id: idOrQuery }
       : idOrQuery,
-    isReading: true,
   }, disableInitialLoad);
 }

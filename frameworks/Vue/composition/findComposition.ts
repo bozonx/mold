@@ -31,7 +31,7 @@ export function findComposition<T>(
   // isReading param will be set at mold.request.register() method
   const {mold, instanceId, state: moldState} = moldComposition<ListResponse<T>>(
     context,
-    actionProps,
+    { ...actionProps, isReading: true },
     stateTransform
   );
 

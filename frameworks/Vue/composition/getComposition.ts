@@ -29,7 +29,7 @@ export function getComposition<T>(
   // isReading param will be set at mold.request.register() method
   const {mold, instanceId, state: moldState} = moldComposition<ItemResponse<T>>(
     context,
-    actionProps,
+    { ...actionProps, isReading: true },
     stateTransform
   );
 

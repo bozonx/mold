@@ -17,6 +17,5 @@ export default function moldActionFind<T>(
     set,
     action: actionName,
     query,
-    isReading: true,
   }, disableInitialLoad);
 }
