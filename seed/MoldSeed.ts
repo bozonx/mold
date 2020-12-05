@@ -3,38 +3,33 @@ import {Logger, LogLevel} from '../interfaces/Logger';
 import {DbAdapter} from '../interfaces/DbAdapter';
 import ConsoleLogger from '../helpers/ConsoleLogger';
 import {SeedContext} from './SeedContext';
-import {MoldSchema} from '../interfaces/MoldSchema';
 import {extractSeedFromSchema} from '../__old/extractSeedFromSchema';
-
-
-interface MoldSeedProps {
-  adapter: DbAdapter;
-  schemas?: MoldSchema[];
-  seed?: (context: MoldSeedContext) => void;
-  log?: Logger | LogLevel;
-}
+import {MoldSchema} from '../interfaces/MoldSchema';
 
 
 export default class MoldSeed {
   private readonly adapter: DbAdapter;
   private readonly seed: (context: MoldSeedContext) => void;
-  private readonly log: Logger;
+  readonly log: Logger;
   private readonly context: SeedContext;
 
 
-  constructor(props: MoldSeedProps) {
-    if (!props.seed && !props.schemas) {
-      throw new Error(`Please specify almost seed or schema`);
-    }
-    else if (!props.adapter) {
-      throw new Error(`Please specify the adapter`);
-    }
+  constructor(
+    adapter: DbAdapter,
+    seed: (context: MoldSeedContext) => void,
+    schema?: MoldSchema,
+    log?: Logger | LogLevel,
+  ) {
+
+    // TODO: validate seed using schema
 
     // TODO: remove
     this.seed = (props.seed) ? props.seed : extractSeedFromSchema(props.schemas!);
     this.adapter = props.adapter;
     this.log = this.resolveLogger(props.log);
     this.context = new SeedContext(this.adapter);
+
+    // TODO: запустить сразу
   }
 
   destroy() {
@@ -43,12 +38,11 @@ export default class MoldSeed {
 
 
   start() {
-    this.doStart()
+    this.startAsync()
       .catch(this.log.error);
   }
 
-
-  private async doStart() {
+  async startAsync() {
     try {
       this.seed(this.context);
     }
@@ -73,4 +67,15 @@ export default class MoldSeed {
     return rawLogger;
   }
 
+}
+
+export function moldSeed(
+  adapter: DbAdapter,
+  seed: (context: MoldSeedContext) => void,
+  schema?: MoldSchema,
+  log: Logger | LogLevel = 'debug',
+) {
+  const instance = new MoldSeed(adapter, seed, schema, log);
+
+  instance.start();
 }
