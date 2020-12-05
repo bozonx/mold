@@ -9,7 +9,8 @@ export default function moldActionGet<T>(
   set: string,
   actionName: string,
   idOrQuery?: (string | number) | GetQuery,
-  backend?: string
+  backend?: string,
+  disableInitialLoad?: boolean
 ): GetCompositionState<T> {
   return getComposition<T>(context, {
     backend,
@@ -18,5 +19,5 @@ export default function moldActionGet<T>(
     query: (typeof idOrQuery === 'string' || typeof idOrQuery === 'number')
       ? { id: idOrQuery }
       : idOrQuery,
-  });
+  }, disableInitialLoad);
 }

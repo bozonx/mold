@@ -8,12 +8,13 @@ export default function moldFind<T>(
   context: SetupContext,
   set: string,
   query?: FindQuery,
-  backend?: string
+  backend?: string,
+  disableInitialLoad?: boolean
 ): FindCompositionState<T> {
   return findComposition<T>(context, {
     backend,
     set,
     action: 'find',
     query,
-  });
+  }, disableInitialLoad);
 }

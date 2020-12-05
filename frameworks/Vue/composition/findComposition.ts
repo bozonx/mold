@@ -7,9 +7,7 @@ import {moldComposition} from './moldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 
 
-export interface FindCompositionProps extends Omit<ActionProps, 'isReading'> {
-  disableInitialLoad?: boolean
-}
+export type FindCompositionProps = Omit<ActionProps, 'isReading'>;
 
 export interface FindCompositionState<T> extends ActionState, Omit<ListResponse, 'data'> {
   // replace result.data to this
@@ -20,7 +18,8 @@ export interface FindCompositionState<T> extends ActionState, Omit<ListResponse,
 
 export function findComposition<T>(
   context: SetupContext,
-  actionProps: FindCompositionProps
+  actionProps: FindCompositionProps,
+  disableInitialLoad: boolean = false
 ): FindCompositionState<T> {
   const stateTransform = (
     newState: ActionState<ListResponse<T>>
@@ -37,7 +36,7 @@ export function findComposition<T>(
     isReading: true,
   }, stateTransform);
 
-  if (!actionProps.disableInitialLoad) {
+  if (!disableInitialLoad) {
     // start request immediately
     mold.start(instanceId);
   }

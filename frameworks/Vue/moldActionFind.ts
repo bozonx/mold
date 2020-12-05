@@ -9,12 +9,13 @@ export default function moldActionFind<T>(
   set: string,
   actionName: string,
   query?: FindQuery,
-  backend?: string
+  backend?: string,
+  disableInitialLoad?: boolean
 ): FindCompositionState<T> {
   return findComposition<T>(context, {
     backend,
     set,
     action: actionName,
     query,
-  });
+  }, disableInitialLoad);
 }

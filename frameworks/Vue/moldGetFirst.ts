@@ -11,7 +11,8 @@ export default function moldGetFirst<T>(
   context: SetupContext,
   set: string,
   query?: Record<string, any>,
-  backend?: string
+  backend?: string,
+  disableInitialLoad?: boolean
 ): GetCompositionState<T> {
   const actionProps: ActionProps = {
     backend,
@@ -39,7 +40,7 @@ export default function moldGetFirst<T>(
     stateTransform
   );
 
-  if (!actionProps.disableInitialLoad) {
+  if (!disableInitialLoad) {
     // start request immediately
     mold.start(instanceId);
   }

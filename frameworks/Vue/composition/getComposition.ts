@@ -7,9 +7,7 @@ import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 import {ItemResponse} from '../../../interfaces/ReponseStructure';
 
 
-export interface GetCompositionProps extends Omit<ActionProps, 'isReading'> {
-  disableInitialLoad?: boolean
-}
+export type GetCompositionProps = Omit<ActionProps, 'isReading'>;
 
 export interface GetCompositionState<T> extends ActionState {
   // it is result.data
@@ -20,7 +18,8 @@ export interface GetCompositionState<T> extends ActionState {
 
 export function getComposition<T>(
   context: SetupContext,
-  actionProps: GetCompositionProps
+  actionProps: GetCompositionProps,
+  disableInitialLoad: boolean = false
 ): GetCompositionState<T> {
   const stateTransform = (
     newState: ActionState<ItemResponse<T>>
@@ -32,11 +31,11 @@ export function getComposition<T>(
   }
 
   const {mold, instanceId, state: moldState} = moldComposition<ItemResponse<T>>(context, {
-    ...omitObj(actionProps, 'disableInitialLoad') as ActionProps,
+    ...actionProps,
     isReading: true,
   }, stateTransform);
 
-  if (!actionProps.disableInitialLoad) {
+  if (!disableInitialLoad) {
     // start request immediately
     mold.start(instanceId);
   }
