@@ -13,7 +13,7 @@ export interface FindCompositionProps extends Omit<ActionProps, 'isReading'> {
 export interface FindCompositionState<T> extends ActionState, Omit<ListResponse, 'data'> {
   // replace result.data to this
   items: T[] | null;
-  load: (queryOverride: Record<string, any>) => void;
+  load: (queryOverride?: Record<string, any>) => void;
 }
 
 
@@ -43,7 +43,7 @@ export function findComposition<T>(
 
   const state: FindCompositionState<T> = moldState as any;
 
-  state.load = (queryOverride: Record<string, any>) => {
+  state.load = (queryOverride?: Record<string, any>) => {
     mold.start(instanceId, undefined, queryOverride);
   };
 

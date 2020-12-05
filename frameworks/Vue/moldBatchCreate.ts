@@ -7,7 +7,7 @@ import {MoldDocument} from '../../interfaces/MoldDocument';
 
 
 interface MoldBatchCreateState<T> extends ActionState<T> {
-  create: (docs: Partial<MoldDocument>[]) => void;
+  create: (docs: Partial<MoldDocument>[], queryOverride?: Record<string, any>) => void;
 }
 
 
@@ -26,7 +26,9 @@ export default function moldBatchCreate<T>(
 
   const state: MoldBatchCreateState<T> = moldState as any;
 
-  state.create = (docs: Partial<MoldDocument>[]) => mold.start(instanceId, docs);
+  state.create = (docs: Partial<MoldDocument>[], queryOverride?: Record<string, any>) => {
+    mold.start(instanceId, docs, queryOverride);
+  }
 
   return state;
 }

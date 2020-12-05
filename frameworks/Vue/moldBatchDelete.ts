@@ -6,7 +6,7 @@ import {JsonTypes} from '../../interfaces/Types';
 
 
 interface MoldBatchDeleteState<T> extends ActionState<T> {
-  delete: (ids: (string | number)[]) => void;
+  delete: (ids: (string | number)[], queryOverride?: Record<string, any>) => void;
 }
 
 
@@ -25,7 +25,9 @@ export default function moldBatchDelete<T>(
 
   const state: MoldBatchDeleteState<T> = moldState as any;
 
-  state.delete = (ids: (string | number)[]) => mold.start(instanceId, ids);
+  state.delete = (ids: (string | number)[], queryOverride?: Record<string, any>) => {
+    mold.start(instanceId, ids, queryOverride);
+  }
 
   return state;
 }

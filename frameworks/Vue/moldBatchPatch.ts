@@ -7,7 +7,7 @@ import {MoldDocument} from '../../interfaces/MoldDocument';
 
 
 interface MoldBatchPatchState<T> extends ActionState<T> {
-  patch: (docs: MoldDocument[]) => void;
+  patch: (docs: MoldDocument[], queryOverride?: Record<string, any>) => void;
 }
 
 
@@ -26,7 +26,9 @@ export default function moldBatchPatch<T>(
 
   const state: MoldBatchPatchState<T> = moldState as any;
 
-  state.patch = (docs: MoldDocument[]) => mold.start(instanceId, docs);
+  state.patch = (docs: MoldDocument[], queryOverride?: Record<string, any>) => {
+    mold.start(instanceId, docs, queryOverride);
+  }
 
   return state;
 }

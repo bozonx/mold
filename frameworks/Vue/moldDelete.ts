@@ -6,7 +6,7 @@ import {GetQuery} from '../../interfaces/GetQuery';
 
 
 interface MoldDeleteState<T> extends ActionState<T> {
-  delete: () => void;
+  delete: (queryOverride?: Record<string, any>) => void;
 }
 
 
@@ -30,7 +30,9 @@ export default function moldDelete<T>(
 
   const state: MoldDeleteState<T> = moldState as any;
 
-  state.delete = () => mold.start(instanceId);
+  state.delete = (queryOverride?: Record<string, any>) => {
+    mold.start(instanceId, queryOverride);
+  }
 
   return state;
 }

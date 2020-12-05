@@ -7,7 +7,7 @@ import {ActionState} from '../../frontend/interfaces/ActionState';
 
 
 interface MoldPatchState<T> extends ActionState<T> {
-  patch: (data: MoldDocument) => void;
+  patch: (data: MoldDocument, queryOverride?: Record<string, any>) => void;
 }
 
 
@@ -28,7 +28,9 @@ export default function moldPatch<T>(
 
   const state: MoldPatchState<T> = moldState as any;
 
-  state.patch = (data: MoldDocument) => mold.start(instanceId, data);
+  state.patch = (data: MoldDocument, queryOverride?: Record<string, any>) => {
+    mold.start(instanceId, data, queryOverride);
+  }
 
   return state;
 }

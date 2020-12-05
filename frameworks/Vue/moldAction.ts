@@ -5,7 +5,7 @@ import {moldComposition} from './composition/moldComposition';
 
 
 interface MoldActionState<T> extends ActionState<T> {
-  start: (data?: Record<string, any>) => void;
+  start: (data?: Record<string, any>, queryOverride?: Record<string, any>) => void;
 }
 
 
@@ -25,7 +25,9 @@ export default function moldAction<T>(
 
   const state: MoldActionState<T> = moldState as any;
 
-  state.start = (data?: Record<string, any>) => mold.start(instanceId, data);
+  state.start = (data?: Record<string, any>, queryOverride?: Record<string, any>) => {
+    mold.start(instanceId, data, queryOverride);
+  }
 
   return state;
 }

@@ -7,7 +7,7 @@ import {MoldDocument} from '../../interfaces/MoldDocument';
 
 
 interface MoldBatchSoftDeleteState<T> extends ActionState<T> {
-  delete: (ids: (string | number)[]) => void;
+  delete: (ids: (string | number)[], queryOverride?: Record<string, any>) => void;
 }
 
 
@@ -27,12 +27,12 @@ export default function moldBatchSoftDelete<T>(
 
   const state: MoldBatchSoftDeleteState<T> = moldState as any;
 
-  state.delete = (ids: (string | number)[]) => {
+  state.delete = (ids: (string | number)[], queryOverride?: Record<string, any>) => {
     const docs: MoldDocument[] = ids.map((id) => {
       return { id, [deletedPropName]: true };
     });
 
-    mold.start(instanceId, docs);
+    mold.start(instanceId, docs, queryOverride);
   }
 
   return state;

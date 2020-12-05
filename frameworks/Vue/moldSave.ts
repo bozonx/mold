@@ -7,7 +7,7 @@ import {ActionState} from '../../frontend/interfaces/ActionState';
 
 
 interface MoldSaveState<T> extends ActionState<T> {
-  save: (data: Record<string, any>) => void;
+  save: (data: Record<string, any>, queryOverride?: Record<string, any>) => void;
 }
 
 
@@ -32,7 +32,9 @@ export default function moldSave<T>(
 
   const state: MoldSaveState<T> = moldState as any;
 
-  state.save = (data: Partial<MoldDocument>) => mold.start(instanceId, data);
+  state.save = (data: Partial<MoldDocument>, queryOverride?: Record<string, any>) => {
+    mold.start(instanceId, data, queryOverride);
+  }
 
   return state;
 }

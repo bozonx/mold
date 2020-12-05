@@ -13,7 +13,7 @@ export interface GetCompositionProps extends Omit<ActionProps, 'isReading'> {
 export interface GetCompositionState<T> extends ActionState, Omit<ItemResponse, 'data'> {
   // replace result.data to this
   item: T | null;
-  load: (queryOverride: Record<string, any>) => void;
+  load: (queryOverride?: Record<string, any>) => void;
 }
 
 
@@ -43,7 +43,7 @@ export function getComposition<T>(
 
   const state: GetCompositionState<T> = moldState as any;
 
-  state.load = (queryOverride: Record<string, any>) => {
+  state.load = (queryOverride?: Record<string, any>) => {
     mold.start(instanceId, undefined, queryOverride);
   };
 
