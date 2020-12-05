@@ -5,7 +5,7 @@ import {MoldResponse} from '../interfaces/MoldResponse';
 import {makeRequest, makeRequestKey, splitInstanceId} from '../helpers/helpers';
 import {InstancesStore} from './InstancesStore';
 import {MoldRequest} from '../interfaces/MoldRequest';
-import {omitObj, omitUndefined} from '../helpers/objects';
+import {omitUndefined} from '../helpers/objects';
 import {REQUEST_STATUSES} from '../shared/constants';
 import {ActionState} from './interfaces/ActionState';
 
@@ -44,7 +44,12 @@ export default class Requests {
     // init state if it doesn't exist
     this.mold.storageManager.initStateIfNeed(requestKey);
     // put or update request props into store and make instance ot it
-    return this.instances.addInstance(requestKey, props);
+    return this.instances.addInstance(requestKey, {
+      ...props,
+      isReading: (typeof props.isReading === 'undefined')
+        ? (props.action === 'find' || props.action === 'get')
+        : props.isReading,
+    });
   }
 
   /**

@@ -23,7 +23,7 @@ export default function moldGetFirst<T>(
       page: 1,
       pageSize: 1,
     },
-    isReading: true,
+    //isReading: true,
   };
   const stateTransform = (
     newState: ActionState<ListResponse<T>>

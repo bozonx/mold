@@ -16,7 +16,7 @@ export interface FindCompositionState<T> extends ActionState, Omit<ListResponse,
 
 export function findComposition<T>(
   context: SetupContext,
-  actionProps: Omit<ActionProps, 'isReading'>,
+  actionProps: ActionProps,
   disableInitialLoad: boolean = false
 ): FindCompositionState<T> {
   const stateTransform = (
@@ -28,11 +28,12 @@ export function findComposition<T>(
       items: newState.result?.data || null,
     };
   }
-
-  const {mold, instanceId, state: moldState} = moldComposition<ListResponse<T>>(context, {
-    ...omitObj(actionProps, 'disableInitialLoad') as ActionProps,
-    isReading: true,
-  }, stateTransform);
+  // isReading param will be set at mold.request.register() method
+  const {mold, instanceId, state: moldState} = moldComposition<ListResponse<T>>(
+    context,
+    actionProps,
+    stateTransform
+  );
 
   if (!disableInitialLoad) {
     // start request immediately

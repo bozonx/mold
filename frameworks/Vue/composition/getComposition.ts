@@ -15,7 +15,7 @@ export interface GetCompositionState<T> extends ActionState {
 
 export function getComposition<T>(
   context: SetupContext,
-  actionProps: Omit<ActionProps, 'isReading'>,
+  actionProps: ActionProps,
   disableInitialLoad: boolean = false
 ): GetCompositionState<T> {
   const stateTransform = (
@@ -26,11 +26,12 @@ export function getComposition<T>(
       item: newState.result?.data || null,
     };
   }
-
-  const {mold, instanceId, state: moldState} = moldComposition<ItemResponse<T>>(context, {
-    ...actionProps,
-    isReading: true,
-  }, stateTransform);
+  // isReading param will be set at mold.request.register() method
+  const {mold, instanceId, state: moldState} = moldComposition<ItemResponse<T>>(
+    context,
+    actionProps,
+    stateTransform
+  );
 
   if (!disableInitialLoad) {
     // start request immediately
