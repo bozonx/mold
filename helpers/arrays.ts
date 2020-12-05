@@ -22,3 +22,19 @@ export function cloneDeepArray(arr?: any[]): any[] {
 
   return result;
 }
+
+
+/**
+ * Concat arrays and remove duplicates
+ */
+export function concatUniqStrArrays(...arrays: string[][]): string[] {
+  const result: {[index: string]: true} = {};
+
+  for (let arr of arrays) {
+    for (let value of arr) {
+      result[value] = true;
+    }
+  }
+
+  return Object.keys(result);
+}
