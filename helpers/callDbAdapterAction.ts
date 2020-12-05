@@ -28,11 +28,12 @@ export function callDbAdapterAction(
 
       return adapter.patch(request.set, doc, request.query);
     case 'delete':
-      if (typeof request.id === 'undefined') throw new Error(
+      const id = request?.query?.id as string | number | undefined;
+      if (typeof id === 'undefined') throw new Error(
         `No id in request ${JSON.stringify(request)}`
       );
 
-      return adapter.delete(request.set, request.id, request.query);
+      return adapter.delete(request.set, id, request.query);
     case 'batchCreate':
       if (!request.data) throw new Error(`No data in request ${JSON.stringify(request)}`);
       else if (!Array.isArray(request.data)) {

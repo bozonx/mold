@@ -87,6 +87,7 @@ export default class Mold {
    * Start the request which was added by newRequest() and corresponding to the instanceId.
    * @param instanceId
    * @param data will be passed to request's data param.
+   * @param queryOverride override query. Better not use use it usually.
    */
   start(
     instanceId: string,
