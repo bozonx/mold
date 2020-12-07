@@ -56,34 +56,49 @@ export default class Requests {
    * Start a new request
    * @param instanceId
    * @param data - data for create, delete, patch or custom actions
+   * @param queryOverride - override of query for this request
    */
   async start(
-    instanceId: string,
+    instanceId: string | RequestKey,
     data?: Record<string, any>,
     queryOverride?: Record<string, any>
   ) {
+    let requestKey: RequestKey;
 
-    // TODO: добавить queryOverride
+    if (typeof instanceId === 'string') {
+      const {requestKey: resolvedRequestKey, instanceNum} = splitInstanceId(instanceId);
 
-    const {requestKey, instanceNum} = splitInstanceId(instanceId);
+      requestKey = resolvedRequestKey;
 
-    if (!this.instances.doesInstanceNumExist(requestKey, instanceNum)) {
-      throw new Error(`Instance "${instanceId}" doesn't exists`);
+      if (!this.instances.doesInstanceNumExist(requestKey, instanceNum)) {
+        throw new Error(`Instance "${instanceId}" doesn't exists`);
+      }
+    }
+    else {
+      requestKey = instanceId;
     }
 
+    await this.queuedRequest(requestKey, data, queryOverride);
+  }
+
+  async queuedRequest(
+    requestKey: RequestKey,
+    data?: Record<string, any>,
+    queryOverride?: Record<string, any>
+  ) {
     const actionProps: ActionProps | undefined = this.getProps(requestKey);
 
-    if (!actionProps) throw new Error(`No props of "${instanceId}"`);
-
+    if (!actionProps) throw new Error(`No props of "${JSON.stringify(requestKey)}"`);
 
     // do fresh request
-    const requestProps = this.makeRequestProps(requestKey, data);
+    const requestProps = makeRequest(actionProps, data, queryOverride);
 
     //await this.rerunRequest(actionProps);
 
     // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
     const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
 
+    // TOdO: надо ждать завершения текущего элемента в очереди
     if (state && state.pending) {
       if (actionProps.isReading) {
         // return a promise which will be resolved after current request is finished
@@ -97,9 +112,7 @@ export default class Requests {
     }
 
     await this.doRequest(requestKey, requestProps);
-  }
 
-  async rerunRequest(actionProps: ActionProps) {
 
     console.log(77777, actionProps)
 
@@ -131,25 +144,6 @@ export default class Requests {
     if (!this.instances.getProps(requestKey)) this.mold.storageManager.delete(requestKey);
   }
 
-
-  private makeRequestProps(
-    requestKey: RequestKey,
-    data?: Record<string, any>
-  ): MoldRequest {
-    const actionProps: ActionProps | undefined = this.getProps(requestKey);
-
-    if (!actionProps) {
-      throw new Error(`Can't find request props of "${JSON.stringify(requestKey)}"`);
-    }
-
-    return omitUndefined({
-      ...makeRequest(actionProps),
-      data: (actionProps.data || data) && {
-        ...actionProps.data,
-        ...data,
-      },
-    }) as MoldRequest;
-  }
 
   private async doRequest(requestKey: RequestKey, requestProps: MoldRequest) {
     const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
@@ -187,3 +181,29 @@ export default class Requests {
   }
 
 }
+
+// private makeRequestProps(
+//   requestKey: RequestKey,
+//   data?: Record<string, any>,
+//   queryOverride?: Record<string, any>
+// ): MoldRequest {
+//   const actionProps: ActionProps | undefined = this.getProps(requestKey);
+//
+//   if (!actionProps) {
+//     throw new Error(`Can't find request props of "${JSON.stringify(requestKey)}"`);
+//   }
+//
+//   const request: MoldRequest = {
+//     ...makeRequest(actionProps),
+//     data: (actionProps.data || data) && {
+//       ...actionProps.data,
+//       ...data,
+//     },
+//     query: (actionProps.query || queryOverride) && {
+//       ...actionProps.query,
+//       ...queryOverride,
+//     },
+//   }
+//
+//   return omitUndefined(request) as MoldRequest;
+// }

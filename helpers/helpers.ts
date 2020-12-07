@@ -42,12 +42,22 @@ export function makeInitialActionState(): ActionState {
   };
 }
 
-export function makeRequest(props: ActionProps): MoldRequest {
-  return omitObj(
-    props,
-    'backend',
-    'isReading'
-  ) as Omit<Omit<ActionProps, 'backend'>, 'isReading'>;
+export function makeRequest(
+  actionProps: ActionProps,
+  dataOverride?: Record<string, any>,
+  queryOverride?: Record<string, any>
+): MoldRequest {
+  return omitUndefined({
+    ...omitObj(actionProps,'backend', 'isReading'),
+    data: (actionProps.data || dataOverride) && {
+      ...actionProps.data,
+      ...dataOverride,
+    },
+    query: (actionProps.query || queryOverride) && {
+      ...actionProps.query,
+      ...queryOverride,
+    },
+  }) as Omit<Omit<ActionProps, 'backend'>, 'isReading'>;
 }
 
 export function stringifyMoldError(errors?: MoldErrorDefinition[] | null): string {

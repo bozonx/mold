@@ -33,7 +33,8 @@ export default class PushesManager {
 
   private handleMessage(backend: string, message: PushMessage) {
 
-    // TODO: наверное стоит сделать мини дебаунс на текущий тик
+    // TODO: наверное стоит сделать мини дебаунс на текущий тик - хотя всеравно будет очередь
+    // TODO: review
 
     const [set, id, type] = message;
 
@@ -57,7 +58,7 @@ export default class PushesManager {
 
           if (!needUpdate) continue;
 
-          this.mold.requests.rerunRequest(actionProps)
+          this.mold.requests.start(requestKey)
             .catch(this.mold.log.error);
         }
       }
