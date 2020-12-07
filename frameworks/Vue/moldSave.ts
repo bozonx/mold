@@ -32,8 +32,8 @@ export default function moldSave<T>(
 
   const state: MoldSaveState<T> = moldState as any;
 
-  state.save = (data: Partial<MoldDocument>, queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, data, queryOverride);
+  state.save = (data: Partial<MoldDocument>) => {
+    mold.start(instanceId, data);
   }
 
   return state;

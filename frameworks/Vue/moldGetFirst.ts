@@ -46,8 +46,8 @@ export default function moldGetFirst<T>(
 
   const state: GetCompositionState<T> = moldState as any;
 
-  state.load = (queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, undefined, queryOverride);
+  state.load = () => {
+    mold.start(instanceId);
   };
 
   return state;

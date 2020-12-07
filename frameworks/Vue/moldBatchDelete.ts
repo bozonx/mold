@@ -25,8 +25,8 @@ export default function moldBatchDelete<T>(
 
   const state: MoldBatchDeleteState<T> = moldState as any;
 
-  state.delete = (ids: (string | number)[], queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, ids, queryOverride);
+  state.delete = (ids: (string | number)[]) => {
+    mold.start(instanceId, ids);
   }
 
   return state;

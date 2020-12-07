@@ -30,8 +30,8 @@ export default function moldDelete<T>(
 
   const state: MoldDeleteState<T> = moldState as any;
 
-  state.delete = (queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, queryOverride);
+  state.delete = () => {
+    mold.start(instanceId);
   }
 
   return state;

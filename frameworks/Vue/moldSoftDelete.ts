@@ -31,8 +31,8 @@ export default function moldSoftDelete<T>(
 
   const state: MoldSoftDeleteState<T> = moldState as any;
 
-  state.delete = (queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, {[deletedPropName]: true}, queryOverride);
+  state.delete = () => {
+    mold.start(instanceId, {[deletedPropName]: true});
   }
 
   return state;

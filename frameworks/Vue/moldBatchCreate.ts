@@ -26,8 +26,8 @@ export default function moldBatchCreate<T>(
 
   const state: MoldBatchCreateState<T> = moldState as any;
 
-  state.create = (docs: Partial<MoldDocument>[], queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, docs, queryOverride);
+  state.create = (docs: Partial<MoldDocument>[]) => {
+    mold.start(instanceId, docs);
   }
 
   return state;

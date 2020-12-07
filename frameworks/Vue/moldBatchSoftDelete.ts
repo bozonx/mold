@@ -27,12 +27,12 @@ export default function moldBatchSoftDelete<T>(
 
   const state: MoldBatchSoftDeleteState<T> = moldState as any;
 
-  state.delete = (ids: (string | number)[], queryOverride?: Record<string, any>) => {
+  state.delete = (ids: (string | number)[]) => {
     const docs: MoldDocument[] = ids.map((id) => {
       return { id, [deletedPropName]: true };
     });
 
-    mold.start(instanceId, docs, queryOverride);
+    mold.start(instanceId, docs);
   }
 
   return state;

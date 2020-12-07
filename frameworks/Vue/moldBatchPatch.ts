@@ -26,8 +26,8 @@ export default function moldBatchPatch<T>(
 
   const state: MoldBatchPatchState<T> = moldState as any;
 
-  state.patch = (docs: MoldDocument[], queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, docs, queryOverride);
+  state.patch = (docs: MoldDocument[]) => {
+    mold.start(instanceId, docs);
   }
 
   return state;

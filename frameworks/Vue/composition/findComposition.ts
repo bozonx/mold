@@ -42,8 +42,8 @@ export function findComposition<T>(
 
   const state: FindCompositionState<T> = moldState as any;
 
-  state.load = (queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, undefined, queryOverride);
+  state.load = () => {
+    mold.start(instanceId);
   };
 
   return state;

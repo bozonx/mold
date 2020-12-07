@@ -26,8 +26,8 @@ export default function moldCreate<T>(
 
   const state: MoldCreateState<T> = moldState as any;
 
-  state.create = (data: Partial<MoldDocument>, queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, data, queryOverride);
+  state.create = (data: Partial<MoldDocument>) => {
+    mold.start(instanceId, data);
   }
 
   return state;

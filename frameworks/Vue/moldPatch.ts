@@ -28,8 +28,8 @@ export default function moldPatch<T>(
 
   const state: MoldPatchState<T> = moldState as any;
 
-  state.patch = (data: MoldDocument, queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, data, queryOverride);
+  state.patch = (data: MoldDocument) => {
+    mold.start(instanceId, data);
   }
 
   return state;

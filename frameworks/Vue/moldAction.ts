@@ -25,8 +25,8 @@ export default function moldAction<T>(
 
   const state: MoldActionState<T> = moldState as any;
 
-  state.start = (data?: Record<string, any>, queryOverride?: Record<string, any>) => {
-    mold.start(instanceId, data, queryOverride);
+  state.start = (data?: Record<string, any>) => {
+    mold.start(instanceId, data);
   }
 
   return state;
