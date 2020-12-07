@@ -45,7 +45,7 @@ export function makeInitialActionState(): ActionState {
 export function makeRequest(
   actionProps: ActionProps,
   dataOverride?: Record<string, any>,
-  queryOverride?: Record<string, any>
+  //queryOverride?: Record<string, any>
 ): MoldRequest {
   return omitUndefined({
     ...omitObj(actionProps,'backend', 'isReading'),
@@ -53,10 +53,10 @@ export function makeRequest(
       ...actionProps.data,
       ...dataOverride,
     },
-    query: (actionProps.query || queryOverride) && {
-      ...actionProps.query,
-      ...queryOverride,
-    },
+    // query: (actionProps.query || queryOverride) && {
+    //   ...actionProps.query,
+    //   ...queryOverride,
+    // },
   }) as Omit<Omit<ActionProps, 'backend'>, 'isReading'>;
 }
 

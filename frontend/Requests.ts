@@ -56,13 +56,8 @@ export default class Requests {
    * Start a new request
    * @param instanceId
    * @param data - data for create, delete, patch or custom actions
-   * @param queryOverride - override of query for this request
    */
-  async start(
-    instanceId: string | RequestKey,
-    data?: Record<string, any>,
-    queryOverride?: Record<string, any>
-  ) {
+  async start(instanceId: string | RequestKey, data?: Record<string, any>) {
     let requestKey: RequestKey;
 
     if (typeof instanceId === 'string') {
@@ -78,31 +73,22 @@ export default class Requests {
       requestKey = instanceId;
     }
 
-    await this.queuedRequest(requestKey, data, queryOverride);
+    await this.queuedRequest(requestKey, data);
   }
 
-  async queuedRequest(
-    requestKey: RequestKey,
-    data?: Record<string, any>,
-    queryOverride?: Record<string, any>
-  ) {
+  async queuedRequest(requestKey: RequestKey, data?: Record<string, any>) {
     const actionProps: ActionProps | undefined = this.getProps(requestKey);
-
-    if (!actionProps) throw new Error(`No props of "${JSON.stringify(requestKey)}"`);
-
-    // do fresh request
-    const requestProps = makeRequest(actionProps, data, queryOverride);
-
-    //await this.rerunRequest(actionProps);
-
-    // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
     const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
 
-    // TOdO: надо ждать завершения текущего элемента в очереди
+    if (!actionProps) throw new Error(`No props of "${JSON.stringify(requestKey)}"`);
+    if (!state) throw new Error(`Can't find state of "${JSON.stringify(requestKey)}"`);
+
+    const request: MoldRequest = makeRequest(actionProps, data);
+
     if (state && state.pending) {
       if (actionProps.isReading) {
         // return a promise which will be resolved after current request is finished
-        return this.mold.waitRequestFinished(instanceId);
+        return this.waitRequestFinished(requestKey);
       }
       else {
         // TODO: поставить в очередь и запустить запрос как только выполнится
@@ -111,27 +97,34 @@ export default class Requests {
       }
     }
 
+    // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
+    // TOdO: надо ждать завершения текущего элемента в очереди
+
+    // do fresh request
     await this.doRequest(requestKey, requestProps);
+  }
 
+  // TODO: remake
+  waitRequestFinished(requestKey: RequestKey): Promise<void> {
+    const state: ActionState | undefined = this.getState(instanceId);
 
-    console.log(77777, actionProps)
+    if (!state || !state.pending) return Promise.resolve();
 
-    // // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
-    // const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
-    //
-    // if (state && state.pending) {
-    //   if (actionProps.isReading) {
-    //     // return a promise which will be resolved after current request is finished
-    //     return this.mold.waitRequestFinished(instanceId);
-    //   }
-    //   else {
-    //     // TODO: поставить в очередь и запустить запрос как только выполнится
-    //     //       текущий запрос. И перезаписывать колбэк при новых запросах
-    //     return;
-    //   }
-    // }
-    //
-    // await this.doRequest(requestKey, requestProps);
+    return new Promise((resolve, reject) => {
+      const handleIndex: number = this.onChange(instanceId, (state: ActionState) => {
+        if (state.pending) return;
+
+        this.removeListener(handleIndex);
+        clearTimeout(timeout);
+        resolve();
+      });
+      // wait 60 seconds in case if something is going wrong
+      // it a good wait change handler has to catch changing of pending state.
+      const timeout = setTimeout(() => {
+        this.removeListener(handleIndex);
+        reject(`Timeout has been exceeded`);
+      }, this.config.requestTimeoutSec * 1000);
+    });
   }
 
   destroyInstance(instanceId: string) {

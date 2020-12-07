@@ -87,23 +87,21 @@ export default class Mold {
    * Start the request which was added by newRequest() and corresponding to the instanceId.
    * @param instanceId
    * @param data will be passed to request's data param.
-   * @param queryOverride override query. Better not use use it usually.
    */
   start(
     instanceId: string,
     data?: Record<string, any>,
-    queryOverride?: Record<string, any>
+    //queryOverride?: Record<string, any>
   ) {
-    this.requests.start(instanceId, data, queryOverride)
+    this.requests.start(instanceId, data)
       .catch(this.log.error);
   }
 
   startAsync(
     instanceId: string,
     data?: Record<string, any>,
-    queryOverride?: Record<string, any>
   ): Promise<void> {
-    return this.requests.start(instanceId, data, queryOverride);
+    return this.requests.start(instanceId, data);
   }
 
   /**
@@ -139,25 +137,29 @@ export default class Mold {
    * Wait while request is finished but not greater then 60 seconds.
    */
   waitRequestFinished(instanceId: string): Promise<void> {
-    const state: ActionState | undefined = this.getState(instanceId);
+    const {requestKey} = splitInstanceId(instanceId);
 
-    if (!state || !state.pending) return Promise.resolve();
+    return this.requests.waitRequestFinished(requestKey);
 
-    return new Promise((resolve, reject) => {
-      const handleIndex: number = this.onChange(instanceId, (state: ActionState) => {
-        if (state.pending) return;
-
-        this.removeListener(handleIndex);
-        clearTimeout(timeout);
-        resolve();
-      });
-      // wait 60 seconds in case if something is going wrong
-      // it a good wait change handler has to catch changing of pending state.
-      const timeout = setTimeout(() => {
-        this.removeListener(handleIndex);
-        reject(`Timeout has been exceeded`);
-      }, this.config.requestTimeoutSec * 1000);
-    });
+    // const state: ActionState | undefined = this.getState(instanceId);
+    //
+    // if (!state || !state.pending) return Promise.resolve();
+    //
+    // return new Promise((resolve, reject) => {
+    //   const handleIndex: number = this.onChange(instanceId, (state: ActionState) => {
+    //     if (state.pending) return;
+    //
+    //     this.removeListener(handleIndex);
+    //     clearTimeout(timeout);
+    //     resolve();
+    //   });
+    //   // wait 60 seconds in case if something is going wrong
+    //   // it a good wait change handler has to catch changing of pending state.
+    //   const timeout = setTimeout(() => {
+    //     this.removeListener(handleIndex);
+    //     reject(`Timeout has been exceeded`);
+    //   }, this.config.requestTimeoutSec * 1000);
+    // });
   }
 
   /**
