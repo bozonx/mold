@@ -1,7 +1,7 @@
 import {ActionProps} from '../frontend/interfaces/ActionProps';
 import {REQUEST_KEY_SEPARATOR, RequestKey} from '../frontend/interfaces/RequestKey';
 import {DEFAULT_BACKEND} from '../frontend/constants';
-import {omitObj, omitUndefined, sortObject} from './objects';
+import {cloneDeepObject, omitObj, omitUndefined, sortObject} from './objects';
 import {ActionState} from '../frontend/interfaces/ActionState';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
@@ -48,10 +48,10 @@ export function makeRequest(
   //queryOverride?: Record<string, any>
 ): MoldRequest {
   return omitUndefined({
-    ...omitObj(actionProps,'backend', 'isReading'),
+    ...cloneDeepObject(omitObj(actionProps,'backend', 'isReading', 'data')),
     data: (actionProps.data || dataOverride) && {
-      ...actionProps.data,
-      ...dataOverride,
+      ...cloneDeepObject(actionProps.data),
+      ...cloneDeepObject(dataOverride),
     },
     // query: (actionProps.query || queryOverride) && {
     //   ...actionProps.query,

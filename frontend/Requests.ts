@@ -109,7 +109,7 @@ export default class Requests {
         // else no one reading request then do fresh request
         const request: MoldRequest = makeRequest(actionProps, data);
 
-        return await this.doRequest(requestKey, request);
+        return await this.doReadRequest(requestKey, request);
       }
     }
     // is writing - put it to queue if there isn't the same request.
@@ -118,12 +118,14 @@ export default class Requests {
     const jobId: string = `${requestKeyStr}+${dataString}`;
 
     if (this.writingQueue.hasJob(jobId)) {
-      // TODO: return promise of that job id
+      return this.writingQueue.waitJobFinished(jobId);
     }
+    // make request here to clone it
+    const request: MoldRequest = makeRequest(actionProps, data);
 
     // do fresh request
     await this.writingQueue.add(
-      () => this.doWriteRequest(requestKey, makeRequest(actionProps, data)),
+      () => this.doWriteRequest(requestKey, request),
       jobId
     );
   }
@@ -139,7 +141,7 @@ export default class Requests {
   }
 
 
-  private async doRequest(requestKey: RequestKey, request: MoldRequest) {
+  private async doReadRequest(requestKey: RequestKey, request: MoldRequest) {
 
     // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
     // TODO: если стейт удалился пока шел запрос то нужно ответ игнорировать.
@@ -177,6 +179,47 @@ export default class Requests {
       finishedOnce: true,
       ...response,
     });
+  }
+
+  private async doWriteRequest(requestKey: RequestKey, request: MoldRequest) {
+    const requestKeyStr: string = requestKeyToString(requestKey);
+    const filteredJobsIds: string[] = this.writingQueue.getJobIds()
+      .filter((id: string) => id.indexOf(requestKeyStr) >= 0);
+
+    if (filteredJobsIds.length) {
+      // TODO: если стейт pendig не стоит true то сделать true
+      this.mold.storageManager.patch(requestKey, { pending: true });
+    }
+
+    const response: MoldResponse = await this.doSafeRequest(requestKey, request);
+
+    // TODO: если кроме текущего job нет других job то считаем что очередь завершилась
+    //       и устанавливаем стейт
+
+  }
+
+  private async doSafeRequest(
+    requestKey: RequestKey,
+    request: MoldRequest
+  ): Promise<MoldResponse> {
+    const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
+
+    try {
+      return await this.mold.backendManager.request(backendName, request);
+    }
+    catch (e) {
+      // log error because it isn't a network or backend's error
+      this.mold.log.debug(e);
+      // actually this is for error in the code not network or backend's error
+      return {
+        success: false,
+        // TODO: review
+        status: REQUEST_STATUSES.fatalError,
+        errors: [{code: REQUEST_STATUSES.fatalError, message: String(e)}],
+        // TODO: review - не должен потом затереть текущий result
+        result: null,
+      }
+    }
   }
 
 }
