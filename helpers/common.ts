@@ -18,7 +18,8 @@ export function isPromise(toCheck: any): boolean {
 }
 
 export function convertPageToOffset(
-  page?: number, pageSize?: number
+  page?: number,
+  pageSize?: number
 ): { limit?: number, skip?: number } {
   if (!page || page < 0 || !pageSize || pageSize < 0) return {};
 

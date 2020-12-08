@@ -2,12 +2,13 @@ import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import {ActionProps} from './interfaces/ActionProps';
 import Mold from './Mold';
 import {MoldResponse} from '../interfaces/MoldResponse';
-import {makeRequest, makeRequestKey, splitInstanceId} from '../helpers/helpers';
+import {makeRequest, makeRequestKey, requestKeyToString, splitInstanceId} from '../helpers/helpers';
 import {InstancesStore} from './InstancesStore';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {REQUEST_STATUSES} from '../shared/constants';
 import {ActionState} from './interfaces/ActionState';
 import Queue from '../helpers/Queue';
+import {sortObject} from '../helpers/objects';
 
 
 export default class Requests {
@@ -111,16 +112,20 @@ export default class Requests {
         return await this.doRequest(requestKey, request);
       }
     }
-    // is writing
-    if (state.pending) {
-      // TODO: поставить в очередь и запустить запрос как только выполнится
-      //       текущий запрос. И перезаписывать колбэк при новых запросах
+    // is writing - put it to queue if there isn't the same request.
+    const requestKeyStr: string = requestKeyToString(requestKey);
+    const dataString: string = JSON.stringify(sortObject(data || {}));
+    const jobId: string = `${requestKeyStr}+${dataString}`;
+
+    if (this.writingQueue.hasJob(jobId)) {
+      // TODO: return promise of that job id
     }
 
-    const request: MoldRequest = makeRequest(actionProps, data);
-
     // do fresh request
-    await this.doRequest(requestKey, request);
+    await this.writingQueue.add(
+      () => this.doWriteRequest(requestKey, makeRequest(actionProps, data)),
+      jobId
+    );
   }
 
   destroyInstance(instanceId: string) {

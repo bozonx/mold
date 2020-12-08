@@ -117,6 +117,8 @@ export function cloneDeepObject(obj?: {[index: string]: any}): {[index: string]:
   return mergeDeepObjects({}, obj);
 }
 
+// TODO: test
+// TODO: copy to squidlet
 /**
  * Sort keys of object recursively.
  * Arrays won't be sorted.
