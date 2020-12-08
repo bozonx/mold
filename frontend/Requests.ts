@@ -57,33 +57,23 @@ export default class Requests {
    * @param instanceId
    * @param data - data for create, delete, patch or custom actions
    */
-  async start(instanceId: string | RequestKey, data?: Record<string, any>) {
-    let requestKey: RequestKey;
+  async startInstance(instanceId: string, data?: Record<string, any>) {
+    const {requestKey, instanceNum} = splitInstanceId(instanceId);
 
-    if (typeof instanceId === 'string') {
-      const {requestKey: resolvedRequestKey, instanceNum} = splitInstanceId(instanceId);
-
-      requestKey = resolvedRequestKey;
-
-      if (!this.instances.doesInstanceNumExist(requestKey, instanceNum)) {
-        throw new Error(`Instance "${instanceId}" doesn't exists`);
-      }
-    }
-    else {
-      requestKey = instanceId;
+    if (!this.instances.doesInstanceNumExist(requestKey, instanceNum)) {
+      throw new Error(`Instance "${instanceId}" doesn't exists`);
     }
 
-    await this.queuedRequest(requestKey, data);
+    await this.startRequest(requestKey, data);
   }
 
-  async queuedRequest(requestKey: RequestKey, data?: Record<string, any>) {
+  async startRequest(requestKey: RequestKey, data?: Record<string, any>) {
     const actionProps: ActionProps | undefined = this.getProps(requestKey);
     const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
 
     if (!actionProps) throw new Error(`No props of "${JSON.stringify(requestKey)}"`);
     if (!state) throw new Error(`Can't find state of "${JSON.stringify(requestKey)}"`);
 
-    const request: MoldRequest = makeRequest(actionProps, data);
 
     if (state && state.pending) {
       if (actionProps.isReading) {
@@ -97,7 +87,8 @@ export default class Requests {
       }
     }
 
-    // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
+    const request: MoldRequest = makeRequest(actionProps, data);
+
     // TOdO: надо ждать завершения текущего элемента в очереди
 
     // do fresh request
@@ -139,6 +130,9 @@ export default class Requests {
 
 
   private async doRequest(requestKey: RequestKey, requestProps: MoldRequest) {
+
+    // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
+
     const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
     let response: MoldResponse;
 

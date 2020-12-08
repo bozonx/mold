@@ -58,7 +58,7 @@ export default class PushesManager {
 
           if (!needUpdate) continue;
 
-          this.mold.requests.start(requestKey)
+          this.mold.requests.startRequest(requestKey)
             .catch(this.mold.log.error);
         }
       }

@@ -93,7 +93,7 @@ export default class Mold {
     data?: Record<string, any>,
     //queryOverride?: Record<string, any>
   ) {
-    this.requests.start(instanceId, data)
+    this.requests.startInstance(instanceId, data)
       .catch(this.log.error);
   }
 
@@ -101,7 +101,7 @@ export default class Mold {
     instanceId: string,
     data?: Record<string, any>,
   ): Promise<void> {
-    return this.requests.start(instanceId, data);
+    return this.requests.startInstance(instanceId, data);
   }
 
   /**
@@ -117,7 +117,7 @@ export default class Mold {
       Object.assign(state, newState);
     });
 
-    this.requests.start(instanceId, actionProps.data)
+    this.requests.startInstance(instanceId, actionProps.data)
       .catch(this.log.error);
 
     return state;
