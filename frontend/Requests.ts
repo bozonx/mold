@@ -7,16 +7,20 @@ import {InstancesStore} from './InstancesStore';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {REQUEST_STATUSES} from '../shared/constants';
 import {ActionState} from './interfaces/ActionState';
+import Queue from '../helpers/Queue';
 
 
 export default class Requests {
-  private mold: Mold;
   readonly instances: InstancesStore;
+
+  private mold: Mold;
+  private writingQueue: Queue;
 
 
   constructor(mold: Mold) {
     this.mold = mold;
     this.instances = new InstancesStore();
+    this.writingQueue = new Queue(this.mold.config.jobTimeoutSec);
   }
 
   destroy() {
