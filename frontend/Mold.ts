@@ -140,26 +140,6 @@ export default class Mold {
     const {requestKey} = splitInstanceId(instanceId);
 
     return this.requests.waitRequestFinished(requestKey);
-
-    // const state: ActionState | undefined = this.getState(instanceId);
-    //
-    // if (!state || !state.pending) return Promise.resolve();
-    //
-    // return new Promise((resolve, reject) => {
-    //   const handleIndex: number = this.onChange(instanceId, (state: ActionState) => {
-    //     if (state.pending) return;
-    //
-    //     this.removeListener(handleIndex);
-    //     clearTimeout(timeout);
-    //     resolve();
-    //   });
-    //   // wait 60 seconds in case if something is going wrong
-    //   // it a good wait change handler has to catch changing of pending state.
-    //   const timeout = setTimeout(() => {
-    //     this.removeListener(handleIndex);
-    //     reject(`Timeout has been exceeded`);
-    //   }, this.config.requestTimeoutSec * 1000);
-    // });
   }
 
   /**

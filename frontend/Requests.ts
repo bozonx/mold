@@ -5,7 +5,6 @@ import {MoldResponse} from '../interfaces/MoldResponse';
 import {makeRequest, makeRequestKey, splitInstanceId} from '../helpers/helpers';
 import {InstancesStore} from './InstancesStore';
 import {MoldRequest} from '../interfaces/MoldRequest';
-import {omitUndefined} from '../helpers/objects';
 import {REQUEST_STATUSES} from '../shared/constants';
 import {ActionState} from './interfaces/ActionState';
 
@@ -33,6 +32,28 @@ export default class Requests {
     const {requestKey, instanceNum} = splitInstanceId(instanceId);
 
     return this.instances.doesInstanceNumExist(requestKey, instanceNum);
+  }
+
+  waitRequestFinished(requestKey: RequestKey): Promise<void> {
+    const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
+
+    if (!state || !state.pending) return Promise.resolve();
+
+    return new Promise((resolve, reject) => {
+      const handleIndex: number = this.mold.storageManager.onChange(requestKey, (state: ActionState) => {
+        if (state.pending) return;
+
+        this.mold.storageManager.removeListener(handleIndex);
+        clearTimeout(timeout);
+        resolve();
+      });
+      // wait 60 seconds in case if something is going wrong
+      // it a good wait change handler has to catch changing of pending state.
+      const timeout = setTimeout(() => {
+        this.mold.storageManager.removeListener(handleIndex);
+        reject(`Timeout has been exceeded`);
+      }, this.mold.config.requestTimeoutSec * 1000);
+    });
   }
 
   /**
@@ -98,29 +119,6 @@ export default class Requests {
     await this.doRequest(requestKey, request);
   }
 
-  // TODO: remake
-  waitRequestFinished(requestKey: RequestKey): Promise<void> {
-    const state: ActionState | undefined = this.getState(instanceId);
-
-    if (!state || !state.pending) return Promise.resolve();
-
-    return new Promise((resolve, reject) => {
-      const handleIndex: number = this.onChange(instanceId, (state: ActionState) => {
-        if (state.pending) return;
-
-        this.removeListener(handleIndex);
-        clearTimeout(timeout);
-        resolve();
-      });
-      // wait 60 seconds in case if something is going wrong
-      // it a good wait change handler has to catch changing of pending state.
-      const timeout = setTimeout(() => {
-        this.removeListener(handleIndex);
-        reject(`Timeout has been exceeded`);
-      }, this.config.requestTimeoutSec * 1000);
-    });
-  }
-
   destroyInstance(instanceId: string) {
     const {requestKey} = splitInstanceId(instanceId);
     // do nothing if there isn't any request
@@ -135,6 +133,8 @@ export default class Requests {
   private async doRequest(requestKey: RequestKey, request: MoldRequest) {
 
     // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
+    // TODO: если стейт удалился пока шел запрос то нужно ответ игнорировать.
+    //       Сам запрос по возможности остановить
 
     const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
     let response: MoldResponse;
@@ -171,29 +171,3 @@ export default class Requests {
   }
 
 }
-
-// private makeRequestProps(
-//   requestKey: RequestKey,
-//   data?: Record<string, any>,
-//   queryOverride?: Record<string, any>
-// ): MoldRequest {
-//   const actionProps: ActionProps | undefined = this.getProps(requestKey);
-//
-//   if (!actionProps) {
-//     throw new Error(`Can't find request props of "${JSON.stringify(requestKey)}"`);
-//   }
-//
-//   const request: MoldRequest = {
-//     ...makeRequest(actionProps),
-//     data: (actionProps.data || data) && {
-//       ...actionProps.data,
-//       ...data,
-//     },
-//     query: (actionProps.query || queryOverride) && {
-//       ...actionProps.query,
-//       ...queryOverride,
-//     },
-//   }
-//
-//   return omitUndefined(request) as MoldRequest;
-// }
