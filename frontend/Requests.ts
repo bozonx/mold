@@ -74,25 +74,28 @@ export default class Requests {
     if (!actionProps) throw new Error(`No props of "${JSON.stringify(requestKey)}"`);
     if (!state) throw new Error(`Can't find state of "${JSON.stringify(requestKey)}"`);
 
-
-    if (state && state.pending) {
-      if (actionProps.isReading) {
+    if (actionProps.isReading) {
+      if (state.pending) {
         // return a promise which will be resolved after current request is finished
         return this.waitRequestFinished(requestKey);
       }
       else {
-        // TODO: поставить в очередь и запустить запрос как только выполнится
-        //       текущий запрос. И перезаписывать колбэк при новых запросах
-        return;
+        // else no one reading request then do fresh request
+        const request: MoldRequest = makeRequest(actionProps, data);
+
+        return await this.doRequest(requestKey, request);
       }
+    }
+    // is writing
+    if (state.pending) {
+      // TODO: поставить в очередь и запустить запрос как только выполнится
+      //       текущий запрос. И перезаписывать колбэк при новых запросах
     }
 
     const request: MoldRequest = makeRequest(actionProps, data);
 
-    // TOdO: надо ждать завершения текущего элемента в очереди
-
     // do fresh request
-    await this.doRequest(requestKey, requestProps);
+    await this.doRequest(requestKey, request);
   }
 
   // TODO: remake
@@ -129,7 +132,7 @@ export default class Requests {
   }
 
 
-  private async doRequest(requestKey: RequestKey, requestProps: MoldRequest) {
+  private async doRequest(requestKey: RequestKey, request: MoldRequest) {
 
     // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
 
@@ -141,7 +144,7 @@ export default class Requests {
 
     // TODO: review - поднимет fatal ошибку
     try {
-      response = await this.mold.backendManager.request(backendName, requestProps);
+      response = await this.mold.backendManager.request(backendName, request);
     }
     catch (e) {
       // actually this is for error in the code not network or backend's error
