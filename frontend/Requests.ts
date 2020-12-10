@@ -124,12 +124,11 @@ export default class Requests {
       }
     }
     // else is writing - put it to queue if there isn't the same request.
+    const queue: Queue = this.resolveWritingQueue(requestKey);
     const jobId: string = JSON.stringify(sortObject(data || {}));
-    const queue: Queue = this.resolveQueue(requestKey);
-    // check is this job is in queue to reduce duplicates
-    if (queue.hasJob(jobId)) {
-      return queue.waitJobFinished(jobId);
-    }
+    // Check is this job is in queue to reduce duplicates.
+    // If found then it returns the promise of the same job in queue
+    if (queue.hasJob(jobId)) return queue.waitJobFinished(jobId);
     // make request here to clone it
     const request: MoldRequest = makeRequest(actionProps, data);
     // push it to queue
@@ -228,7 +227,7 @@ export default class Requests {
     }
   }
 
-  private resolveQueue(requestKey: RequestKey): Queue {
+  private resolveWritingQueue(requestKey: RequestKey): Queue {
     const requestKeyStr: string = requestKeyToString(requestKey);
 
     if (!this.writingQueues[requestKeyStr]) {
