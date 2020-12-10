@@ -6,9 +6,9 @@ import {isEmptyObject} from '../helpers/objects';
 
 export class InstancesStore {
   // props of requests like { backend: { set: { action: { request: {...props} } } } }
-  private requests: {[index: string]: {[index: string]: {[index: string]: {[index: string]: ActionProps}}}} = {};
+  private requests: Record<string, Record<string, Record<string, Record<string, ActionProps>>>> = {};
   // object like: { "backend|set|action|request": ["0", "1", ...] }
-  private instances: {[index: string]: string[]} = {};
+  private instances: Record<string, string[]> = {};
 
 
   constructor() {

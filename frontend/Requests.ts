@@ -12,19 +12,24 @@ import {sortObject} from '../helpers/objects';
 
 
 export default class Requests {
-  readonly instances: InstancesStore;
-
   private mold: Mold;
-  private writingQueue: Queue;
+  // like { requestKeyStr: Queue }
+  private writingQueues: Record<string, Queue> = {};
+  private readonly instances: InstancesStore;
 
 
   constructor(mold: Mold) {
     this.mold = mold;
     this.instances = new InstancesStore();
-    this.writingQueue = new Queue(this.mold.config.jobTimeoutSec);
   }
 
   destroy() {
+    for (let key of Object.keys(this.writingQueues)) {
+      this.writingQueues[key].destroy();
+    }
+
+    this.writingQueues = {};
+
     this.instances.destroy();
   }
 
@@ -79,9 +84,9 @@ export default class Requests {
   }
 
   /**
-   * Start a new request
+   * Start a new request by instanceId
    * @param instanceId
-   * @param data - data for create, delete, patch or custom actions
+   * @param data - data for create, patch or custom actions
    */
   async startInstance(instanceId: string, data?: Record<string, any>) {
     const {requestKey, instanceNum} = splitInstanceId(instanceId);
@@ -93,14 +98,20 @@ export default class Requests {
     await this.startRequest(requestKey, data);
   }
 
+  /**
+   * Start a new request by requestKey
+   * @param requestKey
+   * @param data - data for create, patch or custom actions
+   */
   async startRequest(requestKey: RequestKey, data?: Record<string, any>) {
     const actionProps: ActionProps | undefined = this.getProps(requestKey);
     const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
 
     if (!actionProps) throw new Error(`No props of "${JSON.stringify(requestKey)}"`);
     if (!state) throw new Error(`Can't find state of "${JSON.stringify(requestKey)}"`);
-
+    // check is it reading request
     if (actionProps.isReading) {
+      // TODO: все перенести в doReadRequest
       if (state.pending) {
         // return a promise which will be resolved after current request is finished
         return this.waitRequestFinished(requestKey);
@@ -112,22 +123,17 @@ export default class Requests {
         return await this.doReadRequest(requestKey, request);
       }
     }
-    // is writing - put it to queue if there isn't the same request.
-    const requestKeyStr: string = requestKeyToString(requestKey);
-    const dataString: string = JSON.stringify(sortObject(data || {}));
-    const jobId: string = `${requestKeyStr}+${dataString}`;
-
-    if (this.writingQueue.hasJob(jobId)) {
-      return this.writingQueue.waitJobFinished(jobId);
+    // else is writing - put it to queue if there isn't the same request.
+    const jobId: string = JSON.stringify(sortObject(data || {}));
+    const queue: Queue = this.resolveQueue(requestKey);
+    // check is this job is in queue to reduce duplicates
+    if (queue.hasJob(jobId)) {
+      return queue.waitJobFinished(jobId);
     }
     // make request here to clone it
     const request: MoldRequest = makeRequest(actionProps, data);
-
-    // do fresh request
-    await this.writingQueue.add(
-      () => this.doWriteRequest(requestKey, request),
-      jobId
-    );
+    // push it to queue
+    await queue.add(() => this.doWriteRequest(requestKey, request), jobId);
   }
 
   destroyInstance(instanceId: string) {
@@ -222,4 +228,18 @@ export default class Requests {
     }
   }
 
+  private resolveQueue(requestKey: RequestKey): Queue {
+    const requestKeyStr: string = requestKeyToString(requestKey);
+
+    if (!this.writingQueues[requestKeyStr]) {
+      this.writingQueues[requestKeyStr] = new Queue(this.mold.config.jobTimeoutSec);
+    }
+
+    return this.writingQueues[requestKeyStr];
+  }
+
 }
+
+// getWritingQueue(requestKey: RequestKey): Queue | string {
+//   return this.writingQueues[requestKeyToString(requestKey)];
+// }
