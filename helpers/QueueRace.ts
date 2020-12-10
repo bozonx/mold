@@ -26,6 +26,7 @@ enum QueueEvents {
 
 let unnamedJobIdCounter = -1;
 
+// TODO: remake - каждая джоба не дожидается завершения предыдущей а запускается сразу
 
 /**
  * Put callback to queue.
@@ -33,7 +34,7 @@ let unnamedJobIdCounter = -1;
  * Delayed cb will be called only once. The new delayed cb just will replace delayed cb to a new one.
  * Please don't use only numbers like "0" as an id. Use any other string as an id.
  */
-export default class Queue {
+export default class QueueRace {
   private readonly jobTimeoutSec: number;
   private readonly events = new IndexedEventEmitter();
   private queue: Job[] = [];

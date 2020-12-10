@@ -13,6 +13,7 @@ import ConsoleLogger from '../helpers/ConsoleLogger';
 import DefaultStore from './DefaultStore';
 import {MoldFrontendConfig} from './interfaces/MoldFrontendConfig';
 import {BackendClient} from '../interfaces/BackendClient';
+import {REQUEST_STATUSES} from '../shared/constants';
 
 
 export default class Mold {
@@ -95,6 +96,11 @@ export default class Mold {
   ) {
     this.requests.startInstance(instanceId, data)
       .catch(this.log.error);
+
+    // TODO: add safe request here
+
+    // // log error because it isn't a network or backend's error
+    // this.mold.log.debug(e);
   }
 
   startAsync(
@@ -102,6 +108,8 @@ export default class Mold {
     data?: Record<string, any>,
   ): Promise<void> {
     return this.requests.startInstance(instanceId, data);
+
+    // TODO: добавить safe ???
   }
 
   /**

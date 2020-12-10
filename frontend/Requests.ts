@@ -7,14 +7,14 @@ import {InstancesStore} from './InstancesStore';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {REQUEST_STATUSES} from '../shared/constants';
 import {ActionState} from './interfaces/ActionState';
-import Queue from '../helpers/Queue';
+import QueueRace from '../helpers/QueueRace';
 import {sortObject} from '../helpers/objects';
 
 
 export default class Requests {
   private mold: Mold;
   // like { requestKeyStr: Queue }
-  private writingQueues: Record<string, Queue> = {};
+  private writingQueues: Record<string, QueueRace> = {};
   private readonly instances: InstancesStore;
 
 
@@ -124,7 +124,7 @@ export default class Requests {
       }
     }
     // else is writing - put it to queue if there isn't the same request.
-    const queue: Queue = this.resolveWritingQueue(requestKey);
+    const queue: QueueRace = this.resolveWritingQueue(requestKey);
     const jobId: string = JSON.stringify(sortObject(data || {}));
     // Check is this job is in queue to reduce duplicates.
     // If found then it returns the promise of the same job in queue
@@ -197,42 +197,50 @@ export default class Requests {
       this.mold.storageManager.patch(requestKey, { pending: true });
     }
 
-    const response: MoldResponse = await this.doSafeRequest(requestKey, request);
+    let response: MoldResponse;
 
+    const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
+
+    try {
+      response = await this.mold.backendManager.request(backendName, request);
+    }
+    catch (e) {
+      const responseState = {
+        success: false,
+        status: REQUEST_STATUSES.fatalError,
+        errors: [{code: REQUEST_STATUSES.fatalError, message: String(e)}],
+        result: null,
+      };
+      // actually this is for error in the code not network or backend's error
+      if (this.writingQueues[requestKeyStr].getQueueLength()) {
+        // don't set pending to false and adjust response state
+        this.mold.storageManager.patch(requestKey, responseState);
+      }
+      else {
+        // If there aren't any jobs in the queue then set pending to false
+        // and adjust response state.
+        this.mold.storageManager.patch(requestKey, {
+          pending: false,
+          ...responseState,
+        });
+      }
+      // and throw an error any way
+      throw e;
+    }
     // TODO: если кроме текущего job нет других job то считаем что очередь завершилась
     //       и устанавливаем стейт
 
   }
 
-  private async doSafeRequest(
-    requestKey: RequestKey,
-    request: MoldRequest
-  ): Promise<MoldResponse> {
-    const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
+  private makeResponseState(): Partial<ActionState> {
 
-    try {
-      return await this.mold.backendManager.request(backendName, request);
-    }
-    catch (e) {
-      // log error because it isn't a network or backend's error
-      this.mold.log.debug(e);
-      // actually this is for error in the code not network or backend's error
-      return {
-        success: false,
-        // TODO: review
-        status: REQUEST_STATUSES.fatalError,
-        errors: [{code: REQUEST_STATUSES.fatalError, message: String(e)}],
-        // TODO: review - не должен потом затереть текущий result
-        result: null,
-      }
-    }
   }
 
-  private resolveWritingQueue(requestKey: RequestKey): Queue {
+  private resolveWritingQueue(requestKey: RequestKey): QueueRace {
     const requestKeyStr: string = requestKeyToString(requestKey);
 
     if (!this.writingQueues[requestKeyStr]) {
-      this.writingQueues[requestKeyStr] = new Queue(this.mold.config.jobTimeoutSec);
+      this.writingQueues[requestKeyStr] = new QueueRace(this.mold.config.jobTimeoutSec);
     }
 
     return this.writingQueues[requestKeyStr];
