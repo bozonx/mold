@@ -8,7 +8,7 @@ import {MoldRequest} from '../interfaces/MoldRequest';
 import {REQUEST_STATUSES} from '../shared/constants';
 import {ActionState} from './interfaces/ActionState';
 import QueueRace from '../helpers/QueueRace';
-import {sortObject} from '../helpers/objects';
+import {omitUndefined, sortObject} from '../helpers/objects';
 
 
 export default class Requests {
@@ -191,49 +191,47 @@ export default class Requests {
    * @private
    */
   private async doWriteRequest(requestKey: RequestKey, request: MoldRequest) {
-    const requestKeyStr: string = requestKeyToString(requestKey);
     // If it is the fresh request(first job) then switch a pending state to true
     if (!this.mold.storageManager.getState(requestKey)!.pending) {
       this.mold.storageManager.patch(requestKey, { pending: true });
     }
 
-    let response: MoldResponse;
-
     const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
+    let response: MoldResponse;
 
     try {
       response = await this.mold.backendManager.request(backendName, request);
     }
     catch (e) {
-      const responseState = {
+      this.handleEndOfWritingResponse(requestKey, {
         success: false,
         status: REQUEST_STATUSES.fatalError,
         errors: [{code: REQUEST_STATUSES.fatalError, message: String(e)}],
         result: null,
-      };
-      // actually this is for error in the code not network or backend's error
-      if (this.writingQueues[requestKeyStr].getQueueLength()) {
-        // don't set pending to false and adjust response state
-        this.mold.storageManager.patch(requestKey, responseState);
-      }
-      else {
-        // If there aren't any jobs in the queue then set pending to false
-        // and adjust response state.
-        this.mold.storageManager.patch(requestKey, {
-          pending: false,
-          ...responseState,
-        });
-      }
+      });
       // and throw an error any way
       throw e;
     }
-    // TODO: если кроме текущего job нет других job то считаем что очередь завершилась
-    //       и устанавливаем стейт
 
+    this.handleEndOfWritingResponse(requestKey, response);
   }
 
-  private makeResponseState(): Partial<ActionState> {
+  private handleEndOfWritingResponse(requestKey: RequestKey, response: MoldResponse) {
+    const requestKeyStr: string = requestKeyToString(requestKey);
 
+    if (this.writingQueues[requestKeyStr].getQueueLength()) {
+      // don't set pending to false but adjust response state
+      this.mold.storageManager.patch(requestKey, response);
+    }
+    else {
+      // If there aren't any jobs in the queue then set pending to false,
+      // And adjust response state.
+      // This means all the requests are finished
+      this.mold.storageManager.patch(requestKey,{
+        ...response,
+        pending: false,
+      });
+    }
   }
 
   private resolveWritingQueue(requestKey: RequestKey): QueueRace {
@@ -247,7 +245,3 @@ export default class Requests {
   }
 
 }
-
-// getWritingQueue(requestKey: RequestKey): Queue | string {
-//   return this.writingQueues[requestKeyToString(requestKey)];
-// }
