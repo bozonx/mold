@@ -11,15 +11,14 @@ import {
 } from '../helpers/helpers';
 import {InstancesStore} from './InstancesStore';
 import {MoldRequest} from '../interfaces/MoldRequest';
-import {REQUEST_STATUSES} from '../shared/constants';
 import {ActionState} from './interfaces/ActionState';
 import QueueRace from '../helpers/QueueRace';
-import {omitObj, omitUndefined, sortObject} from '../helpers/objects';
+import {omitObj, sortObject} from '../helpers/objects';
 
 
 export default class Requests {
   private mold: Mold;
-  // like { requestKeyStr: Queue }
+  // object like { requestKeyStr: QueueRace }
   private writingQueues: Record<string, QueueRace> = {};
   private readonly instances: InstancesStore;
 
@@ -130,6 +129,13 @@ export default class Requests {
 
   destroyInstance(instanceId: string) {
     const {requestKey} = splitInstanceId(instanceId);
+    const requestKeyStr: string = requestKeyToString(requestKey);
+
+    if (this.writingQueues[requestKeyStr]) {
+      this.writingQueues[requestKeyStr].destroy();
+
+      delete this.writingQueues[requestKeyStr];
+    }
     // do nothing if there isn't any request
     if (!this.instances.getProps(requestKey)) return;
     // remove instance and request if there aren't any more instances
@@ -150,11 +156,6 @@ export default class Requests {
     }
     // else no one reading request then do fresh request
     const request: MoldRequest = makeRequest(actionProps);
-
-    // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
-    // TODO: если стейт удалился пока шел запрос то нужно ответ игнорировать.
-    //       Сам запрос по возможности остановить
-
     const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
     let response: MoldResponse;
 
@@ -211,11 +212,12 @@ export default class Requests {
   private handleEndOfWritingResponse(requestKey: RequestKey, response: MoldResponse) {
     const requestKeyStr: string = requestKeyToString(requestKey);
 
-    // TODO: add finishedOnce: true
-
     if (this.writingQueues[requestKeyStr].getQueueLength()) {
       // don't set pending to false but adjust response state
-      this.mold.storageManager.patch(requestKey, response);
+      this.mold.storageManager.patch(requestKey, {
+        ...response,
+        finishedOnce: true,
+      });
     }
     else {
       // If there aren't any jobs in the queue then set pending to false,
@@ -224,6 +226,7 @@ export default class Requests {
       this.mold.storageManager.patch(requestKey,{
         ...response,
         pending: false,
+        finishedOnce: true,
       });
     }
   }
