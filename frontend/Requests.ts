@@ -2,13 +2,19 @@ import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
 import {ActionProps} from './interfaces/ActionProps';
 import Mold from './Mold';
 import {MoldResponse} from '../interfaces/MoldResponse';
-import {makeRequest, makeRequestKey, requestKeyToString, splitInstanceId} from '../helpers/helpers';
+import {
+  makeFatalErrorResponse,
+  makeRequest,
+  makeRequestKey,
+  requestKeyToString,
+  splitInstanceId
+} from '../helpers/helpers';
 import {InstancesStore} from './InstancesStore';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {REQUEST_STATUSES} from '../shared/constants';
 import {ActionState} from './interfaces/ActionState';
 import QueueRace from '../helpers/QueueRace';
-import {omitUndefined, sortObject} from '../helpers/objects';
+import {omitObj, omitUndefined, sortObject} from '../helpers/objects';
 
 
 export default class Requests {
@@ -105,24 +111,11 @@ export default class Requests {
    */
   async startRequest(requestKey: RequestKey, data?: Record<string, any>) {
     const actionProps: ActionProps | undefined = this.getProps(requestKey);
-    const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
 
     if (!actionProps) throw new Error(`No props of "${JSON.stringify(requestKey)}"`);
-    if (!state) throw new Error(`Can't find state of "${JSON.stringify(requestKey)}"`);
-    // check is it reading request
-    if (actionProps.isReading) {
-      // TODO: все перенести в doReadRequest
-      if (state.pending) {
-        // return a promise which will be resolved after current request is finished
-        return this.waitRequestFinished(requestKey);
-      }
-      else {
-        // else no one reading request then do fresh request
-        const request: MoldRequest = makeRequest(actionProps, data);
+    // check is it reading request. Data isn't used in read requests.
+    if (actionProps.isReading) return this.doReadRequest(requestKey, actionProps);
 
-        return await this.doReadRequest(requestKey, request);
-      }
-    }
     // else is writing - put it to queue if there isn't the same request.
     const queue: QueueRace = this.resolveWritingQueue(requestKey);
     const jobId: string = JSON.stringify(sortObject(data || {}));
@@ -146,7 +139,17 @@ export default class Requests {
   }
 
 
-  private async doReadRequest(requestKey: RequestKey, request: MoldRequest) {
+  private async doReadRequest(requestKey: RequestKey, actionProps: ActionProps) {
+    const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
+
+    if (!state) throw new Error(`Can't find state of "${JSON.stringify(requestKey)}"`);
+
+    if (state.pending) {
+      // return a promise which will be resolved after current request is finished
+      return this.waitRequestFinished(requestKey);
+    }
+    // else no one reading request then do fresh request
+    const request: MoldRequest = makeRequest(actionProps);
 
     // TODO: ждать 60 сек до конца и поднимать ошибку и больше не принимать ответ
     // TODO: если стейт удалился пока шел запрос то нужно ответ игнорировать.
@@ -158,7 +161,6 @@ export default class Requests {
     // set pending state
     this.mold.storageManager.patch(requestKey, { pending: true });
 
-    // TODO: review - поднимет fatal ошибку
     try {
       response = await this.mold.backendManager.request(backendName, request);
     }
@@ -167,16 +169,11 @@ export default class Requests {
       this.mold.storageManager.patch(requestKey, {
         pending: false,
         finishedOnce: true,
-        success: false,
-        // TODO: review
-        status: REQUEST_STATUSES.fatalError,
-        errors: [{code: REQUEST_STATUSES.fatalError, message: String(e)}],
         // it doesn't clear previous result
+        ...omitObj(makeFatalErrorResponse(e), 'result'),
       });
-      // log error because it isn't a network or backend's error
-      this.mold.log.error(e);
-      // do nothing else actually
-      return;
+      // and throw an error any way
+      throw e;
     }
     // success of response. It also can contain an error status.
     this.mold.storageManager.patch(requestKey, {
@@ -203,12 +200,7 @@ export default class Requests {
       response = await this.mold.backendManager.request(backendName, request);
     }
     catch (e) {
-      this.handleEndOfWritingResponse(requestKey, {
-        success: false,
-        status: REQUEST_STATUSES.fatalError,
-        errors: [{code: REQUEST_STATUSES.fatalError, message: String(e)}],
-        result: null,
-      });
+      this.handleEndOfWritingResponse(requestKey, makeFatalErrorResponse(e));
       // and throw an error any way
       throw e;
     }
@@ -218,6 +210,8 @@ export default class Requests {
 
   private handleEndOfWritingResponse(requestKey: RequestKey, response: MoldResponse) {
     const requestKeyStr: string = requestKeyToString(requestKey);
+
+    // TODO: add finishedOnce: true
 
     if (this.writingQueues[requestKeyStr].getQueueLength()) {
       // don't set pending to false but adjust response state

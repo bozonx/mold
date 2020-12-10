@@ -5,6 +5,8 @@ import {cloneDeepObject, omitObj, omitUndefined, sortObject} from './objects';
 import {ActionState} from '../frontend/interfaces/ActionState';
 import {MoldRequest} from '../interfaces/MoldRequest';
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
+import {MoldResponse} from '../interfaces/MoldResponse';
+import {REQUEST_STATUSES} from '../shared/constants';
 
 
 export function makeRequestKey(props: ActionProps): RequestKey {
@@ -58,6 +60,15 @@ export function makeRequest(
     //   ...queryOverride,
     // },
   }) as Omit<Omit<ActionProps, 'backend'>, 'isReading'>;
+}
+
+export function makeFatalErrorResponse(err: Error | string): MoldResponse {
+  return {
+    success: false,
+    status: REQUEST_STATUSES.fatalError,
+    errors: [{code: REQUEST_STATUSES.fatalError, message: String(err)}],
+    result: null,
+  };
 }
 
 // TODO: remove ???
