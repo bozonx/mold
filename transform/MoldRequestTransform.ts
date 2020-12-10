@@ -55,6 +55,9 @@ export default class MoldRequestTransform {
    * @return fully transformed response.
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
+
+    // TODO: reveiw doc - должно вернуть выбросить ошибку на fatal
+
     const globalContext: GlobalContext = this.makeGlobalContext(request);
 
     validateRequest(request);

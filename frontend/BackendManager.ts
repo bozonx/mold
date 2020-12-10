@@ -49,6 +49,7 @@ export default class BackendManager {
   /**
    * It just makes the request to the specified backend client.
    * It doesn't care about are there any other similar requests.
+   * It throws an error only on fatal error
    */
   request<T = any>(backendName: string, requestProps: MoldRequest): Promise<MoldResponse> {
     const backendClient: BackendClient = this.getBackend(backendName);

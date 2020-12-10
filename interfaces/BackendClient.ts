@@ -8,6 +8,6 @@ export interface BackendClient {
 
   destroy?(): Promise<void>;
 
-  // it throws an error only on fatal error
+  // It throws an error only on fatal error
   request(request: MoldRequest): Promise<MoldResponse>;
 }

@@ -186,13 +186,14 @@ export default class Requests {
     });
   }
 
+  /**
+   * This is called in the queue of specified requestKey
+   * @private
+   */
   private async doWriteRequest(requestKey: RequestKey, request: MoldRequest) {
     const requestKeyStr: string = requestKeyToString(requestKey);
-    const filteredJobsIds: string[] = this.writingQueue.getJobIds()
-      .filter((id: string) => id.indexOf(requestKeyStr) >= 0);
-
-    if (filteredJobsIds.length) {
-      // TODO: если стейт pendig не стоит true то сделать true
+    // If it is the fresh request(first job) then switch a pending state to true
+    if (!this.mold.storageManager.getState(requestKey)!.pending) {
       this.mold.storageManager.patch(requestKey, { pending: true });
     }
 

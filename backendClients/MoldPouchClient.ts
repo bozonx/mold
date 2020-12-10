@@ -62,7 +62,8 @@ export default class MoldPouchClient implements BackendClient {
 
 
   /**
-   * Request from Mold
+   * Request from Mold.
+   * It throws an error only on fatal error
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
     return this.transform.request(request);
