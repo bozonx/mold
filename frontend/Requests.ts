@@ -43,6 +43,14 @@ export default class Requests {
     return this.instances.getProps(requestKey);
   }
 
+  eachAction(
+    backendName: string,
+    set: string,
+    cb: (actionName: string, requests: {[index: string]: ActionProps}) => void
+  ) {
+    this.instances.eachAction(backendName, set, cb);
+  }
+
   doesInstanceExist(instanceId: string): boolean {
     const {requestKey, instanceNum} = splitInstanceId(instanceId);
 

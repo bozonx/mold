@@ -22,23 +22,30 @@ export default class PushesManager {
   }
 
 
+  /**
+   * If the message is invalid then an error will be thrown
+   */
   incomePush(backend: string, message: PushIncomeMessage) {
     const validMessages: PushMessage[] = this.parseMessage(message);
 
     for (let item of validMessages) {
-      this.handleMessage(backend, item);
+      this.handleMessage(backend, item[0], item[1], item[2]);
     }
   }
 
 
-  private handleMessage(backend: string, message: PushMessage) {
+  // TODO: review
+  private handleMessage(
+    backend: string,
+    set: string,
+    id: string | number,
+    eventType: DB_ADAPTER_EVENT_TYPES
+  ) {
 
     // TODO: наверное стоит сделать мини дебаунс на текущий тик - хотя всеравно будет очередь
     // TODO: review
 
-    const [set, id, type] = message;
-
-    this.mold.requests.instances.eachAction(
+    this.mold.requests.eachAction(
       backend,
       set,
       (actionName: string, requests: {[index: string]: ActionProps}) => {
@@ -65,6 +72,7 @@ export default class PushesManager {
     );
   }
 
+  // TODO: review
   private doesStateNeedUpdate(
     state: ActionState<ListResponse | ItemResponse>,
     itemId: string | number,

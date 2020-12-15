@@ -61,9 +61,22 @@ export default class Mold {
 
   /**
    * Handle income push message. It can be json string or object or array of messages.
+   * If the message is invalid then an error will be thrown
    */
   incomePush(backend: string, message: PushIncomeMessage) {
     this.pushManager.incomePush(backend, message);
+  }
+
+  /**
+   * As incomePush() but error safe.
+   */
+  incomePushSafe(backend: string, message: PushIncomeMessage) {
+    try {
+      this.pushManager.incomePush(backend, message);
+    }
+    catch (e) {
+      this.log.error(e);
+    }
   }
 
   /**
