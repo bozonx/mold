@@ -46,7 +46,7 @@ export default class Requests {
   eachAction(
     backendName: string,
     set: string,
-    cb: (actionName: string, requests: {[index: string]: ActionProps}) => void
+    cb: (actionName: string, actionRequests: {[index: string]: ActionProps}) => void
   ) {
     this.instances.eachAction(backendName, set, cb);
   }

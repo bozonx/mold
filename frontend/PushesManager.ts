@@ -48,7 +48,8 @@ export default class PushesManager {
     this.mold.requests.eachAction(
       backend,
       set,
-      (actionName: string, requests: {[index: string]: ActionProps}) => {
+      (actionName: string, actionRequests: {[index: string]: ActionProps}) => {
+        // iterate each request of specified backend/set/action
         for (let requestId of Object.keys(requests)) {
           const actionProps: ActionProps = requests[requestId];
           // don't update saving requests
