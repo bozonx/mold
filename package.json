@@ -8,24 +8,17 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {},
-  "dependencies": {},
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.5.0",
-    "@typescript-eslint/parser": "^4.5.0",
-    "@vue/cli-plugin-typescript": "^4.5.8",
-    "@vue/composition-api": "^1.0.0-beta.19",
-    "@vue/eslint-config-typescript": "^7.0.0",
     "chai": "^4.2.0",
     "eslint": "^7.12.0",
     "eslint-plugin-vue": "^7.1.0",
     "mocha": "^8.2.0",
     "pouchdb": "^7.2.2",
     "typescript": "^4.0.3",
-    "vue": "^2.6.12",
-    "vuex": "^3.5.1"
+    "vue": "^3.1.4",
+    "vuex": "^4.0.2"
   },
   "peerDependencies": {
-    "@vue/composition-api": "*",
     "vue": "*"
   }
 }
