@@ -23,13 +23,13 @@ export function findComposition<T>(
       ...newState,
       ...omitObj(newState.result, 'data') as Omit<ListResponse, 'data'>,
       items: newState.result?.data || null,
-    };
+    }
   }
   // isReading param will be set at mold.request.register() method
   const {mold, instanceId, state: moldState} = moldComposition<ListResponse<T>>(
     { ...actionProps, isReading: true },
     stateTransform
-  );
+  )
 
   if (!disableInitialLoad) {
     // start request immediately

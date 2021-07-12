@@ -1,8 +1,10 @@
-import Mold from '../../../frontend/Mold';
-import {ActionState} from '../../../frontend/interfaces/ActionState';
-import {omitUndefined} from '../../../helpers/objects';
-import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants';
-import {ActionProps} from '../../../frontend/interfaces/ActionProps';
+import {reactive, onUnmounted, inject} from 'vue'
+import Mold from '../../../frontend/Mold'
+import {ActionState} from '../../../frontend/interfaces/ActionState'
+import {omitUndefined} from '../../../helpers/objects'
+import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants'
+import {ActionProps} from '../../../frontend/interfaces/ActionProps'
+import {VUE_CONTEXT_NAME} from '../constants'
 
 
 export interface MoldCompositionResult<T> {
@@ -21,14 +23,16 @@ export function moldComposition<T>(
   actionProps: ActionProps,
   onChangeCbOverride?: (newState: ActionState<T>) => ActionState
 ): MoldCompositionResult<T> {
-  // @ts-ignore
-  const mold: Mold = context.root.$mold;
+  const mold = inject<Mold>(VUE_CONTEXT_NAME)
+
+  if (!mold) throw new Error(`Can't get mold from app context`)
+
   // init request
   const instanceId: string = mold.newRequest(actionProps);
   const state: ActionState<T> = reactive(omitUndefined({
     ...mold.getState(instanceId),
     [INSTANCE_ID_PROP_NAME]: instanceId,
-  })) as any;
+  })) as any
   // update reactive at any change
   mold.onChange(instanceId, (newState: ActionState) => {
     const completeState: ActionState | T = (onChangeCbOverride)

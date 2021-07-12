@@ -3,7 +3,7 @@ import {Logger, LogLevel} from '../interfaces/Logger';
 import {DbAdapter} from '../interfaces/DbAdapter';
 import ConsoleLogger from '../helpers/ConsoleLogger';
 import {SeedContext} from './SeedContext';
-import {extractSeedFromSchema} from '../__old/extractSeedFromSchema';
+//import {extractSeedFromSchema} from '../__old/extractSeedFromSchema';
 import {MoldSchema} from '../interfaces/MoldSchema';
 import {normalizeSchema} from '../schema/normalizeSchema';
 
@@ -22,15 +22,16 @@ export default class MoldSeed {
     log?: Logger | LogLevel,
   ) {
 
-    const schema: MoldSchema = normalizeSchema(rawSchema);
+    //const schema: MoldSchema = normalizeSchema(rawSchema);
 
     // TODO: validate seed using schema
 
     // TODO: remove
-    this.seed = (props.seed) ? props.seed : extractSeedFromSchema(props.schemas!);
-    this.adapter = props.adapter;
-    this.log = this.resolveLogger(props.log);
-    this.context = new SeedContext(this.adapter);
+    //this.seed = (seed) ? seed : extractSeedFromSchema(schemas!);
+    this.seed = seed
+    this.adapter = adapter
+    this.log = this.resolveLogger(log)
+    this.context = new SeedContext(this.adapter)
 
     // TODO: запустить сразу
   }
@@ -52,7 +53,7 @@ export default class MoldSeed {
     catch (e) {
       this.context.destroy();
 
-      throw e;
+      throw e
     }
 
     await this.context.startActions();
