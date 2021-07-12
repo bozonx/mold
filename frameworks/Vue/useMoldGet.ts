@@ -1,5 +1,3 @@
-import {SetupContext} from '@vue/composition-api';
-
 import {getComposition, GetCompositionState} from './composition/getComposition';
 import {GetQuery} from '../../interfaces/GetQuery';
 
@@ -10,7 +8,7 @@ export default function useMoldGet<T>(
   backend?: string,
   disableInitialLoad?: boolean
 ): GetCompositionState<T> {
-  return getComposition<T>(context, {
+  return getComposition<T>({
     backend,
     set,
     action: 'get',

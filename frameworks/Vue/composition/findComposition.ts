@@ -1,5 +1,3 @@
-import {SetupContext} from '@vue/composition-api';
-
 import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {omitObj} from '../../../helpers/objects';
 import {ListResponse} from '../../../interfaces/ReponseStructure';
@@ -29,7 +27,6 @@ export function findComposition<T>(
   }
   // isReading param will be set at mold.request.register() method
   const {mold, instanceId, state: moldState} = moldComposition<ListResponse<T>>(
-    context,
     { ...actionProps, isReading: true },
     stateTransform
   );

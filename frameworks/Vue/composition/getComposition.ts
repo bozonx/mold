@@ -1,5 +1,3 @@
-import {SetupContext} from '@vue/composition-api';
-
 import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {moldComposition} from './moldComposition';
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
@@ -14,7 +12,6 @@ export interface GetCompositionState<T> extends ActionState {
 
 
 export function getComposition<T>(
-  context: SetupContext,
   actionProps: ActionProps,
   disableInitialLoad: boolean = false
 ): GetCompositionState<T> {
@@ -28,7 +25,6 @@ export function getComposition<T>(
   }
   // isReading param will be set at mold.request.register() method
   const {mold, instanceId, state: moldState} = moldComposition<ItemResponse<T>>(
-    context,
     { ...actionProps, isReading: true },
     stateTransform
   );

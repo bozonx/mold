@@ -8,9 +8,6 @@ export default function createMold (props: MoldProps) {
 
   return {
     install(app: App) {
-
-      console.log(111, app, mold)
-
       app.provide('mold', mold)
     },
   }

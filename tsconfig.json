@@ -8,8 +8,8 @@
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
-    "target": "es2018",
-    "module": "commonjs",
+    "target": "esnext",
+    "module": "esnext",
     "strict": true,
     "importHelpers": true,
     "moduleResolution": "node",
@@ -32,7 +32,7 @@
       "esnext",
       "dom",
       //"dom.iterable",
-      "scripthost"
+      //"scripthost"
     ],
     "outDir": "./build",
     "rootDir": "./"

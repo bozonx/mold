@@ -1,5 +1,3 @@
-import {onUnmounted, reactive, SetupContext} from '@vue/composition-api';
-
 import Mold from '../../../frontend/Mold';
 import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {omitUndefined} from '../../../helpers/objects';
@@ -8,9 +6,9 @@ import {ActionProps} from '../../../frontend/interfaces/ActionProps';
 
 
 export interface MoldCompositionResult<T> {
-  mold: Mold;
-  instanceId: string;
-  state: ActionState<T>;
+  mold: Mold
+  instanceId: string
+  state: ActionState<T>
 }
 
 export interface InstanceState {
@@ -20,7 +18,6 @@ export interface InstanceState {
 
 
 export function moldComposition<T>(
-  context: SetupContext,
   actionProps: ActionProps,
   onChangeCbOverride?: (newState: ActionState<T>) => ActionState
 ): MoldCompositionResult<T> {
