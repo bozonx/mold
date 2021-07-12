@@ -1,5 +1,3 @@
-import {SetupContext} from '@vue/composition-api';
-
 import {findComposition, FindCompositionState} from './composition/findComposition';
 import {FindQuery} from '../../interfaces/FindQuery';
 
@@ -10,7 +8,7 @@ export default function useMoldFind<T>(
   backend?: string,
   disableInitialLoad?: boolean
 ): FindCompositionState<T> {
-  return findComposition<T>(context, {
+  return findComposition<T>({
     backend,
     set,
     action: 'find',

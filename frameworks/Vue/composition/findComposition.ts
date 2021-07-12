@@ -15,7 +15,6 @@ export interface FindCompositionState<T> extends ActionState, Omit<ListResponse,
 
 
 export function findComposition<T>(
-  context: SetupContext,
   actionProps: ActionProps,
   disableInitialLoad: boolean = false
 ): FindCompositionState<T> {

@@ -1,3 +1,5 @@
+// TODO: remove
+
 import {SetupContext} from '@vue/composition-api';
 
 import {getComposition, GetCompositionState} from './composition/getComposition';

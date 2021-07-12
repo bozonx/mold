@@ -1,3 +1,5 @@
+// TODO: remove
+
 import {Plugin} from 'vue'
 
 import Mold from '../../frontend/Mold';
