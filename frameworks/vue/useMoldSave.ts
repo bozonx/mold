@@ -7,7 +7,7 @@ import {VUE_CONTEXT_NAME} from './constants'
 
 
 interface MoldSaveState<T> extends InstanceState<T> {
-  save: (data: Record<string, any>, queryOverride?: Record<string, any>) => void;
+  save: (data: Record<string, any>, queryOverride?: Record<string, any>) => void
 }
 
 
