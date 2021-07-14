@@ -18,22 +18,22 @@ export default class StorageManager {
 
   constructor(mold: Mold) {
     this.mold = mold
-
-    if (this.store.$init) this.store.$init(mold)
-
+    // init store if need
+    this.store.$init?.(mold)
+    // start listen store changes
     this.store.onChange(this.handleChange)
   }
 
   destroy() {
-    this.store.destroy();
-    this.events.destroy();
+    this.store.destroy()
+    this.events.destroy()
   }
 
 
   getState(requestKey: RequestKey): ActionState | undefined {
-    const id: string = requestKeyToString(requestKey);
+    const id: string = requestKeyToString(requestKey)
 
-    return this.store.getState(id);
+    return this.store.getState(id)
   }
 
   /**

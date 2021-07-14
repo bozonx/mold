@@ -6,26 +6,29 @@ import IndexedEventEmitter from '../../helpers/IndexedEventEmitter'
 
 type MoldState = {[index: string]: ActionState}
 
-const moduleName = 'mold'
-const setStateType = `SET_STATE`
-const setStatePath = `${moduleName}/${setStateType}`
-const changeEvent = 'change'
+const DEFAULT_MODULE_NAME = 'mold'
+const SET_STATE_TYPE = `SET_STATE`
+const CHANGE_EVENT = 'change'
 
 
 export default class VuexMoldStorage implements StorageAdapter {
+  readonly moduleName: string
+  readonly setStatePath: string
   private readonly store: Store<any>
   private readonly events = new IndexedEventEmitter()
   private readonly unsubscribeCb: () => void
 
 
-  constructor(vuexStore: Store<any>) {
+  constructor(vuexStore: Store<any>, moduleName: string = DEFAULT_MODULE_NAME) {
+    this.moduleName = moduleName
+    this.setStatePath = `${moduleName}/${SET_STATE_TYPE}`
     this.store = vuexStore
 
-    this.store.registerModule('mold', {
+    this.store.registerModule(moduleName, {
       namespaced: true,
       state: {},
       mutations: {
-        [setStateType](state: MoldState, value: MoldState) {
+        [SET_STATE_TYPE](state: MoldState, value: MoldState) {
           // fully replace state
           for(let key of Object.keys(value)) {
             if (value[key] === null) {
@@ -41,19 +44,19 @@ export default class VuexMoldStorage implements StorageAdapter {
     })
 
     this.unsubscribeCb = this.store.subscribe((mutationPayload, wholeState: {mold: MoldState}) => {
-      if (mutationPayload.type !== setStatePath) return
+      if (mutationPayload.type !== this.setStatePath) return
 
       const ids: string[] = Object.keys(mutationPayload.payload)
 
       for (let id of ids) {
-        this.events.emit(changeEvent, id)
+        this.events.emit(CHANGE_EVENT, id)
       }
     })
   }
 
   destroy() {
     this.unsubscribeCb()
-    this.store.unregisterModule(moduleName)
+    this.store.unregisterModule(this.moduleName)
     this.events.destroy()
   }
 
@@ -67,11 +70,11 @@ export default class VuexMoldStorage implements StorageAdapter {
   }
 
   put(id: string, newState: ActionState) {
-    this.store.commit(setStatePath, {[id]: newState})
+    this.store.commit(this.setStatePath, {[id]: newState})
   }
 
   patch(id: string, newPartialState: Partial<ActionState>) {
-    this.store.commit(setStatePath, {
+    this.store.commit(this.setStatePath, {
       [id]: {
         ...this.store.state.mold[id],
         ...newPartialState,
@@ -80,11 +83,11 @@ export default class VuexMoldStorage implements StorageAdapter {
   }
 
   delete(id: string) {
-    this.store.commit(setStatePath, {[id]: null})
+    this.store.commit(this.setStatePath, {[id]: null})
   }
 
   onChange(cb: (id: string) => void): number {
-    return this.events.addListener(changeEvent, cb)
+    return this.events.addListener(CHANGE_EVENT, cb)
   }
 
   removeListener(handlerIndex: number) {
