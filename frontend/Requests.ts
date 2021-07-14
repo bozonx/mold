@@ -90,6 +90,7 @@ export default class Requests {
     // put or update request props into store and make instance ot it
     return this.instances.addInstance(requestKey, {
       ...props,
+      // TODO: review
       isReading: (typeof props.isReading === 'undefined')
         ? (props.action === 'find' || props.action === 'get')
         : props.isReading,

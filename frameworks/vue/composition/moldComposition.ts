@@ -13,7 +13,7 @@ import {VUE_CONTEXT_NAME} from '../constants'
 //   state: ActionState<T>
 // }
 
-export interface InstanceState {
+export interface InstanceState<T = any> extends ActionState<T> {
   // string like "backend|set|action|request|instanceNum"
   $instanceId: string;
 }
@@ -27,7 +27,7 @@ export interface InstanceState {
 export function moldComposition<T>(
   actionProps: ActionProps,
   transformStateOnChange?: (newState: ActionState<T>) => ActionState
-): ActionState<T> & InstanceState {
+): InstanceState {
   const mold = inject<Mold>(VUE_CONTEXT_NAME)
 
   if (!mold) throw new Error(`Can't get mold from app context`)
@@ -37,7 +37,7 @@ export function moldComposition<T>(
   const state = reactive(omitUndefined({
     ...mold.getState(instanceId),
     [INSTANCE_ID_PROP_NAME]: instanceId,
-  })) as ActionState<T> & InstanceState
+  })) as InstanceState
   // update reactive state at any change
   mold.onChange(instanceId, (newState: ActionState) => {
     // transform state if was set transformStateOnChange or use raw state

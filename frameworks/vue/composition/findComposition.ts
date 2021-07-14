@@ -1,17 +1,18 @@
 import {inject} from 'vue'
-import {ActionState} from '../../../frontend/interfaces/ActionState';
-import {omitObj} from '../../../helpers/objects';
-import {ListResponse} from '../../../interfaces/ReponseStructure';
+import {omitObj} from '../../../helpers/objects'
+import {ListResponse} from '../../../interfaces/ReponseStructure'
 import {InstanceState, moldComposition} from './moldComposition'
-import {ActionProps} from '../../../frontend/interfaces/ActionProps';
+import {ActionProps} from '../../../frontend/interfaces/ActionProps'
 import Mold from '../../../frontend/Mold'
 import {VUE_CONTEXT_NAME} from '../constants'
+import {ActionState} from '../../../frontend/interfaces/ActionState'
 
 
-export interface FindCompositionState<T> extends ActionState, InstanceState, Omit<ListResponse, 'data'> {
-  // replace result.data to this
-  items: T[] | null;
-  load: (queryOverride?: Record<string, any>) => void;
+export interface FindCompositionState<T> extends InstanceState, Omit<ListResponse, 'data'> {
+  // it's a replacing of result.data
+  items: T[] | null
+  // TODO: а queryOverride нужен???
+  load: (queryOverride?: Record<string, any>) => void
 }
 
 
@@ -23,9 +24,7 @@ export function findComposition<T>(
 
   if (!mold) throw new Error(`Can't get mold from app context`)
 
-  const stateTransform = (
-    newState: ActionState<ListResponse<T>>
-  ): Omit<FindCompositionState<T>, 'load'> => {
+  const stateTransform = (newState: ActionState<ListResponse<T>>) => {
     return {
       ...newState,
       ...omitObj(newState.result, 'data') as Omit<ListResponse, 'data'>,
@@ -33,21 +32,21 @@ export function findComposition<T>(
     }
   }
   // isReading param will be set at mold.request.register() method
-  const moldState = moldComposition<ListResponse<T>>(
+  const state = moldComposition<ListResponse<T>>(
+    // TODO: почему isReading true, если можно не запускать изначально load??
     { ...actionProps, isReading: true },
     stateTransform
-  )
+  ) as FindCompositionState<T>
 
   if (!disableInitialLoad) {
     // start request immediately
-    mold.start(moldState.$instanceId)
+    mold.start(state.$instanceId)
   }
 
-  const state: FindCompositionState<T> = moldState as any;
-
+  // TODO: а где queryOverride???
   state.load = () => {
-    mold.start(moldState.$instanceId);
-  };
+    mold.start(state.$instanceId)
+  }
 
   return state
 }
