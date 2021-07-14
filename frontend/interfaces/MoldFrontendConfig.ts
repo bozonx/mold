@@ -1,4 +1,4 @@
 export interface MoldFrontendConfig {
-  requestTimeoutSec: number;
-  jobTimeoutSec: number;
+  requestTimeoutSec: number
+  jobTimeoutSec: number
 }
