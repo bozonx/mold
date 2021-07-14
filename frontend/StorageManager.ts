@@ -7,20 +7,21 @@ import IndexedEventEmitter from '../helpers/IndexedEventEmitter'
 
 
 export default class StorageManager {
-  private readonly mold: Mold;
-  private readonly events = new IndexedEventEmitter();
+  private readonly mold: Mold
+  private readonly events = new IndexedEventEmitter()
 
   private get store(): StorageAdapter {
-    return this.mold.props.storage!;
+    // TODO: почему через props???
+    return this.mold.props.storage
   }
 
 
   constructor(mold: Mold) {
-    this.mold = mold;
+    this.mold = mold
 
-    if (this.store.$init) this.store.$init(mold);
+    if (this.store.$init) this.store.$init(mold)
 
-    this.store.onChange(this.handleChange);
+    this.store.onChange(this.handleChange)
   }
 
   destroy() {

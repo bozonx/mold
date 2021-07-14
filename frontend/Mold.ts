@@ -34,7 +34,7 @@ export default class Mold {
 
   get backends(): {[index: string]: BackendClient} {
     // TODO: переопределенный backends лушче хранить отдельно
-    return this.props.backends as any;
+    return this.props.backends as any
   }
 
 
