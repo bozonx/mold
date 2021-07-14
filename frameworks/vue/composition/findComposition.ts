@@ -1,11 +1,14 @@
+import {inject} from 'vue'
 import {ActionState} from '../../../frontend/interfaces/ActionState';
 import {omitObj} from '../../../helpers/objects';
 import {ListResponse} from '../../../interfaces/ReponseStructure';
-import {moldComposition} from './moldComposition';
+import {InstanceState, moldComposition} from './moldComposition'
 import {ActionProps} from '../../../frontend/interfaces/ActionProps';
+import Mold from '../../../frontend/Mold'
+import {VUE_CONTEXT_NAME} from '../constants'
 
 
-export interface FindCompositionState<T> extends ActionState, Omit<ListResponse, 'data'> {
+export interface FindCompositionState<T> extends ActionState, InstanceState, Omit<ListResponse, 'data'> {
   // replace result.data to this
   items: T[] | null;
   load: (queryOverride?: Record<string, any>) => void;
@@ -16,6 +19,10 @@ export function findComposition<T>(
   actionProps: ActionProps,
   disableInitialLoad: boolean = false
 ): FindCompositionState<T> {
+  const mold = inject<Mold>(VUE_CONTEXT_NAME)
+
+  if (!mold) throw new Error(`Can't get mold from app context`)
+
   const stateTransform = (
     newState: ActionState<ListResponse<T>>
   ): Omit<FindCompositionState<T>, 'load'> => {
@@ -26,21 +33,21 @@ export function findComposition<T>(
     }
   }
   // isReading param will be set at mold.request.register() method
-  const {mold, instanceId, state: moldState} = moldComposition<ListResponse<T>>(
+  const moldState = moldComposition<ListResponse<T>>(
     { ...actionProps, isReading: true },
     stateTransform
   )
 
   if (!disableInitialLoad) {
     // start request immediately
-    mold.start(instanceId);
+    mold.start(moldState.$instanceId)
   }
 
   const state: FindCompositionState<T> = moldState as any;
 
   state.load = () => {
-    mold.start(instanceId);
+    mold.start(moldState.$instanceId);
   };
 
-  return state;
+  return state
 }

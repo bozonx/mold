@@ -12,6 +12,3 @@ export interface MoldRequest {
   // Data to save. For create, patch etc
   data?: Record<string, JsonTypes> | Record<string, JsonTypes>[] | (string | number)[];
 }
-
-// for get, patch, delete.
-//id?: string | number;

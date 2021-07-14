@@ -91,7 +91,7 @@ export default class Mold {
   /**
    * It inits request if need and makes a new request instance id.
    * It doesn't start the request itself
-   * @return An instance id
+   * @return {String} an instance id
    */
   newRequest(actionProps: ActionProps): string {
     return this.requests.register(actionProps);
