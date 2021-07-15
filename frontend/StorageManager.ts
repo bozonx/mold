@@ -40,17 +40,17 @@ export default class StorageManager {
    * Init state in case it hasn't been initialized before.
    */
   initStateIfNeed(requestKey: RequestKey) {
-    const id: string = requestKeyToString(requestKey);
+    const id: string = requestKeyToString(requestKey)
     // do nothing if there is previously defined state
-    if (this.store.hasState(id)) return;
+    if (this.store.hasState(id)) return
 
-    this.store.put(id, makeInitialActionState());
+    this.store.put(id, makeInitialActionState())
   }
 
   patch(requestKey: RequestKey, partialState: Partial<ActionState>) {
-    const id: string = requestKeyToString(requestKey);
+    const id: string = requestKeyToString(requestKey)
 
-    this.store.patch(id, partialState);
+    this.store.patch(id, partialState)
   }
 
   /**
@@ -67,22 +67,22 @@ export default class StorageManager {
    * Listen of changes of any part of state of request
    */
   onChange(requestKey: RequestKey, cb: (newState: any) => void): number {
-    const id: string = requestKeyToString(requestKey);
+    const id: string = requestKeyToString(requestKey)
 
-    return this.events.addListener(id, cb);
+    return this.events.addListener(id, cb)
   }
 
   removeListener(handlerIndex: number) {
-    this.events.removeListener(handlerIndex);
+    this.events.removeListener(handlerIndex)
   }
 
 
   private handleChange = (id: string) => {
-    const state = this.store.getState(id);
+    const state = this.store.getState(id)
 
-    if (!state) return;
+    if (!state) return
 
-    this.events.emit(id, state);
+    this.events.emit(id, state)
   }
 
 }
