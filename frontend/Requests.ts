@@ -1,26 +1,26 @@
-import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey';
-import {ActionProps} from './interfaces/ActionProps';
-import Mold from './Mold';
-import {MoldResponse} from '../interfaces/MoldResponse';
+import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey'
+import {ActionProps} from './interfaces/ActionProps'
+import Mold from './Mold'
+import {MoldResponse} from '../interfaces/MoldResponse'
 import {
   makeFatalErrorResponse,
   makeRequest,
   makeRequestKey,
   requestKeyToString,
   splitInstanceId
-} from '../helpers/helpers';
-import {InstancesStore} from './InstancesStore';
-import {MoldRequest} from '../interfaces/MoldRequest';
-import {ActionState} from './interfaces/ActionState';
-import QueueRace from '../helpers/QueueRace';
-import {omitObj, sortObject} from '../helpers/objects';
+} from '../helpers/helpers'
+import {InstancesStore} from './InstancesStore'
+import {MoldRequest} from '../interfaces/MoldRequest'
+import {ActionState} from './interfaces/ActionState'
+import QueueRace from '../helpers/QueueRace'
+import {omitObj, sortObject} from '../helpers/objects'
 
 
 export default class Requests {
-  private mold: Mold;
+  private mold: Mold
   // object like { requestKeyStr: QueueRace }
-  private writingQueues: Record<string, QueueRace> = {};
-  private readonly instances: InstancesStore;
+  private writingQueues: Record<string, QueueRace> = {}
+  private readonly instances: InstancesStore
 
 
   constructor(mold: Mold) {

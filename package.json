@@ -8,6 +8,9 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {},
+  "dependencies": {
+    "squidlet-lib": "file:../squidlet-lib"
+  },
   "devDependencies": {
     "chai": "^4.2.0",
     "eslint": "^7.12.0",
