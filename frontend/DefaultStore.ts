@@ -7,7 +7,7 @@ const changeEvent = 'change'
 
 
 export default class DefaultStore implements StorageAdapter {
-  // storage like { "backend|set|action|requestKey": {...} }
+  // storage like { "id": {...} }
   private store: {[index: string]: ActionState} = {}
   private readonly events = new IndexedEventEmitter()
 

@@ -1,8 +1,7 @@
-import {ActionState} from './interfaces/ActionState'
-import {RequestKey} from './interfaces/RequestKey'
 import Mold from './Mold'
+import {ActionState} from './interfaces/ActionState'
 import {StorageAdapter} from './interfaces/StorageAdapter'
-import {makeInitialActionState, requestKeyToString} from '../helpers/helpers'
+import {makeInitialActionState} from '../helpers/helpers'
 import IndexedEventEmitter from '../helpers/IndexedEventEmitter'
 
 
@@ -30,35 +29,29 @@ export default class StorageManager {
   }
 
 
-  getState(requestKey: RequestKey): ActionState | undefined {
-    const id: string = requestKeyToString(requestKey)
-
+  getState(id: string): ActionState | undefined {
     return this.store.getState(id)
   }
 
   /**
    * Init state in case it hasn't been initialized before.
    */
-  initStateIfNeed(requestKey: RequestKey) {
-    const id: string = requestKeyToString(requestKey)
+  initStateIfNeed(id: string) {
     // do nothing if there is previously defined state
     if (this.store.hasState(id)) return
 
+    // TODO: add $props
     this.store.put(id, makeInitialActionState())
   }
 
-  patch(requestKey: RequestKey, partialState: Partial<ActionState>) {
-    const id: string = requestKeyToString(requestKey)
-
+  patch(id: string, partialState: Partial<ActionState>) {
     this.store.patch(id, partialState)
   }
 
   /**
    * Delete state and event handlers
    */
-  delete(requestKey: RequestKey) {
-    const id: string = requestKeyToString(requestKey)
-
+  delete(id: string) {
     this.store.delete(id)
     this.events.removeAllListeners(id)
   }
@@ -66,9 +59,7 @@ export default class StorageManager {
   /**
    * Listen of changes of any part of state of request
    */
-  onChange(requestKey: RequestKey, cb: (newState: any) => void): number {
-    const id: string = requestKeyToString(requestKey)
-
+  onChange(id: string, cb: (newState: any) => void): number {
     return this.events.addListener(id, cb)
   }
 

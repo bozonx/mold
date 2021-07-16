@@ -9,7 +9,6 @@ import {
   requestKeyToString,
   splitInstanceId
 } from '../helpers/helpers'
-import {InstancesStore} from './InstancesStore'
 import {MoldRequest} from '../interfaces/MoldRequest'
 import {ActionState} from './interfaces/ActionState'
 import QueueRace from '../helpers/QueueRace'

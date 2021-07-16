@@ -20,7 +20,8 @@ export interface StorageAdapter {
   put(id: string, newState: ActionState)
 
   /**
-   * Update state partly
+   * Update state partly.
+   * Not deep, nested objects and arrays will be replaced
    */
   patch(id: string, newPartialState: Partial<ActionState>)
 
