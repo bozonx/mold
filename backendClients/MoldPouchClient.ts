@@ -52,7 +52,7 @@ export default class MoldPouchClient implements BackendClient {
     this.adapter.onError(this.mold.log.error)
   }
 
-  async $init(mold: Mold, backendName: string) {
+  async init(mold: Mold, backendName: string) {
     this.mold = mold
     this.backendName = backendName
 

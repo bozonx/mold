@@ -158,9 +158,8 @@ export default class Requests {
     // set pending state
     this.mold.storageManager.patch(instanceId, { pending: true })
 
-    // TODO: нужно ли указать backend: default ???
     try {
-      response = await this.mold.backendManager.request(actionProps.backend, request)
+      response = await this.mold.backendManager.request(request, actionProps.backend)
     }
     catch (e) {
       // actually this is for error in the code not network or backend's error
@@ -185,7 +184,11 @@ export default class Requests {
    * This is called in the queue of specified requestKey
    * @private
    */
-  private async doWriteRequest(requestKey: RequestKey, request: MoldRequest) {
+  private async doWriteRequest(
+    instanceId: string,
+    actionProps: ActionProps,
+    request: MoldRequest
+  ) {
 
     // TODO: add queryOverride
 
@@ -194,11 +197,11 @@ export default class Requests {
       this.mold.storageManager.patch(requestKey, { pending: true });
     }
 
-    const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
+
     let response: MoldResponse;
 
     try {
-      response = await this.mold.backendManager.request(backendName, request);
+      response = await this.mold.backendManager.request(request, actionProps.backend)
     }
     catch (e) {
       this.handleEndOfWritingResponse(requestKey, makeFatalErrorResponse(e));

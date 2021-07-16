@@ -2,6 +2,7 @@ import Mold from './Mold'
 import {BackendClient} from '../interfaces/BackendClient'
 import {MoldRequest} from '../interfaces/MoldRequest'
 import {MoldResponse} from '../interfaces/MoldResponse'
+import {DEFAULT_BACKEND} from './constants'
 
 
 /**
@@ -10,42 +11,48 @@ import {MoldResponse} from '../interfaces/MoldResponse'
 export default class BackendManager {
   private readonly mold: Mold
 
+  private get backends(): Record<string, BackendClient> {
+    return this.mold.props.backends || {}
+  }
+
 
   constructor(mold: Mold) {
     this.mold = mold
   }
 
+  /**
+   * Run init functions of all the backends
+   */
   async init() {
-    // TODO: а если не указан ни один бэкэнд???
     await Promise.all(
-      // TODO: брать не из props
-      Object.keys(this.mold.props.backends).map(async (backendName) => {
-        const backend: BackendClient = this.mold.props.backends[backendName]
+      Object.keys(this.backends).map(async (backendName) => {
+        const backend: BackendClient = this.backends[backendName]
 
-        if (backend?.$init) {
-          await backend.$init(this.mold, backendName)
-        }
+        await backend.init?.(this.mold, backendName)
       })
     );
   }
 
+  /**
+   * Run destroy functions of all the backends
+   */
   async destroy() {
     await Promise.all(
-      Object.keys(this.mold.props.backends!).map(async (backendName) => {
-        const backend: BackendClient = this.mold.props.backends![backendName]!;
+      Object.keys(this.backends).map(async (backendName) => {
+        const backend: BackendClient = this.backends[backendName]
 
-        if (backend?.destroy) await backend.destroy();
+        await backend.destroy?.()
       })
     );
   }
 
 
   getBackend(backendName: string): BackendClient {
-    if (!this.mold.props.backends?.[backendName]) {
-      throw new Error(`Can't find backend client "${backendName}"`);
+    if (!this.backends[backendName]) {
+      throw new Error(`Can't find backend client "${backendName}"`)
     }
 
-    return this.mold.props.backends[backendName]!;
+    return this.backends[backendName]
   }
 
   /**
@@ -53,10 +60,10 @@ export default class BackendManager {
    * It doesn't care about are there any other similar requests.
    * It throws an error only on fatal error
    */
-  request<T = any>(backendName: string, requestProps: MoldRequest): Promise<MoldResponse> {
-    const backendClient: BackendClient = this.getBackend(backendName);
+  request<T = any>(requestProps: MoldRequest, backendName: string = DEFAULT_BACKEND): Promise<MoldResponse> {
+    const backendClient: BackendClient = this.getBackend(backendName)
 
-    return backendClient.request(requestProps);
+    return backendClient.request(requestProps)
   }
 
 }

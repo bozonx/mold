@@ -4,7 +4,7 @@ import Mold from '../frontend/Mold'
 
 
 export interface BackendClient {
-  $init?(mold: Mold, backendName: string): Promise<void>
+  init?(mold: Mold, backendName: string): Promise<void>
 
   destroy?(): Promise<void>
 
