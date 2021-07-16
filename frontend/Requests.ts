@@ -1,30 +1,25 @@
+import Mold from './Mold'
 import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey'
 import {ActionProps} from './interfaces/ActionProps'
-import Mold from './Mold'
 import {MoldResponse} from '../interfaces/MoldResponse'
-import {
-  makeFatalErrorResponse,
-  makeRequest,
-  makeRequestKey,
-  requestKeyToString,
-  splitInstanceId
-} from '../helpers/helpers'
-import {MoldRequest} from '../interfaces/MoldRequest'
+import {makeFatalErrorResponse, makeRequest} from '../helpers/helpers'
+import {MoldRequest, MoldRequestData} from '../interfaces/MoldRequest'
 import {ActionState} from './interfaces/ActionState'
 import QueueRace from '../helpers/QueueRace'
 import {omitObj, sortObject} from '../helpers/objects'
+import {makeUniqId} from 'squidlet-lib/src/uniqId'
+import {INSTANCE_ID_LENGTH} from './constants'
+import {JsonTypes} from '../interfaces/Types'
 
 
 export default class Requests {
   private readonly mold: Mold
   // object like { requestKeyStr: QueueRace }
   private writingQueues: Record<string, QueueRace> = {}
-  private readonly instances: InstancesStore
 
 
   constructor(mold: Mold) {
     this.mold = mold
-    this.instances = new InstancesStore()
   }
 
   destroy() {
@@ -33,37 +28,33 @@ export default class Requests {
     }
 
     this.writingQueues = {}
-
-    this.instances.destroy()
   }
 
 
-  getProps(requestKey: RequestKey): ActionProps | undefined {
-    return this.instances.getProps(requestKey)
+  getProps(instanceId: string): ActionProps | undefined {
+    return this.mold.storageManager.getProps(instanceId)
   }
 
-  eachAction(
-    backendName: string,
-    set: string,
-    cb: (actionName: string, actionRequests: {[index: string]: ActionProps}) => void
-  ) {
-    this.instances.eachAction(backendName, set, cb)
-  }
+  // eachAction(
+  //   backendName: string,
+  //   set: string,
+  //   cb: (actionName: string, actionRequests: {[index: string]: ActionProps}) => void
+  // ) {
+  //   this.instances.eachAction(backendName, set, cb)
+  // }
 
   doesInstanceExist(instanceId: string): boolean {
-    const {requestKey, instanceNum} = splitInstanceId(instanceId)
-
-    return this.instances.doesInstanceNumExist(requestKey, instanceNum)
+    return this.mold.storageManager.hasState(instanceId)
   }
 
-  waitRequestFinished(requestKey: RequestKey): Promise<void> {
-    const state: ActionState | undefined = this.mold.storageManager.getState(requestKey)
+  waitRequestFinished(instanceId: string): Promise<void> {
+    const state: ActionState | undefined = this.mold.storageManager.getState(instanceId)
 
     if (!state || !state.pending) return Promise.resolve()
 
     return new Promise((resolve, reject) => {
       const handleIndex: number = this.mold.storageManager.onChange(
-        requestKey,
+        instanceId,
         (state: ActionState) => {
           if (state.pending) return
 
@@ -82,67 +73,23 @@ export default class Requests {
   }
 
   /**
-   * Creates storage and register request to further call.
+   * Creates new instance
    * @return {string} An instance id
    */
   register(props: ActionProps): string {
-    const requestKey: RequestKey = makeRequestKey(props)
+    const instanceId: string = makeUniqId(INSTANCE_ID_LENGTH)
     // init state if it doesn't exist
-    this.mold.storageManager.initStateIfNeed(requestKey)
-    // TODO: обновляет props запроса если уже такой запрос есть
-    // put or update request props into store and make instance ot it
-    return this.instances.addInstance(requestKey, {
+    this.mold.storageManager.initStateIfNeed(instanceId, {
       ...props,
-      // TODO: review
       isReading: (typeof props.isReading === 'undefined')
         ? (props.action === 'find' || props.action === 'get')
         : props.isReading,
     })
-  }
 
-  /**
-   * Start a new request by instanceId
-   * @param {string} instanceId
-   * @param {object} data - data for create, patch or custom actions
-   */
-  async startInstance(instanceId: string, data?: Record<string, any>) {
-    const {requestKey, instanceNum} = splitInstanceId(instanceId)
-
-    if (!this.instances.doesInstanceNumExist(requestKey, instanceNum)) {
-      throw new Error(`Instance "${instanceId}" doesn't exists`)
-    }
-
-    await this.startRequest(requestKey, data)
-  }
-
-  /**
-   * Start a new request by requestKey
-   * @param requestKey
-   * @param data - data for create, patch or custom actions
-   */
-  async startRequest(requestKey: RequestKey, data?: Record<string, any>) {
-    const actionProps: ActionProps | undefined = this.getProps(requestKey)
-
-    if (!actionProps) throw new Error(`No props of "${JSON.stringify(requestKey)}"`)
-    // check is it reading request. Data isn't used in read requests.
-    if (actionProps.isReading) return this.doReadRequest(requestKey, actionProps)
-
-    // else is writing - put it to queue if there isn't the same request.
-    const queue: QueueRace = this.resolveWritingQueue(requestKey)
-    const jobId: string = JSON.stringify(sortObject(data || {}))
-    // Check is this job is in queue to reduce duplicates.
-    // If found then it returns the promise of the same job in queue
-    if (queue.hasJob(jobId)) return queue.waitJobFinished(jobId)
-    // make request here to clone it
-    const request: MoldRequest = makeRequest(actionProps, data)
-    // push it to queue
-    await queue.add(() => this.doWriteRequest(requestKey, request), jobId)
+    return instanceId
   }
 
   destroyInstance(instanceId: string) {
-    const {requestKey} = splitInstanceId(instanceId)
-    const requestKeyStr: string = requestKeyToString(requestKey)
-
     if (this.writingQueues[requestKeyStr]) {
       this.writingQueues[requestKeyStr].destroy();
 
@@ -156,44 +103,82 @@ export default class Requests {
     if (!this.instances.getProps(requestKey)) this.mold.storageManager.delete(requestKey)
   }
 
-
-  private async doReadRequest(requestKey: RequestKey, actionProps: ActionProps) {
-    const state: ActionState | undefined = this.mold.storageManager.getState(requestKey);
-
-    if (!state) throw new Error(`Can't find state of "${JSON.stringify(requestKey)}"`);
-
-    if (state.pending) {
-      // return a promise which will be resolved after current request is finished
-      return this.waitRequestFinished(requestKey);
+  /**
+   * Start request which was registered previously
+   * @param instanceId
+   * @param data - data for create, patch or custom actions
+   * @param queryOverride - override some query params
+   */
+  async startRequest(
+    instanceId: string,
+    data?: MoldRequestData,
+    queryOverride?: Record<string, JsonTypes>
+  ) {
+    if (!this.mold.storageManager.hasState(instanceId)) {
+      throw new Error(`Instance "${instanceId}" doesn't exists`)
     }
-    // else no one reading request then do fresh request
-    const request: MoldRequest = makeRequest(actionProps);
-    const backendName: string = requestKey[REQUEST_KEY_POSITIONS.backend];
-    let response: MoldResponse;
+
+    const actionProps: ActionProps | undefined = this.getProps(instanceId)
+    // check is it reading request. Data isn't used in read requests.
+    if (actionProps!.isReading) return this.doReadRequest(instanceId, actionProps!, queryOverride)
+
+    // TODO: add queryOverride
+
+    // else is writing - put it to queue if there isn't the same request.
+    const queue: QueueRace = this.resolveWritingQueue(requestKey)
+    const jobId: string = JSON.stringify(sortObject(data || {}))
+    // Check is this job is in queue to reduce duplicates.
+    // If found then it returns the promise of the same job in queue
+    if (queue.hasJob(jobId)) return queue.waitJobFinished(jobId)
+    // make request here to clone it
+    const request: MoldRequest = makeRequest(actionProps, data)
+    // push it to queue
+    await queue.add(() => this.doWriteRequest(requestKey, request), jobId)
+  }
+
+
+  private async doReadRequest(
+    instanceId: string,
+    actionProps: ActionProps,
+    queryOverride?: Record<string, JsonTypes>
+  ) {
+    const state: ActionState | undefined = this.mold.storageManager.getState(instanceId)
+
+    if (!state) {
+      throw new Error(`Can't find state of instance "${instanceId}"`)
+    }
+    else if (state.pending) {
+      // return a promise which will be resolved after current request is finished
+      return this.waitRequestFinished(instanceId)
+    }
+    // else request is done or fresh at the moment then do a new request
+    const request: MoldRequest = makeRequest(actionProps, undefined, queryOverride)
+    let response: MoldResponse
 
     // set pending state
-    this.mold.storageManager.patch(requestKey, { pending: true });
+    this.mold.storageManager.patch(instanceId, { pending: true })
 
+    // TODO: нужно ли указать backend: default ???
     try {
-      response = await this.mold.backendManager.request(backendName, request);
+      response = await this.mold.backendManager.request(actionProps.backend, request)
     }
     catch (e) {
       // actually this is for error in the code not network or backend's error
-      this.mold.storageManager.patch(requestKey, {
+      this.mold.storageManager.patch(instanceId, {
         pending: false,
         finishedOnce: true,
         // it doesn't clear previous result
         ...omitObj(makeFatalErrorResponse(e), 'result'),
-      });
+      })
       // and throw an error any way
-      throw e;
+      throw e
     }
     // success of response. It also can contain an error status.
-    this.mold.storageManager.patch(requestKey, {
+    this.mold.storageManager.patch(instanceId, {
       pending: false,
       finishedOnce: true,
       ...response,
-    });
+    })
   }
 
   /**
@@ -201,6 +186,9 @@ export default class Requests {
    * @private
    */
   private async doWriteRequest(requestKey: RequestKey, request: MoldRequest) {
+
+    // TODO: add queryOverride
+
     // If it is the fresh request(first job) then switch a pending state to true
     if (!this.mold.storageManager.getState(requestKey)!.pending) {
       this.mold.storageManager.patch(requestKey, { pending: true });

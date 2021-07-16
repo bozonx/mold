@@ -3,6 +3,8 @@ import {ActionState} from './interfaces/ActionState'
 import {StorageAdapter} from './interfaces/StorageAdapter'
 import {makeInitialActionState} from '../helpers/helpers'
 import IndexedEventEmitter from '../helpers/IndexedEventEmitter'
+import {ActionProps} from './interfaces/ActionProps'
+import {PROPS_NAME_IN_STORAGE} from './constants'
 
 
 export default class StorageManager {
@@ -33,18 +35,26 @@ export default class StorageManager {
     return this.store.getState(id)
   }
 
+  getProps(id: string): ActionProps | undefined {
+    return this.store.getState(id)?.[PROPS_NAME_IN_STORAGE]
+  }
+
+  hasState(id: string): boolean {
+    return this.store.hasState(id)
+  }
+
   /**
    * Init state in case it hasn't been initialized before.
    */
-  initStateIfNeed(id: string) {
+  initStateIfNeed(id: string, props: ActionProps) {
     // do nothing if there is previously defined state
     if (this.store.hasState(id)) return
 
-    // TODO: add $props
-    this.store.put(id, makeInitialActionState())
+    this.store.put(id, makeInitialActionState(props))
   }
 
   patch(id: string, partialState: Partial<ActionState>) {
+    // TODO: $props должен быть объектом или undefined - но тогда лучше удалить undefined
     this.store.patch(id, partialState)
   }
 

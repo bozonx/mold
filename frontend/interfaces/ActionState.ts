@@ -1,4 +1,5 @@
 import {MoldResponse} from '../../interfaces/MoldResponse'
+import {ActionProps} from './ActionProps'
 
 
 // TODO: зачем убирать success и status ?
@@ -12,4 +13,5 @@ export interface ActionState<T = any>
   // success, status, errors, result - for the last response
   success: boolean | null
   status: number | null
+  $props: ActionProps
 }

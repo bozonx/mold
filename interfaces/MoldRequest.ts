@@ -1,6 +1,8 @@
 import {JsonTypes} from './Types'
 
 
+export type MoldRequestData = Record<string, JsonTypes> | Record<string, JsonTypes>[] | (string | number)[]
+
 export interface MoldRequest {
   set: string
   // find, get, create, patch, delete or some custom action
@@ -10,5 +12,5 @@ export interface MoldRequest {
   // For patch and delete please set an id here.
   query?: Record<string, JsonTypes>
   // Data to save. For create, patch etc
-  data?: Record<string, JsonTypes> | Record<string, JsonTypes>[] | (string | number)[]
+  data?: MoldRequestData
 }
