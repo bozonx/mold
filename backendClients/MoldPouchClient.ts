@@ -1,22 +1,26 @@
-import PouchDB from 'pouchdb';
+import PouchDB from 'pouchdb'
 
-import {BackendClient} from '../interfaces/BackendClient';
-import {MoldResponse} from '../interfaces/MoldResponse';
-import Mold from '../frontend/Mold';
-import {MoldRequest} from '../interfaces/MoldRequest';
-import {SetsDefinition} from '../transform/interfaces/MoldHook';
-import MoldRequestTransform from '../transform/MoldRequestTransform';
-import PouchDbAdapter from '../dbAdapters/pouchDb/PouchDbAdapter';
-import {callDbAdapterAction} from '../helpers/callDbAdapterAction';
-import {DB_ADAPTER_EVENT_TYPES} from '../interfaces/DbAdapter';
-import {MoldDocument} from '../interfaces/MoldDocument';
+import {BackendClient} from '../interfaces/BackendClient'
+import {MoldResponse} from '../interfaces/MoldResponse'
+import Mold from '../frontend/Mold'
+import {MoldRequest} from '../interfaces/MoldRequest'
+import {SetsDefinition} from '../transform/interfaces/MoldHook'
+import MoldRequestTransform from '../transform/MoldRequestTransform'
+import PouchDbAdapter from '../dbAdapters/pouchDb/PouchDbAdapter'
+import {callDbAdapterAction} from '../helpers/callDbAdapterAction'
+import {DB_ADAPTER_EVENT_TYPES} from '../interfaces/DbAdapter'
+import {MoldDocument} from '../interfaces/MoldDocument'
 
 
 interface MoldPouchClientProps {
-  pouchDb: PouchDB;
-  transforms: SetsDefinition;
+  pouchDb: PouchDB
+
+  // TODO: может сразу передавать инстанс MoldRequestTransform
+  transforms: SetsDefinition
+
+  // TODO: а зачем???
   // set user if it is authorized, undefined if not.
-  user?: MoldDocument;
+  user?: MoldDocument
 }
 
 
@@ -25,39 +29,39 @@ interface MoldPouchClientProps {
  * It works only with specified db.
  */
 export default class MoldPouchClient implements BackendClient {
-  readonly props: MoldPouchClientProps;
-  readonly adapter: PouchDbAdapter;
+  readonly props: MoldPouchClientProps
+  readonly adapter: PouchDbAdapter
 
-  private mold!: Mold;
-  private backendName!: string;
-  private readonly transform: MoldRequestTransform;
+  private mold!: Mold
+  private backendName!: string
+  private readonly transform: MoldRequestTransform
 
 
   constructor(props: MoldPouchClientProps) {
-    this.validateProps(props);
+    this.validateProps(props)
 
-    this.props = props;
+    this.props = props
     this.transform = new MoldRequestTransform(
       props.transforms,
       this.doAdapterRequest,
       this.props.user
-    );
-    this.adapter = new PouchDbAdapter(props.pouchDb);
+    )
+    this.adapter = new PouchDbAdapter(props.pouchDb)
 
-    this.adapter.onChange(this.handleRecordChange);
-    this.adapter.onError(this.mold.log.error);
+    this.adapter.onChange(this.handleRecordChange)
+    this.adapter.onError(this.mold.log.error)
   }
 
   async $init(mold: Mold, backendName: string) {
-    this.mold = mold;
-    this.backendName = backendName;
+    this.mold = mold
+    this.backendName = backendName
 
-    await this.adapter.init();
+    await this.adapter.init()
   }
 
   async destroy() {
-    this.transform.destroy();
-    await this.adapter.destroy();
+    this.transform.destroy()
+    await this.adapter.destroy()
   }
 
 
@@ -66,7 +70,7 @@ export default class MoldPouchClient implements BackendClient {
    * It throws an error only on fatal error
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
-    return this.transform.request(request);
+    return this.transform.request(request)
   }
 
   /**
@@ -74,23 +78,23 @@ export default class MoldPouchClient implements BackendClient {
    * It is useful for debug.
    */
   doAdapterRequest = async (request: MoldRequest): Promise<MoldResponse> => {
-    return callDbAdapterAction(this.adapter, request);
+    return callDbAdapterAction(this.adapter, request)
   }
 
 
   private handleRecordChange = (set: string, id: string, type: DB_ADAPTER_EVENT_TYPES) => {
-    this.mold.incomePush(this.backendName, [set, id, type]);
+    //this.mold.incomePush(this.backendName, [set, id, type])
   }
 
   private validateProps(props: MoldPouchClientProps) {
     if (typeof props.pouchDb !== 'object') {
-      throw new Error(`Incorrect pouchDb prop`);
+      throw new Error(`Incorrect "pouchDb" prop`)
     }
     else if (typeof props.transforms !== 'object') {
-      throw new Error(`Incorrect sets prop`);
+      throw new Error(`Incorrect "transforms" prop`)
     }
     else if (typeof props.user !== 'undefined' && typeof props.user !== 'object') {
-      throw new Error(`Incorrect user prop`);
+      throw new Error(`Incorrect "user" prop`)
     }
   }
 

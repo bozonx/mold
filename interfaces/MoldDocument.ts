@@ -1,4 +1,4 @@
 export interface MoldDocument {
-  id: string | number;
-  [index: string]: any;
+  id: string | number
+  [index: string]: any
 }
