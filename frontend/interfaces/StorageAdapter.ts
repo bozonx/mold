@@ -3,7 +3,7 @@ import Mold from '../Mold';
 
 
 export interface StorageAdapter {
-  $init?(mold: Mold)
+  init?(mold: Mold)
 
   destroy()
 

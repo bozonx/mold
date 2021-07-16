@@ -12,15 +12,14 @@ export default class StorageManager {
   private readonly events = new IndexedEventEmitter()
 
   private get store(): StorageAdapter {
-    // TODO: почему через props???
-    return this.mold.props.storage
+    return this.mold.props.storage!
   }
 
 
   constructor(mold: Mold) {
     this.mold = mold
     // init store if need
-    this.store.$init?.(mold)
+    this.store.init?.(mold)
     // start listen store changes
     this.store.onChange(this.handleChange)
   }
@@ -31,46 +30,48 @@ export default class StorageManager {
   }
 
 
-  getState(id: string): ActionState | undefined {
-    return this.store.getState(id)
+  getState(instanceId: string): ActionState | undefined {
+    return this.store.getState(instanceId)
   }
 
-  getProps(id: string): ActionProps | undefined {
-    return this.store.getState(id)?.[PROPS_NAME_IN_STORAGE]
+  getProps(instanceId: string): ActionProps | undefined {
+    return this.store.getState(instanceId)?.[PROPS_NAME_IN_STORAGE]
   }
 
-  hasState(id: string): boolean {
-    return this.store.hasState(id)
+  hasState(instanceId: string): boolean {
+    return this.store.hasState(instanceId)
   }
 
   /**
    * Init state in case it hasn't been initialized before.
    */
-  initStateIfNeed(id: string, props: ActionProps) {
+  initStateIfNeed(instanceId: string, props: ActionProps) {
     // do nothing if there is previously defined state
-    if (this.store.hasState(id)) return
+    if (this.store.hasState(instanceId)) return
 
-    this.store.put(id, makeInitialActionState(props))
+    this.store.put(instanceId, makeInitialActionState(props))
   }
 
-  patch(id: string, partialState: Partial<ActionState>) {
+  patch(instanceId: string, partialState: Partial<ActionState>) {
     // TODO: $props должен быть объектом или undefined - но тогда лучше удалить undefined
-    this.store.patch(id, partialState)
+    // TODO: запретить менять в props backend, set, action
+    // TODO: props это либо объект либо не мержим его
+    this.store.patch(instanceId, partialState)
   }
 
   /**
    * Delete state and event handlers
    */
-  delete(id: string) {
-    this.store.delete(id)
-    this.events.removeAllListeners(id)
+  delete(instanceId: string) {
+    this.store.delete(instanceId)
+    this.events.removeAllListeners(instanceId)
   }
 
   /**
    * Listen of changes of any part of state of request
    */
-  onChange(id: string, cb: (newState: any) => void): number {
-    return this.events.addListener(id, cb)
+  onChange(instanceId: string, cb: (newState: any) => void): number {
+    return this.events.addListener(instanceId, cb)
   }
 
   removeListener(handlerIndex: number) {
@@ -78,12 +79,12 @@ export default class StorageManager {
   }
 
 
-  private handleChange = (id: string) => {
-    const state = this.store.getState(id)
+  private handleChange = (instanceId: string) => {
+    const state = this.store.getState(instanceId)
 
     if (!state) return
 
-    this.events.emit(id, state)
+    this.events.emit(instanceId, state)
   }
 
 }

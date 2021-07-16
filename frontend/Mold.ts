@@ -2,7 +2,6 @@ import {ActionProps} from './interfaces/ActionProps'
 import {ActionState} from './interfaces/ActionState'
 import StorageManager from './StorageManager'
 import BackendManager from './BackendManager'
-import {splitInstanceId} from '../helpers/helpers'
 import {MoldProps} from './interfaces/MoldProps'
 import Requests from './Requests'
 import {Logger, LogLevel} from '../interfaces/Logger'
@@ -11,7 +10,8 @@ import {isEmptyObject} from '../helpers/objects'
 import ConsoleLogger from '../helpers/ConsoleLogger'
 import DefaultStore from './DefaultStore'
 import {MoldFrontendConfig} from './interfaces/MoldFrontendConfig'
-import {BackendClient} from '../interfaces/BackendClient'
+import {MoldRequestData} from '../interfaces/MoldRequest'
+import {JsonTypes} from '../interfaces/Types'
 
 
 export default class Mold {
@@ -23,18 +23,11 @@ export default class Mold {
   readonly initPromise: Promise<void>
 
   get log(): Logger {
-    // TODO: почему в props обращаемся?
     return this.props.log as any
   }
 
   get config(): MoldFrontendConfig {
-    // TODO: переопределенный конфиг лушче хранить отдельно
     return this.props.config as Required<MoldFrontendConfig>
-  }
-
-  get backends(): {[index: string]: BackendClient} {
-    // TODO: переопределенный backends лушче хранить отдельно
-    return this.props.backends as any
   }
 
 
@@ -80,16 +73,12 @@ export default class Mold {
    * It receives an instanceId and returns state of request.
    */
   getState(instanceId: string): ActionState | undefined {
-    const {requestKey} = splitInstanceId(instanceId)
-
-    // TODO: а почему игнорируется номер инстанса???
-
-    return this.storageManager.getState(requestKey)
+    return this.storageManager.getState(instanceId)
   }
 
   /**
    * It inits request if need and makes a new request instance id.
-   * It doesn't start the request itself
+   * It doesn't start the request
    * @return {String} an instance id
    */
   newRequest(actionProps: ActionProps): string {
@@ -101,21 +90,23 @@ export default class Mold {
    * and corresponding to the instanceId.
    * @param instanceId
    * @param data will be passed to request's data param.
+   * @param queryOverride - override some query params
    */
   start(
     instanceId: string,
-    data?: Record<string, any>,
-    //queryOverride?: Record<string, any>
+    data?: MoldRequestData,
+    queryOverride?: Record<string, JsonTypes>
   ) {
-    this.requests.startInstance(instanceId, data)
+    this.requests.startRequest(instanceId, data, queryOverride)
       .catch(this.log.error)
   }
 
   startAsync(
     instanceId: string,
-    data?: Record<string, any>,
+    data?: MoldRequestData,
+    queryOverride?: Record<string, JsonTypes>
   ): Promise<void> {
-    return this.requests.startInstance(instanceId, data)
+    return this.requests.startRequest(instanceId, data, queryOverride)
   }
 
   /**
@@ -131,7 +122,7 @@ export default class Mold {
       Object.assign(state, newState)
     })
 
-    this.requests.startInstance(instanceId, actionProps.data)
+    this.requests.startRequest(instanceId, actionProps.data)
       .catch(this.log.error)
 
     return state
@@ -151,11 +142,7 @@ export default class Mold {
    * Wait while request is finished but not greater then 60 seconds.
    */
   waitRequestFinished(instanceId: string): Promise<void> {
-    const {requestKey} = splitInstanceId(instanceId)
-
-    // TODO: а почему игнорируется номер инстанса???
-
-    return this.requests.waitRequestFinished(requestKey)
+    return this.requests.waitRequestFinished(instanceId)
   }
 
   /**
@@ -164,13 +151,8 @@ export default class Mold {
    * This is certainly changes of state storage.
    */
   onChange(instanceId: string, changeCb: (state: ActionState) => void): number {
-    const {requestKey} = splitInstanceId(instanceId)
-
-    // TODO: а почему игнорируется номер инстанса???
-    // TODO: поидее надо привязать номер инстанса к обраотчикам чтобы потом их удалить
-
     // listen of changes of just created state or existed
-    return this.storageManager.onChange(requestKey, changeCb)
+    return this.storageManager.onChange(instanceId, changeCb)
   }
 
   removeListener(handleIndex: number) {
@@ -193,7 +175,7 @@ export default class Mold {
 
     return {
       //production: props.production || false,
-      backends: props.backends,
+      backends: props.backends || {},
       config: {
         ...defaultConfig,
         ...props.config,

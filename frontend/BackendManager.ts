@@ -9,11 +9,11 @@ import {DEFAULT_BACKEND} from './constants'
  * It makes a requests to the corresponding backend specified in Mold config.
  */
 export default class BackendManager {
-  private readonly mold: Mold
-
-  private get backends(): Record<string, BackendClient> {
-    return this.mold.props.backends || {}
+  get backends(): Record<string, BackendClient> {
+    return this.mold.props.backends
   }
+
+  private readonly mold: Mold
 
 
   constructor(mold: Mold) {
