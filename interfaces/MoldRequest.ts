@@ -1,14 +1,14 @@
-import {JsonTypes} from './Types';
+import {JsonTypes} from './Types'
 
 
 export interface MoldRequest {
-  set: string;
+  set: string
   // find, get, create, patch, delete or some custom action
-  action: string;
+  action: string
   // data like in search part of url or some specific to backend.
   // Such as id, pageNum, pageSize, some filter params or specific backend's action params.
   // For patch and delete please set an id here.
-  query?: Record<string, JsonTypes>;
+  query?: Record<string, JsonTypes>
   // Data to save. For create, patch etc
-  data?: Record<string, JsonTypes> | Record<string, JsonTypes>[] | (string | number)[];
+  data?: Record<string, JsonTypes> | Record<string, JsonTypes>[] | (string | number)[]
 }

@@ -57,10 +57,10 @@ export default class StorageManager {
    * Delete state and event handlers
    */
   delete(requestKey: RequestKey) {
-    const id: string = requestKeyToString(requestKey);
+    const id: string = requestKeyToString(requestKey)
 
-    this.store.delete(id);
-    this.events.removeAllListeners(id);
+    this.store.delete(id)
+    this.events.removeAllListeners(id)
   }
 
   /**

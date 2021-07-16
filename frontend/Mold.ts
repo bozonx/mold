@@ -167,6 +167,7 @@ export default class Mold {
     const {requestKey} = splitInstanceId(instanceId)
 
     // TODO: а почему игнорируется номер инстанса???
+    // TODO: поидее надо привязать номер инстанса к обраотчикам чтобы потом их удалить
 
     // listen of changes of just created state or existed
     return this.storageManager.onChange(requestKey, changeCb)
