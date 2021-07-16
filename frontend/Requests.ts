@@ -123,6 +123,7 @@ export default class Requests {
     if (actionProps!.isReading) return this.doReadRequest(instanceId, actionProps!, queryOverride)
 
     // TODO: add queryOverride
+    // TODO: что если data явно передана как undefined???
 
     // else is writing - put it to queue if there isn't the same request.
     const queue: QueueRace = this.resolveWritingQueue(requestKey)

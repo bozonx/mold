@@ -6,13 +6,13 @@ import {ActionProps} from '../../../frontend/interfaces/ActionProps'
 import Mold from '../../../frontend/Mold'
 import {VUE_CONTEXT_NAME} from '../constants'
 import {ActionState} from '../../../frontend/interfaces/ActionState'
+import {JsonTypes} from '../../../interfaces/Types'
 
 
 export interface FindCompositionState<T> extends InstanceState, Omit<ListResponse, 'data'> {
   // it's a replacing of result.data
   items: T[] | null
-  // TODO: а queryOverride нужен???
-  load: (queryOverride?: Record<string, any>) => void
+  load: (queryOverride?: Record<string, JsonTypes>) => void
 }
 
 
@@ -33,7 +33,6 @@ export function findComposition<T>(
   }
   // isReading param will be set at mold.request.register() method
   const state = moldComposition<ListResponse<T>>(
-    // TODO: почему isReading true, если можно не запускать изначально load??
     { ...actionProps, isReading: true },
     stateTransform
   ) as FindCompositionState<T>
@@ -43,9 +42,8 @@ export function findComposition<T>(
     mold.start(state.$instanceId)
   }
 
-  // TODO: а где queryOverride???
-  state.load = () => {
-    mold.start(state.$instanceId)
+  state.load = (queryOverride?: Record<string, JsonTypes>) => {
+    mold.start(state.$instanceId, undefined, queryOverride)
   }
 
   return state

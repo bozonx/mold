@@ -2,20 +2,13 @@ import {reactive, onUnmounted, inject} from 'vue'
 import Mold from '../../../frontend/Mold'
 import {ActionState} from '../../../frontend/interfaces/ActionState'
 import {omitUndefined} from '../../../helpers/objects'
-import {INSTANCE_ID_PROP_NAME} from '../../../frontend/constants'
 import {ActionProps} from '../../../frontend/interfaces/ActionProps'
-import {VUE_CONTEXT_NAME} from '../constants'
+import {INSTANCE_ID_PROP_NAME, VUE_CONTEXT_NAME} from '../constants'
 
-
-// export interface MoldCompositionResult<T> {
-//   mold: Mold
-//   instanceId: string
-//   state: ActionState<T>
-// }
 
 export interface InstanceState<T = any> extends ActionState<T> {
   // string like "backend|set|action|request|instanceNum"
-  $instanceId: string;
+  $instanceId: string
 }
 
 

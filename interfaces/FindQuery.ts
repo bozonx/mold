@@ -1,7 +1,7 @@
 export interface FindQuery {
   // page number. Starts from 1
-  page?: number;
+  page?: number
   // items per page
-  pageSize?: number;
-  [index: string]: any;
+  pageSize?: number
+  [index: string]: any
 }

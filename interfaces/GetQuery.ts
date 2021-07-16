@@ -1,4 +1,4 @@
 export interface GetQuery {
-  id?: string | number;
-  [index: string]: any;
+  id?: string | number
+  [index: string]: any
 }

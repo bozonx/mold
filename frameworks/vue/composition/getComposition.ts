@@ -5,13 +5,13 @@ import {ActionProps} from '../../../frontend/interfaces/ActionProps'
 import {ItemResponse} from '../../../interfaces/ReponseStructure'
 import Mold from '../../../frontend/Mold'
 import {VUE_CONTEXT_NAME} from '../constants'
+import {JsonTypes} from '../../../interfaces/Types'
 
 
 export interface GetCompositionState<T> extends InstanceState {
   // it is result.data
   item: T | null
-  // TODO: а queryOverride нужен???
-  load: (queryOverride?: Record<string, any>) => void
+  load: (queryOverride?: Record<string, JsonTypes>) => void
 }
 
 
@@ -40,9 +40,8 @@ export function getComposition<T>(
     mold.start(state.$instanceId)
   }
 
-  // TODO: а где queryOverride???
-  state.load = () => {
-    mold.start(state.$instanceId)
+  state.load = (queryOverride?: Record<string, JsonTypes>) => {
+    mold.start(state.$instanceId, undefined, queryOverride)
   }
 
   return state
