@@ -1,5 +1,5 @@
 import {ActionProps} from '../frontend/interfaces/ActionProps';
-import {cloneDeepObject, omitObj, omitUndefined, sortObject} from './objects';
+import {cloneDeepObject, omitObj, omitUndefined, sortObject} from 'squidlet-lib/src/objects';
 import {ActionState} from '../frontend/interfaces/ActionState';
 import {MoldRequest, MoldRequestData} from '../interfaces/MoldRequest'
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';

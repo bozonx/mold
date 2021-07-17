@@ -1,7 +1,6 @@
 import {omitObj, sortObject} from 'squidlet-lib/src/objects'
 import {makeUniqId} from 'squidlet-lib/src/uniqId'
-// TODO: use squidlet-lib
-import QueueRace from '../helpers/QueueRace'
+import QueueRace from 'squidlet-lib/src/QueueRace'
 import Mold from './Mold'
 import {ActionProps} from './interfaces/ActionProps'
 import {MoldResponse} from '../interfaces/MoldResponse'
