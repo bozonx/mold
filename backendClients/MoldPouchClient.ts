@@ -83,6 +83,8 @@ export default class MoldPouchClient implements BackendClient {
 
 
   private handleRecordChange = (set: string, id: string, type: DB_ADAPTER_EVENT_TYPES) => {
+
+    console.log('change', [set, id, type])
     //this.mold.incomePush(this.backendName, [set, id, type])
   }
 

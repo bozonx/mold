@@ -95,21 +95,17 @@ export interface DbAdapter {
     data?: Record<string, any>,
   ): Promise<MoldResponse>
 
-
-  // TODO: add migration methods
-  // TODO: может это делать транзакциями ???
-
-  getField(): Promise<void>
-  hasField(): Promise<boolean>
-  createField(): Promise<void>
-  updateField(): Promise<void>
-  deleteField(): Promise<void>
-
-  getSet(): Promise<void>
-  hasSet(): Promise<boolean>
-  createSet(): Promise<void>
-  renameSet(): Promise<void>
-  deleteSet(): Promise<void>
+  // getField(): Promise<void>
+  // hasField(): Promise<boolean>
+  // createField(): Promise<void>
+  // updateField(): Promise<void>
+  // deleteField(): Promise<void>
+  //
+  // getSet(): Promise<void>
+  // hasSet(): Promise<boolean>
+  // createSet(): Promise<void>
+  // renameSet(): Promise<void>
+  // deleteSet(): Promise<void>
 
   onChange(cb: RecordChangeHandler): number
   onError(cb: (error: string) => void): number

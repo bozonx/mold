@@ -127,6 +127,7 @@ export default class PouchDbAdapter implements DbAdapter {
     }
   }
 
+  // TODO: наверное сделать put
   async create(
     set: string,
     data: Partial<MoldDocument>,
@@ -153,7 +154,7 @@ export default class PouchDbAdapter implements DbAdapter {
     }
 
     return {
-      status: 200,
+      status: 201,
       success: true,
       errors: null,
       result: { id },
@@ -165,44 +166,43 @@ export default class PouchDbAdapter implements DbAdapter {
     partialData: MoldDocument,
     query?: Record<string, any>
   ): Promise<MoldResponse<null>> {
-    if (typeof partialData.id === 'undefined' || partialData.id === null) {
-      throw new Error(`Id of document hasn't been set`);
+    if (typeof partialData.id !== 'string' && typeof partialData.id !== 'number') {
+      throw new Error(`Id of document has to be set`)
     }
 
-    const fullId = makeDbId(set, partialData.id);
-    let getResult: GetSuccess;
+    const fullId = makeDbId(set, partialData.id)
+    let getResult: GetSuccess
     // first get full document
     try {
-      getResult = await this.pouchDb.get(fullId);
+      getResult = await this.pouchDb.get(fullId)
     }
     catch (e) {
-      return makeErrorResponse(e);
+      return makeErrorResponse(e)
     }
 
-    let result: PutSuccess;
+    let result: PutSuccess
 
     try {
       result = await this.pouchDb.put({
         ...getResult,
         ...partialData,
         _id: fullId,
-      }, query || {});
+      }, query || {})
     }
     catch (e) {
-      return makeErrorResponse(e);
+      return makeErrorResponse(e)
     }
 
     if (!result.ok) {
-      return makeErrorResponse({status: 500});
+      return makeErrorResponse({status: 500})
     }
 
     return {
-      status: 200,
+      status: 204,
       success: true,
       errors: null,
       result: null,
     }
-
   }
 
   async delete(
@@ -210,34 +210,34 @@ export default class PouchDbAdapter implements DbAdapter {
     id: string | number,
     query?: Record<string, any>
   ): Promise<MoldResponse<null>> {
-    if (typeof id === 'undefined' || id === null) {
-      throw new Error(`Id of document hasn't been set`);
+    if (typeof id !== 'string' && typeof id !== 'number') {
+      throw new Error(`Id of document has to be set`)
     }
 
-    let getResult: GetSuccess;
-
-    try {
-      getResult = await this.pouchDb.get(makeDbId(set, id));
-    }
-    catch (e) {
-      return makeErrorResponse(e);
-    }
-
-    let result: DeleteSuccess;
+    let getResult: GetSuccess
 
     try {
-      result = await this.pouchDb.remove(getResult, query || {});
+      getResult = await this.pouchDb.get(makeDbId(set, id))
     }
     catch (e) {
-      return makeErrorResponse(e);
+      return makeErrorResponse(e)
+    }
+
+    let result: DeleteSuccess
+
+    try {
+      result = await this.pouchDb.remove(getResult, query || {})
+    }
+    catch (e) {
+      return makeErrorResponse(e)
     }
 
     if (!result.ok) {
-      return makeErrorResponse({status: 500});
+      return makeErrorResponse({status: 500})
     }
 
     return {
-      status: 200,
+      status: 204,
       success: true,
       errors: null,
       result: null,
@@ -280,44 +280,46 @@ export default class PouchDbAdapter implements DbAdapter {
     docs: MoldDocument[],
     query?: Record<string, any>
   ): Promise<MoldResponse<BatchResponse>> {
-    const ids: (string | number)[] = [];
-    let findResult: FindSuccess;
+    const ids: (string | number)[] = []
+    let findResult: FindSuccess
 
     for (let doc of docs) {
-      if (typeof doc.id === 'undefined' || doc.id === null) {
-        throw new Error(`Document doesn't have an id: ${JSON.stringify(doc)}`);
+      if (typeof doc.id !== 'string' && typeof doc.id !== 'number') {
+        throw new Error(`Document had to have an id: ${JSON.stringify(doc)}`)
       }
 
-      ids.push(doc.id);
+      ids.push(doc.id)
     }
 
     try {
       findResult = await this.pouchDb.allDocs({
         include_docs: true,
         keys: ids.map((docId) => makeDbId(set, docId)),
-      });
+      })
     }
     catch (e) {
-      return makeErrorResponse(e);
+      // TODO: нужно продолжить работать с теми документами которые найденны
+      //       остальные считать ошибочными и вернуть в ответе
+      return makeErrorResponse(e)
     }
 
     const preparedDocs: (PouchRecord & MoldDocument)[] = findResult.rows.map((item, index) => ({
       ...item.doc,
       ...docs[index],
-    }));
-    let bulkResult: (PutSuccess | ErrorResponse)[];
+    }))
+    let bulkResult: (PutSuccess | ErrorResponse)[]
 
     try {
       bulkResult = await this.pouchDb.bulkDocs(
         preparedDocs,
         query || {}
-      );
+      )
     }
     catch (e) {
-      return makeErrorResponse(e);
+      return makeErrorResponse(e)
     }
 
-    return makeBatchResponse(ids, bulkResult);
+    return makeBatchResponse(ids, bulkResult)
   }
 
   async batchDelete(
@@ -325,36 +327,38 @@ export default class PouchDbAdapter implements DbAdapter {
     ids: (string | number)[],
     query?: Record<string, any>
   ): Promise<MoldResponse<BatchResponse>> {
-    let findResult: FindSuccess;
+    let findResult: FindSuccess
 
     try {
       findResult = await this.pouchDb.allDocs({
         include_docs: false,
         keys: ids.map((id) => makeDbId(set, id)),
-      });
+      })
     }
     catch (e) {
-      return makeErrorResponse(e);
+      // TODO: нужно продолжить работать с теми документами которые найденны
+      //       остальные считать ошибочными и вернуть в ответе
+      return makeErrorResponse(e)
     }
 
     const preparedDocs: PouchRecord[] = findResult.rows.map((item) => ({
       _id: item.id,
       _rev: item.value.rev,
       _deleted : true,
-    }));
-    let bulkResult: (PutSuccess | ErrorResponse)[];
+    }))
+    let bulkResult: (PutSuccess | ErrorResponse)[]
 
     try {
       bulkResult = await this.pouchDb.bulkDocs(
         preparedDocs,
         query || {}
-      );
+      )
     }
     catch (e) {
-      return makeErrorResponse(e);
+      return makeErrorResponse(e)
     }
 
-    return makeBatchResponse(ids, bulkResult);
+    return makeBatchResponse(ids, bulkResult)
   }
 
   action(
@@ -367,37 +371,37 @@ export default class PouchDbAdapter implements DbAdapter {
   }
 
 
-  async getField(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support the getField method`);
-  }
-  async hasField(): Promise<boolean> {
-    throw new Error(`PouchDbAdapter: doesn't support the hasField method`);
-  }
-  async createField(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support the createField method`);
-  }
-  async updateField(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support the updateField method`);
-  }
-  async deleteField(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support the deleteField method`);
-  }
-
-  async getSet(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support the getSet method`);
-  }
-  async hasSet(): Promise<boolean> {
-    throw new Error(`PouchDbAdapter: doesn't support the hasSet method`);
-  }
-  async createSet(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support the createSet method`);
-  }
-  async renameSet(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support the renameSet method`);
-  }
-  async deleteSet(): Promise<void> {
-    throw new Error(`PouchDbAdapter: doesn't support the deleteSet method`);
-  }
+  // async getField(): Promise<void> {
+  //   throw new Error(`PouchDbAdapter: doesn't support the getField method`);
+  // }
+  // async hasField(): Promise<boolean> {
+  //   throw new Error(`PouchDbAdapter: doesn't support the hasField method`);
+  // }
+  // async createField(): Promise<void> {
+  //   throw new Error(`PouchDbAdapter: doesn't support the createField method`);
+  // }
+  // async updateField(): Promise<void> {
+  //   throw new Error(`PouchDbAdapter: doesn't support the updateField method`);
+  // }
+  // async deleteField(): Promise<void> {
+  //   throw new Error(`PouchDbAdapter: doesn't support the deleteField method`);
+  // }
+  //
+  // async getSet(): Promise<void> {
+  //   throw new Error(`PouchDbAdapter: doesn't support the getSet method`);
+  // }
+  // async hasSet(): Promise<boolean> {
+  //   throw new Error(`PouchDbAdapter: doesn't support the hasSet method`);
+  // }
+  // async createSet(): Promise<void> {
+  //   throw new Error(`PouchDbAdapter: doesn't support the createSet method`);
+  // }
+  // async renameSet(): Promise<void> {
+  //   throw new Error(`PouchDbAdapter: doesn't support the renameSet method`);
+  // }
+  // async deleteSet(): Promise<void> {
+  //   throw new Error(`PouchDbAdapter: doesn't support the deleteSet method`);
+  // }
 
 
   onChange(cb: RecordChangeHandler): number {
@@ -414,26 +418,28 @@ export default class PouchDbAdapter implements DbAdapter {
 
 
   private handleChange = (change: PouchChangeResult) => {
-    const [set] = change.id.split(SET_DELIMITER);
-    let eventType: DB_ADAPTER_EVENT_TYPES = DB_ADAPTER_EVENT_TYPES.updated;
+    const [set] = change.id.split(SET_DELIMITER)
+    let eventType: DB_ADAPTER_EVENT_TYPES = DB_ADAPTER_EVENT_TYPES.updated
 
     if (change.deleted) {
       // was deleted
-      eventType = DB_ADAPTER_EVENT_TYPES.deleted;
+      eventType = DB_ADAPTER_EVENT_TYPES.deleted
     }
     else {
       // else was put
-      const [revNum] = change.changes[0].rev.split('-');
+      const [revNum] = change.changes[0].rev.split('-')
       // 1 is the first insert
-      if (revNum === '1') eventType = DB_ADAPTER_EVENT_TYPES.created;
+      if (revNum === '1') eventType = DB_ADAPTER_EVENT_TYPES.created
     }
 
-    this.events.emit(DB_ADAPTER_EVENTS.change, set, change.doc.id, eventType);
+    this.events.emit(DB_ADAPTER_EVENTS.change, set, change.doc.id, eventType)
   }
 
   private handleError = (error: string) => {
+    // TODO: а ошибка точно строкой выдается?
+
     // This event is fired when the changes feed is stopped due to an unrecoverable failure.
-    this.events.emit(DB_ADAPTER_EVENTS.error, error);
+    this.events.emit(DB_ADAPTER_EVENTS.error, error)
   }
 
 }
