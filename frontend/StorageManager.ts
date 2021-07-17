@@ -1,8 +1,8 @@
+import IndexedEventEmitter from 'squidlet-lib/src/IndexedEventEmitter'
 import Mold from './Mold'
 import {ActionState} from './interfaces/ActionState'
 import {StorageAdapter} from './interfaces/StorageAdapter'
 import {makeInitialActionState} from '../helpers/helpers'
-import IndexedEventEmitter from '../helpers/IndexedEventEmitter'
 import {ActionProps} from './interfaces/ActionProps'
 import {PROPS_NAME_IN_STORAGE} from './constants'
 

@@ -1,8 +1,8 @@
+import {cloneDeepObject} from 'squidlet-lib/src/objects'
 import {SpecialSet} from './interfaces/SpecialSet';
 import {GlobalContext, HookContext} from './interfaces/HookContext';
 import {MoldResponse} from '../interfaces/MoldResponse';
 import {MoldRequest} from '../interfaces/MoldRequest';
-import {cloneDeepObject} from '../helpers/objects';
 import ContextApp from './ContextApp';
 import {SetsDefinition} from './interfaces/MoldHook';
 import {Sets} from './interfaces/Sets';

@@ -1,7 +1,7 @@
 import {reactive, onUnmounted, inject} from 'vue'
+import {omitUndefined} from 'squidlet-lib/src/objects'
 import Mold from '../../../frontend/Mold'
 import {ActionState} from '../../../frontend/interfaces/ActionState'
-import {omitUndefined} from '../../../helpers/objects'
 import {ActionProps} from '../../../frontend/interfaces/ActionProps'
 import {INSTANCE_ID_PROP_NAME, VUE_CONTEXT_NAME} from '../constants'
 

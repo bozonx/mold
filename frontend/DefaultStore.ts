@@ -1,6 +1,6 @@
+import IndexedEventEmitter from 'squidlet-lib/src/IndexedEventEmitter'
 import {StorageAdapter} from './interfaces/StorageAdapter'
 import {ActionState} from './interfaces/ActionState'
-import IndexedEventEmitter from '../helpers/IndexedEventEmitter'
 
 
 const changeEvent = 'change'

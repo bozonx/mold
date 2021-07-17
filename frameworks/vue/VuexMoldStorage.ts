@@ -1,7 +1,7 @@
 import {Store} from 'vuex'
 import {StorageAdapter} from '../../frontend/interfaces/StorageAdapter'
 import {ActionState} from '../../frontend/interfaces/ActionState'
-import IndexedEventEmitter from '../../helpers/IndexedEventEmitter'
+import IndexedEventEmitter from 'squidlet-lib/src/IndexedEventEmitter'
 
 
 type MoldState = {[index: string]: ActionState}

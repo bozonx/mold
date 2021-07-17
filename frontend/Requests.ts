@@ -1,13 +1,13 @@
+import {omitObj, sortObject} from 'squidlet-lib/src/objects'
+import {makeUniqId} from 'squidlet-lib/src/uniqId'
+// TODO: use squidlet-lib
+import QueueRace from '../helpers/QueueRace'
 import Mold from './Mold'
-import {REQUEST_KEY_POSITIONS, RequestKey} from './interfaces/RequestKey'
 import {ActionProps} from './interfaces/ActionProps'
 import {MoldResponse} from '../interfaces/MoldResponse'
 import {makeFatalErrorResponse, makeRequest} from '../helpers/helpers'
 import {MoldRequest, MoldRequestData} from '../interfaces/MoldRequest'
 import {ActionState} from './interfaces/ActionState'
-import QueueRace from '../helpers/QueueRace'
-import {omitObj, sortObject} from '../helpers/objects'
-import {makeUniqId} from 'squidlet-lib/src/uniqId'
 import {INSTANCE_ID_LENGTH} from './constants'
 import {JsonTypes} from '../interfaces/Types'
 

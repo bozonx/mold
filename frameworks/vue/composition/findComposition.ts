@@ -1,5 +1,5 @@
 import {inject} from 'vue'
-import {omitObj} from '../../../helpers/objects'
+import {omitObj} from 'squidlet-lib/src/objects'
 import {ListResponse} from '../../../interfaces/ReponseStructure'
 import {InstanceState, moldComposition} from './moldComposition'
 import {ActionProps} from '../../../frontend/interfaces/ActionProps'

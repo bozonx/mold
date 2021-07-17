@@ -1,6 +1,6 @@
+import {concatUniqStrArrays} from 'squidlet-lib/src/arrays'
 import {SetsDefinition} from './interfaces/MoldHook';
 import {MoldSchema} from '../interfaces/MoldSchema';
-import {concatUniqStrArrays} from '../helpers/arrays';
 import {normalizeSchema} from '../schema/normalizeSchema';
 import {populate} from '../hooks/populate';
 
