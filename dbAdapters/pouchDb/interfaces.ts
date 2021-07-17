@@ -1,57 +1,57 @@
 export interface PouchRecord {
-  _id: string;
-  _rev: string;
-  [index: string]: any;
+  _id: string
+  _rev: string
+  [index: string]: any
 }
 
 export interface FindSuccess {
-  offset: number;
-  length: number;
+  offset: number
+  length: number
   // the total number of ALL! non-deleted documents in the database
-  total_rows: number;
+  total_rows: number
   rows: {
     // full id in db
-    id: string;
-    key: string;
-    value: {rev: string};
-    doc: PouchRecord;
-  }[];
+    id: string
+    key: string
+    value: {rev: string}
+    doc: PouchRecord
+  }[]
 }
 
 export type GetSuccess = PouchRecord;
 
 export interface PutSuccess {
-  id: string;
-  ok: boolean;
-  rev: string;
+  id: string
+  ok: boolean
+  rev: string
 }
 
 export type DeleteSuccess = PutSuccess;
 
 export interface ErrorResponse {
   // it seems that it always true
-  error: boolean;
+  error: boolean
   // full message
-  message: string,
+  message: string
   // status unique name such as not_found
-  name: string;
+  name: string
   // status text
-  reason: string;
+  reason: string
   // like 404
-  status: number;
+  status: number
 }
 
 export interface PouchChangeResult {
   // full id of document
-  id: string;
-  changes: {rev: string}[];
-  deleted?: boolean;
-  seq: number;
-  doc: Record<string, any>;
+  id: string
+  changes: {rev: string}[]
+  deleted?: boolean
+  seq: number
+  doc: Record<string, any>
 }
 
 export interface PouchEventEmitter {
-  cancel();
-  on(eventName: 'change', cb: (change: PouchChangeResult) => void);
-  on(eventName: 'error', cb: (error: string) => void);
+  cancel()
+  on(eventName: 'change', cb: (change: PouchChangeResult) => void)
+  on(eventName: 'error', cb: (error: string) => void)
 }

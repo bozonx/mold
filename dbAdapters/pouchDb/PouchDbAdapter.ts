@@ -1,20 +1,25 @@
-import PouchDB from 'pouchdb';
+import PouchDB from 'pouchdb'
 
 import {
   DB_ADAPTER_EVENT_TYPES,
   DB_ADAPTER_EVENTS,
   DbAdapter,
   RecordChangeHandler
-} from '../../interfaces/DbAdapter';
-import {MoldResponse} from '../../interfaces/MoldResponse';
-import {makeUniqId} from '../../helpers/uniqId';
-import {omitObj} from '../../helpers/objects';
-import {BatchResponse, CreateResponse, ItemResponse, ListResponse} from '../../interfaces/ReponseStructure';
-import IndexedEventEmitter from '../../helpers/IndexedEventEmitter';
-import {FindQuery} from '../../interfaces/FindQuery';
-import {GetQuery} from '../../interfaces/GetQuery';
-import {MoldDocument} from '../../interfaces/MoldDocument';
-import {convertPageToOffset} from '../../helpers/common';
+} from '../../interfaces/DbAdapter'
+import {MoldResponse} from '../../interfaces/MoldResponse'
+import {
+  BatchResponse,
+  CreateResponse,
+  ItemResponse,
+  ListResponse
+} from '../../interfaces/ReponseStructure'
+import {FindQuery} from '../../interfaces/FindQuery'
+import {GetQuery} from '../../interfaces/GetQuery'
+import {MoldDocument} from '../../interfaces/MoldDocument'
+import {makeUniqId} from 'squidlet-lib/src/uniqId'
+import IndexedEventEmitter from 'squidlet-lib/src/IndexedEventEmitter'
+import {omitObj} from 'squidlet-lib/src/objects'
+import {convertPageToOffset} from '../../helpers/common'
 import {
   DeleteSuccess,
   ErrorResponse,
@@ -23,20 +28,20 @@ import {
   PouchChangeResult,
   PouchEventEmitter, PouchRecord,
   PutSuccess
-} from './interfaces';
-import {SET_DELIMITER} from './constants';
-import {makeDbId, makeErrorResponse, makeBatchResponse} from './helpers';
+} from './interfaces'
+import {SET_DELIMITER} from './constants'
+import {makeDbId, makeErrorResponse, makeBatchResponse} from './helpers'
 
 
 export default class PouchDbAdapter implements DbAdapter {
-  pouchDb: PouchDB;
+  pouchDb: PouchDB
 
-  private readonly pouchEventEmitter: PouchEventEmitter;
-  private readonly events = new IndexedEventEmitter();
+  private readonly pouchEventEmitter: PouchEventEmitter
+  private readonly events = new IndexedEventEmitter()
 
 
   constructor(pouchDb: PouchDB) {
-    this.pouchDb = pouchDb;
+    this.pouchDb = pouchDb
     this.pouchEventEmitter = this.pouchDb.changes({
       // listen all the events on once
       live: true,
@@ -44,10 +49,10 @@ export default class PouchDbAdapter implements DbAdapter {
       since: 'now',
       // this is needs to get an id of doc because the id can be a number.
       include_docs: true,
-    });
+    })
 
-    this.pouchEventEmitter.on('change', this.handleChange);
-    this.pouchEventEmitter.on('error', this.handleError);
+    this.pouchEventEmitter.on('change', this.handleChange)
+    this.pouchEventEmitter.on('error', this.handleError)
   }
 
   async init() {
@@ -58,14 +63,14 @@ export default class PouchDbAdapter implements DbAdapter {
   }
 
   async destroy(): Promise<void> {
-    this.events.destroy();
-    this.pouchEventEmitter.cancel();
-    await this.pouchDb.close();
+    this.events.destroy()
+    this.pouchEventEmitter.cancel()
+    await this.pouchDb.close()
   }
 
 
   async find(set: string, query: FindQuery): Promise<MoldResponse<ListResponse>> {
-    let result: FindSuccess;
+    let result: FindSuccess
 
     try {
       result = await this.pouchDb.allDocs({
@@ -75,10 +80,10 @@ export default class PouchDbAdapter implements DbAdapter {
         // TODO: вроде это не эффективный способ, нужно наверное view использовать
         ...convertPageToOffset(query.page, query.pageSize),
         ...query,
-      });
+      })
     }
     catch (e) {
-      return makeErrorResponse(e);
+      return makeErrorResponse(e)
     }
 
     return {
@@ -96,20 +101,20 @@ export default class PouchDbAdapter implements DbAdapter {
   }
 
   async get(set: string, query: GetQuery): Promise<MoldResponse<ItemResponse>> {
-    let result: GetSuccess;
+    let result: GetSuccess
 
-    if (typeof query.id === 'undefined' || query.id === null) {
-      throw new Error(`Id has to be a string or number`);
+    if (typeof query.id !== 'string' && typeof query.id !== 'number') {
+      throw new Error(`Id has to be a string or number`)
     }
 
     try {
       result = await this.pouchDb.get(
         makeDbId(set, query.id),
         omitObj(query, 'id')
-      );
+      )
     }
     catch (e) {
-      return makeErrorResponse(e);
+      return makeErrorResponse(e)
     }
 
     return {

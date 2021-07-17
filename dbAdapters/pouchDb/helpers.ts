@@ -1,13 +1,13 @@
-import {MoldResponse} from '../../interfaces/MoldResponse';
-import {httpStatusMessage} from '../../helpers/http';
-import {BatchResponse, CreateResponse} from '../../interfaces/ReponseStructure';
-import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition';
-import {SET_DELIMITER} from './constants';
-import {ErrorResponse, PutSuccess} from './interfaces';
+import {MoldResponse} from '../../interfaces/MoldResponse'
+import {httpStatusMessage} from '../../helpers/http'
+import {BatchResponse, CreateResponse} from '../../interfaces/ReponseStructure'
+import {MoldErrorDefinition} from '../../interfaces/MoldErrorDefinition'
+import {SET_DELIMITER} from './constants'
+import {ErrorResponse, PutSuccess} from './interfaces'
 
 
 export function makeDbId(set: string, id: string | number): string {
-  return set + SET_DELIMITER + id;
+  return set + SET_DELIMITER + id
 }
 
 export function makeErrorResponse(
@@ -29,17 +29,17 @@ export function makeBatchResponse(
   docIds: (string | number)[],
   batchResult: (PutSuccess | ErrorResponse)[]
 ): MoldResponse<BatchResponse> {
-  const errors: MoldErrorDefinition[] = [];
-  const successResult: (CreateResponse & {_index: number})[] = [];
+  const errors: MoldErrorDefinition[] = []
+  const successResult: (CreateResponse & {_index: number})[] = []
 
   for (let index in batchResult) {
-    const errorItem = batchResult[index] as ErrorResponse;
+    const errorItem = batchResult[index] as ErrorResponse
 
     if (errorItem.error) {
-      errors.push({ code: errorItem.status, message: errorItem.message });
+      errors.push({ code: errorItem.status, message: errorItem.message })
     }
     else {
-      successResult.push({ id: docIds[index], _index: parseInt(index) });
+      successResult.push({ id: docIds[index], _index: parseInt(index) })
     }
   }
 
@@ -49,5 +49,5 @@ export function makeBatchResponse(
     success: Boolean(errors),
     errors: (errors.length) ? errors : null,
     result: (successResult.length) ? successResult : null,
-  };
+  }
 }

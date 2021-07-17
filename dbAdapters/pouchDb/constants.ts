@@ -1,1 +1,1 @@
-export const SET_DELIMITER = '/';
+export const SET_DELIMITER = '/'
