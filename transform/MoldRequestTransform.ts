@@ -1,43 +1,45 @@
 import {cloneDeepObject} from 'squidlet-lib/src/objects'
-import {SpecialSet} from './interfaces/SpecialSet';
-import {GlobalContext, HookContext} from './interfaces/HookContext';
-import {MoldResponse} from '../interfaces/MoldResponse';
-import {MoldRequest} from '../interfaces/MoldRequest';
-import ContextApp from './ContextApp';
-import {SetsDefinition} from './interfaces/MoldHook';
-import {Sets} from './interfaces/Sets';
-import {MoldDocument} from '../interfaces/MoldDocument';
-import {prepareSets, validateRequest, validateResponse} from './transformHelpers';
-import {AllHookTypes} from './interfaces/HookType';
+import {SpecialSet} from './interfaces/SpecialSet'
+import {GlobalContext, HookContext} from './interfaces/HookContext'
+import {MoldResponse} from '../interfaces/MoldResponse'
+import {MoldRequest} from '../interfaces/MoldRequest'
+import ContextApp from './ContextApp'
+import {SetsDefinition} from './interfaces/MoldHook'
+import {Sets} from './interfaces/Sets'
+import {MoldDocument} from '../interfaces/MoldDocument'
+import {prepareSets, validateRequest, validateResponse} from './transformHelpers'
+import {AllHookTypes} from './interfaces/HookType'
 
 
 // External request func.
 // On fatal error it has to throw a new Error(message).
 // And then cycle will be interrupted.
-export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>;
+export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>
 
 
 export default class MoldRequestTransform {
-  private sets: Sets;
-  private readonly requestFunc: HooksRequestFunc;
-  private readonly contextApp: ContextApp;
+  private sets: Sets
+  private readonly requestFunc: HooksRequestFunc
+  private readonly contextApp: ContextApp
 
 
   constructor(
-    // TODO: rename to transforms
+    // TODO: rename to transforms??
     rawSets: SetsDefinition,
+    // TODO: лучше отдельно регистрировать в отдельном методе
     requestFunc: HooksRequestFunc,
+    // TODO: зачем он нужен???
     user?: MoldDocument
   ) {
-    this.sets = prepareSets(rawSets);
-    this.requestFunc = requestFunc;
-    this.contextApp = new ContextApp(this, user);
+    this.sets = prepareSets(rawSets)
+    this.requestFunc = requestFunc
+    this.contextApp = new ContextApp(this, user)
   }
 
   destroy() {
     // @ts-ignore
-    delete this.sets;
-    this.contextApp.destroy();
+    delete this.sets
+    this.contextApp.destroy()
   }
 
 
@@ -58,18 +60,18 @@ export default class MoldRequestTransform {
 
     // TODO: reveiw doc - должно вернуть выбросить ошибку на fatal
 
-    const globalContext: GlobalContext = this.makeGlobalContext(request);
+    const globalContext: GlobalContext = this.makeGlobalContext(request)
 
-    validateRequest(request);
-    await this.startSpecialHooks('beforeHooks', globalContext);
-    await this.startBeforeHooks(globalContext);
-    await this.startSpecialHooks('beforeRequest', globalContext);
-    await this.startRequest(globalContext);
-    await this.startSpecialHooks('afterRequest', globalContext);
-    await this.startAfterHooks(globalContext);
-    await this.startSpecialHooks('afterHooks', globalContext);
+    validateRequest(request)
+    await this.startSpecialHooks('beforeHooks', globalContext)
+    await this.startBeforeHooks(globalContext)
+    await this.startSpecialHooks('beforeRequest', globalContext)
+    await this.startRequest(globalContext)
+    await this.startSpecialHooks('afterRequest', globalContext)
+    await this.startAfterHooks(globalContext)
+    await this.startSpecialHooks('afterHooks', globalContext)
     // return response
-    return cloneDeepObject(globalContext.response) as MoldResponse;
+    return cloneDeepObject(globalContext.response) as MoldResponse
   }
 
 

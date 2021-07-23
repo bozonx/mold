@@ -1,7 +1,7 @@
-import {MoldRequest} from '../../interfaces/MoldRequest';
-import {MoldResponse} from '../../interfaces/MoldResponse';
-import ContextApp from '../ContextApp';
-import {AllHookTypes} from './HookType';
+import {MoldRequest} from '../../interfaces/MoldRequest'
+import {MoldResponse} from '../../interfaces/MoldResponse'
+import ContextApp from '../ContextApp'
+import {AllHookTypes} from './HookType'
 
 
 /**
@@ -9,14 +9,14 @@ import {AllHookTypes} from './HookType';
  */
 export interface GlobalContext {
   // in before hooks you can modify the request
-  request: MoldRequest;
+  request: MoldRequest
   // This is only for "after" branch
   // there is a result of request. It is available only with "after" hooks.
   // You can modify it in after hooks
-  response?: MoldResponse;
+  response?: MoldResponse
   // This is for all the branches
   // use it for shared data between hooks during whole request life.
-  shared: {[index: string]: any};
+  shared: {[index: string]: any}
 }
 
 /**
@@ -24,7 +24,7 @@ export interface GlobalContext {
  */
 export interface HookContext extends GlobalContext {
   // singleton to call some methods etc
-  readonly app: ContextApp;
+  readonly app: ContextApp
   // before request, after request and special hooks such as beforeRequest, error etc.
-  readonly type: AllHookTypes;
+  readonly type: AllHookTypes
 }
