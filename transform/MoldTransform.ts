@@ -30,10 +30,12 @@ export default class MoldTransform {
     // TODO: лучше отдельно регистрировать в отдельном методе
     requestFunc: HooksRequestFunc,
     // TODO: зачем он нужен???
+    // TODO: надо передавать с каждым запросом, так можно перелогиниться
     user?: MoldDocument
   ) {
     this.sets = prepareSets(rawSets)
     this.requestFunc = requestFunc
+    // TODO: Наверное лучше создавать на каждый запрос, так как юзер будет новый
     this.contextApp = new ContextApp(this, user)
   }
 

@@ -10,11 +10,11 @@ import {MoldDocument} from '../interfaces/MoldDocument'
 export default class ContextApp {
   readonly user?: MoldDocument
 
-  private moldHooks: MoldTransform
+  private moldTransform: MoldTransform
 
 
-  constructor(moldHooks: MoldTransform, user?: MoldDocument) {
-    this.moldHooks = moldHooks
+  constructor(moldTransform: MoldTransform, user?: MoldDocument) {
+    this.moldTransform = moldTransform
     this.user = user
   }
 
@@ -30,7 +30,7 @@ export default class ContextApp {
    * Make some request which will be processed with its own hooks.
    */
   request(request: MoldRequest): Promise<MoldResponse> {
-    return this.moldHooks.request(request)
+    return this.moldTransform.request(request)
   }
 
 }

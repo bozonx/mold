@@ -1,8 +1,8 @@
 import {concatUniqStrArrays} from 'squidlet-lib/src/arrays'
-import {SetsDefinition} from './interfaces/MoldHook';
-import {MoldSchema} from '../interfaces/MoldSchema';
-import {normalizeSchema} from '../schema/normalizeSchema';
-import {populate} from '../hooks/populate';
+import {SetsDefinition} from './interfaces/MoldHook'
+import {MoldSchema} from '../interfaces/MoldSchema'
+import {normalizeSchema} from '../schema/normalizeSchema'
+import {populate} from '../hooks/populate'
 
 
 /**
@@ -11,11 +11,11 @@ import {populate} from '../hooks/populate';
  * @param transforms
  */
 export function addSchemaHooks(schema: MoldSchema, transforms: SetsDefinition): SetsDefinition {
-  return mergeTransforms(makeSchemaHooks(schema), transforms);
+  return mergeTransforms(makeSchemaHooks(schema), transforms)
 }
 
 export function mergeTransforms(bottom: SetsDefinition, top: SetsDefinition): SetsDefinition {
-  const result: SetsDefinition = {};
+  const result: SetsDefinition = {}
 
   for (let key of concatUniqStrArrays(Object.keys(result), Object.keys(top))) {
     result[key] = [
@@ -24,40 +24,40 @@ export function mergeTransforms(bottom: SetsDefinition, top: SetsDefinition): Se
     ]
   }
 
-  return result;
+  return result
 }
 
 export function makeSchemaHooks(schema: MoldSchema): SetsDefinition {
-  return mergeTransforms(makeValidateHooks(schema), makePopulateHooks(schema));
+  return mergeTransforms(makeValidateHooks(schema), makePopulateHooks(schema))
 }
 
 export function makeValidateHooks(rawSchema: MoldSchema): SetsDefinition {
-  const schema: MoldSchema = normalizeSchema(rawSchema);
+  const schema: MoldSchema = normalizeSchema(rawSchema)
 
   // TODO: add
-  return {};
+  return {}
 }
 
 export function makePopulateHooks(rawSchema: MoldSchema): SetsDefinition {
-  const schema: MoldSchema = normalizeSchema(rawSchema);
-  const result: SetsDefinition = {};
+  const schema: MoldSchema = normalizeSchema(rawSchema)
+  const result: SetsDefinition = {}
 
   for (let setName of Object.keys(schema)) {
     for (let fieldName of Object.keys(schema[setName])) {
-      const relation: string | undefined = schema[setName][fieldName]?.relation;
+      const relation: string | undefined = schema[setName][fieldName]?.relation
 
-      if (!relation) continue;
+      if (!relation) continue
 
-      if (!result[setName]) result[setName] = [];
+      if (!result[setName]) result[setName] = []
 
       // result[setName].push(populate(
       //   relation,
       //   fieldName,
       //   // TODO: название должно быть без id или указанное в relation
-      // ));
+      // ))
     }
 
   }
 
-  return result;
+  return result
 }

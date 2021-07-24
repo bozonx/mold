@@ -1,9 +1,9 @@
-import {MoldHook, PreHookDefinition, SetsDefinition} from './interfaces/MoldHook';
-import {MoldRequest} from '../interfaces/MoldRequest';
-import {MoldResponse} from '../interfaces/MoldResponse';
-import {BaseHookTypes} from './interfaces/HookType';
-import {SPECIAL_HOOKS} from './interfaces/SpecialSet';
-import {Sets} from './interfaces/Sets';
+import {MoldHook, PreHookDefinition, SetsDefinition} from './interfaces/MoldHook'
+import {MoldRequest} from '../interfaces/MoldRequest'
+import {MoldResponse} from '../interfaces/MoldResponse'
+import {BaseHookTypes} from './interfaces/HookType'
+import {SPECIAL_HOOKS} from './interfaces/SpecialSet'
+import {Sets} from './interfaces/Sets'
 
 
 export function handleActions(
@@ -16,8 +16,8 @@ export function handleActions(
       type,
       action,
       hook,
-    };
-  });
+    }
+  })
 }
 
 export function makeHooksDefinitions(
@@ -26,7 +26,7 @@ export function makeHooksDefinitions(
   includeActions: string[] = []
 ): PreHookDefinition[] {
   if (Array.isArray(hook)) {
-    let result: PreHookDefinition[] = [];
+    let result: PreHookDefinition[] = []
 
     for (let hookItem of hook) {
       result = [
@@ -35,10 +35,10 @@ export function makeHooksDefinitions(
       ]
     }
 
-    return result;
+    return result
   }
 
-  return handleActions(type, hook, includeActions);
+  return handleActions(type, hook, includeActions)
 }
 
 
@@ -87,27 +87,27 @@ export function parseSetHooks(
 
   for (let item of definitions) {
     for (let hookDefinition of item) {
-      if (typeof hookDefinition !== 'object') throw new Error(`Incorrect hook definition`);
+      if (typeof hookDefinition !== 'object') throw new Error(`Incorrect hook definition`)
 
-      const root = (hookDefinition.type === 'before') ? 'setsBefore' : 'setsAfter';
+      const root = (hookDefinition.type === 'before') ? 'setsBefore' : 'setsAfter'
 
       // TODO: надо all делать тут так как мета-хук не знает какие есть action
       //       чтобы добавить во все actions надо сначала их создать
 
       // create set if it doesn't exists
       if (!result[root][setName]) {
-        result[root][setName] = {};
+        result[root][setName] = {}
       }
       // create action if it doesn't exists
       if (!result[root][setName][hookDefinition.action]) {
-        result[root][setName][hookDefinition.action] = [];
+        result[root][setName][hookDefinition.action] = []
       }
 
-      result[root][setName][hookDefinition.action].push(hookDefinition.hook);
+      result[root][setName][hookDefinition.action].push(hookDefinition.hook)
     }
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -122,7 +122,7 @@ export function prepareSets(rawSets: SetsDefinition): Sets {
     afterHooks: [],
     setsBefore: {},
     setsAfter: {},
-  };
+  }
 
   for (let setName of Object.keys(rawSets)) {
     if (SPECIAL_HOOKS.includes(setName)) {
@@ -130,22 +130,22 @@ export function prepareSets(rawSets: SetsDefinition): Sets {
       sets[setName] = [
         ...sets[setName],
         ...rawSets[setName],
-      ];
+      ]
 
-      continue;
+      continue
     }
     // else this is user-defined set
-    const {setsBefore, setsAfter} = parseSetHooks(setName, rawSets[setName]);
+    const {setsBefore, setsAfter} = parseSetHooks(setName, rawSets[setName])
 
     sets.setsBefore = {
       ...sets.setsBefore,
       ...setsBefore,
-    };
+    }
     sets.setsAfter = {
       ...sets.setsAfter,
       ...setsAfter,
-    };
+    }
   }
 
-  return sets;
+  return sets
 }

@@ -9,7 +9,7 @@ export function afterAction(
   action: string,
   hook: MoldHook | MoldHook[]
 ): PreHookDefinition[] {
-  if (!hook) throw new Error(`Please set almost one hook`);
+  if (!hook) throw new Error(`Please set almost one hook`)
 
-  return makeHooksDefinitions('after', hook, [action]);
+  return makeHooksDefinitions('after', hook, [action])
 }
