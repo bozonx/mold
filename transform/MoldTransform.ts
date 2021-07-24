@@ -18,7 +18,7 @@ import {AllHookTypes} from './interfaces/HookType'
 export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>
 
 
-export default class MoldRequestTransform {
+export default class MoldTransform {
   private sets: Sets
   private readonly requestFunc: HooksRequestFunc
   private readonly contextApp: ContextApp
@@ -45,22 +45,14 @@ export default class MoldRequestTransform {
 
 
   /**
-   * Do request to the backend though hooks transformation.
-   * Promise is positive, reject is only on fatal error.
-   * Try to go to the end of transformation.
-   * But if there is a fatal error occurred then execution will be interrupted and
-   * error will be risen.
-   * Error which backend sent back doesn't matter - it means success request.
-   * On error it will return error-like response.
-   * Actions don't matter for transform.
-   * There isn't specific processing for certain actions.
+   * Pass request to the specified "requestFunc" though hooks transformation.
+   * Promise is positive, errors of remote side returns as ordinary success response
+   * but with errors field, rejecting of the promise is able only on fatal error.
    * @param request
    * @return fully transformed response.
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
     validateRequest(request)
-
-    // TODO: reveiw doc - должно вернуть выбросить ошибку на fatal
 
     const globalContext: GlobalContext = this.makeGlobalContext(request)
 

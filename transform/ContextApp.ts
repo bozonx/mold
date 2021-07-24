@@ -1,5 +1,5 @@
 import {MoldRequest} from '../interfaces/MoldRequest'
-import MoldRequestTransform from './MoldRequestTransform'
+import MoldTransform from './MoldTransform'
 import {MoldResponse} from '../interfaces/MoldResponse'
 import {MoldDocument} from '../interfaces/MoldDocument'
 
@@ -10,10 +10,10 @@ import {MoldDocument} from '../interfaces/MoldDocument'
 export default class ContextApp {
   readonly user?: MoldDocument
 
-  private moldHooks: MoldRequestTransform
+  private moldHooks: MoldTransform
 
 
-  constructor(moldHooks: MoldRequestTransform, user?: MoldDocument) {
+  constructor(moldHooks: MoldTransform, user?: MoldDocument) {
     this.moldHooks = moldHooks
     this.user = user
   }

@@ -5,7 +5,7 @@ import {MoldResponse} from '../interfaces/MoldResponse'
 import Mold from '../frontend/Mold'
 import {MoldRequest} from '../interfaces/MoldRequest'
 import {SetsDefinition} from '../transform/interfaces/MoldHook'
-import MoldRequestTransform from '../transform/MoldRequestTransform'
+import MoldTransform from '../transform/MoldTransform'
 import PouchDbAdapter from '../dbAdapters/pouchDb/PouchDbAdapter'
 import {callDbAdapterAction} from '../helpers/callDbAdapterAction'
 import {DB_ADAPTER_EVENT_TYPES} from '../interfaces/DbAdapter'
@@ -34,14 +34,14 @@ export default class MoldPouchClient implements BackendClient {
 
   private mold!: Mold
   private backendName!: string
-  private readonly transform: MoldRequestTransform
+  private readonly transform: MoldTransform
 
 
   constructor(props: MoldPouchClientProps) {
     this.validateProps(props)
 
     this.props = props
-    this.transform = new MoldRequestTransform(
+    this.transform = new MoldTransform(
       props.transforms,
       this.doAdapterRequest,
       this.props.user
