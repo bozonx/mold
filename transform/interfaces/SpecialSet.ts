@@ -8,4 +8,4 @@ export const SPECIAL_HOOKS = [
 export type SpecialSet = 'beforeHooks'
   | 'beforeRequest'
   | 'afterRequest'
-  | 'afterHooks';
+  | 'afterHooks'

@@ -44,25 +44,33 @@ export function makeHooksDefinitions(
 
 export function validateRequest(request: MoldRequest) {
   if (!request.set) {
-    throw new Error(`Set isn't specified int the request`);
+    throw new Error(`Set isn't specified int the request`)
+  }
+  else if (typeof request.set !== 'string') {
+    throw new Error(`Set isn't string`)
   }
   else if (!request.action) {
-    throw new Error(`Action isn't specified int the request of set "${request.set}"`);
+    throw new Error(`Action isn't specified int the request of set "${request.set}"`)
+  }
+  else if (typeof request.action !== 'string') {
+    throw new Error(`Action isn't string`)
   }
   else if (SPECIAL_HOOKS.includes(request.set)) {
-    throw new Error(`Unappropriated set name "${request.set}"`);
+    throw new Error(`Unappropriated set name "${request.set}"`)
   }
+  // TODO: check query and data
 }
 
 export function validateResponse(response: MoldResponse) {
+  // TODO: review
   if (typeof response.status !== 'number') {
-    throw new Error(`Incorrect type of "status" of response`);
+    throw new Error(`Incorrect type of "status" of response`)
   }
   else if (typeof response.success !== 'boolean') {
-    throw new Error(`Incorrect type of "success" of response`);
+    throw new Error(`Incorrect type of "success" of response`)
   }
   else if (response.errors && !Array.isArray(response.errors)) {
-    throw new Error(`Incorrect type of "errors" of response`);
+    throw new Error(`Incorrect type of "errors" of response`)
   }
 }
 

@@ -11,9 +11,10 @@ import {prepareSets, validateRequest, validateResponse} from './transformHelpers
 import {AllHookTypes} from './interfaces/HookType'
 
 
-// External request func.
-// On fatal error it has to throw a new Error(message).
-// And then cycle will be interrupted.
+/**
+ * External request func.
+ * On fatal error it throws a new Error(message). And then cycle will be interrupted.
+ */
 export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>
 
 
@@ -57,79 +58,74 @@ export default class MoldRequestTransform {
    * @return fully transformed response.
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
+    validateRequest(request)
 
     // TODO: reveiw doc - должно вернуть выбросить ошибку на fatal
 
     const globalContext: GlobalContext = this.makeGlobalContext(request)
 
-    validateRequest(request)
     await this.startSpecialHooks('beforeHooks', globalContext)
     await this.startBeforeHooks(globalContext)
     await this.startSpecialHooks('beforeRequest', globalContext)
     await this.startRequest(globalContext)
+    // TODO: тут уже нельзя модифицировать  globalContext.request
     await this.startSpecialHooks('afterRequest', globalContext)
     await this.startAfterHooks(globalContext)
+    // TODO: тут уже нельзя модифицировать  globalContext.request
     await this.startSpecialHooks('afterHooks', globalContext)
     // return response
-    return cloneDeepObject(globalContext.response) as MoldResponse
+    return cloneDeepObject<MoldResponse>(globalContext.response)
   }
 
 
   private async startRequest(globalContext: GlobalContext) {
-    const request = cloneDeepObject(globalContext.request) as MoldRequest;
-    const rawResponse: MoldResponse = await this.requestFunc(request);
+    const request = cloneDeepObject<MoldRequest>(globalContext.request)
+    const rawResponse: MoldResponse = await this.requestFunc(request)
 
-    validateResponse(rawResponse);
+    validateResponse(rawResponse)
 
-    globalContext.response = cloneDeepObject({
+    globalContext.response = cloneDeepObject<MoldResponse>({
       ...rawResponse,
       errors: (typeof rawResponse.errors === 'undefined') ? null : rawResponse.errors,
       result: (typeof rawResponse.result === 'undefined') ? null : rawResponse.result,
-    }) as MoldResponse;
+    })
   }
 
   private async startBeforeHooks(globalContext: GlobalContext) {
-    const {set, action} = globalContext.request;
-    // do nothing because there arent action's hooks
-    if (!this.sets.setsBefore[set]?.[action]) return;
+    const {set, action} = globalContext.request
 
-    for (let hook of this.sets.setsBefore[set][action]) {
-      const hookContext = this.makeHookContext('before', globalContext);
+    for (let hook of this.sets.setsBefore[set]?.[action] || []) {
+      const hookContext = this.makeHookContext('before', globalContext)
       // error will be handled at the upper level
-      await hook(hookContext);
+      await hook(hookContext)
       // save transformed request and shared
-      globalContext.request = hookContext.request;
-      globalContext.shared = hookContext.shared;
+      globalContext.request = hookContext.request
+      globalContext.shared = hookContext.shared
     }
   }
 
   private async startAfterHooks(globalContext: GlobalContext) {
     const {set, action} = globalContext.request;
-    // do nothing because there arent action's hooks
-    if (!this.sets.setsAfter[set]?.[action]) return;
 
-    for (let hook of this.sets.setsAfter[set][action]) {
-      const hookContext = this.makeHookContext('after', globalContext);
+    for (let hook of this.sets.setsAfter[set]?.[action] || []) {
+      const hookContext = this.makeHookContext('after', globalContext)
       // error will be handled at the upper level
-      await hook(hookContext);
+      await hook(hookContext)
       // save transformed response and shared
-      globalContext.response = hookContext.response;
-      globalContext.shared = hookContext.shared;
+      globalContext.response = hookContext.response
+      globalContext.shared = hookContext.shared
     }
   }
 
   private async startSpecialHooks(specialSet: SpecialSet, globalContext: GlobalContext) {
-    // do nothing because there arent any hooks
-    if (!this.sets[specialSet] || !this.sets[specialSet].length) return;
-
-    for (let hook of this.sets[specialSet]) {
-      const hookContext = this.makeHookContext('special', globalContext);
+    for (let hook of this.sets[specialSet] || []) {
+      const hookContext = this.makeHookContext('special', globalContext)
       // error will be handled at the upper level
-      await hook(hookContext);
+      await hook(hookContext)
       // save all the transformed context elements
-      globalContext.request = hookContext.request;
-      globalContext.response = hookContext.response;
-      globalContext.shared = hookContext.shared;
+      globalContext.request = hookContext.request
+      globalContext.response = hookContext.response
+      globalContext.shared = hookContext.shared
     }
   }
 
@@ -145,8 +141,8 @@ export default class MoldRequestTransform {
     return {
       app: this.contextApp,
       type,
-      ...cloneDeepObject(globalContext) as GlobalContext,
-    };
+      ...cloneDeepObject<GlobalContext>(globalContext),
+    }
   }
 
 }

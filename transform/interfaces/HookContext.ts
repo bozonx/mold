@@ -5,7 +5,7 @@ import {AllHookTypes} from './HookType'
 
 
 /**
- * Context which is global for whole request handling life cycle.
+ * Context which is global for whole handling request life cycle.
  */
 export interface GlobalContext {
   // in before hooks you can modify the request
