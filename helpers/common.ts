@@ -1,27 +1,29 @@
-import {LOG_LEVELS, LogLevel} from '../interfaces/Logger';
+import {LOG_LEVELS, LogLevel} from '../interfaces/Logger'
 
 
+// TODO: move to squidled-lib
 /**
  * Makes ['info', 'warn', 'error'] if log level is 'info'
  */
 export function calcAllowedLogLevels(logLevel: LogLevel): LogLevel[] {
-  const currentLevelIndex: number = LOG_LEVELS.indexOf(logLevel);
+  const currentLevelIndex: number = LOG_LEVELS.indexOf(logLevel)
 
-  return LOG_LEVELS.slice(currentLevelIndex) as LogLevel[];
+  return LOG_LEVELS.slice(currentLevelIndex) as LogLevel[]
 }
 
+// TODO: move to squidled-lib
 export function isPromise(toCheck: any): boolean {
   return toCheck
     && typeof toCheck === 'object'
     && typeof toCheck.then === 'function'
-    || false;
+    || false
 }
 
 export function convertPageToOffset(
   page?: number,
   pageSize?: number
 ): { limit?: number, skip?: number } {
-  if (!page || page < 0 || !pageSize || pageSize < 0) return {};
+  if (!page || page < 0 || !pageSize || pageSize < 0) return {}
 
   return {
     limit: pageSize,
@@ -29,17 +31,18 @@ export function convertPageToOffset(
   }
 }
 
+// TODO: move to squidled-lib
 export function filterBlackList(allItems: string[], blackList: string[] = []): string[] {
-  if (!blackList || !blackList.length) return allItems;
+  if (!blackList || !blackList.length) return allItems
 
-  let whiteList: string[] = [];
+  let whiteList: string[] = []
 
   // TODO: better to use kind of interception function
   for (let item of allItems) {
-    if (!blackList.includes(item)) whiteList.push(item);
+    if (!blackList.includes(item)) whiteList.push(item)
   }
 
-  return whiteList;
+  return whiteList
 }
 
 

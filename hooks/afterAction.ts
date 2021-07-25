@@ -3,7 +3,10 @@ import {makeHooksDefinitions} from '../transform/transformHelpers';
 
 
 /**
+ * Call specified hooks after request has done
  * Position of hook is certainly that which is in the set.
+ * @param action - call specified hook only at this action like find, get etc
+ * @param hook - hook itself
  */
 export function afterAction(
   action: string,

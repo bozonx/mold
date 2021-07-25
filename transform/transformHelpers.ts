@@ -74,7 +74,7 @@ export function validateResponse(response: MoldResponse) {
   }
 }
 
-
+// TODO: review
 export function parseSetHooks(
   setName: string,
   definitions: PreHookDefinition[][]
@@ -110,6 +110,7 @@ export function parseSetHooks(
   return result
 }
 
+// TODO: review
 /**
  * Sort and normalize hooks
  * @param rawSets is { setName: [[type, hookCb]] } or { specialSet: [...] }
