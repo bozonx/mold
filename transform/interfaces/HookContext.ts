@@ -8,6 +8,8 @@ import {AllHookTypes} from './HookType'
  * Context which is global for whole handling request life cycle.
  */
 export interface GlobalContext {
+  // singleton to call some methods etc
+  readonly app: ContextApp
   // in before hooks you can modify the request
   request: MoldRequest
   // This is only for "after" branch
@@ -23,8 +25,6 @@ export interface GlobalContext {
  * Context which is passed to each hook.
  */
 export interface HookContext extends GlobalContext {
-  // singleton to call some methods etc
-  readonly app: ContextApp
   // before request, after request and special hooks such as beforeRequest, error etc.
   readonly type: AllHookTypes
 }

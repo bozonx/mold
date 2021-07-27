@@ -1,4 +1,4 @@
-import {cloneDeepObject} from 'squidlet-lib/src/objects'
+import {cloneDeepObject, omitObj} from 'squidlet-lib/src/objects'
 import {SpecialSet} from './interfaces/SpecialSet'
 import {GlobalContext, HookContext} from './interfaces/HookContext'
 import {MoldResponse} from '../interfaces/MoldResponse'
@@ -20,43 +20,41 @@ export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>
 
 export default class MoldTransform {
   private sets: Sets
-  private readonly requestFunc: HooksRequestFunc
-  private readonly contextApp: ContextApp
+  private requestFunc!: HooksRequestFunc
 
 
-  constructor(
-    // TODO: rename to transforms??
-    rawSets: SetsDefinition,
-    // TODO: лучше отдельно регистрировать в отдельном методе
-    requestFunc: HooksRequestFunc,
-    // TODO: зачем он нужен???
-    // TODO: надо передавать с каждым запросом, так можно перелогиниться
-    user?: MoldDocument
-  ) {
+  constructor(rawSets: SetsDefinition) {
     this.sets = prepareSets(rawSets)
-    this.requestFunc = requestFunc
-    // TODO: Наверное лучше создавать на каждый запрос, так как юзер будет новый
-    this.contextApp = new ContextApp(this, user)
+
   }
 
   destroy() {
     // @ts-ignore
     delete this.sets
-    this.contextApp.destroy()
   }
 
+
+  /**
+   * Register request function immediately after creating the instance.
+   * @param requestFunc
+   */
+  registerRequest(requestFunc: HooksRequestFunc) {
+    this.requestFunc = requestFunc
+  }
 
   /**
    * Pass request to the specified "requestFunc" though hooks transformation.
    * Promise is positive, errors of remote side returns as ordinary success response
    * but with errors field, rejecting of the promise is able only on fatal error.
    * @param request
+   * @param user - authorized user data if exist
    * @return fully transformed response.
    */
-  async request(request: MoldRequest): Promise<MoldResponse> {
+  async request(request: MoldRequest, user?: MoldDocument): Promise<MoldResponse> {
     validateRequest(request)
 
-    const globalContext: GlobalContext = this.makeGlobalContext(request)
+    const contextApp = new ContextApp(this, user)
+    const globalContext: GlobalContext = this.makeGlobalContext(request, contextApp)
 
     await this.startSpecialHooks('beforeHooks', globalContext)
     await this.startBeforeHooks(globalContext)
@@ -67,6 +65,8 @@ export default class MoldTransform {
     await this.startAfterHooks(globalContext)
     // TODO: тут уже нельзя модифицировать  globalContext.request
     await this.startSpecialHooks('afterHooks', globalContext)
+
+    contextApp.destroy()
     // return response
     return cloneDeepObject<MoldResponse>(globalContext.response)
   }
@@ -123,8 +123,9 @@ export default class MoldTransform {
     }
   }
 
-  private makeGlobalContext(request: MoldRequest): GlobalContext {
+  private makeGlobalContext(request: MoldRequest, contextApp: ContextApp): GlobalContext {
     return {
+      app: contextApp,
       request,
       response: undefined,
       shared: {},
@@ -133,9 +134,9 @@ export default class MoldTransform {
 
   private makeHookContext(type: AllHookTypes, globalContext: GlobalContext): HookContext {
     return {
-      app: this.contextApp,
       type,
-      ...cloneDeepObject<GlobalContext>(globalContext),
+      ...cloneDeepObject<GlobalContext>(omitObj(globalContext, 'app')),
+      app: globalContext.app,
     }
   }
 
