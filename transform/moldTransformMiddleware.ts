@@ -6,7 +6,7 @@ import {MoldDocument} from '../interfaces/MoldDocument'
 import MoldTransform from './MoldTransform'
 
 
-export async function moldTransformMiddleware(rawSets: SetsDefinition) {
+export function moldTransformMiddleware(rawSets: SetsDefinition) {
   const transform = new MoldTransform(rawSets)
 
   return async function (
@@ -20,5 +20,10 @@ export async function moldTransformMiddleware(rawSets: SetsDefinition) {
     const transformResponse = await transform.request(request, user)
 
     Object.assign(response, transformResponse)
+
+    // TODO: что будет requestFunc для middleware. Там же нужны запросы через самый верх
+    // TODO: what about destroy???
+
+    //transform.destroy()
   }
 }

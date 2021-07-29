@@ -4,25 +4,12 @@ import {BackendClient} from '../interfaces/BackendClient'
 import {MoldResponse} from '../interfaces/MoldResponse'
 import Mold from '../frontend/Mold'
 import {MoldRequest} from '../interfaces/MoldRequest'
-import {SetsDefinition} from '../transform/interfaces/MoldHook'
-import MoldTransform from '../transform/MoldTransform'
 import PouchDbAdapter from '../dbAdapters/pouchDb/PouchDbAdapter'
 import {callDbAdapterAction} from '../helpers/callDbAdapterAction'
 import {DB_ADAPTER_EVENT_TYPES} from '../interfaces/DbAdapter'
 import {MoldDocument} from '../interfaces/MoldDocument'
-
-
-interface MoldPouchClientProps {
-  pouchDb: PouchDB
-
-  // TODO: поидее должен быть список middlewares
-  // TODO: может сразу передавать инстанс MoldRequestTransform
-  transforms: SetsDefinition
-
-  // TODO: а зачем???
-  // set user if it is authorized, undefined if not.
-  user?: MoldDocument
-}
+import {MoldMiddleware} from '../interfaces/MoldMiddleware'
+import {MiddlewareRunner} from '../helpers/MiddlewareRunner'
 
 
 /**
@@ -30,24 +17,26 @@ interface MoldPouchClientProps {
  * It works only with specified db.
  */
 export default class MoldPouchClient implements BackendClient {
-  readonly props: MoldPouchClientProps
   readonly adapter: PouchDbAdapter
 
+  private readonly middlewareRunner: MiddlewareRunner
   private mold!: Mold
   private backendName!: string
-  private readonly transform: MoldTransform
 
 
-  constructor(props: MoldPouchClientProps) {
-    this.validateProps(props)
-
-    this.props = props
-    this.transform = new MoldTransform(
-      props.transforms,
+  constructor(
+    pouchDb: PouchDB,
+    // authorized user or undefined
+    user?: MoldDocument,
+    // middlewares to handle requests
+    middlewares?: MoldMiddleware[] | MoldMiddleware
+  ) {
+    this.middlewareRunner = new MiddlewareRunner(
       this.doAdapterRequest,
-      this.props.user
+      user,
+      middlewares
     )
-    this.adapter = new PouchDbAdapter(props.pouchDb)
+    this.adapter = new PouchDbAdapter(pouchDb)
 
     this.adapter.onChange(this.handleRecordChange)
     this.adapter.onError(this.mold.log.error)
@@ -61,7 +50,7 @@ export default class MoldPouchClient implements BackendClient {
   }
 
   async destroy() {
-    this.transform.destroy()
+    this.middlewareRunner.destroy()
     await this.adapter.destroy()
   }
 
@@ -71,7 +60,7 @@ export default class MoldPouchClient implements BackendClient {
    * It throws an error only on fatal error
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
-    return this.transform.request(request)
+    return this.middlewareRunner.run(request)
   }
 
   /**
@@ -87,18 +76,6 @@ export default class MoldPouchClient implements BackendClient {
 
     console.log('change', [set, id, type])
     //this.mold.incomePush(this.backendName, [set, id, type])
-  }
-
-  private validateProps(props: MoldPouchClientProps) {
-    if (typeof props.pouchDb !== 'object') {
-      throw new Error(`Incorrect "pouchDb" prop`)
-    }
-    else if (typeof props.transforms !== 'object') {
-      throw new Error(`Incorrect "transforms" prop`)
-    }
-    else if (typeof props.user !== 'undefined' && typeof props.user !== 'object') {
-      throw new Error(`Incorrect "user" prop`)
-    }
   }
 
 }
