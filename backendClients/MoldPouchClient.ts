@@ -22,26 +22,26 @@ export default class MoldPouchClient implements BackendClient {
   private readonly middlewareRunner: MiddlewareRunner
   private mold!: Mold
   private backendName!: string
+  private user?: MoldDocument
 
 
   constructor(
     pouchDb: PouchDB,
-    // authorized user or undefined
-    user?: MoldDocument,
     // middlewares to handle requests
     middlewares?: MoldMiddleware[] | MoldMiddleware
   ) {
-    this.middlewareRunner = new MiddlewareRunner(
-      this.doAdapterRequest,
-      user,
-      middlewares
-    )
+    this.middlewareRunner = new MiddlewareRunner(this.doAdapterRequest, middlewares)
     this.adapter = new PouchDbAdapter(pouchDb)
 
     this.adapter.onChange(this.handleRecordChange)
     this.adapter.onError(this.mold.log.error)
   }
 
+  /**
+   * This is called by BackendManager
+   * @param mold
+   * @param backendName
+   */
   async init(mold: Mold, backendName: string) {
     this.mold = mold
     this.backendName = backendName
@@ -50,17 +50,26 @@ export default class MoldPouchClient implements BackendClient {
   }
 
   async destroy() {
+    delete this.user
     this.middlewareRunner.destroy()
     await this.adapter.destroy()
   }
 
 
   /**
+   * Set authorized user or null if it has unauthorized
+   * @param user
+   */
+  setAuthorizedUser(user: MoldDocument | null) {
+    this.user = user || undefined
+  }
+
+  /**
    * Request from Mold.
    * It throws an error only on fatal error
    */
   async request(request: MoldRequest): Promise<MoldResponse> {
-    return this.middlewareRunner.run(request)
+    return this.middlewareRunner.run(request, this.user)
   }
 
   /**
