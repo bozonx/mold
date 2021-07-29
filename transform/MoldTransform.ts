@@ -9,18 +9,12 @@ import {Sets} from './interfaces/Sets'
 import {MoldDocument} from '../interfaces/MoldDocument'
 import {prepareSets, validateRequest, validateResponse} from './transformHelpers'
 import {AllHookTypes} from './interfaces/HookType'
-
-
-/**
- * External request func.
- * On fatal error it throws a new Error(message). And then cycle will be interrupted.
- */
-export type HooksRequestFunc = (request: MoldRequest) => Promise<MoldResponse>
+import {MiddlewareRequestFunc} from '../interfaces/MoldMiddleware'
 
 
 export default class MoldTransform {
   private sets: Sets
-  private requestFunc!: HooksRequestFunc
+  private requestFunc!: MiddlewareRequestFunc
 
 
   constructor(rawSets: SetsDefinition) {
@@ -38,7 +32,7 @@ export default class MoldTransform {
    * Register request function immediately after creating the instance.
    * @param requestFunc
    */
-  registerRequest(requestFunc: HooksRequestFunc) {
+  registerRequest(requestFunc: MiddlewareRequestFunc) {
     this.requestFunc = requestFunc
   }
 
@@ -53,7 +47,10 @@ export default class MoldTransform {
   async request(request: MoldRequest, user?: MoldDocument): Promise<MoldResponse> {
     validateRequest(request)
 
-    const contextApp = new ContextApp(this, user)
+    const contextApp = new ContextApp(
+      this,
+      cloneDeepObject<MoldDocument | undefined>(user)
+    )
     const globalContext: GlobalContext = this.makeGlobalContext(request, contextApp)
 
     await this.startSpecialHooks('beforeHooks', globalContext)

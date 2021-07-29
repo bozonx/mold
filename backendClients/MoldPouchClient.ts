@@ -15,6 +15,7 @@ import {MoldDocument} from '../interfaces/MoldDocument'
 interface MoldPouchClientProps {
   pouchDb: PouchDB
 
+  // TODO: поидее должен быть список middlewares
   // TODO: может сразу передавать инстанс MoldRequestTransform
   transforms: SetsDefinition
 
