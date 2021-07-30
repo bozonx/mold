@@ -1,14 +1,19 @@
-import {cloneDeepObject, omitObj} from 'squidlet-lib/src/objects'
+import {cloneDeepObject} from 'squidlet-lib/src/objects'
 import {SpecialSet} from './interfaces/SpecialSet'
-import {GlobalContext, HookContext} from './interfaces/HookContext'
+import {GlobalContext} from './interfaces/HookContext'
 import {MoldResponse} from '../interfaces/MoldResponse'
 import {MoldRequest} from '../interfaces/MoldRequest'
 import ContextApp from './ContextApp'
 import {SetsDefinition} from './interfaces/MoldHook'
 import {Sets} from './interfaces/Sets'
 import {MoldDocument} from '../interfaces/MoldDocument'
-import {prepareSets, validateRequest, validateResponse} from './transformHelpers'
-import {AllHookTypes} from './interfaces/HookType'
+import {
+  makeGlobalContext,
+  makeHookContext,
+  prepareSets,
+  validateRequest,
+  validateResponse
+} from './transformHelpers'
 import {MiddlewareRequestFunc} from '../interfaces/MoldMiddleware'
 
 
@@ -32,7 +37,7 @@ export default class MoldTransform {
    * Register request function immediately after creating the instance.
    * @param requestFunc
    */
-  registerRequest(requestFunc: MiddlewareRequestFunc) {
+  registerRequestFunc(requestFunc: MiddlewareRequestFunc) {
     this.requestFunc = requestFunc
   }
 
@@ -51,7 +56,7 @@ export default class MoldTransform {
       this,
       cloneDeepObject<MoldDocument | undefined>(user)
     )
-    const globalContext: GlobalContext = this.makeGlobalContext(request, contextApp)
+    const globalContext: GlobalContext = makeGlobalContext(request, contextApp)
 
     await this.startSpecialHooks('beforeHooks', globalContext)
     await this.startBeforeHooks(globalContext)
@@ -86,7 +91,7 @@ export default class MoldTransform {
     const {set, action} = globalContext.request
 
     for (let hook of this.sets.setsBefore[set]?.[action] || []) {
-      const hookContext = this.makeHookContext('before', globalContext)
+      const hookContext = makeHookContext('before', globalContext)
       // error will be handled at the upper level
       await hook(hookContext)
       // save transformed request and shared
@@ -99,7 +104,7 @@ export default class MoldTransform {
     const {set, action} = globalContext.request;
 
     for (let hook of this.sets.setsAfter[set]?.[action] || []) {
-      const hookContext = this.makeHookContext('after', globalContext)
+      const hookContext = makeHookContext('after', globalContext)
       // error will be handled at the upper level
       await hook(hookContext)
       // save transformed response and shared
@@ -110,30 +115,13 @@ export default class MoldTransform {
 
   private async startSpecialHooks(specialSet: SpecialSet, globalContext: GlobalContext) {
     for (let hook of this.sets[specialSet] || []) {
-      const hookContext = this.makeHookContext('special', globalContext)
+      const hookContext = makeHookContext('special', globalContext)
       // error will be handled at the upper level
       await hook(hookContext)
       // save all the transformed context elements
       globalContext.request = hookContext.request
       globalContext.response = hookContext.response
       globalContext.shared = hookContext.shared
-    }
-  }
-
-  private makeGlobalContext(request: MoldRequest, contextApp: ContextApp): GlobalContext {
-    return {
-      app: contextApp,
-      request,
-      response: undefined,
-      shared: {},
-    }
-  }
-
-  private makeHookContext(type: AllHookTypes, globalContext: GlobalContext): HookContext {
-    return {
-      type,
-      ...cloneDeepObject<GlobalContext>(omitObj(globalContext, 'app')),
-      app: globalContext.app,
     }
   }
 

@@ -1,10 +1,30 @@
+import {cloneDeepObject, omitObj} from 'squidlet-lib/src/objects'
 import {MoldHook, PreHookDefinition, SetsDefinition} from './interfaces/MoldHook'
 import {MoldRequest} from '../interfaces/MoldRequest'
 import {MoldResponse} from '../interfaces/MoldResponse'
-import {BaseHookTypes} from './interfaces/HookType'
+import {AllHookTypes, BaseHookTypes} from './interfaces/HookType'
 import {SPECIAL_HOOKS} from './interfaces/SpecialSet'
 import {Sets} from './interfaces/Sets'
+import ContextApp from './ContextApp'
+import {GlobalContext, HookContext} from './interfaces/HookContext'
 
+
+export function makeGlobalContext(request: MoldRequest, contextApp: ContextApp): GlobalContext {
+  return {
+    app: contextApp,
+    request,
+    response: undefined,
+    shared: {},
+  }
+}
+
+export function makeHookContext(type: AllHookTypes, globalContext: GlobalContext): HookContext {
+  return {
+    type,
+    ...cloneDeepObject<GlobalContext>(omitObj(globalContext, 'app')),
+    app: globalContext.app,
+  }
+}
 
 export function handleActions(
   type: BaseHookTypes,

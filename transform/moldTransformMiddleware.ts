@@ -15,7 +15,7 @@ export function moldTransformMiddleware(rawSets: SetsDefinition) {
     response: MoldResponse,
     user?: MoldDocument
   ) {
-    transform.registerRequest(requestFunc)
+    transform.registerRequestFunc(requestFunc)
 
     const transformResponse = await transform.request(request, user)
 
