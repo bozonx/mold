@@ -7,6 +7,7 @@ import {SPECIAL_HOOKS} from './interfaces/SpecialSet'
 import {Sets} from './interfaces/Sets'
 import ContextApp from './ContextApp'
 import {GlobalContext, HookContext} from './interfaces/HookContext'
+import {ALL_ACTIONS} from '../shared/constants'
 
 
 export function makeGlobalContext(request: MoldRequest, contextApp: ContextApp): GlobalContext {
@@ -94,43 +95,38 @@ export function validateResponse(response: MoldResponse) {
   }
 }
 
-// TODO: review
-export function parseSetHooks(
-  setName: string,
-  definitions: PreHookDefinition[][]
-): Pick<Sets, 'setsAfter'> & Pick<Sets, 'setsBefore'> {
-  // TODO: неправильно !!!
-  const result = {
-    setsAfter: {},
-    setsBefore: {},
-  }
+
+export function parseBeforeAfterHooks(definitions: PreHookDefinition[][]): [Record<string, MoldHook[]>, Record<string, MoldHook[]>] {
+  const actionsBefore: Record<string, MoldHook[]> = {}
+  const actionsAfter: Record<string, MoldHook[]> = {}
+  const allActions: MoldHook[] = []
 
   for (let item of definitions) {
     for (let hookDefinition of item) {
       if (typeof hookDefinition !== 'object') throw new Error(`Incorrect hook definition`)
 
-      const root = (hookDefinition.type === 'before') ? 'setsBefore' : 'setsAfter'
+      if (hookDefinition.action === ALL_ACTIONS) {
+        // TODO: надо разделять before и after, либо сделать обертку с проверкой
+        allActions.push(hookDefinition.hook)
+        // TODO: закинуть во все существующие actions
 
-      // TODO: надо all делать тут так как мета-хук не знает какие есть action
-      //       чтобы добавить во все actions надо сначала их создать
-
-      // create set if it doesn't exists
-      if (!result[root][setName]) {
-        result[root][setName] = {}
+        continue
       }
-      // create action if it doesn't exists
-      if (!result[root][setName][hookDefinition.action]) {
-        result[root][setName][hookDefinition.action] = []
-      }
+      // else just ordinary action
+      const actionsByType = (hookDefinition.type === 'before') ? actionsBefore : actionsAfter
 
-      result[root][setName][hookDefinition.action].push(hookDefinition.hook)
+      if (actionsByType[hookDefinition.action]) {
+        actionsByType[hookDefinition.action].push(hookDefinition.hook)
+      }
+      else {
+        // TODO: сначала вставляем все allActions
+      }
     }
   }
 
-  return result
+  return [actionsBefore, actionsAfter]
 }
 
-// TODO: review
 /**
  * Sort and normalize hooks
  * @param rawSets is { setName: [[type, hookCb]] } or { specialSet: [...] }
@@ -156,16 +152,10 @@ export function prepareSets(rawSets: SetsDefinition): Sets {
       continue
     }
     // else this is user-defined set
-    const {setsBefore, setsAfter} = parseSetHooks(setName, rawSets[setName])
+    const [actionsBefore, actionsAfter] = parseBeforeAfterHooks(rawSets[setName])
 
-    sets.setsBefore = {
-      ...sets.setsBefore,
-      ...setsBefore,
-    }
-    sets.setsAfter = {
-      ...sets.setsAfter,
-      ...setsAfter,
-    }
+    sets.setsBefore[setName] = actionsBefore
+    sets.setsAfter[setName] = actionsAfter
   }
 
   return sets
