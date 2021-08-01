@@ -97,21 +97,38 @@ export function validateResponse(response: MoldResponse) {
 
 
 export function parseBeforeAfterHooks(definitions: PreHookDefinition[][]): [Record<string, MoldHook[]>, Record<string, MoldHook[]>] {
+
   const actionsBefore: Record<string, MoldHook[]> = {}
   const actionsAfter: Record<string, MoldHook[]> = {}
-  const allActions: MoldHook[] = []
+  const beforeAllActions: MoldHook[] = []
+  const afterAllActions: MoldHook[] = []
 
   for (let item of definitions) {
     for (let hookDefinition of item) {
       if (typeof hookDefinition !== 'object') throw new Error(`Incorrect hook definition`)
 
       if (hookDefinition.action === ALL_ACTIONS) {
-        // TODO: надо разделять before и after, либо сделать обертку с проверкой
-        allActions.push(hookDefinition.hook)
-        // TODO: закинуть во все существующие actions
+        // if the hook is for all actions then add it to all the actions
+        // and save it for further use
+        if (hookDefinition.type === 'before') {
+          beforeAllActions.push(hookDefinition.hook)
+
+          for (const actionName of Object.keys(actionsBefore)) {
+            actionsBefore[actionName].push(hookDefinition.hook)
+          }
+        }
+        else {
+          afterAllActions.push(hookDefinition.hook)
+
+          for (const actionName of Object.keys(actionsAfter)) {
+            actionsBefore[actionName].push(hookDefinition.hook)
+          }
+        }
 
         continue
       }
+
+      // TODO: надо тогда еще поддерживать both
       // else just ordinary action
       const actionsByType = (hookDefinition.type === 'before') ? actionsBefore : actionsAfter
 
