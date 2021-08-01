@@ -121,16 +121,16 @@ export function parseBeforeAfterHooks(definitions: PreHookDefinition[][]): [Reco
 
         continue
       }
-
-      // TODO: надо тогда еще поддерживать both
       // else just ordinary action
-      const actionsByType = (hookDefinition.type === 'before') ? actionsBefore : actionsAfter
-
-      if (actionsByType[hookDefinition.action]) {
-        actionsByType[hookDefinition.action].push(hookDefinition.hook)
+      if (actions[hookDefinition.type][hookDefinition.action]) {
+        // action exists - just add a new hook to the end
+        actions[hookDefinition.type][hookDefinition.action].push(hookDefinition.hook)
       }
       else {
-        // TODO: сначала вставляем все allActions
+        // action doesn't exist - first add hooks of allActions
+        actions[hookDefinition.type][hookDefinition.action] = [
+          ...allActions[hookDefinition.type]
+        ]
       }
     }
   }
