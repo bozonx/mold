@@ -97,11 +97,14 @@ export function validateResponse(response: MoldResponse) {
 
 
 export function parseBeforeAfterHooks(definitions: PreHookDefinition[][]): [Record<string, MoldHook[]>, Record<string, MoldHook[]>] {
-
-  const actionsBefore: Record<string, MoldHook[]> = {}
-  const actionsAfter: Record<string, MoldHook[]> = {}
-  const beforeAllActions: MoldHook[] = []
-  const afterAllActions: MoldHook[] = []
+  const actions: {before: Record<string, MoldHook[]>, after: Record<string, MoldHook[]> } = {
+    before: {},
+    after: {},
+  }
+  const allActions: {before: MoldHook[], after: MoldHook[]} = {
+    before: [],
+    after: [],
+  }
 
   for (let item of definitions) {
     for (let hookDefinition of item) {
@@ -110,19 +113,10 @@ export function parseBeforeAfterHooks(definitions: PreHookDefinition[][]): [Reco
       if (hookDefinition.action === ALL_ACTIONS) {
         // if the hook is for all actions then add it to all the actions
         // and save it for further use
-        if (hookDefinition.type === 'before') {
-          beforeAllActions.push(hookDefinition.hook)
+        allActions[hookDefinition.type].push(hookDefinition.hook)
 
-          for (const actionName of Object.keys(actionsBefore)) {
-            actionsBefore[actionName].push(hookDefinition.hook)
-          }
-        }
-        else {
-          afterAllActions.push(hookDefinition.hook)
-
-          for (const actionName of Object.keys(actionsAfter)) {
-            actionsBefore[actionName].push(hookDefinition.hook)
-          }
+        for (const actionName of Object.keys(actions[hookDefinition.type])) {
+          actions[hookDefinition.type][actionName].push(hookDefinition.hook)
         }
 
         continue
@@ -141,7 +135,7 @@ export function parseBeforeAfterHooks(definitions: PreHookDefinition[][]): [Reco
     }
   }
 
-  return [actionsBefore, actionsAfter]
+  return [actions.before, actions.after]
 }
 
 /**
