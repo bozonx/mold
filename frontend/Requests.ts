@@ -245,3 +245,27 @@ export default class Requests {
   }
 
 }
+
+// export function makeRequestKey(props: ActionProps): RequestKey {
+//   return [
+//     props.backend || DEFAULT_BACKEND,
+//     props.set,
+//     props.action,
+//     JSON.stringify(props.query && sortObject(props.query)),
+//   ];
+// }
+//
+// export function requestKeyToString(requestKey: RequestKey): string {
+//   return requestKey.join(REQUEST_KEY_SEPARATOR);
+// }
+//
+// export function splitInstanceId(
+//   instanceId: string
+// ): {requestKey: RequestKey, instanceNum: string} {
+//   const splat: string[] = instanceId.split(REQUEST_KEY_SEPARATOR);
+//   const instanceNum: string = splat[splat.length - 1];
+//
+//   splat.pop();
+//
+//   return {requestKey: splat as RequestKey, instanceNum};
+// }

@@ -1,5 +1,6 @@
 import {isEmptyObject} from 'squidlet-lib/src/objects'
 import ConsoleLogger from 'squidlet-lib/src/ConsoleLogger'
+import {Logger, LogLevel} from 'squidlet-lib/src/interfaces/Logger'
 
 import {ActionProps} from './interfaces/ActionProps'
 import {ActionState} from './interfaces/ActionState'
@@ -7,7 +8,6 @@ import StorageManager from './StorageManager'
 import BackendManager from './BackendManager'
 import {MoldProps} from './interfaces/MoldProps'
 import Requests from './Requests'
-import {Logger, LogLevel} from '../interfaces/Logger'
 import {defaultConfig} from './defaultConfig'
 import DefaultStore from './DefaultStore'
 import {MoldFrontendConfig} from './interfaces/MoldFrontendConfig'
@@ -183,7 +183,7 @@ export default class Mold {
       },
       storage: (props.storage) ? props.storage : new DefaultStore(),
       log: this.resolveLogger(props.log),
-    };
+    }
   }
 
   private resolveLogger(rawLogger?: Logger | LogLevel): Logger {

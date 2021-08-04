@@ -1,5 +1,5 @@
 import {ActionProps} from '../frontend/interfaces/ActionProps';
-import {cloneDeepObject, omitObj, omitUndefined, sortObject} from 'squidlet-lib/src/objects';
+import {cloneDeepObject, omitObj, omitUndefined} from 'squidlet-lib/src/objects';
 import {ActionState} from '../frontend/interfaces/ActionState';
 import {MoldRequest, MoldRequestData} from '../interfaces/MoldRequest'
 import {MoldErrorDefinition} from '../interfaces/MoldErrorDefinition';
@@ -7,30 +7,6 @@ import {MoldResponse} from '../interfaces/MoldResponse';
 import {REQUEST_STATUSES} from '../shared/constants';
 import {JsonTypes} from '../interfaces/Types'
 
-
-// export function makeRequestKey(props: ActionProps): RequestKey {
-//   return [
-//     props.backend || DEFAULT_BACKEND,
-//     props.set,
-//     props.action,
-//     JSON.stringify(props.query && sortObject(props.query)),
-//   ];
-// }
-//
-// export function requestKeyToString(requestKey: RequestKey): string {
-//   return requestKey.join(REQUEST_KEY_SEPARATOR);
-// }
-//
-// export function splitInstanceId(
-//   instanceId: string
-// ): {requestKey: RequestKey, instanceNum: string} {
-//   const splat: string[] = instanceId.split(REQUEST_KEY_SEPARATOR);
-//   const instanceNum: string = splat[splat.length - 1];
-//
-//   splat.pop();
-//
-//   return {requestKey: splat as RequestKey, instanceNum};
-// }
 
 export function makeInitialActionState(props: ActionProps): ActionState {
   return {
