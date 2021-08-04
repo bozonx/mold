@@ -1,4 +1,6 @@
 import {isEmptyObject} from 'squidlet-lib/src/objects'
+import ConsoleLogger from 'squidlet-lib/src/ConsoleLogger'
+
 import {ActionProps} from './interfaces/ActionProps'
 import {ActionState} from './interfaces/ActionState'
 import StorageManager from './StorageManager'
@@ -7,8 +9,6 @@ import {MoldProps} from './interfaces/MoldProps'
 import Requests from './Requests'
 import {Logger, LogLevel} from '../interfaces/Logger'
 import {defaultConfig} from './defaultConfig'
-// TODO: use squidlet-lib
-import ConsoleLogger from '../helpers/ConsoleLogger'
 import DefaultStore from './DefaultStore'
 import {MoldFrontendConfig} from './interfaces/MoldFrontendConfig'
 import {MoldRequestData} from '../interfaces/MoldRequest'

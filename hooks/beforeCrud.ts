@@ -1,6 +1,6 @@
+import {filterBlackList} from 'squidlet-lib/src/arrays'
 import {MoldHook, PreHookDefinition} from '../transform/interfaces/MoldHook'
 import {makeHooksDefinitions} from '../transform/transformHelpers'
-import {filterBlackList} from '../helpers/common'
 import {HOOK_CRUD_ACTIONS} from '../transform/interfaces/HookCrudActions'
 
 
