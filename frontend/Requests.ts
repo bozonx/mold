@@ -1,6 +1,5 @@
-import {omitObj, sortObject} from 'squidlet-lib/src/objects'
+import {omitObj} from 'squidlet-lib/src/objects'
 import {makeUniqId} from 'squidlet-lib/src/uniqId'
-import QueueRace from 'squidlet-lib/src/QueueRace'
 import Mold from './Mold'
 import {ActionProps} from './interfaces/ActionProps'
 import {MoldResponse} from '../interfaces/MoldResponse'
@@ -13,8 +12,6 @@ import {JsonTypes} from '../interfaces/Types'
 
 export default class Requests {
   private readonly mold: Mold
-  // object like { requestKeyStr: QueueRace }
-  private writingQueues: Record<string, QueueRace> = {}
 
 
   constructor(mold: Mold) {
@@ -22,11 +19,6 @@ export default class Requests {
   }
 
   destroy() {
-    for (let key of Object.keys(this.writingQueues)) {
-      this.writingQueues[key].destroy()
-    }
-
-    this.writingQueues = {}
   }
 
 
@@ -59,6 +51,8 @@ export default class Requests {
 
           this.mold.storageManager.removeListener(handleIndex)
           clearTimeout(timeout)
+
+          // TODO: если ошибка то надо режектить
           resolve()
         }
       )
@@ -89,17 +83,9 @@ export default class Requests {
   }
 
   destroyInstance(instanceId: string) {
-    if (this.writingQueues[requestKeyStr]) {
-      this.writingQueues[requestKeyStr].destroy();
+    if (!this.mold.storageManager.hasState(instanceId)) return
 
-      delete this.writingQueues[requestKeyStr]
-    }
-    // do nothing if there isn't any request
-    if (!this.instances.getProps(requestKey)) return
-    // remove instance and request if there aren't any more instances
-    this.instances.removeInstance(instanceId)
-    // remove storage state if request has been destroyed
-    if (!this.instances.getProps(requestKey)) this.mold.storageManager.delete(requestKey)
+    this.mold.storageManager.delete(instanceId)
   }
 
   /**
@@ -113,27 +99,15 @@ export default class Requests {
     data?: MoldRequestData,
     queryOverride?: Record<string, JsonTypes>
   ) {
-    if (!this.mold.storageManager.hasState(instanceId)) {
-      throw new Error(`Instance "${instanceId}" doesn't exists`)
-    }
-
     const actionProps: ActionProps | undefined = this.getProps(instanceId)
-    // check is it reading request. Data isn't used in read requests.
-    if (actionProps!.isReading) return this.doReadRequest(instanceId, actionProps!, queryOverride)
 
-    // TODO: add queryOverride
-    // TODO: что если data явно передана как undefined???
-
-    // else is writing - put it to queue if there isn't the same request.
-    const queue: QueueRace = this.resolveWritingQueue(requestKey)
-    const jobId: string = JSON.stringify(sortObject(data || {}))
-    // Check is this job is in queue to reduce duplicates.
-    // If found then it returns the promise of the same job in queue
-    if (queue.hasJob(jobId)) return queue.waitJobFinished(jobId)
-    // make request here to clone it
-    const request: MoldRequest = makeRequest(actionProps, data)
-    // push it to queue
-    await queue.add(() => this.doWriteRequest(requestKey, request), jobId)
+    if (!actionProps) throw new Error(`Instance "${instanceId}" doesn't exists`)
+    // check is it reading request and start it. Data isn't used in read requests.
+    if (actionProps!.isReading) {
+      return this.doReadRequest(instanceId, actionProps!, queryOverride)
+    }
+    // else start writing request
+    await this.doWriteRequest(instanceId, actionProps!, data, queryOverride)
   }
 
 
@@ -148,6 +122,10 @@ export default class Requests {
       throw new Error(`Can't find state of instance "${instanceId}"`)
     }
     else if (state.pending) {
+
+      // TODO: что если произошла ошибка в том запросе который ждем??
+      //       тогда надо и этот промис режектить
+
       // return a promise which will be resolved after current request is finished
       return this.waitRequestFinished(instanceId)
     }
@@ -187,85 +165,86 @@ export default class Requests {
   private async doWriteRequest(
     instanceId: string,
     actionProps: ActionProps,
-    request: MoldRequest
+    data?: MoldRequestData,
+    queryOverride?: Record<string, JsonTypes>
   ) {
+    const state: ActionState | undefined = this.mold.storageManager.getState(instanceId)
 
-    // TODO: add queryOverride
-
-    // If it is the fresh request(first job) then switch a pending state to true
-    if (!this.mold.storageManager.getState(requestKey)!.pending) {
-      this.mold.storageManager.patch(requestKey, { pending: true });
+    if (!state) {
+      throw new Error(`Can't find state of instance "${instanceId}"`)
+    }
+    else if (state.pending) {
+      // TODO: что тогда делать??
+      // TODO: наверное простая очередь с наложением?
     }
 
+    // TODO: что если data явно передана как undefined???
 
-    let response: MoldResponse;
+    const request: MoldRequest = makeRequest(actionProps, data, queryOverride)
+    let response: MoldResponse
 
     try {
       response = await this.mold.backendManager.request(request, actionProps.backend)
     }
     catch (e) {
-      this.handleEndOfWritingResponse(requestKey, makeFatalErrorResponse(e));
+      this.handleEndOfWritingResponse(instanceId, makeFatalErrorResponse(e))
       // and throw an error any way
-      throw e;
+      throw e
     }
 
-    this.handleEndOfWritingResponse(requestKey, response);
+    this.handleEndOfWritingResponse(instanceId, response)
   }
 
-  private handleEndOfWritingResponse(requestKey: RequestKey, response: MoldResponse) {
-    const requestKeyStr: string = requestKeyToString(requestKey);
+  private handleEndOfWritingResponse(instanceId: string, response: MoldResponse) {
+    this.mold.storageManager.patch(instanceId,{
+      ...response,
+      // TODO: если идет паралельный запрос то не правильно убирать статус
+      pending: false,
+      finishedOnce: true,
+    })
 
-    if (this.writingQueues[requestKeyStr].getQueueLength()) {
-      // don't set pending to false but adjust response state
-      this.mold.storageManager.patch(requestKey, {
-        ...response,
-        finishedOnce: true,
-      });
-    }
-    else {
-      // If there aren't any jobs in the queue then set pending to false,
-      // And adjust response state.
-      // This means all the requests are finished
-      this.mold.storageManager.patch(requestKey,{
-        ...response,
-        pending: false,
-        finishedOnce: true,
-      });
-    }
+    // if (this.writingQueues[requestKeyStr].getQueueLength()) {
+    //   // don't set pending to false but adjust response state
+    //   this.mold.storageManager.patch(requestKey, {
+    //     ...response,
+    //     finishedOnce: true,
+    //   })
+    // }
+    // else {
+    //   // If there aren't any jobs in the queue then set pending to false,
+    //   // And adjust response state.
+    //   // This means all the requests are finished
+    //   this.mold.storageManager.patch(requestKey,{
+    //     ...response,
+    //     pending: false,
+    //     finishedOnce: true,
+    //   })
+    // }
   }
 
-  private resolveWritingQueue(requestKey: RequestKey): QueueRace {
-    const requestKeyStr: string = requestKeyToString(requestKey);
+  // private resolveWritingQueue(requestKey: RequestKey): QueueRace {
+  //   const requestKeyStr: string = requestKeyToString(requestKey);
+  //
+  //   if (!this.writingQueues[requestKeyStr]) {
+  //     this.writingQueues[requestKeyStr] = new QueueRace(this.mold.config.jobTimeoutSec);
+  //   }
+  //
+  //   return this.writingQueues[requestKeyStr];
+  // }
 
-    if (!this.writingQueues[requestKeyStr]) {
-      this.writingQueues[requestKeyStr] = new QueueRace(this.mold.config.jobTimeoutSec);
-    }
 
-    return this.writingQueues[requestKeyStr];
-  }
+  // else is writing - put it to queue if there isn't the same request.
+  // const queue: QueueRace = this.resolveWritingQueue(requestKey)
+  // const jobId: string = JSON.stringify(sortObject(data || {}))
+  // Check is this job is in queue to reduce duplicates.
+  // If found then it returns the promise of the same job in queue
+  //if (queue.hasJob(jobId)) return queue.waitJobFinished(jobId)
+  // make request here to clone it
+
+  // // If it is the fresh request(first job) then switch a pending state to true
+  // if (!this.mold.storageManager.getState(requestKey)!.pending) {
+  //   this.mold.storageManager.patch(requestKey, { pending: true });
+  // }
+
 
 }
-
-// export function makeRequestKey(props: ActionProps): RequestKey {
-//   return [
-//     props.backend || DEFAULT_BACKEND,
-//     props.set,
-//     props.action,
-//     JSON.stringify(props.query && sortObject(props.query)),
-//   ];
-// }
-//
-// export function requestKeyToString(requestKey: RequestKey): string {
-//   return requestKey.join(REQUEST_KEY_SEPARATOR);
-// }
-//
-// export function splitInstanceId(
-//   instanceId: string
-// ): {requestKey: RequestKey, instanceNum: string} {
-//   const splat: string[] = instanceId.split(REQUEST_KEY_SEPARATOR);
-//   const instanceNum: string = splat[splat.length - 1];
-//
-//   splat.pop();
-//
-//   return {requestKey: splat as RequestKey, instanceNum};
-// }
