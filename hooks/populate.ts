@@ -6,14 +6,14 @@ import {PreHookDefinition} from '../transform/interfaces/MoldHook'
 
 async function requestRelatedItem(
   context: HookContext,
-  id: string | number,
+  remoteItemId: string | number,
   relatedSet: string,
   relatedIdField: string,
 ): Promise<Record<string, any> | undefined> {
   const relatedResult: MoldResponse<ItemResponse> = await context.app.request({
     set: relatedSet,
     action: 'get',
-    id,
+    query: {id: remoteItemId},
   })
 
   if (!relatedResult.success) {
@@ -31,13 +31,14 @@ async function populateItemHook(
   relatedIdField: string,
   populateField: string
 ) {
-  const id = context.response?.result.data?.[relatedIdField]
+  const remoteItemId: string | number | undefined | null =
+    context.response?.result.data?.[relatedIdField]
 
-  if (typeof id !== 'undefined' && id !== null) return
+  if (typeof remoteItemId !== 'string' && typeof remoteItemId !== 'number') return
 
   const relatedItem: Record<string, any> | undefined = await requestRelatedItem(
     context,
-    id,
+    remoteItemId,
     relatedSet,
     relatedIdField,
   )
@@ -45,6 +46,7 @@ async function populateItemHook(
   if (relatedItem) context.response!.result.data[populateField] = relatedItem
 }
 
+// TODO: review
 async function populateFindHook(
   context: HookContext,
   relatedSet: string,
