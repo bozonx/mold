@@ -1,10 +1,10 @@
-import ConsoleLogger from 'squidlet-lib/src/ConsoleLogger'
 import {Logger, LogLevel} from 'squidlet-lib/src/interfaces/Logger'
 
 import {MoldSeedContext} from '../interfaces/MoldSeedContext'
 import {DbAdapter} from '../interfaces/DbAdapter'
 import {SeedContext} from './SeedContext'
 import {MoldSchema} from '../interfaces/MoldSchema'
+import {resolveLogger} from '../helpers/common'
 
 
 type SeedFunction = (context: MoldSeedContext) => void
@@ -36,7 +36,7 @@ export default class MoldSeed {
   ) {
     this.seed = seed
     this.adapter = adapter
-    this.log = this.resolveLogger(log)
+    this.log = resolveLogger(log)
     this.context = new SeedContext(this.adapter, rawSchema)
   }
 
@@ -65,15 +65,6 @@ export default class MoldSeed {
     this.log.info('Done')
 
     this.context.destroy()
-  }
-
-
-  private resolveLogger(rawLogger?: Logger | LogLevel): Logger {
-    if (!rawLogger) return new ConsoleLogger()
-
-    if (typeof rawLogger === 'string') return new ConsoleLogger(rawLogger)
-
-    return rawLogger
   }
 
 }
