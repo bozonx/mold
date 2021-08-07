@@ -7,13 +7,18 @@ export type MoldSchemaFieldType = 'string'
   | 'timestamp'
 
 
+export interface MoldSchemaFieldRelation {
+  id: string | number
+  set: string
+}
+
 export interface MoldSchemaField {
   type: MoldSchemaFieldType
   default?: JsonTypes
   uniq?: boolean
   required?: boolean
   length?: number
-  relation?: string
+  relation?: MoldSchemaFieldRelation
 }
 
 export interface MoldSchemaIdField {

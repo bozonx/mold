@@ -47,33 +47,33 @@ async function populateItemHook(
 }
 
 // TODO: review
-async function populateFindHook(
-  context: HookContext,
-  relatedSet: string,
-  relatedIdField: string,
-  populateField: string
-): Promise<void> {
-  if (!context.response?.result) return
-
-  const findResponse: ListResponse = context.response.result
-
-  if (!findResponse.data) return
-
-  await Promise.all(findResponse.data.map(async (item) => {
-    const id = item[relatedIdField]
-
-    if (typeof id !== 'undefined' && id !== null) return
-
-    const relatedItem: Record<string, any> | undefined = await requestRelatedItem(
-      context,
-      id,
-      relatedSet,
-      relatedIdField,
-    )
-
-    if (relatedItem) item[populateField] = relatedItem
-  }))
-}
+// async function populateFindHook(
+//   context: HookContext,
+//   relatedSet: string,
+//   relatedIdField: string,
+//   populateField: string
+// ): Promise<void> {
+//   if (!context.response?.result) return
+//
+//   const findResponse: ListResponse = context.response.result
+//
+//   if (!findResponse.data) return
+//
+//   await Promise.all(findResponse.data.map(async (item) => {
+//     const id = item[relatedIdField]
+//
+//     if (typeof id !== 'undefined' && id !== null) return
+//
+//     const relatedItem: Record<string, any> | undefined = await requestRelatedItem(
+//       context,
+//       id,
+//       relatedSet,
+//       relatedIdField,
+//     )
+//
+//     if (relatedItem) item[populateField] = relatedItem
+//   }))
+// }
 
 
 /**
@@ -84,6 +84,7 @@ async function populateFindHook(
  */
 export function populate(
   relatedSet: string,
+  // TODO: почему так?? может просто id передать
   relatedIdField: string,
   populateField: string
 ): PreHookDefinition[] {
@@ -98,15 +99,15 @@ export function populate(
         populateField
       ),
     },
-    {
-      type: 'after',
-      action: 'find',
-      hook: (context: HookContext) => populateFindHook(
-        context,
-        relatedSet,
-        relatedIdField,
-        populateField
-      ),
-    },
+    // {
+    //   type: 'after',
+    //   action: 'find',
+    //   hook: (context: HookContext) => populateFindHook(
+    //     context,
+    //     relatedSet,
+    //     relatedIdField,
+    //     populateField
+    //   ),
+    // },
   ]
 }
