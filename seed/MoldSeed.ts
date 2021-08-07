@@ -1,11 +1,11 @@
-// TODO: use squidlet-lib
-import ConsoleLogger from '../helpers/ConsoleLogger';
-import {MoldSeedContext} from '../interfaces/MoldSeedContext';
-import {Logger, LogLevel} from '../interfaces/Logger';
-import {DbAdapter} from '../interfaces/DbAdapter';
-import {SeedContext} from './SeedContext';
+import ConsoleLogger from 'squidlet-lib/src/ConsoleLogger'
+import {Logger, LogLevel} from 'squidlet-lib/src/interfaces/Logger'
+
+import {MoldSeedContext} from '../interfaces/MoldSeedContext'
+import {DbAdapter} from '../interfaces/DbAdapter'
+import {SeedContext} from './SeedContext'
+import {MoldSchema} from '../interfaces/MoldSchema'
 //import {extractSeedFromSchema} from '../__old/extractSeedFromSchema';
-import {MoldSchema} from '../interfaces/MoldSchema';
 import {normalizeSchema} from '../schema/normalizeSchema';
 
 

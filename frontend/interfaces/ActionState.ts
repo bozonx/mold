@@ -2,7 +2,6 @@ import {MoldResponse} from '../../interfaces/MoldResponse'
 import {ActionProps} from './ActionProps'
 
 
-// TODO: зачем убирать success и status ?
 export interface ActionState<T = any>
   extends Omit<Omit<MoldResponse<T>, 'success'>, 'status'>
 {

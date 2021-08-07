@@ -10,7 +10,7 @@ import {populate} from '../hooks/populate'
  * @param schema
  * @param transforms
  */
-export function addSchemaHooks(schema: MoldSchema, transforms: SetsDefinition): SetsDefinition {
+export function extractHooksFromSchema(schema: MoldSchema, transforms: SetsDefinition): SetsDefinition {
   return mergeTransforms(makeSchemaHooks(schema), transforms)
 }
 
