@@ -1,7 +1,8 @@
 import {concatUniqStrArrays} from 'squidlet-lib/src/arrays'
-import {SetsDefinition} from './interfaces/MoldHook'
+
 import {MoldSchema} from '../interfaces/MoldSchema'
 import {normalizeSchema} from '../schema/normalizeSchema'
+import {SetsDefinition} from '../transform/interfaces/MoldHook'
 import {populate} from '../hooks/populate'
 
 
@@ -10,11 +11,17 @@ import {populate} from '../hooks/populate'
  * @param schema
  * @param transforms
  */
-export function extractHooksFromSchema(schema: MoldSchema, transforms: SetsDefinition): SetsDefinition {
-  return mergeTransforms(makeSchemaHooks(schema), transforms)
+export function mergeHooksFromSchema(
+  schema: MoldSchema,
+  transforms: SetsDefinition
+): SetsDefinition {
+  return mergeTransforms(extractHooksFromSchema(schema), transforms)
 }
 
-export function mergeTransforms(bottom: SetsDefinition, top: SetsDefinition): SetsDefinition {
+export function mergeTransforms(
+  bottom: SetsDefinition,
+  top: SetsDefinition
+): SetsDefinition {
   const result: SetsDefinition = {}
 
   for (let key of concatUniqStrArrays(Object.keys(result), Object.keys(top))) {
@@ -27,7 +34,7 @@ export function mergeTransforms(bottom: SetsDefinition, top: SetsDefinition): Se
   return result
 }
 
-export function makeSchemaHooks(schema: MoldSchema): SetsDefinition {
+export function extractHooksFromSchema(schema: MoldSchema): SetsDefinition {
   return mergeTransforms(makeValidateHooks(schema), makePopulateHooks(schema))
 }
 
@@ -38,6 +45,7 @@ export function makeValidateHooks(rawSchema: MoldSchema): SetsDefinition {
   return {}
 }
 
+// TODO: review
 export function makePopulateHooks(rawSchema: MoldSchema): SetsDefinition {
   const schema: MoldSchema = normalizeSchema(rawSchema)
   const result: SetsDefinition = {}
