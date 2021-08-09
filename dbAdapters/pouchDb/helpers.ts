@@ -1,4 +1,4 @@
-import {httpStatusMessage} from 'squidlet-lib/src/helpers/http'
+import {httpStatusMessage} from 'squidlet-lib/src/http'
 
 import {MoldResponse} from '../../interfaces/MoldResponse'
 import {BatchResponse, CreateResponse} from '../../interfaces/ReponseStructure'

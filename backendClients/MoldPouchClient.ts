@@ -32,9 +32,6 @@ export default class MoldPouchClient implements BackendClient {
   ) {
     this.middlewareRunner = new MiddlewareRunner(this.doAdapterRequest, middlewares)
     this.adapter = new PouchDbAdapter(pouchDb)
-
-    this.adapter.onChange(this.handleRecordChange)
-    this.adapter.onError(this.mold.log.error)
   }
 
   /**
@@ -46,6 +43,8 @@ export default class MoldPouchClient implements BackendClient {
     this.mold = mold
     this.backendName = backendName
 
+    this.adapter.onChange(this.handleRecordChange)
+    this.adapter.onError(this.mold.log.error)
     await this.adapter.init()
   }
 

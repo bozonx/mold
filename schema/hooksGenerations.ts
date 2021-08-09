@@ -26,8 +26,8 @@ export function mergeTransforms(
 
   for (let key of concatUniqStrArrays(Object.keys(result), Object.keys(top))) {
     result[key] = [
-      ...bottom[key],
-      ...top[key],
+      ...bottom[key] || [],
+      ...top[key] || [],
     ]
   }
 
